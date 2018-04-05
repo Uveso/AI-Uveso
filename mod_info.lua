@@ -1,0 +1,17 @@
+name = "AI-Uveso"
+uid = "62e2j64a-AIUV-0090-89465-146as555a8u3"
+version = 9
+copyright = "Uveso 2017-2018"
+description = "(For FAF only)"
+author = "Uveso"
+url = ""
+icon = "/mods/AI-Uveso/bugfix.png"
+selectable = true
+enabled = true
+exclusive = false
+ui_only = false
+requires = { }
+requiresNames = { }
+conflicts = { }
+before = { }
+after = { }
