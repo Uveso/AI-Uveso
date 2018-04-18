@@ -38,5 +38,33 @@ AIOpts = {
             },
         },
    },
+    {
+        default = 1,
+        label = "<LOC aisettings_0167>Show AI Platoon names",
+        help = "<LOC aisettings_0168>Displays Platoon and AI plan name",
+        key = 'AIPLatoonNameDebug',
+        values = {
+            {
+                text = "<LOC aisettings_0169>Off",
+                help = "<LOC aisettings_0170>Display is off",
+                key = 'off',
+            },
+            {
+                text = "<LOC aisettings_0171>AI Uveso names",
+                help = "<LOC aisettings_0172>Show platoon and AI plan name for AI Uveso",
+                key = 'Uveso',
+            },
+            {
+                text = "<LOC aisettings_0171>AI Dilli names",
+                help = "<LOC aisettings_0172>Show platoon and AI plan name for AI Dilli",
+                key = 'Dilli',
+            },
+            {
+                text = "<LOC aisettings_0171>AI Sorian names",
+                help = "<LOC aisettings_0172>Show platoon and AI plan name for AI Sorian",
+                key = 'Sorian',
+            },
+        },
+   },
 
 }

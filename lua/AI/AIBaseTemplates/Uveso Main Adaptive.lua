@@ -151,6 +151,11 @@ BaseBuilderTemplate {
         'AeonOpticsEngineerBuilders',
         'CybranOpticsEngineerBuilders',
 
+        -----------------------------------------------------------------------------
+        -- ==== Mod Builder ==== --
+        -----------------------------------------------------------------------------
+        'HydrocarbonUpgrade BlackOps',
+        
     },
     -- Not used by Uveso's AI. We always need intel in case the commander is dead.
     NonCheatBuilders = {

@@ -26,18 +26,20 @@ AIBrain = Class(OLDAIBrain) {
                 AIUtils.SetupCheat(self, true)
                 ScenarioInfo.ArmySetup[self.Name].AIPersonality = string.sub(per, 1, cheatPos - 1)
             end
-
+            LOG('* OnCreateAI: AIPersonality: ('..per..')')
             if string.find(per, 'sorian') then
                 self.Sorian = true
             end
-
+            if string.find(per, 'uveso') then
+                self.Uveso = true
+            end
+            if string.find(per, 'dilli') then
+                self.Dilli = true
+            end
             if DiskGetFileInfo('/lua/AI/altaiutilities.lua') then
                 self.Duncan = true
             end
 
-            if string.find(per, 'uveso') then
-                self.Uveso = true
-            end
 
             self.CurrentPlan = self.AIPlansList[self:GetFactionIndex()][1]
             self.EvaluateThread = self:ForkThread(self.EvaluateAIThread)

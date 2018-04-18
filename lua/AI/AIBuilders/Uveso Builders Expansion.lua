@@ -1,4 +1,5 @@
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
+local EBC = '/lua/editor/EconomyBuildConditions.lua'
 
 BuilderGroup {
     BuilderGroupName = 'U1 Expansion Builder Uveso',
@@ -10,6 +11,7 @@ BuilderGroup {
         Priority = 1200,
         InstanceCount = 2,
         BuilderConditions = {
+            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.00}}, -- Ratio from 0 to 1. (1=100%)
             { UCBC, 'ExpansionBaseCheck', { } },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.MASSEXTRACTION * categories.TECH2 } },
             { UCBC, 'StartLocationNeedsEngineer', { 'LocationType', 1000, -1000, 5, 0, 'StructuresNotMex' } },
@@ -47,6 +49,7 @@ BuilderGroup {
         Priority = 1200,
         InstanceCount = 2,
         BuilderConditions = {
+            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.00}}, -- Ratio from 0 to 1. (1=100%)
             { UCBC, 'ExpansionBaseCheck', { } },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.MASSEXTRACTION * categories.TECH2 } },
             { UCBC, 'ExpansionAreaNeedsEngineer', { 'LocationType', 1000, -1000, 0, 2, 'StructuresNotMex' } },

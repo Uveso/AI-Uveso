@@ -1,10 +1,6 @@
 
 OLDExecutePlan = ExecutePlan
 function ExecutePlan(aiBrain)
-    -- Only use this with AI-Uveso
-    if not aiBrain.Uveso then
-        return OLDExecutePlan(aiBrain)
-    end
     aiBrain:SetConstantEvaluate(false)
     local behaviors = import('/lua/ai/AIBehaviors.lua')
     WaitSeconds(1)
@@ -36,7 +32,14 @@ function ExecutePlan(aiBrain)
         if aiBrain.Sorian then
             ForkThread(UnitCapWatchThreadSorian, aiBrain)
             ForkThread(behaviors.NukeCheck, aiBrain)
+            -- Debug for Platoon names
+            if aiBrain[ScenarioInfo.Options.AIPLatoonNameDebug] then
+                ForkThread(LocationRangeManagerThread, aiBrain)
+            end
         elseif aiBrain.Uveso then
+            ForkThread(LocationRangeManagerThread, aiBrain)
+        -- Debug for Platoon names
+        elseif aiBrain[ScenarioInfo.Options.AIPLatoonNameDebug] then
             ForkThread(LocationRangeManagerThread, aiBrain)
         else
             ForkThread(UnitCapWatchThread, aiBrain)
@@ -55,13 +58,27 @@ function LocationRangeManagerThread(aiBrain)
         local BasePositions = BaseRanger(aiBrain)
         -- Check if we have units outside the range of any BaseManager
         -- Get all units from our ArmyPool. These are units without a special platoon or task. They have nothing to do.
-        local ArmyPool = aiBrain:GetPlatoonUniquelyNamed('ArmyPool')
-        local ArmyPoolUnits = ArmyPool:GetPlatoonUnits()
+        local ArmyUnits = aiBrain:GetListOfUnits(categories.ALLUNITS, false) -- also gets unbuilded units (planed to build)
         -- Loop over every unit that has no platton and is idle
-        for _, unit in ArmyPoolUnits do
+        for _, unit in ArmyUnits do
+            -- check if we have name debugging enabled (ScenarioInfo.Options.AIPLatoonNameDebug = Uveso or Sorian or Dilli)
+            if aiBrain[ScenarioInfo.Options.AIPLatoonNameDebug] and not EntityCategoryContains(categories.STRUCTURE * categories.FACTORY, unit) then
+                if unit.PlatoonHandle then
+                    local Plan = unit.PlatoonHandle.PlanName
+                    local Builder = unit.PlatoonHandle.BuilderName
+                    if Plan or Builder then
+                        unit:SetCustomName(''..(Builder or 'Unknown')..' ('..(Plan or 'Unknown')..')')
+                    else
+                        unit:SetCustomName('')
+                    end
+                else
+                    unit:SetCustomName('')
+                end
+            end
+
             local WeAreInRange = false
             local nearestbase
-            if not unit.Dead and EntityCategoryContains(categories.MOBILE - categories.COMMAND, unit) and unit:GetFractionComplete() == 1 and unit:IsIdleState() and not unit:IsMoving() then
+            if not unit.Dead and EntityCategoryContains(categories.MOBILE - categories.COMMAND, unit) and unit:GetFractionComplete() == 1 and unit:IsIdleState() and not unit:IsMoving() and not unit.PlatoonHandle then
                 local UnitPos = unit:GetPosition()
                 local NeedNavalBase = EntityCategoryContains(categories.NAVAL, unit)
                 -- loop over every location and check the distance between the unit and the location
@@ -91,7 +108,7 @@ function LocationRangeManagerThread(aiBrain)
                 if WeAreInRange == false and not unit.Dead then
                     if nearestbase then
                         if unit.PlatoonHandle and aiBrain:PlatoonExists(unit.PlatoonHandle) then
-                            --LOG('* AIDEBUG: LocationRangeManagerThread: Found idle Unit outside Basemanager range! Removing platoonhandle.')
+                            LOG('* AIDEBUG: LocationRangeManagerThread: Found idle Unit outside Basemanager range! Removing platoonhandle: ('..(unit.PlatoonHandle.PlanName or 'Unknown')..')')
                             unit.PlatoonHandle:Stop()
                             unit.PlatoonHandle:PlatoonDisbandNoAssign()
                         end
@@ -119,7 +136,7 @@ function LocationRangeManagerThread(aiBrain)
 --            LOG(' 02.4 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE * categories.FACTORY * categories.AIR, true) ) )..' -  Factory Air   - ' )
 --            LOG(' 02.4 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE * categories.FACTORY * categories.NAVAL, true) ) )..' -  Factory Sea   - ' )
 --        end
-        WaitSeconds(10)
+        WaitTicks(50)
     end
 end
 

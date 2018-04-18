@@ -178,6 +178,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'GreaterThanGameTimeSeconds', { 180 } },
             -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconStorageRatio', { -0.0, 0.10}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusCap', { 0.14, '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
         },
@@ -198,18 +199,16 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Mass Fab',
         PlatoonTemplate = 'T3EngineerBuilder',
-        Priority = 0,
+        Priority = 1,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 6, 'ENERGYPRODUCTION TECH3' } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 10, categories.STRUCTURE * categories.MASSEXTRACTION }},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
             { UCBC, 'HaveUnitRatio', { 0.3, 'MASSFABRICATION', '<=','ENERGYPRODUCTION TECH3' } },
             -- Have we the eco to build it ?
-            { IBC, 'BrainNotLowPowerMode', {} },
-            { IBC, 'BrainNotLowMassMode', {} },
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.75, 0.75}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, 'MASSFABRICATION' } },
             { UCBC, 'HaveUnitRatioVersusCap', { 0.14, '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
@@ -241,7 +240,7 @@ BuilderGroup {
     BuilderGroupName = 'ExtractorUpgrades Uveso',
     BuildersType = 'PlatoonFormBuilder',
     Builder {
-        BuilderName = 'ExtractorUpgradeAI',
+        BuilderName = 'Extractor upgrade >20 mass',
         PlatoonTemplate = 'AddToMassExtractorUpgradePlatoon',
         Priority = 4000,
         InstanceCount = 1,
@@ -250,9 +249,32 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 0, categories.MASSEXTRACTION} },
             -- Do we need additional conditions to build it ?
-            { EBC, 'GreaterThanEconIncome',  { 0.0, 12.0}}, -- Absolut Base income
             -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconIncome',  { 2.0, 20.0}}, -- Absolut Base income
             -- Don't build it if...
+        },
+        BuilderData = {
+            AIPlan = 'ExtractorUpgradeAI',
+        },
+        BuilderType = 'Any',
+    },
+    Builder {
+        BuilderName = 'Extractor upgrade >4 factories',
+        PlatoonTemplate = 'AddToMassExtractorUpgradePlatoon',
+        Priority = 4000,
+        InstanceCount = 1,
+        FormRadius = 10000,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 0, categories.MASSEXTRACTION} },
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 4, categories.STRUCTURE * categories.FACTORY } },
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconIncome',  { 0.1, 20.0}}, -- Absolut Base income
+            -- Don't build it if...
+        },
+        BuilderData = {
+            AIPlan = 'ExtractorUpgradeAI',
         },
         BuilderType = 'Any',
     },
@@ -274,7 +296,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH1' }},
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconIncome',  { 0.0, 25.0}}, -- Absolut Base income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.75, 0.0}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1,  'MASSSTORAGE' }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 7, categories.STRUCTURE * categories.MASSSTORAGE }},
@@ -295,41 +317,16 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'U1 Mass Storage Emergency',
-        PlatoonTemplate = 'EngineerBuilder',
-        Priority = 1800,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            -- Do we need additional conditions to build it ?
-            -- Have we the eco to build it ?
-            { UCBC, 'LessMassStorageMax',  { 0.1}},
-            -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1,  'MASSSTORAGE' }},
-        },
-        BuilderType = 'Any',
-        BuilderData = {
-            Location = 'LocationType',
-            Construction = {
-                AdjacencyCategory = 'MASSEXTRACTION TECH3, MASSEXTRACTION TECH2',
-                AdjacencyDistance = 100,
-                BuildClose = false,
-                BuildStructures = {
-                    'MassStorage',
-                },
-            }
-        }
-    },
-    Builder {
         BuilderName = 'U1 Mass Storage I',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 1800,
+        Priority = 1700,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 2, 'MASSSTORAGE' }},
             -- Do we need additional conditions to build it ?
             { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH1' }},
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconIncome',  { 0.0, 25.0}}, -- Absolut Base income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.75, 0.0}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1,  'MASSSTORAGE' }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 7, categories.STRUCTURE * categories.MASSSTORAGE }},

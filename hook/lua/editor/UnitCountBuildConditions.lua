@@ -139,7 +139,14 @@ function HaveUnitRatioVersusCap(aiBrain, ratio, compareType, categoryOwn, DEBUG)
     return CompareBody(numOwnUnits / cap, ratio, compareType)
 end
 
+
 function HaveUnitRatioVersusEnemy(aiBrain, ratio, categoryOwn, compareType, categoryEnemy, DEBUG)
+    -- in case we don't have omni view, expect the enemy has twice the amount of units then we have.
+    if GetGameTimeSeconds() > 120 and  (not aiBrain.CheatEnabled or ScenarioInfo.Options.OmniCheat ~= "on") then
+        --LOG('* HaveUnitRatioVersusEnemy: AI is not Cheating or Omni is Off')
+        return CompareBody( 1 / 2 , ratio, compareType)
+    end
+
     local testCatOwn = categoryOwn
     if type(testCatOwn) == 'string' then
         testCatOwn = ParseEntityCategory(testCatOwn)

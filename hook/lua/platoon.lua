@@ -1,10 +1,7 @@
--- hook for additional platoon functions
-local DebugNames = true -- Display Platoonnames over each unit (SetCustomname())
 
 local UUtils = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua')
 
 oldPlatoon = Platoon
-
 Platoon = Class(oldPlatoon) {
 
     -- overwriting original function until AIpatch is released
@@ -426,9 +423,6 @@ Platoon = Class(oldPlatoon) {
             self:PlatoonDisband()
             return
         end
-        if DebugNames and not eng.Dead then
-            eng:SetCustomName('A '..self.BuilderName)
-        end
         if cons.NearUnitCategory then
             self:SetPrioritizedTargetList('support', {ParseEntityCategory(cons.NearUnitCategory)})
             local unitNearBy = self:FindPrioritizedUnit('support', 'Ally', false, self:GetPlatoonPosition(), cons.NearUnitRadius or 50)
@@ -709,22 +703,37 @@ Platoon = Class(oldPlatoon) {
         end
         local platoonUnits = self:GetPlatoonUnits()
         local factionIndex = aiBrain:GetFactionIndex()
+        local FactionToIndex  = { UEF = 1, AEON = 2, CYBRAN = 3, SERAPHIM = 4, NOMADS = 5}
+        local UnitBeingUpgradeFactionIndex = nil
         local upgradeIssued = false
         self:Stop()
         for k, v in platoonUnits do
             local upgradeID
+            -- Get the factionindex from the unit to get the right update (in case we have captured this unit from another faction)
+            UnitBeingUpgradeFactionIndex = FactionToIndex[v.factionCategory] or factionIndex
+            
             if EntityCategoryContains(categories.MOBILE, v) then
-                upgradeID = aiBrain:FindUpgradeBP(v:GetUnitId(), UnitUpgradeTemplates[factionIndex])
+                upgradeID = aiBrain:FindUpgradeBP(v:GetUnitId(), UnitUpgradeTemplates[UnitBeingUpgradeFactionIndex])
+                -- if we can't find a UnitUpgradeTemplate for this unit, warn the programmer
+                if not upgradeID then
+                    -- Output: WARNING: [platoon.lua, line:xxx] *UnitUpgradeAI ERROR: Can\'t find UnitUpgradeTemplate for mobile unit: ABC1234
+                    WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI ERROR: Can\'t find UnitUpgradeTemplate for mobile unit: ' .. repr(v:GetUnitId()) )
+                end
             else
-                upgradeID = aiBrain:FindUpgradeBP(v:GetUnitId(), StructureUpgradeTemplates[factionIndex])
+                upgradeID = aiBrain:FindUpgradeBP(v:GetUnitId(), StructureUpgradeTemplates[UnitBeingUpgradeFactionIndex])
+                -- if we can't find a StructureUpgradeTemplate for this unit, warn the programmer
+                if not upgradeID then
+                    -- Output: WARNING: [platoon.lua, line:xxx] *UnitUpgradeAI ERROR: Can\'t find StructureUpgradeTemplate for structure: ABC1234
+                    WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI ERROR: Can\'t find StructureUpgradeTemplate for structure: ' .. repr(v:GetUnitId()) .. '  factionIndex: ' .. repr(factionIndex) )
+                end
             end
             if upgradeID and EntityCategoryContains(categories.STRUCTURE, v) and not v:CanBuild(upgradeID) then
+                -- in case the unit can't upgrade with StructureUpgradeTemplate, warn the programmer
+                -- Output: WARNING: [platoon.lua, line:xxx] *UnitUpgradeAI ERROR: Can\'t find StructureUpgradeTemplate for mobile unit: ABC1234
+                WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI ERROR: Can\'t upgrade structure with StructureUpgradeTemplate: ' .. repr(v:GetUnitId()) )
                 continue
             end
             if upgradeID then
-                if DebugNames and not v.Dead then
-                    v:SetCustomName('S '..self.BuilderName)
-                end
                 upgradeIssued = true
                 IssueUpgrade({v}, upgradeID)
             end
@@ -755,6 +764,7 @@ Platoon = Class(oldPlatoon) {
 
     InterceptorAIUveso = function(self)
         AIAttackUtils.GetMostRestrictiveLayer(self) -- this will set self.MovementLayer to the platoon
+        local aiBrain = self:GetBrain()
         -- Search all platoon units and activate Stealth and Cloak (mostly Modded units)
         local platoonUnits = self:GetPlatoonUnits()
         if platoonUnits and table.getn(platoonUnits) > 0 then
@@ -771,9 +781,6 @@ Platoon = Class(oldPlatoon) {
                 end
             end
         end
-        local aiBrain = self:GetBrain()
-        local target
-        local maxRadius = self.PlatoonData.SearchRadius or 100
         --LOG('* InterceptorAIUveso: self.PlatoonData.SearchRadius: '..maxRadius)
         local PrioritizedTargetList = {}
         if self.PlatoonData.PrioritizedCategories then
@@ -783,29 +790,40 @@ Platoon = Class(oldPlatoon) {
                 table.insert(PrioritizedTargetList, ParseEntityCategory(v))
             end
         end
-        local TargetSearchCategory = self.PlatoonData.TargetSearchCategory or 'ALLUNITS'
         self:SetPrioritizedTargetList('Attack', PrioritizedTargetList)
+        local target
+        local DistanceToTarget = 0
+        local IgnoreAntiAir = self.PlatoonData.IgnoreAntiAir
+        local maxRadius = self.PlatoonData.SearchRadius or 100
         local PlatoonPos = self:GetPlatoonPosition()
         local LastTargetPos = PlatoonPos
-        local DistanceToTarget = 0
-        local basePosition = aiBrain.BuilderManagers['MAIN'].Position
+        local basePosition
         if self.MovementLayer == 'Water' then
+            -- we could search for the nearest naval base here, but buildposition is almost at the same location
             basePosition = PlatoonPos
+        else
+            -- land and air units are assigned to mainbase
+            basePosition = aiBrain.BuilderManagers['MAIN'].Position
         end
-        local IgnoreAntiAir = self.PlatoonData.IgnoreAntiAir
+        local GetTargetsFromBase = self.PlatoonData.SearchRadius or true
+        local GetTargetsFrom = basePosition
+        local TargetSearchCategory = self.PlatoonData.TargetSearchCategory or 'ALLUNITS'
         while aiBrain:PlatoonExists(self) do
             if self:IsOpponentAIRunning() then
                 PlatoonPos = self:GetPlatoonPosition()
+                if not GetTargetsFromBase then
+                    GetTargetsFrom = PlatoonPos
+                end
                 if target and not target.Dead then
                     DistanceToTarget = VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, LastTargetPos[1] or 0, LastTargetPos[3] or 0)
                 end
                 -- only get a new target and make a move command if the target is dead or after 2 seconds
                 if DistanceToTarget < 20 or not target or target.Dead or LastTargetCheck + 1 < GetGameTimeSeconds() then
                     --LOG('* InterceptorAIUveso: Targetting...')
-                    target = AIUtils.AIFindNearestCategoryTargetInRange(aiBrain, self, 'Attack', basePosition, maxRadius, PrioritizedTargetList, TargetSearchCategory, aiBrain:GetCurrentEnemy() )
+                    target = AIUtils.AIFindNearestCategoryTargetInRange(aiBrain, self, 'Attack', GetTargetsFrom, maxRadius, PrioritizedTargetList, TargetSearchCategory, aiBrain:GetCurrentEnemy() )
                     if not target or target.Dead then
                         --LOG('* InterceptorAIUveso: No target found for focussed enemy. Searching for other enemies...')
-                        target = AIUtils.AIFindNearestCategoryTargetInRange(aiBrain, self, 'Attack', basePosition, maxRadius, PrioritizedTargetList, TargetSearchCategory, false )
+                        target = AIUtils.AIFindNearestCategoryTargetInRange(aiBrain, self, 'Attack', GetTargetsFrom, maxRadius, PrioritizedTargetList, TargetSearchCategory, false )
                     end
                     if target then
                         --LOG('* InterceptorAIUveso: Target!.')
@@ -853,6 +871,7 @@ Platoon = Class(oldPlatoon) {
         AIAttackUtils.GetMostRestrictiveLayer(self) -- this will set self.MovementLayer to the platoon
         -- Search all platoon units and activate Stealth and Cloak (mostly Modded units)
         local platoonUnits = self:GetPlatoonUnits()
+        local ExperimentalInPlatoon = false
         if platoonUnits and table.getn(platoonUnits) > 0 then
             for k, v in platoonUnits do
                 if not v.Dead then
@@ -864,6 +883,9 @@ Platoon = Class(oldPlatoon) {
                         --LOG('* AttackPrioritizedLandTargetsAIUveso: Switching RULEUTC_CloakToggle')
                         v:SetScriptBit('RULEUTC_CloakToggle', false)
                     end
+                end
+                if EntityCategoryContains(categories.EXPERIMENTAL, v) then
+                    ExperimentalInPlatoon = true
                 end
             end
         end
@@ -920,7 +942,7 @@ Platoon = Class(oldPlatoon) {
                             self:SimpleReturnToMainBase(basePosition)
                         else
                             --LOG('* AttackPrioritizedLandTargetsAIUveso: MoveToLocationInclTransport() AggressiveMove='..repr(bAggroMove)..'. DistanceToTarget:'..DistanceToTarget)
-                            self:MoveToLocationInclTransport(target, false, bAggroMove, WantsTransport, basePosition)
+                            self:MoveToLocationInclTransport(target, false, bAggroMove, WantsTransport, basePosition, ExperimentalInPlatoon)
                         end
                     else
                         -- we have no target return to main base
@@ -1032,7 +1054,7 @@ Platoon = Class(oldPlatoon) {
                                         PlatoonPosition = self:GetPlatoonPosition()
                                         dist = VDist2( path[i][1], path[i][3], PlatoonPosition[1], PlatoonPosition[3] )
                                         -- are we closer then 15 units from the next marker ? Then break and move to the next marker
-                                        if dist < 15 then
+                                        if dist < 25 then
                                             break
                                         end
                                         -- Do we move ?
@@ -1097,9 +1119,8 @@ Platoon = Class(oldPlatoon) {
             WaitSeconds(3)
         end
     end,
-    
-    
-    MoveToLocationInclTransport = function(self, target, TargetPosition, bAggroMove, WantsTransport, basePosition)
+
+    MoveToLocationInclTransport = function(self, target, TargetPosition, bAggroMove, WantsTransport, basePosition, ExperimentalInPlatoon)
         if not TargetPosition then
             TargetPosition = table.copy(target:GetPosition())
         end
@@ -1122,8 +1143,8 @@ Platoon = Class(oldPlatoon) {
             --LOG('* MoveToLocationInclTransport: No Path found. Transport needed!!')
         end
         -- use a transporter if we don't have a path, or if we want a transport
-        if (not path and reason ~= 'NoGraph') or WantsTransport then
-            --LOG('* MoveToLocationInclTransport: SendPlatoonWithTransportsNoCheck')
+        if not ExperimentalInPlatoon and ((not path and reason ~= 'NoGraph') or WantsTransport)  then
+            LOG('* MoveToLocationInclTransport: SendPlatoonWithTransportsNoCheck')
             usedTransports = AIAttackUtils.SendPlatoonWithTransportsNoCheck(aiBrain, self, TargetPosition, true, false)
         end
         -- if we don't got a transport, try to reach the destination by path or directly
@@ -1152,7 +1173,7 @@ Platoon = Class(oldPlatoon) {
                         PlatoonPosition = self:GetPlatoonPosition() or {0,0,0}
                         dist = VDist2( path[i][1], path[i][3], PlatoonPosition[1], PlatoonPosition[3] )
                         -- are we closer then 15 units from the next marker ? Then break and move to the next marker
-                        if dist < 15 then
+                        if dist < 25 then
                             break
                         end
                         -- Do we move ?
@@ -1170,7 +1191,7 @@ Platoon = Class(oldPlatoon) {
                         end
                         -- If we lose our target, stop moving to it.
                         if not target then
-                            LOG('* MoveToLocationInclTransport: Lost target while moving to Waypoint. '..repr(path[i]))
+                            --LOG('* MoveToLocationInclTransport: Lost target while moving to Waypoint. '..repr(path[i]))
                             self:Stop()
                             return
                         end
@@ -1190,15 +1211,17 @@ Platoon = Class(oldPlatoon) {
                         end
                     else
                         --LOG('* MoveToLocationInclTransport: CanPathTo() failed for '..repr(TargetPosition)..' forcing SendPlatoonWithTransportsNoCheck.')
-                        usedTransports = AIAttackUtils.SendPlatoonWithTransportsNoCheck(aiBrain, self, TargetPosition, true, false)
+                        if not ExperimentalInPlatoon then
+                            usedTransports = AIAttackUtils.SendPlatoonWithTransportsNoCheck(aiBrain, self, TargetPosition, true, false)
+                        end
                         if not usedTransports then
                             --LOG('* MoveToLocationInclTransport: CanPathTo() and SendPlatoonWithTransportsNoCheck failed. SimpleReturnToMainBase!')
                             local PlatoonPos = self:GetPlatoonPosition()
                             local DistanceToTarget = VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, TargetPosition[1] or 0, TargetPosition[3] or 0)
                             local DistanceToBase = VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, basePosition[1] or 0, basePosition[3] or 0)
-                            if DistanceToBase < DistanceToTarget or DistanceToTarget < 50 then
-                                --LOG('* MoveToLocationInclTransport: base is nearer then distance to target or distance to target under 50. Return To base')
-                                self:SimpleReturnToMainBase()
+                            if DistanceToBase < DistanceToTarget and DistanceToTarget > 50 then
+                                --LOG('* MoveToLocationInclTransport: base is nearer then distance to target and distance to target over 50. Return To base')
+                                self:SimpleReturnToMainBase(basePosition)
                             else
                                 --LOG('* MoveToLocationInclTransport: Direct move to Target')
                                 if bAggroMove then
@@ -1212,6 +1235,8 @@ Platoon = Class(oldPlatoon) {
                         end
 
                     end
+                else
+                    LOG('* MoveToLocationInclTransport: We have no path but reason is not "NoGraph". So why we dont get a path ??? reason: '..repr(reason))
                 end
             end
         else
@@ -1227,13 +1252,10 @@ Platoon = Class(oldPlatoon) {
         end
         local eng = self:GetPlatoonUnits()[1]
         if eng and not eng.Dead and eng.BuilderManagerData.EngineerManager then
-            --LOG('* TransferAIUveso: '..repr(self.BuilderName))
+            LOG('* TransferAIUveso: '..repr(self.BuilderName))
             eng.BuilderManagerData.EngineerManager:RemoveUnit(eng)
             --LOG('* TransferAIUveso: AddUnit units to - BuilderManagers: '..self.PlatoonData.MoveToLocationType..' - ' .. aiBrain.BuilderManagers[self.PlatoonData.MoveToLocationType].EngineerManager:GetNumCategoryUnits('Engineers', categories.ALLUNITS) )
             aiBrain.BuilderManagers[self.PlatoonData.MoveToLocationType].EngineerManager:AddUnit(eng, true)
-            if DebugNames then
-                eng:SetCustomName('AddUnit to '..self.PlatoonData.MoveToLocationType)
-            end
             -- Move the unit to the desired base after transfering BuilderManagers to the new LocationType
             local basePosition = aiBrain.BuilderManagers[self.PlatoonData.MoveToLocationType].Position
             --LOG('* TransferAIUveso: Moving transfer-units to - ' .. self.PlatoonData.MoveToLocationType)
@@ -1259,8 +1281,10 @@ Platoon = Class(oldPlatoon) {
     end,
 
     PlatoonMerger = function(self)
+        --LOG('* PlatoonMerger: called from Builder: '..(self.BuilderName or 'Unknown'))
         local aiBrain = self:GetBrain()
-        local PlatoonPlan = self.BuilderName
+        local PlatoonPlan = self.PlatoonData.AIPlan
+        --LOG('* PlatoonMerger: AIPlan: '..(PlatoonPlan or 'Unknown'))
         if not PlatoonPlan then
             return
         end
@@ -1374,33 +1398,12 @@ Platoon = Class(oldPlatoon) {
         if not nearestbase then
             return
         end
-
-        if DebugNames then
-            local platoonUnits = self:GetPlatoonUnits()
-            if platoonUnits and table.getn(platoonUnits) > 0 then
-                for k, v in platoonUnits do
-                    if not v.Dead then
-                        v:SetCustomName('U ForceReturnToNearestBaseAIUveso')
-                    end
-                end
-            end
-        end
         self:Stop()
-        self:MoveToLocationInclTransport(true, nearestbase.Pos, false, false, nearestbase.Pos)
+        self:MoveToLocationInclTransport(true, nearestbase.Pos, false, false, nearestbase.Pos, false)
         return
     end,
 
     ForceReturnToNavalBaseAIUveso = function(self, aiBrain, basePosition)
-        if DebugNames then
-            local platoonUnits = self:GetPlatoonUnits()
-            if platoonUnits and table.getn(platoonUnits) > 0 then
-                for k, v in platoonUnits do
-                    if not v.Dead then
-                        v:SetCustomName('U ForceReturnToNavalBaseAIUveso')
-                    end
-                end
-            end
-        end
         local path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, self.MovementLayer or 'Water' , self:GetPlatoonPosition(), basePosition, 1000, 512)
         -- clear commands, so we don't get stuck if we have an unreachable destination
         IssueClearCommands(self:GetPlatoonUnits())
@@ -1421,7 +1424,7 @@ Platoon = Class(oldPlatoon) {
                     PlatoonPosition = self:GetPlatoonPosition()
                     dist = VDist2( path[i][1], path[i][3], PlatoonPosition[1], PlatoonPosition[3] )
                     -- are we closer then 15 units from the next marker ? Then break and move to the next marker
-                    if dist < 15 then
+                    if dist < 25 then
                         break
                     end
                     -- Do we move ?
@@ -1479,40 +1482,57 @@ Platoon = Class(oldPlatoon) {
     NukePlatoonAI = function(self)
         local aiBrain = self:GetBrain()
         local mapSizeX, mapSizeZ = GetMapSize()
+        local platoonUnits = {}
+        local PlatoonUnitCount = 0
+        local AlphaStrike = false
+        local NukeReady = 0
+        local NukeBussy = {}
+        local NearTarget = 0
+        local Protected = 0
+        local EnemyUnits = {}
+        local EnemyAntiMissile = {}
+        local NukeTarget = {}
+        local LauncherPos = {}
+        local TargetsInNukeRange = {}
+        local AttackedEnemyPositions = {}
+        local NukeSiloAmmoCount = 0
+        local MissileCount = 0
         while aiBrain:PlatoonExists(self) do
             --LOG('* NukePlatoonAI: while PlatoonExists')
-            local platoonUnits = self:GetPlatoonUnits()
+            platoonUnits = self:GetPlatoonUnits()
+            PlatoonUnitCount = table.getn(platoonUnits) or 0
             -- If we launch a nuke with all nukelaunchers then we have an AlphaStrike
-            local AlphaStrike = true
-            local NukeReady = false
+            AlphaStrike = true
+            NukeReady = 0
+            MissileCount = 0
             for _, Launcher in platoonUnits do
                 -- Set the unit to automode
                 Launcher:SetAutoMode(true)
                 -- check if we have a nuke silo without a loaded nuke
                 --LOG('* NukePlatoonAI: Checking launcher for loaded nukes')
-                if Launcher:GetNukeSiloAmmoCount() <= 0 then
+                NukeSiloAmmoCount = Launcher:GetNukeSiloAmmoCount() or 0
+                MissileCount = MissileCount + NukeSiloAmmoCount
+                if NukeSiloAmmoCount <= 0 then
                     --LOG('* NukePlatoonAI: No nuke found!')
                     -- bad, at least one launcher has no nuke, so we can't do an AlphaStrike
                     AlphaStrike = false
                 end
                 -- check if we have a launcher wit a nuke
-                if Launcher:GetNukeSiloAmmoCount() >= 1 then
-                    NukeReady = true
+                if NukeSiloAmmoCount >= 1 then
+                    NukeReady = NukeReady + 1
                 end
             end
             if AlphaStrike then
                 LOG('* NukePlatoonAI: AlphaStrike')
             end
-            local NukeTarget
-            local LauncherPos
-            local TargetsInNukeRange
-            local AttackedEnemyPositions = {}
-            -- We have a nuke in every Nuke Launcher
-            if NukeReady then
-                LOG('* NukePlatoonAI: NukeReady!')
+            AttackedEnemyPositions = {}
+            -- We have a nuke in every Nuke Launcher. AlphaStrike!
+            EnemyAntiMissile = aiBrain:GetUnitsAroundPoint(categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * categories.TECH3, Vector(mapSizeX/2,0,mapSizeZ/2), mapSizeX+mapSizeZ, 'Enemy')
+            if NukeReady and AlphaStrike then
                 -- Get all enemy units on MAP
-                local EnemyUnits = aiBrain:GetUnitsAroundPoint(categories.STRUCTURE * categories.EXPERIMENTAL + categories.STRUCTURE * categories.TECH3 - categories.MASSEXTRACTION , Vector(mapSizeX/2,0,mapSizeZ/2), mapSizeX+mapSizeZ, 'Enemy')
-                local EnemyAntiMissile = aiBrain:GetUnitsAroundPoint(categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * categories.TECH3, Vector(mapSizeX/2,0,mapSizeZ/2), mapSizeX+mapSizeZ, 'Enemy')
+                EnemyUnits = aiBrain:GetUnitsAroundPoint(categories.STRUCTURE * categories.EXPERIMENTAL + categories.STRUCTURE * categories.TECH3 - categories.MASSEXTRACTION , Vector(mapSizeX/2,0,mapSizeZ/2), mapSizeX+mapSizeZ, 'Enemy')
+                NearTarget = 0
+                Protected = 0
                 -- Check 
                 for _, EnemyTarget in EnemyUnits do
                     -- get position of the possible next target
@@ -1526,6 +1546,7 @@ Platoon = Class(oldPlatoon) {
                         if VDist2(EnemyTargetPos[1],EnemyTargetPos[3],AttackedPosition[1],AttackedPosition[3]) < 40 then
                             --LOG('* NukePlatoonAI: Target to close to other target. Skiped')
                             ToClose = true
+                            NearTarget = NearTarget + 1
                             break -- break out of the AttackedEnemyPositions loop
                         end
                     end
@@ -1533,25 +1554,24 @@ Platoon = Class(oldPlatoon) {
                         continue -- Skip this enemytarget and check the next
                     end
                     -- loop over all Enemy anti nuke launchers.
-                    if not AlphaStrike then
-                        for _, AntiMissile in EnemyAntiMissile do
-                            -- get the location of AntiMissile
-                            local AntiMissilePos = AntiMissile:GetPosition() or {0,0,0}
-                            -- Check if our target is inside range of an antimissile
-                            if VDist2(EnemyTargetPos[1],EnemyTargetPos[3],AntiMissilePos[1],AntiMissilePos[3]) < 90 then
-                                --LOG('* NukePlatoonAI: Target in range of Nuke Anti Missile. Skiped')
-                                ToClose = true
-                                break -- break out of the AttackedEnemyPositions loop
-                            end
+                    for _, AntiMissile in EnemyAntiMissile do
+                        -- get the location of AntiMissile
+                        local AntiMissilePos = AntiMissile:GetPosition() or {0,0,0}
+                        -- Check if our target is inside range of an antimissile
+                        if VDist2(EnemyTargetPos[1],EnemyTargetPos[3],AntiMissilePos[1],AntiMissilePos[3]) < 90 then
+                            --LOG('* NukePlatoonAI: Target in range of Nuke Anti Missile. Skiped')
+                            ToClose = true
+                            Protected = Protected + 1
+                            break -- break out of the AttackedEnemyPositions loop
                         end
-                        if ToClose then
-                            continue -- Skip this enemytarget and check the next
-                        end
+                    end
+                    if ToClose then
+                        continue -- Skip this enemytarget and check the next
                     end
                     table.insert(AttackedEnemyPositions, EnemyTargetPos)
                 end
                 -- loop over target table as long as we have targets
-                local NukeBussy = {}
+                NukeBussy = {}
                 while table.getn(AttackedEnemyPositions) > 0 do
                     LOG('* NukePlatoonAI: table.getn(AttackedEnemyPositions) '..table.getn(AttackedEnemyPositions))
                     -- get a target and remove it from the target list
@@ -1582,13 +1602,91 @@ Platoon = Class(oldPlatoon) {
                         --LOG('* NukePlatoonAI: AATTAAACCCKKK!!!!')
                         IssueNuke({Launcher}, ActualTargetPos)
                         NukeBussy[Launcher] = true
+                        NukeReady = NukeReady - 1
                         break -- stop seraching for available launchers and check the next target
+                    end
+                    if table.getn(NukeBussy) >= PlatoonUnitCount then
+                        LOG('* NukePlatoonAI: All Launchers are bussy! Break!')
+                        break  -- stop seraching for targets, we don't hava a launcher ready.
                     end
                     WaitTicks(10)
                 end
             end
+            local count = 'PlatoonUnitCount: '..PlatoonUnitCount
+            local bussy = 'NukeBussy: '..PlatoonUnitCount - NukeReady
+            local ready = 'NukeReady: '..NukeReady
+            local missiles = 'Missiles: '..MissileCount
+            local enemy = table.getn(EnemyUnits) or 0
+            local target= 'EnemyCount: '..enemy..' - NearTarget: '..NearTarget..' - Protected: '..Protected
+            local all   = 'TargetCount: '..(enemy - NearTarget - Protected)
+            --LOG(count..' - '..bussy..' - '..ready..' - '..target..' - '..all )
+            local AntiMissileRanger = {}
+            --LOG('* NukePlatoonAI: MissileCount > table.getn(EnemyAntiMissile) * 8 ('..MissileCount..'>'..(table.getn(EnemyAntiMissile) * 8)..')')
+            if MissileCount > table.getn(EnemyAntiMissile) * 8 then
+                -- search for the less protected anti missile
+                for MissileIndex, AntiMissileSTART in EnemyAntiMissile do
+                    AntiMissileRanger[MissileIndex] = 0
+                    -- get the location of AntiMissile
+                    local AntiMissilePosSTART = AntiMissileSTART:GetPosition() or {0,0,0}
+                    for _, AntiMissileEND in EnemyAntiMissile do
+                        local AntiMissilePosEND = AntiMissileSTART:GetPosition() or {0,0,0}
+                        local dist = VDist2(AntiMissilePosSTART[1],AntiMissilePosSTART[3],AntiMissilePosEND[1],AntiMissilePosEND[3])
+                        AntiMissileRanger[MissileIndex] = AntiMissileRanger[MissileIndex] + dist
+                    end
+                end
+                -- get the Index for the least protected Antimisile
+                local HighestDistance = 0
+                local HighIndex = false
+                for MissileIndex, MissileRange in AntiMissileRanger do
+                    if MissileRange > HighestDistance then
+                        HighestDistance = MissileRange
+                        HighIndex = MissileIndex
+                    end
+                end
+                local EnemyTarget
+                local TargetPosition = false
+                if HighIndex and EnemyAntiMissile[HighIndex] and not EnemyAntiMissile[HighIndex].Dead then
+                    LOG('* NukePlatoonAI: Antimissile with highest dinstance to other antimisiiles has HighIndex= '..HighIndex)
+                    -- kill the launcher will all missiles we have
+                    EnemyTarget = EnemyAntiMissile[HighIndex]
+                    TargetPosition = EnemyTarget:GetPosition() or false
+                elseif EnemyAntiMissile[1] and not EnemyAntiMissile[1].Dead then
+                    LOG('* NukePlatoonAI: Targetting Antimissile[1]')
+                    EnemyTarget = EnemyAntiMissile[1]
+                    TargetPosition = EnemyTarget:GetPosition() or false
+                else
+                    LOG('* NukePlatoonAI: No Antimissile found. Waiting for Alpha Strike')
+--                    EnemyTarget = import('/lua/ai/aibehaviors.lua').GetHighestThreatClusterLocation(aiBrain, platoonUnits[1])
+                end
+                -- wait until the target is dead or all launchers empty
+                while TargetPosition do
+                    --LOG('* NukePlatoonAI: Armageddon Loop!')
+                    local missile = false
+                    for Index, Launcher in platoonUnits do
+                        --LOG('* NukePlatoonAI: Armageddon Fireing Nuke: '..repr(Index))
+                        if Launcher:GetNukeSiloAmmoCount() > 0 then
+                            if Launcher:GetNukeSiloAmmoCount() > 1 then
+                                missile = true
+                            end
+                            IssueNuke({Launcher}, TargetPosition)
+                            WaitTicks(30)
+                        end
+                    end
+                    --LOG('* NukePlatoonAI: Armageddon Loop! Nukes Fired')
+                    if not missile then
+                        LOG('* NukePlatoonAI: Armageddon - Nukes are empty')
+                        break -- break the "while true do" loop
+                    end
+                    if not EnemyTarget or EnemyTarget.Dead then
+                        LOG('* NukePlatoonAI: Armageddon - Target is dead')
+                        break -- break the "while true do" loop
+                    end
+                    --LOG('* NukePlatoonAI: Armageddon Loop! Waiting 3 sec')
+                    WaitTicks(30)
+                end
+            end
             WaitTicks(100)
-            -- The launcher will fire after "IssueNuke({Launcher}, ActualTargetPos)" until he is empty.
+            -- The launcher will fire after "IssueNuke({Launcher}, EnemyTarget)" until he is empty.
             -- But we only want a single launch, so we stop all launchers here.
             IssueClearCommands(platoonUnits)
             -- find dead units inside the platoon and disband if we find one

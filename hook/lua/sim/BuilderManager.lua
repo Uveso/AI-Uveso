@@ -52,10 +52,10 @@ BuilderManager = Class(OLDBuilderManager) {
         end
     end,
 
-    GetHighestBuilder = function(self,bType,params)
+    GetHighestBuilder = function(self,bType,factory)
         -- Only use this with AI-Uveso
         if not self.Brain.Uveso then
-            return OLDBuilderManager.GetHighestBuilder(self,bType,params)
+            return OLDBuilderManager.GetHighestBuilder(self,bType,factory)
         end
         if not self.BuilderData[bType] then
             error('*BUILDERMANAGER ERROR: Invalid builder type - ' .. bType)
@@ -67,11 +67,11 @@ BuilderManager = Class(OLDBuilderManager) {
         local found = false
         local possibleBuilders = {}
         for k,v in self.BuilderData[bType].Builders do
-            if v:GetPriority() >= 1 and self:BuilderParamCheck(v,params) and (not found or v:GetPriority() == found) and v:GetBuilderStatus() then
+            if v:GetPriority() >= 1 and self:BuilderParamCheck(v,factory) and (not found or v:GetPriority() == found) and v:GetBuilderStatus() then
                 if not self:IsPlattonBuildDelayed(v.DelayEqualBuildPlattons) then
                     found = v:GetPriority()
                     table.insert(possibleBuilders, k)
-                    if DebugNames and (string.find(v.BuilderName,'U1') or string.find(v.BuilderName,'U2') or string.find(v.BuilderName,'U3')) then
+                    if DebugNames then
                         --LOG('* AI DEBUG: GetHighestBuilder: Priority = '..found..' - possibleBuilders = '..repr(v.BuilderName))
                     end
                 end
@@ -82,7 +82,7 @@ BuilderManager = Class(OLDBuilderManager) {
         if found and found > 0 then
             local whichBuilder = Random(1,table.getn(possibleBuilders))
             -- DEBUG - Start
-            -- If we have a builder that is repeating (Happens when buildconditions are true, but the builder can't find something to build/assist etc.)
+            -- If we have a builder that is repeating (Happens when buildconditions are true, but the builder can't find anything to build/assist nor a build location)
             local BuilderName = self.BuilderData[bType].Builders[ possibleBuilders[whichBuilder] ].BuilderName
             if BuilderName ~= LastBuilder then
                 LastBuilder = BuilderName
@@ -97,7 +97,7 @@ BuilderManager = Class(OLDBuilderManager) {
                 end                
             end
             -- DEBUG - End
-            if DebugNames and (string.find(BuilderName,'U1') or string.find(BuilderName,'U2') or string.find(BuilderName,'U3')) then
+            if DebugNames then
                 LOG('* AI DEBUG: GetHighestBuilder: Priority = '..found..' - SelectedBuilder = '..repr(self.BuilderData[bType].Builders[ possibleBuilders[whichBuilder] ].BuilderName))
             end
             return self.BuilderData[bType].Builders[ possibleBuilders[whichBuilder] ]

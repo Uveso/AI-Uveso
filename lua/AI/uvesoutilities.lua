@@ -1,4 +1,3 @@
-local DebugNames = true
 
 function ExtractorPause(self, aiBrain, MassExtractorUnitList, ratio, techLevel)
     --LOG('------------------- ExtractorPause START ----------------- '..techLevel)
@@ -165,6 +164,7 @@ function UnitUpgrade(self, aiBrain, MassExtractorUnitList, ratio, techLevel, Uni
     local UnitBeingUpgradeFactionIndex = nil
     --LOG('* UnitUpgradeAIUveso: Searchig for Upgrade Building '..repr(self.BuilderName)..' in pool of units: '..table.getn(platoonUnits))
     for k, v in MassExtractorUnitList do
+        local TempID
         -- Check if we don't want to upgrade this unit
         if not v
             or v:BeenDestroyed()
@@ -191,12 +191,19 @@ function UnitUpgrade(self, aiBrain, MassExtractorUnitList, ratio, techLevel, Uni
             -- see if we can find a upgrade
             if EntityCategoryContains(categories.MOBILE, v) then
                 TempID = aiBrain:FindUpgradeBP(v:GetUnitId(), UnitUpgradeTemplates[UnitBeingUpgradeFactionIndex])
+                if not TempID then
+                    WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI ERROR: Can\'t find UnitUpgradeTemplate for mobile unit: ' .. repr(v:GetUnitId()) )
+                end
             else
                 TempID = aiBrain:FindUpgradeBP(v:GetUnitId(), StructureUpgradeTemplates[UnitBeingUpgradeFactionIndex])
+                if not TempID then
+                    WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI ERROR: Can\'t find StructureUpgradeTemplate for structure: ' .. repr(v:GetUnitId()) )
+                end
             end 
             -- Check if we can build the upgrade
-            if TempID and EntityCategoryContains(categories.STRUCTURE, v) and v:CanBuild(TempID) then
-                --LOG('* UnitUpgradeAIUveso: found free Building in DistanceToBase '..DistanceToBase..' ')
+            if TempID and EntityCategoryContains(categories.STRUCTURE, v) and not v:CanBuild(TempID) then
+                WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI ERROR: Can\'t upgrade structure with StructureUpgradeTemplate: ' .. repr(v:GetUnitId()) )
+            elseif TempID then
                 upgradeID = TempID
                 upgradeBuilding = v
                 LowestDistanceToBase = DistanceToBase
@@ -214,9 +221,6 @@ function UnitUpgrade(self, aiBrain, MassExtractorUnitList, ratio, techLevel, Uni
     -- Have we found a unit that can upgrade ?
     if upgradeID and upgradeBuilding then
         --LOG('* UnitUpgradeAIUveso: Upgrading Building in DistanceToBase '..(LowestDistanceToBase or 'Unknown ???')..' '..techLevel..' - UnitId '..upgradeBuilding:GetUnitId()..' - upgradeID '..upgradeID..'')
-        if DebugNames and not upgradeBuilding.Dead then
-           upgradeBuilding:SetCustomName('S '..self.BuilderName)
-        end
         IssueUpgrade({upgradeBuilding}, upgradeID)
         WaitTicks(1)
         return true
@@ -333,13 +337,11 @@ function ReclaimAIThread(self,aiBrain)
     local MassStorageRatio
     local EnergyStorageRatio
     local SelfPos
-    local SEARCHFOR
 
         while self and not self.Dead do
             SelfPos = self:GetPosition()
             MassStorageRatio = aiBrain:GetEconomyStoredRatio('MASS')
             EnergyStorageRatio = aiBrain:GetEconomyStoredRatio('ENERGY')
-            SEARCHFOR =""
             if (MassStorageRatio < 0.8 or EnergyStorageRatio < 0.1) then
                 --LOG('Searching for reclaimables')
                 local x1 = SelfPos[1]-scanrange
@@ -356,11 +358,6 @@ function ReclaimAIThread(self,aiBrain)
                 local NearestWreckPos = {}
                 local WreckDist = 0
                 local WrackCount = 0
-                if MassStorageRatio < EnergyStorageRatio then
-                    SEARCHFOR = 'M'
-                else
-                    SEARCHFOR = 'E'
-                end
                 if props and table.getn( props ) > 0 then
                     for _, p in props do
                         local WreckPos = p.CachePosition
@@ -399,16 +396,16 @@ function ReclaimAIThread(self,aiBrain)
                         end
                     end
                 end
+                if self.Dead then 
+                    return
+                end
                 if NearestWreckDist == -1 then
                     scanrange = math.floor(scanrange + 100)
                     if scanrange > 512 then -- 5 Km
                         IssueClearCommands({self})
-                        self.NAME = SEARCHFOR .. ' '
                         scanrange = 25
                         local HomeDist = VDist2(SelfPos[1], SelfPos[3], basePosition[1], basePosition[3])
                         if HomeDist > 50 then
-                            self.NAME = 'home'
-                            SetCollectorName(self)
                             --LOG('noop returning home')
                             StartMoveDestination(self, {basePosition[1], basePosition[2], basePosition[3]})
                         end
@@ -423,7 +420,7 @@ function ReclaimAIThread(self,aiBrain)
                     --LOG('Adapting scanrange to nearest Object:'..scanrange..'.')
                 end
                 scanKM = math.floor(10000/512*NearestWreckDist)
-                if NearestWreckDist > 20 then
+                if NearestWreckDist > 20 and not self.Dead then
                     --LOG('NearestWreck is > 20 away Distance:'..NearestWreckDist..'. Moving to Wreckage!')
                     if NearestWreckPos[1] < 0+21 then
                         NearestWreckPos[1] = 21
@@ -439,7 +436,6 @@ function ReclaimAIThread(self,aiBrain)
                     end
 
                     if self.lastXtarget == NearestWreckPos[1] and self.lastYtarget == NearestWreckPos[3] then
-                        self.NAME = 'blocked'
                         self.blocked = self.blocked + 1
                         if self.blocked > 10 then
                             self.blocked = 0
@@ -449,19 +445,16 @@ function ReclaimAIThread(self,aiBrain)
                         self.blocked = 0
                         self.lastXtarget = NearestWreckPos[1]
                         self.lastYtarget = NearestWreckPos[3]
-                        self.NAME = SEARCHFOR .. ' '..scanKM..'m'
-                        SetCollectorName(self)
                         StartMoveDestination(self, NearestWreckPos)
                     end
                 end 
                 WaitSeconds(1)
-                if self:IsUnitState("Moving") then
+                if not self.Dead and self:IsUnitState("Moving") then
                     --LOG('Moving to Wreckage.')
                     while self and not self:IsDead() and self:IsUnitState("Moving") do
                         WaitSeconds(1)
                     end
                     scanrange = 25
-                    self.NAME = SEARCHFOR .. ' patrol'
                 end
                 IssueClearCommands({self})
                 IssuePatrol({self}, self:GetPosition())
@@ -469,9 +462,7 @@ function ReclaimAIThread(self,aiBrain)
             else
                 --LOG('No reclaim, moving home')
                 local HomeDist = VDist2(SelfPos[1], SelfPos[3], basePosition[1], basePosition[3])
-                if HomeDist > 30 then
-                    self.NAME = 'home'
-                    SetCollectorName(self)
+                if HomeDist > 36 then
                     --LOG('full, moving home')
                     StartMoveDestination(self, {basePosition[1], basePosition[2], basePosition[3]})
                     WaitSeconds(1)
@@ -483,24 +474,14 @@ function ReclaimAIThread(self,aiBrain)
                             WaitSeconds(3)
                         end
                         IssueClearCommands({self})
-                        self.NAME = SEARCHFOR .. ' wait'
                         scanrange = 25
                     end
                 else
-                    self.NAME = 'wait'
                     return
                 end
             end
-            SetCollectorName(self)
             WaitSeconds(1)
         end
-end
-
-function SetCollectorName(self)
-    if self.NAME ~= self.LASTNAME then
-        self.LASTNAME = self.NAME
-        self:SetCustomName( self.NAME )
-    end   
 end
 
 function StartMoveDestination(self,destination)

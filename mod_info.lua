@@ -1,11 +1,11 @@
 name = "AI-Uveso"
-uid = "62e2j64a-AIUV-0090-89465-146as555a8u3"
-version = 9
+uid = "62e2j64a-AIUV-0100-89465-146as555a8u3"
+version = 10
 copyright = "Uveso 2017-2018"
 description = "(For FAF only)"
 author = "Uveso"
 url = ""
-icon = "/mods/AI-Uveso/bugfix.png"
+icon = "/mods/AI-Uveso/uveso.jpg"
 selectable = true
 enabled = true
 exclusive = false
