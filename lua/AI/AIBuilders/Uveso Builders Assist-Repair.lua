@@ -258,17 +258,16 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Assist PARA',
         PlatoonTemplate = 'EngineerAssist',
-        Priority = 810,
+        Priority = 1000,
         DelayEqualBuildPlattons = {'AssistParagon', 15},
-        InstanceCount = 3,
+        InstanceCount = 10,
         BuilderConditions = {
             -- When do we want to build this ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.75, 0.75 }}, -- Ratio from 0 to 1. (1=100%)
-            -- Do we need additional conditions to build it ?
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuilt', { 0, categories.STRUCTURE * categories.ECONOMIC * categories.EXPERIMENTAL }},
+            -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.25}}, -- Ratio from 0 to 1. (1=100%)
-            { EBC, 'GreaterThanEconTrend', { 7.0, 200.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.50}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'AssistParagon' }},
         },
@@ -286,17 +285,16 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 Assist PARA',
         PlatoonTemplate = 'T2EngineerAssist',
-        Priority = 810,
+        Priority = 1000,
         DelayEqualBuildPlattons = {'AssistParagon', 15},
         InstanceCount = 10,
         BuilderConditions = {
             -- When do we want to build this ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.75, 0.75 }}, -- Ratio from 0 to 1. (1=100%)
-            -- Do we need additional conditions to build it ?
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuilt', { 0, categories.STRUCTURE * categories.ECONOMIC * categories.EXPERIMENTAL }},
+            -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.25}}, -- Ratio from 0 to 1. (1=100%)
-            { EBC, 'GreaterThanEconTrend', { 7.0, 200.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.50}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'AssistParagon' }},
         },
@@ -314,17 +312,16 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Assist PARA',
         PlatoonTemplate = 'T3EngineerAssist',
-        Priority = 810,
+        Priority = 1000,
         DelayEqualBuildPlattons = {'AssistParagon', 15},
         InstanceCount = 10,
         BuilderConditions = {
             -- When do we want to build this ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.99, 0.99 }}, -- Ratio from 0 to 1. (1=100%)
-            -- Do we need additional conditions to build it ?
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuilt', { 0, categories.STRUCTURE * categories.ECONOMIC * categories.EXPERIMENTAL }},
+            -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.25}}, -- Ratio from 0 to 1. (1=100%)
-            { EBC, 'GreaterThanEconTrend', { 7.0, 200.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.50}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'AssistParagon' }},
         },
@@ -345,11 +342,11 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Assist PARA Turbo',
         PlatoonTemplate = 'EngineerAssist',
-        Priority = 900,
+        Priority = 1000,
         InstanceCount = 20,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.ECONOMIC * categories.EXPERIMENTAL }},
+            { UCBC, 'HasParagon', {} },
             -- Do we need additional conditions to build it ?
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuilt', { 0, categories.STRUCTURE * categories.ECONOMIC * categories.EXPERIMENTAL }},
             -- Have we the eco to build it ?
@@ -369,11 +366,11 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 Assist PARA Turbo',
         PlatoonTemplate = 'T2EngineerAssist',
-        Priority = 900,
+        Priority = 1000,
         InstanceCount = 10,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.ECONOMIC * categories.EXPERIMENTAL }},
+            { UCBC, 'HasParagon', {} },
             -- Do we need additional conditions to build it ?
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuilt', { 0, categories.STRUCTURE * categories.ECONOMIC * categories.EXPERIMENTAL }},
             -- Have we the eco to build it ?
@@ -393,11 +390,11 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Assist PARA Turbo',
         PlatoonTemplate = 'T3EngineerAssist',
-        Priority = 900,
+        Priority = 1000,
         InstanceCount = 3,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.ECONOMIC * categories.EXPERIMENTAL }},
+            { UCBC, 'HasParagon', {} },
             -- Do we need additional conditions to build it ?
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuilt', { 0, categories.STRUCTURE * categories.ECONOMIC * categories.EXPERIMENTAL }},
             -- Have we the eco to build it ?
@@ -421,7 +418,7 @@ BuilderGroup {
         BuilderName = 'U1 econ Finisher',
         PlatoonTemplate = 'EngineerBuilder',
         PlatoonAIPlan = 'ManagerEngineerFindUnfinished',
-        Priority = 990,
+        Priority = 1000,
         InstanceCount = 2,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -445,7 +442,7 @@ BuilderGroup {
         BuilderName = 'U2 econ Finisher',
         PlatoonTemplate = 'T2EngineerBuilder',
         PlatoonAIPlan = 'ManagerEngineerFindUnfinished',
-        Priority = 990,
+        Priority = 1000,
         InstanceCount = 2,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -469,7 +466,7 @@ BuilderGroup {
         BuilderName = 'U3 econ Finisher',
         PlatoonTemplate = 'T3EngineerBuilder',
         PlatoonAIPlan = 'ManagerEngineerFindUnfinished',
-        Priority = 990,
+        Priority = 1000,
         InstanceCount = 2,
         BuilderConditions = {
             -- When do we want to build this ?

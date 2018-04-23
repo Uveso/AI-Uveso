@@ -1,13 +1,9 @@
-
+-- hook until AI patch is out
 OLDBuilder = Builder
 
 Builder = Class(OLDBuilder) {
 
     Create = function(self, brain, data, locationType)
-        -- Only use this with AI-Uveso
-        if not brain.Uveso then
-            return OLDBuilder.Create(self, brain, data, locationType)
-        end
         # make sure the table of strings exist, they are required for the builder
         local verifyDictionary = { 'Priority', 'BuilderName' }
         for k,v in verifyDictionary do

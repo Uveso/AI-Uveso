@@ -1,4 +1,4 @@
-
+-- Hook until AI patch is out
 
 OLDAIBrain = AIBrain
 
@@ -26,6 +26,7 @@ AIBrain = Class(OLDAIBrain) {
                 AIUtils.SetupCheat(self, true)
                 ScenarioInfo.ArmySetup[self.Name].AIPersonality = string.sub(per, 1, cheatPos - 1)
             end
+            
             LOG('* OnCreateAI: AIPersonality: ('..per..')')
             if string.find(per, 'sorian') then
                 self.Sorian = true

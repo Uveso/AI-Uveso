@@ -1144,7 +1144,7 @@ Platoon = Class(oldPlatoon) {
         end
         -- use a transporter if we don't have a path, or if we want a transport
         if not ExperimentalInPlatoon and ((not path and reason ~= 'NoGraph') or WantsTransport)  then
-            LOG('* MoveToLocationInclTransport: SendPlatoonWithTransportsNoCheck')
+            --LOG('* MoveToLocationInclTransport: SendPlatoonWithTransportsNoCheck')
             usedTransports = AIAttackUtils.SendPlatoonWithTransportsNoCheck(aiBrain, self, TargetPosition, true, false)
         end
         -- if we don't got a transport, try to reach the destination by path or directly
@@ -1236,7 +1236,7 @@ Platoon = Class(oldPlatoon) {
 
                     end
                 else
-                    LOG('* MoveToLocationInclTransport: We have no path but reason is not "NoGraph". So why we dont get a path ??? reason: '..repr(reason))
+                    --LOG('* MoveToLocationInclTransport: We have no path but there is a Graph with markers. So why we don\'t get a path ??? (Island or threat too high?) - reason: '..repr(reason))
                 end
             end
         else
@@ -1252,7 +1252,7 @@ Platoon = Class(oldPlatoon) {
         end
         local eng = self:GetPlatoonUnits()[1]
         if eng and not eng.Dead and eng.BuilderManagerData.EngineerManager then
-            LOG('* TransferAIUveso: '..repr(self.BuilderName))
+            --LOG('* TransferAIUveso: '..repr(self.BuilderName))
             eng.BuilderManagerData.EngineerManager:RemoveUnit(eng)
             --LOG('* TransferAIUveso: AddUnit units to - BuilderManagers: '..self.PlatoonData.MoveToLocationType..' - ' .. aiBrain.BuilderManagers[self.PlatoonData.MoveToLocationType].EngineerManager:GetNumCategoryUnits('Engineers', categories.ALLUNITS) )
             aiBrain.BuilderManagers[self.PlatoonData.MoveToLocationType].EngineerManager:AddUnit(eng, true)
@@ -1478,7 +1478,6 @@ Platoon = Class(oldPlatoon) {
         end
     end,
 
-
     NukePlatoonAI = function(self)
         local aiBrain = self:GetBrain()
         local mapSizeX, mapSizeZ = GetMapSize()
@@ -1523,7 +1522,7 @@ Platoon = Class(oldPlatoon) {
                 end
             end
             if AlphaStrike then
-                LOG('* NukePlatoonAI: AlphaStrike')
+                --LOG('* NukePlatoonAI: AlphaStrike')
             end
             AttackedEnemyPositions = {}
             -- We have a nuke in every Nuke Launcher. AlphaStrike!
@@ -1573,7 +1572,7 @@ Platoon = Class(oldPlatoon) {
                 -- loop over target table as long as we have targets
                 NukeBussy = {}
                 while table.getn(AttackedEnemyPositions) > 0 do
-                    LOG('* NukePlatoonAI: table.getn(AttackedEnemyPositions) '..table.getn(AttackedEnemyPositions))
+                    --LOG('* NukePlatoonAI: table.getn(AttackedEnemyPositions) '..table.getn(AttackedEnemyPositions))
                     -- get a target and remove it from the target list
                     local ActualTargetPos = table.remove(AttackedEnemyPositions)
                     --LOG('* NukePlatoonAI: ActualTargetPos '..repr(ActualTargetPos))
@@ -1581,7 +1580,7 @@ Platoon = Class(oldPlatoon) {
                     for _, Launcher in platoonUnits do
                         -- check if the launcher has already launched a nuke
                         if NukeBussy[Launcher] then
-                            LOG('* NukePlatoonAI: NukeBussy. Skiped')
+                            --LOG('* NukePlatoonAI: NukeBussy. Skiped')
                             -- The luancher is bussy with launching missiles. Skip it.
                             continue
                         end
@@ -1606,7 +1605,7 @@ Platoon = Class(oldPlatoon) {
                         break -- stop seraching for available launchers and check the next target
                     end
                     if table.getn(NukeBussy) >= PlatoonUnitCount then
-                        LOG('* NukePlatoonAI: All Launchers are bussy! Break!')
+                        --LOG('* NukePlatoonAI: All Launchers are bussy! Break!')
                         break  -- stop seraching for targets, we don't hava a launcher ready.
                     end
                     WaitTicks(10)
@@ -1646,17 +1645,16 @@ Platoon = Class(oldPlatoon) {
                 local EnemyTarget
                 local TargetPosition = false
                 if HighIndex and EnemyAntiMissile[HighIndex] and not EnemyAntiMissile[HighIndex].Dead then
-                    LOG('* NukePlatoonAI: Antimissile with highest dinstance to other antimisiiles has HighIndex= '..HighIndex)
+                    --LOG('* NukePlatoonAI: Antimissile with highest dinstance to other antimisiiles has HighIndex= '..HighIndex)
                     -- kill the launcher will all missiles we have
                     EnemyTarget = EnemyAntiMissile[HighIndex]
                     TargetPosition = EnemyTarget:GetPosition() or false
                 elseif EnemyAntiMissile[1] and not EnemyAntiMissile[1].Dead then
-                    LOG('* NukePlatoonAI: Targetting Antimissile[1]')
+                    --LOG('* NukePlatoonAI: Targetting Antimissile[1]')
                     EnemyTarget = EnemyAntiMissile[1]
                     TargetPosition = EnemyTarget:GetPosition() or false
                 else
-                    LOG('* NukePlatoonAI: No Antimissile found. Waiting for Alpha Strike')
---                    EnemyTarget = import('/lua/ai/aibehaviors.lua').GetHighestThreatClusterLocation(aiBrain, platoonUnits[1])
+                    --LOG('* NukePlatoonAI: No Antimissile found. Waiting for Alpha Strike')
                 end
                 -- wait until the target is dead or all launchers empty
                 while TargetPosition do
@@ -1674,16 +1672,40 @@ Platoon = Class(oldPlatoon) {
                     end
                     --LOG('* NukePlatoonAI: Armageddon Loop! Nukes Fired')
                     if not missile then
-                        LOG('* NukePlatoonAI: Armageddon - Nukes are empty')
+                        --LOG('* NukePlatoonAI: Armageddon - Nukes are empty')
                         break -- break the "while true do" loop
                     end
                     if not EnemyTarget or EnemyTarget.Dead then
-                        LOG('* NukePlatoonAI: Armageddon - Target is dead')
+                        --LOG('* NukePlatoonAI: Armageddon - Target is dead')
                         break -- break the "while true do" loop
                     end
                     --LOG('* NukePlatoonAI: Armageddon Loop! Waiting 3 sec')
                     WaitTicks(30)
                 end
+            end
+            WaitTicks(10)
+            -- check if the enemy has more then 2 Anti Missiles, and if we have the eco to build nukes
+            if (table.getn(EnemyAntiMissile) > 2 or aiBrain:GetEconomyStoredRatio('ENERGY') < 0.5 or aiBrain:GetEconomyStoredRatio('MASS') < 0.5) and not aiBrain.HasParagon then
+                -- We don't want to attack. Save the eco and disable all launchers.
+                --LOG('* NukePlatoonAI: Too much Antimissiles or low mass/energy, deactivating all nuke launchers')
+                for k,Launcher in platoonUnits do
+                    -- Check if the launcher is active
+                    if not Launcher:IsPaused() then
+                        -- yes, its active. Disable it.
+                        Launcher:SetPaused( true )
+                    end
+                end
+            else
+                -- Enemy has less then 3 Anti Missiles. Activate all nukes!
+                --LOG('* NukePlatoonAI: Activating all nuke launchers')
+                for k,Launcher in platoonUnits do
+                    -- Check if the launcher is deactivated
+                    if Launcher:IsPaused() then
+                        -- yes, it's off. Turn it on.
+                        Launcher:SetPaused( false )
+                    end
+                end
+            
             end
             WaitTicks(100)
             -- The launcher will fire after "IssueNuke({Launcher}, EnemyTarget)" until he is empty.
@@ -1694,7 +1716,7 @@ Platoon = Class(oldPlatoon) {
                 if not Launcher or Launcher.Dead or Launcher:BeenDestroyed() then
                     -- We found a dead unit inside this platoon. Disband the platton; It will be reformed
                     self:PlatoonDisbandNoAssign()
-                    LOG('* NukePlatoonAI: PlatoonDisbandNoAssign')
+                    --LOG('* NukePlatoonAI: PlatoonDisbandNoAssign')
                     return
                 end
             end
@@ -1704,7 +1726,7 @@ Platoon = Class(oldPlatoon) {
     AntiNukePlatoonAI = function(self)
         local aiBrain = self:GetBrain()
         while aiBrain:PlatoonExists(self) do
-            LOG('* AntiNukePlatoonAI: PlatoonExists')
+            --LOG('* AntiNukePlatoonAI: PlatoonExists')
             local platoonUnits = self:GetPlatoonUnits()
             for _, unit in platoonUnits do
                 unit:SetAutoMode(true)
@@ -1715,7 +1737,7 @@ Platoon = Class(oldPlatoon) {
                 if not unit or unit.Dead or unit:BeenDestroyed() then
                     -- We found a dead unit inside this platoon. Disband the platton; It will be reformed
                     self:PlatoonDisbandNoAssign()
-                    LOG('* AntiNukePlatoonAI: PlatoonDisbandNoAssign')
+                    --LOG('* AntiNukePlatoonAI: PlatoonDisbandNoAssign')
                     return
                 end
             end

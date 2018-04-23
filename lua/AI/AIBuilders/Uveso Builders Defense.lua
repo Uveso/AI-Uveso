@@ -644,6 +644,36 @@ BuilderGroup {
             }
         }
     },
+    Builder {
+        BuilderName = 'U4 Satellite',
+        PlatoonTemplate = 'T3EngineerBuilder',
+        Priority = 875,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 3, categories.EXPERIMENTAL}},
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.00}}, -- Ratio from 0 to 1. (1=100%)
+            { IBC, 'BrainNotLowPowerMode', {} },
+            { IBC, 'BrainNotLowMassMode', {} },
+            { EBC, 'GreaterThanEconStorageRatio', { 0.80, 0.95 }}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 2.0, 300.0 } }, -- relative income
+            { EBC, 'GreaterThanEconEfficiencyOverTime', { 1.0, 1.0 }}, -- relative baseincome 0=bad, 1=ok, 2=full
+            -- Don't build it if...
+            { UCBC, 'CheckBuildPlattonDelay', { 'Artillery' }},
+            { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Construction = {
+                BuildClose = true,
+                BuildStructures = {
+                    'T4SatelliteExperimental',
+                },
+                Location = 'LocationType',
+            }
+        }
+    },
 }
 
 -- ===================================================-======================================================== --

@@ -9,8 +9,8 @@ local BaseMilitaryZone = math.max( mapSizeX-50, mapSizeZ-50 ) / 2 -- Half the ma
 local BasePanicZone = BaseMilitaryZone / 2
 BasePanicZone = math.max( 40, BasePanicZone )
 BasePanicZone = math.min( 120, BasePanicZone )
-LOG('* AI DEBUG: BasePanicZone= '..math.floor( BasePanicZone * 0.01953125 ) ..' Km - ('..BasePanicZone..' units)' )
-LOG('* AI DEBUG: BaseMilitaryZone= '..math.floor( BaseMilitaryZone * 0.01953125 )..' Km - ('..BaseMilitaryZone..' units)' )
+--LOG('* AI DEBUG: BasePanicZone= '..math.floor( BasePanicZone * 0.01953125 ) ..' Km - ('..BasePanicZone..' units)' )
+--LOG('* AI DEBUG: BaseMilitaryZone= '..math.floor( BaseMilitaryZone * 0.01953125 )..' Km - ('..BaseMilitaryZone..' units)' )
 
 -- ===================================================-======================================================== --
 -- ==                                        Build T1 T2 T3 Land                                             == --

@@ -70,6 +70,7 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         'Mobile Experimental Builder Uveso',
         'Economic Experimental Builder Uveso',
+        'Paragon Turbo Builder',
 
         -----------------------------------------------------------------------------
         -- ==== EXPERIMENTALS FORMER ==== --

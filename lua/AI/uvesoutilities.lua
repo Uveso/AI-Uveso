@@ -451,7 +451,7 @@ function ReclaimAIThread(self,aiBrain)
                 WaitSeconds(1)
                 if not self.Dead and self:IsUnitState("Moving") then
                     --LOG('Moving to Wreckage.')
-                    while self and not self:IsDead() and self:IsUnitState("Moving") do
+                    while self and not self.Dead and self:IsUnitState("Moving") do
                         WaitSeconds(1)
                     end
                     scanrange = 25
@@ -466,8 +466,8 @@ function ReclaimAIThread(self,aiBrain)
                     --LOG('full, moving home')
                     StartMoveDestination(self, {basePosition[1], basePosition[2], basePosition[3]})
                     WaitSeconds(1)
-                    if self:IsUnitState("Moving") then
-                        while self and not self:IsDead() and self:IsUnitState("Moving") and (MassStorageRatio == 1 or EnergyStorageRatio == 1) and HomeDist > 30 do
+                    if not self.Dead and self:IsUnitState("Moving") then
+                        while self and not self.Dead and self:IsUnitState("Moving") and (MassStorageRatio == 1 or EnergyStorageRatio == 1) and HomeDist > 30 do
                             MassStorageRatio = aiBrain:GetEconomyStoredRatio('MASS')
                             EnergyStorageRatio = aiBrain:GetEconomyStoredRatio('ENERGY')
                             HomeDist = VDist2(SelfPos[1], SelfPos[3], basePosition[1], basePosition[3])

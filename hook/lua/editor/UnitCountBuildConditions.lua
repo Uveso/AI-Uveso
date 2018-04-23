@@ -1,5 +1,6 @@
 -- hook for additional build conditions used from AIBuilders
 
+
 OLDExpansionBaseCheck = ExpansionBaseCheck
 function ExpansionBaseCheck(aiBrain)
     -- Only use this with AI-Uveso
@@ -13,6 +14,7 @@ end
 
 -- Uveso stuff
 
+--{ UCBC, 'ReturnTrue', {} },
 function ReturnTrue(aiBrain)
     LOG('** true')
     return true
@@ -561,7 +563,34 @@ function LessMassStorageMax(aiBrain, mStorage)
         return true
     end
     return false
-end-----------------------------------------------------------------------------------------------------------------------------------
+end
+
+-- { UCBC, 'NoParagon', {} },
+function NoParagon(aiBrain)
+    local paragons = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC, false)
+    local count = 0
+    for unitNum, unit in paragons do
+        if unit:GetFractionComplete() >= 1 then
+            count = count + 1
+        end
+    end
+    if count >= 1 then
+        aiBrain.HasParagon = true
+        return false
+    end
+    aiBrain.HasParagon = false
+    return true
+end
+
+-- { UCBC, 'HasParagon', {} },
+function HasParagon(aiBrain)
+    if aiBrain.HasParagon then
+        return true
+    end
+    return false
+end
+
+-----------------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------------
@@ -570,6 +599,9 @@ end-----------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------------
+
+
+
 
 local timedilatation = false
 function IsGameSimSpeedLow(aiBrain)

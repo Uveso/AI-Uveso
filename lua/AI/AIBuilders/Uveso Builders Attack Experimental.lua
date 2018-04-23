@@ -240,15 +240,13 @@ BuilderGroup {
         BuilderName = 'U3 Paragon 1st',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 1000,
-        DelayEqualBuildPlattons = {'Experimental', 15},
+        DelayEqualBuildPlattons = {'Paragon', 30},
         BuilderConditions = {
+            { UCBC, 'NoParagon', { } },
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
-            { UCBC, 'CheckBuildPlattonDelay', { 'Experimental' }},
-            { IBC, 'BrainNotLowPowerMode', {} },
-            { IBC, 'BrainNotLowMassMode', {} },
-            { EBC, 'GreaterThanEconStorageRatio', { 0.90, 0.90}}, -- Ratio from 0 to 1. (1=100%)
-            { EBC, 'GreaterThanEconTrend', { 6.0, 180.0 } }, -- relative income
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 2, categories.EXPERIMENTAL}},
+            { UCBC, 'CheckBuildPlattonDelay', { 'Paragon' }},
+            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.50}}, -- Ratio from 0 to 1. (1=100%)
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.EXPERIMENTAL}},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC}},
         },
@@ -259,7 +257,7 @@ BuilderGroup {
                 AdjacencyDistance = 80,
                 AvoidCategory = categories.ENERGYPRODUCTION * categories.EXPERIMENTAL,
                 maxUnits = 1,
-                maxRadius = 12,
+                maxRadius = 40,
                 BuildClose = false,
                 BuildStructures = {
                     'T4EconExperimental',
@@ -273,10 +271,10 @@ BuilderGroup {
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 1000,
         BuilderConditions = {
+            { UCBC, 'HasParagon', {} },
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 2, categories.EXPERIMENTAL}},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC }},
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC}},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC}},
         },
         BuilderType = 'Any',
@@ -286,7 +284,7 @@ BuilderGroup {
                 AdjacencyDistance = 80,
                 AvoidCategory = categories.ENERGYPRODUCTION * categories.EXPERIMENTAL,
                 maxUnits = 1,
-                maxRadius = 12,
+                maxRadius = 40,
                 BuildClose = false,
                 BuildStructures = {
                     'T4EconExperimental',
@@ -332,7 +330,7 @@ BuilderGroup {
         PlatoonTemplate = 'U4-ExperimentalInterceptor 1 1',
         --PlatoonAddPlans = {'NameUnitsSorian'},
         Priority = 1500,                                        -- Priority. 1000 is normal.
-        InstanceCount = 5,                                      -- Number of plattons that will be formed.
+        InstanceCount = 2,                                      -- Number of plattons that will be formed.
         FormRadius = 10000,
         BuilderData = {
             SearchRadius = BasePanicZone*2,                     -- Searchradius for new target.
@@ -360,7 +358,7 @@ BuilderGroup {
         --PlatoonAddPlans = {'NameUnitsSorian'},
         PlatoonTemplate = 'T4ExperimentalLandGroupUveso 2 2',
         Priority = 1500,                                        -- Priority. 1000 is normal.
-        InstanceCount = 2,                                      -- Number of plattons that will be formed.
+        InstanceCount = 1,                                      -- Number of plattons that will be formed.
         FormRadius = 10000,
         BuilderData = {
             SearchRadius = 10000,                                 -- Searchradius for new target.
@@ -382,7 +380,7 @@ BuilderGroup {
         --PlatoonAddPlans = {'NameUnitsSorian'},
         PlatoonTemplate = 'T4ExperimentalLandGroupUveso 2 2',
         Priority = 1500,                                        -- Priority. 1000 is normal.
-        InstanceCount = 2,                                      -- Number of plattons that will be formed.
+        InstanceCount = 1,                                      -- Number of plattons that will be formed.
         FormRadius = 10000,
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
@@ -409,7 +407,7 @@ BuilderGroup {
         --PlatoonAddPlans = {'NameUnitsSorian'},
         PlatoonTemplate = 'T4ExperimentalLandGroupUveso 2 2',
         Priority = 1500,                                        -- Priority. 1000 is normal.
-        InstanceCount = 15,                                      -- Number of plattons that will be formed.
+        InstanceCount = 1,                                      -- Number of plattons that will be formed.
         FormRadius = 10000,
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
@@ -438,7 +436,7 @@ BuilderGroup {
         PlatoonTemplate = 'U4-ExperimentalInterceptor 1 1',
         --PlatoonAddPlans = {'NameUnitsSorian'},
         Priority = 1500,                                        -- Priority. 1000 is normal.
-        InstanceCount = 5,                                      -- Number of plattons that will be formed.
+        InstanceCount = 1,                                      -- Number of plattons that will be formed.
         FormRadius = 10000,
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                    -- Searchradius for new target.
@@ -462,7 +460,7 @@ BuilderGroup {
         PlatoonTemplate = 'U4-ExperimentalInterceptor 1 1',
         --PlatoonAddPlans = {'NameUnitsSorian'},
         Priority = 1500,                                        -- Priority. 1000 is normal.
-        InstanceCount = 2,                                      -- Number of plattons that will be formed.
+        InstanceCount = 1,                                      -- Number of plattons that will be formed.
         FormRadius = 10000,
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.

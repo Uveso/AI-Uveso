@@ -13,15 +13,9 @@ function PlatoonGenerateSafePathTo(aiBrain, platoonLayer, start, destination, op
     optMaxMarkerDist = optMaxMarkerDist or 250
     optThreatWeight = optThreatWeight or 1
     local finalPath = {}
-    local testPath = false
-
-    --If it is a Sorian AI or Duncane AI and no water units.
-    if (aiBrain.Sorian or aiBrain.Duncan) and platoonLayer != "Water" then
-        testPath = true
-    end
 
     --If we are within 100 units of the destination, don't bother pathing. (Sorian and Duncan AI)
-    if testPath and (VDist2(start[1], start[3], destination[1], destination[3]) <= 100
+    if (aiBrain.Sorian or aiBrain.Duncan) and (VDist2(start[1], start[3], destination[1], destination[3]) <= 100
     or (testPathDist and VDist2Sq(start[1], start[3], destination[1], destination[3]) <= testPathDist)) then
         table.insert(finalPath, destination)
         return finalPath
@@ -29,7 +23,7 @@ function PlatoonGenerateSafePathTo(aiBrain, platoonLayer, start, destination, op
 
     --Get the closest path node at the platoon's position
     local startNode
-    if testPath then
+    if (aiBrain.Sorian or aiBrain.Duncan) then
         startNode = GetClosestPathNodeInRadiusByLayerSorian(location, destination, optMaxMarkerDist, platoonLayer)
     else
         startNode = GetClosestPathNodeInRadiusByLayer(location, optMaxMarkerDist, platoonLayer)
@@ -38,7 +32,7 @@ function PlatoonGenerateSafePathTo(aiBrain, platoonLayer, start, destination, op
 
     --Get the matching path node at the destiantion
     local endNode
-    if testPath then
+    if (aiBrain.Sorian or aiBrain.Duncan) then
     	endNode = GetClosestPathNodeInRadiusByLayerSorian(destination, destination, optMaxMarkerDist, platoonLayer)
     else
         endNode = GetClosestPathNodeInRadiusByGraph(destination, optMaxMarkerDist, startNode.graphName)
@@ -49,13 +43,13 @@ function PlatoonGenerateSafePathTo(aiBrain, platoonLayer, start, destination, op
     local path
     if aiBrain.Sorian or aiBrain.Duncan then
         -- Sorian and Duncans AI are using a strong modified pathfinding with path shortcuts, range checks and path caching for better performance.
-        path = GeneratePathSorian(aiBrain, startNode, endNode, ThreatTable[platoonLayer], optThreatWeight, destination, location, testPath)
+        path = GeneratePathSorian(aiBrain, startNode, endNode, ThreatTable[platoonLayer], optThreatWeight, destination, location)
     elseif aiBrain.Uveso then
         -- Uveso AI is using a optimized version of the original GeneratePath function with extended path caching.
-        path = GeneratePathUveso(aiBrain, startNode, endNode, ThreatTable[platoonLayer], optThreatWeight, destination, location, testPath)
+        path = GeneratePathUveso(aiBrain, startNode, endNode, ThreatTable[platoonLayer], optThreatWeight, destination, location)
     else
         -- The original AI is using the vanilla version of GeneratePath. No cache, ugly (AStarLoopBody) code, but reacts faster on new situations.
-        path = GeneratePath(aiBrain, startNode, endNode, ThreatTable[platoonLayer], optThreatWeight, destination, location, testPath)
+        path = GeneratePath(aiBrain, startNode, endNode, ThreatTable[platoonLayer], optThreatWeight, destination, location)
     end
     if not path then return false, 'NoPath' end
 
@@ -91,7 +85,6 @@ end
 
 OLDGetPathGraphs = GetPathGraphs
 function GetPathGraphs()
-    -- Only use this with AI-Uveso
     if ScenarioInfo.PathGraphs then
         return ScenarioInfo.PathGraphs
     else
@@ -111,7 +104,7 @@ function GetPathGraphs()
             --Create stuff if it doesn't exist
             ScenarioInfo.PathGraphs[gk] = ScenarioInfo.PathGraphs[gk] or {}
             ScenarioInfo.PathGraphs[gk][marker.graph] = ScenarioInfo.PathGraphs[gk][marker.graph] or {}
-            -- A Path Node without adjacentTo is useless. We can't build a path with it.
+            -- If the marker has no adjacentTo then don't use it. We can't build a path with this node.
             if not (marker.adjacentTo) then
                 LOG('*AI DEBUG: GetPathGraphs(): Path Node '..marker.name..' has no adjacentTo entry!')
                 continue

@@ -1,3 +1,4 @@
+-- hook until game patch is released
 
 OLDLeadTarget = LeadTarget
 function LeadTarget(platoon, target)

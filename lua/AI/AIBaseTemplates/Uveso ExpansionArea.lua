@@ -65,6 +65,7 @@ BaseBuilderTemplate {
         --'Mobile Experimental Builder Uveso',
         'Economic Experimental Builder Uveso',
         'ExperimentalAttackFormBuilders Uveso',
+        'Paragon Turbo Builder',
 
         -----------------------------------------------------------------------------
         -- ==== Structure Shield BUILDER ==== --

@@ -1,19 +1,21 @@
--- hook for additional attack functions used by platoons
+-- hook until AI patch
 OLDAIGetMarkerLocationsEx = AIGetMarkerLocationsEx
 function AIGetMarkerLocationsEx(aiBrain, markerType)
     local markerList = {}
     local markers = ScenarioUtils.GetMarkers()
-    markerList = GenerateMarkerList(markerList,markers,markerType)
-    LOG('AIGetMarkerLocationsEx: '..table.getn(markerList)..' markers for '..markerType)
-    -- If we have no Amphibious Path Nodes, generate them from Land and Water Nodes
-    if markerType == 'Amphibious Path Node' and table.getn(markerList) <= 0 then
-        markerList = GenerateAmphibiousMarkerList(markerList,markers,'Land Path Node')
-        markerList = GenerateAmphibiousMarkerList(markerList,markers,'Water Path Node')
-        LOG('AIGetMarkerLocationsEx: '..table.getn(markerList)..' markers for '..markerType..' (generated from Land/Water markers).')
-        -- Inject the new amphibious marker to the MasterChain
-        for k, v in markerList do
-            if v.type == 'Amphibious Path Node' then
-                Scenario.MasterChain._MASTERCHAIN_.Markers[v.name] = v
+    if markers then
+        markerList = GenerateMarkerList(markerList,markers,markerType)
+        LOG('AIGetMarkerLocationsEx '..table.getn(markerList)..' markers for '..markerType)
+        -- If we have no Amphibious Path Nodes, generate them from Land and Water Nodes
+        if markerType == 'Amphibious Path Node' and table.getn(markerList) <= 0 then
+            markerList = GenerateAmphibiousMarkerList(markerList,markers,'Land Path Node')
+            markerList = GenerateAmphibiousMarkerList(markerList,markers,'Water Path Node')
+            LOG('AIGetMarkerLocationsEx '..table.getn(markerList)..' markers for '..markerType..' (generated from Land/Water markers).')
+            -- Inject the new amphibious marker to the MasterChain
+            for k, v in markerList do
+                if v.type == 'Amphibious Path Node' then
+                    Scenario.MasterChain._MASTERCHAIN_.Markers[v.name] = v
+                end
             end
         end
     end
@@ -62,6 +64,7 @@ function GenerateAmphibiousMarkerList(markerList,markers,markerType)
     return markerList
 end
 
+-- hook until AI patch
 OLDAIFindBrainTargetInRange = AIFindBrainTargetInRange
 function AIFindBrainTargetInRange(aiBrain, platoon, squad, maxRange, atkPri, enemyBrain)
     -- Only use this with AI-Uveso
@@ -99,6 +102,7 @@ function AIFindBrainTargetInRange(aiBrain, platoon, squad, maxRange, atkPri, ene
     return false
 end
 
+-- Hook only for Uveso AI
 OLDEngineerMoveWithSafePath = EngineerMoveWithSafePath
 function EngineerMoveWithSafePath(aiBrain, unit, destination)
     -- Only use this with AI-Uveso
