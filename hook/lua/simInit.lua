@@ -179,33 +179,33 @@ function GraphRender()
                 DrawPathGraph('DefaultWater', false)
                 DrawPathGraph('DefaultAir', false)
             elseif GetGameTimeSeconds() < 20 then
-                DrawPathGraph('DefaultAmphibious', false)
-                DrawPathGraph('DefaultWater', false)
-                DrawPathGraph('DefaultAir', false)
+                --DrawPathGraph('DefaultAmphibious', false)
+                --DrawPathGraph('DefaultWater', false)
+                --DrawPathGraph('DefaultAir', false)
                 DrawPathGraph('DefaultLand', true)
             -- display amphibious nodes
             elseif GetGameTimeSeconds() < 25 then
-                DrawPathGraph('DefaultLand', false)
-                DrawPathGraph('DefaultWater', false)
-                DrawPathGraph('DefaultAir', false)
+                --DrawPathGraph('DefaultLand', false)
+                --DrawPathGraph('DefaultWater', false)
+                --DrawPathGraph('DefaultAir', false)
                 DrawPathGraph('DefaultAmphibious', true)
             -- water nodes
             elseif GetGameTimeSeconds() < 30 then
-                DrawPathGraph('DefaultLand', false)
-                DrawPathGraph('DefaultAmphibious', false)
-                DrawPathGraph('DefaultAir', false)
+                --DrawPathGraph('DefaultLand', false)
+                --DrawPathGraph('DefaultAmphibious', false)
+                --DrawPathGraph('DefaultAir', false)
                 DrawPathGraph('DefaultWater', true)
             -- air nodes
             elseif GetGameTimeSeconds() < 35 then
-                DrawPathGraph('DefaultLand', false)
-                DrawPathGraph('DefaultAmphibious', false)
-                DrawPathGraph('DefaultWater', false)
+                --DrawPathGraph('DefaultLand', false)
+                --DrawPathGraph('DefaultAmphibious', false)
+                --DrawPathGraph('DefaultWater', false)
                 DrawPathGraph('DefaultAir', true)
             elseif GetGameTimeSeconds() < 40 then
                 DrawPathGraph('DefaultLand', false)
                 DrawPathGraph('DefaultAmphibious', false)
                 DrawPathGraph('DefaultWater', false)
-                DrawPathGraph('DefaultAir', false)
+                --DrawPathGraph('DefaultAir', false)
             end
             -- Draw the radius of each base(manager)
             DrawBaseRanger()
@@ -236,7 +236,9 @@ function DrawBaseRanger()
     if Scenario.MasterChain._MASTERCHAIN_.BaseRanger then
         for Index, ArmyRanger in Scenario.MasterChain._MASTERCHAIN_.BaseRanger do
             for nodename, markerInfo in ArmyRanger do
+                -- Draw the inner circle black
                 DrawCircle(markerInfo.Pos, markerInfo.Rad-0.5, 'ff000000')
+                -- Draw the main circle white
                 DrawCircle(markerInfo.Pos, markerInfo.Rad, 'ffFFE0E0')
             end
         end

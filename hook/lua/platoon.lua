@@ -805,7 +805,7 @@ Platoon = Class(oldPlatoon) {
             -- land and air units are assigned to mainbase
             basePosition = aiBrain.BuilderManagers['MAIN'].Position
         end
-        local GetTargetsFromBase = self.PlatoonData.SearchRadius or true
+        local GetTargetsFromBase = self.PlatoonData.GetTargetsFromBase or true
         local GetTargetsFrom = basePosition
         local TargetSearchCategory = self.PlatoonData.TargetSearchCategory or 'ALLUNITS'
         while aiBrain:PlatoonExists(self) do
@@ -1173,7 +1173,7 @@ Platoon = Class(oldPlatoon) {
                         PlatoonPosition = self:GetPlatoonPosition() or {0,0,0}
                         dist = VDist2( path[i][1], path[i][3], PlatoonPosition[1], PlatoonPosition[3] )
                         -- are we closer then 15 units from the next marker ? Then break and move to the next marker
-                        if dist < 25 then
+                        if dist < 20 then
                             break
                         end
                         -- Do we move ?
@@ -1276,7 +1276,7 @@ Platoon = Class(oldPlatoon) {
                 break
             end
         end
-        UUtils.ReclaimAIThread(eng,aiBrain)
+        UUtils.ReclaimAIThread(self,eng,aiBrain)
         self:PlatoonDisband()
     end,
 
@@ -1376,7 +1376,7 @@ Platoon = Class(oldPlatoon) {
         if VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, basePosition[1] or 0, basePosition[3] or 0) > 40 then
             self:MoveToLocation(basePosition, false)
         end
-        self:PlatoonDisbandNoAssign()
+        self:PlatoonDisband()
     end,
 
     ForceReturnToNearestBaseAIUveso = function(self)
@@ -1384,10 +1384,15 @@ Platoon = Class(oldPlatoon) {
         if not platPos then
             return
         end
-
         local aiBrain = self:GetBrain()
         local nearestbase = false
         for k,v in aiBrain.BuilderManagers do
+            -- Check if we have a Naval Area
+            if string.find('Naval', v.FactoryManager.LocationType ) then
+                -- We can't return to a Naval Area with Land units. Skip this location
+                LOG('ForceReturnToNearestBaseAIUveso Can\'t return to a naval area: '..repr(v.FactoryManager.LocationType))
+                continue
+            end
             local dist = VDist2( platPos[1], platPos[3], v.FactoryManager.Location[1], v.FactoryManager.Location[3] )
             if not nearestbase or nearestbase.dist > dist then
                 nearestbase = {}
@@ -1400,6 +1405,8 @@ Platoon = Class(oldPlatoon) {
         end
         self:Stop()
         self:MoveToLocationInclTransport(true, nearestbase.Pos, false, false, nearestbase.Pos, false)
+        -- Disband the platoon so the locationmanager can assign a new task to the units.
+        self:PlatoonDisband()
         return
     end,
 
@@ -1466,6 +1473,7 @@ Platoon = Class(oldPlatoon) {
                 -- Wait some second, so all platoon units have time to reach the base.
                 WaitSeconds(5)
                 self:Stop()
+                -- Disband the platoon so the locationmanager can assign a new task to the units.
                 self:PlatoonDisband()
                 break
             end
@@ -1526,8 +1534,8 @@ Platoon = Class(oldPlatoon) {
             end
             AttackedEnemyPositions = {}
             -- We have a nuke in every Nuke Launcher. AlphaStrike!
-            EnemyAntiMissile = aiBrain:GetUnitsAroundPoint(categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * categories.TECH3, Vector(mapSizeX/2,0,mapSizeZ/2), mapSizeX+mapSizeZ, 'Enemy')
-            if NukeReady and AlphaStrike then
+            EnemyAntiMissile = aiBrain:GetUnitsAroundPoint(categories.STRUCTURE * (categories.DEFENSE * categories.ANTIMISSILE * categories.TECH3) + (categories.SHIELD * categories.EXPERIMENTAL), Vector(mapSizeX/2,0,mapSizeZ/2), mapSizeX+mapSizeZ, 'Enemy')
+            if AlphaStrike or MissileCount > 20 then
                 -- Get all enemy units on MAP
                 EnemyUnits = aiBrain:GetUnitsAroundPoint(categories.STRUCTURE * categories.EXPERIMENTAL + categories.STRUCTURE * categories.TECH3 - categories.MASSEXTRACTION , Vector(mapSizeX/2,0,mapSizeZ/2), mapSizeX+mapSizeZ, 'Enemy')
                 NearTarget = 0
@@ -1554,6 +1562,10 @@ Platoon = Class(oldPlatoon) {
                     end
                     -- loop over all Enemy anti nuke launchers.
                     for _, AntiMissile in EnemyAntiMissile do
+                        -- if the launcher is still in build, don't count it.
+                        if AntiMissile:GetFractionComplete() < 1 then
+                            continue
+                        end
                         -- get the location of AntiMissile
                         local AntiMissilePos = AntiMissile:GetPosition() or {0,0,0}
                         -- Check if our target is inside range of an antimissile
@@ -1570,9 +1582,10 @@ Platoon = Class(oldPlatoon) {
                     table.insert(AttackedEnemyPositions, EnemyTargetPos)
                 end
                 -- loop over target table as long as we have targets
+                LOG('* NukePlatoonAI: AlphaStrike')
                 NukeBussy = {}
                 while table.getn(AttackedEnemyPositions) > 0 do
-                    --LOG('* NukePlatoonAI: table.getn(AttackedEnemyPositions) '..table.getn(AttackedEnemyPositions))
+                    LOG('* NukePlatoonAI: table.getn(AttackedEnemyPositions) '..table.getn(AttackedEnemyPositions))
                     -- get a target and remove it from the target list
                     local ActualTargetPos = table.remove(AttackedEnemyPositions)
                     --LOG('* NukePlatoonAI: ActualTargetPos '..repr(ActualTargetPos))
@@ -1598,30 +1611,29 @@ Platoon = Class(oldPlatoon) {
                             continue
                         end
                         -- Attack the target
-                        --LOG('* NukePlatoonAI: AATTAAACCCKKK!!!!')
+                        LOG('* NukePlatoonAI: Attacking Enemy Position!')
                         IssueNuke({Launcher}, ActualTargetPos)
                         NukeBussy[Launcher] = true
                         NukeReady = NukeReady - 1
                         break -- stop seraching for available launchers and check the next target
                     end
                     if table.getn(NukeBussy) >= PlatoonUnitCount then
-                        --LOG('* NukePlatoonAI: All Launchers are bussy! Break!')
+                        LOG('* NukePlatoonAI: All Launchers are bussy! Break!')
                         break  -- stop seraching for targets, we don't hava a launcher ready.
                     end
                     WaitTicks(10)
                 end
-            end
-            local count = 'PlatoonUnitCount: '..PlatoonUnitCount
-            local bussy = 'NukeBussy: '..PlatoonUnitCount - NukeReady
-            local ready = 'NukeReady: '..NukeReady
-            local missiles = 'Missiles: '..MissileCount
-            local enemy = table.getn(EnemyUnits) or 0
-            local target= 'EnemyCount: '..enemy..' - NearTarget: '..NearTarget..' - Protected: '..Protected
-            local all   = 'TargetCount: '..(enemy - NearTarget - Protected)
-            --LOG(count..' - '..bussy..' - '..ready..' - '..target..' - '..all )
-            local AntiMissileRanger = {}
-            --LOG('* NukePlatoonAI: MissileCount > table.getn(EnemyAntiMissile) * 8 ('..MissileCount..'>'..(table.getn(EnemyAntiMissile) * 8)..')')
-            if MissileCount > table.getn(EnemyAntiMissile) * 8 then
+            elseif MissileCount > table.getn(EnemyAntiMissile) * 8 then
+                local count = 'PlatoonUnitCount: '..PlatoonUnitCount
+                local bussy = 'NukeBussy: '..PlatoonUnitCount - NukeReady
+                local ready = 'NukeReady: '..NukeReady
+                local missiles = 'Missiles: '..MissileCount
+                local enemy = table.getn(EnemyUnits) or 0
+                local target= 'EnemyCount: '..enemy..' - NearTarget: '..NearTarget..' - Protected: '..Protected
+                local all   = 'TargetCount: '..(enemy - NearTarget - Protected)
+                --LOG(count..' - '..bussy..' - '..ready..' - '..target..' - '..all )
+                local AntiMissileRanger = {}
+                --LOG('* NukePlatoonAI: MissileCount > table.getn(EnemyAntiMissile) * 8 ('..MissileCount..'>'..(table.getn(EnemyAntiMissile) * 8)..')')
                 -- search for the less protected anti missile
                 for MissileIndex, AntiMissileSTART in EnemyAntiMissile do
                     AntiMissileRanger[MissileIndex] = 0
@@ -1657,7 +1669,8 @@ Platoon = Class(oldPlatoon) {
                     --LOG('* NukePlatoonAI: No Antimissile found. Waiting for Alpha Strike')
                 end
                 -- wait until the target is dead or all launchers empty
-                while TargetPosition do
+                LOG('* NukePlatoonAI: Armageddon Loop!')
+                while EnemyTarget do
                     --LOG('* NukePlatoonAI: Armageddon Loop!')
                     local missile = false
                     for Index, Launcher in platoonUnits do
@@ -1667,20 +1680,24 @@ Platoon = Class(oldPlatoon) {
                                 missile = true
                             end
                             IssueNuke({Launcher}, TargetPosition)
-                            WaitTicks(30)
+                            WaitTicks(40)
+                        end
+                        if not EnemyTarget or EnemyTarget.Dead then
+                            LOG('* NukePlatoonAI: Armageddon - Target is dead inner loop')
+                            break -- break the "for Index, Launcher in platoonUnits do" loop
                         end
                     end
                     --LOG('* NukePlatoonAI: Armageddon Loop! Nukes Fired')
                     if not missile then
-                        --LOG('* NukePlatoonAI: Armageddon - Nukes are empty')
-                        break -- break the "while true do" loop
+                        LOG('* NukePlatoonAI: Armageddon - Nukes are empty')
+                        break -- break the "while EnemyTarget do" loop
                     end
                     if not EnemyTarget or EnemyTarget.Dead then
-                        --LOG('* NukePlatoonAI: Armageddon - Target is dead')
-                        break -- break the "while true do" loop
+                        LOG('* NukePlatoonAI: Armageddon - Target is dead outer loop')
+                        break -- break the "while EnemyTarget do" loop
                     end
-                    --LOG('* NukePlatoonAI: Armageddon Loop! Waiting 3 sec')
-                    WaitTicks(30)
+                    --LOG('* NukePlatoonAI: Armageddon Loop! Waiting 4 sec')
+                    WaitTicks(40)
                 end
             end
             WaitTicks(10)

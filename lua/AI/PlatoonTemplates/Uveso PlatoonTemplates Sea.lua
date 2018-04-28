@@ -1,6 +1,6 @@
 
 PlatoonTemplate {
-    Name = 'U123-AntiSubPanic 1 500',
+    Name = 'U123 Panic AntiSea 1 500',
     Plan = 'AttackPrioritizedSeaTargetsAIUveso',
     GlobalSquads = {
         { categories.MOBILE * categories.NAVAL - categories.EXPERIMENTAL - categories.CARRIER - categories.NUKE, 1, 500, 'Attack', 'none' }
@@ -14,24 +14,17 @@ PlatoonTemplate {
     },
 }
 PlatoonTemplate {
-    Name = 'U123 Enemy Sub 10 10',
+    Name = 'U123 Enemy AntiSea 10 10',
     Plan = 'AttackPrioritizedSeaTargetsAIUveso',
     GlobalSquads = {
-        { categories.MOBILE * categories.NAVAL  * categories.SUBMERSIBLE - categories.ENGINEER, 10, 10, 'Attack', 'none' }
-    }
-}
-PlatoonTemplate {
-    Name = 'U123 Enemy Ship 10 10',
-    Plan = 'AttackPrioritizedSeaTargetsAIUveso',
-    GlobalSquads = {
-        { categories.MOBILE * categories.NAVAL  - categories.SUBMERSIBLE - categories.ENGINEER, 10, 10, 'Attack', 'none' }
+        { categories.MOBILE * categories.NAVAL - categories.EXPERIMENTAL, 10, 10, 'Attack', 'none' }
     }
 }
 PlatoonTemplate {
     Name = 'U123 KILLALL 10 10',
     Plan = 'AttackPrioritizedSeaTargetsAIUveso',
     GlobalSquads = {
-        { categories.MOBILE * categories.NAVAL - categories.ENGINEER, 10, 10, 'Attack', 'none' }
+        { categories.MOBILE * categories.NAVAL, 10, 10, 'Attack', 'none' }
     }
 }
 

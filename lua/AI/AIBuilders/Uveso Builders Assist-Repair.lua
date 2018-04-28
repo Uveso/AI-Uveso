@@ -252,6 +252,34 @@ BuilderGroup {
             },
         }
     },
+    Builder {
+        BuilderName = 'U-T3 Assist Experimental force',
+        PlatoonTemplate = 'T3EngineerAssist',
+        Priority = 1000,
+        DelayEqualBuildPlattons = {'Assist Experimental', 5},
+        InstanceCount = 4,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.MOBILE * categories.EXPERIMENTAL, categories.CONSTRUCTION * categories.MOBILE }},
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.10}}, -- Ratio from 0 to 1. (1=100%)
+            -- Don't build it if...
+            { UCBC, 'CheckBuildPlattonDelay', { 'Assist Experimental' }},
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Assist = {
+                AssistLocation = 'LocationType',
+                AssisteeType = 'Engineer',
+                AssistRange = 80,
+                BeingBuiltCategories = {'EXPERIMENTAL MOBILE'},
+                Time = 60,
+            },
+        }
+    },
     -- ============ --
     --    Paragon   --
     -- ============ --
@@ -266,8 +294,8 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuilt', { 0, categories.STRUCTURE * categories.ECONOMIC * categories.EXPERIMENTAL }},
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.05}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'AssistParagon' }},
         },
@@ -293,8 +321,8 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuilt', { 0, categories.STRUCTURE * categories.ECONOMIC * categories.EXPERIMENTAL }},
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.05}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'AssistParagon' }},
         },
@@ -320,8 +348,8 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuilt', { 0, categories.STRUCTURE * categories.ECONOMIC * categories.EXPERIMENTAL }},
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.05}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'AssistParagon' }},
         },
@@ -367,7 +395,7 @@ BuilderGroup {
         BuilderName = 'U2 Assist PARA Turbo',
         PlatoonTemplate = 'T2EngineerAssist',
         Priority = 1000,
-        InstanceCount = 10,
+        InstanceCount = 20,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HasParagon', {} },
@@ -391,7 +419,7 @@ BuilderGroup {
         BuilderName = 'U3 Assist PARA Turbo',
         PlatoonTemplate = 'T3EngineerAssist',
         Priority = 1000,
-        InstanceCount = 3,
+        InstanceCount = 10,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HasParagon', {} },
@@ -415,11 +443,34 @@ BuilderGroup {
     --    Finisher     --
     -- =============== --
     Builder {
+        BuilderName = 'U1 econ Finisher Main',
+        PlatoonTemplate = 'EngineerBuilder',
+        PlatoonAIPlan = 'ManagerEngineerFindUnfinished',
+        Priority = 1000,
+        InstanceCount = 1,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'UnfinishedUnits', { 'LocationType', (categories.STRUCTURE - categories.MASSEXTRACTION) + categories.EXPERIMENTAL }},
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, 'ENGINEER TECH1' }},
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+        },
+        BuilderData = {
+            Assist = {
+                AssistLocation = 'LocationType',
+                BeingBuiltCategories = {'STRUCTURE'},
+            },
+        },
+        BuilderType = 'Any',
+    },
+    Builder {
         BuilderName = 'U1 econ Finisher',
         PlatoonTemplate = 'EngineerBuilder',
         PlatoonAIPlan = 'ManagerEngineerFindUnfinished',
         Priority = 1000,
-        InstanceCount = 2,
+        InstanceCount = 4,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'UnfinishedUnits', { 'LocationType', (categories.STRUCTURE - categories.MASSEXTRACTION) + categories.EXPERIMENTAL }},
@@ -427,7 +478,6 @@ BuilderGroup {
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, 'ENGINEER TECH1' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
         },
         BuilderData = {
@@ -443,7 +493,7 @@ BuilderGroup {
         PlatoonTemplate = 'T2EngineerBuilder',
         PlatoonAIPlan = 'ManagerEngineerFindUnfinished',
         Priority = 1000,
-        InstanceCount = 2,
+        InstanceCount = 4,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'UnfinishedUnits', { 'LocationType', (categories.STRUCTURE - categories.MASSEXTRACTION) + categories.EXPERIMENTAL }},
@@ -451,7 +501,6 @@ BuilderGroup {
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, 'ENGINEER TECH2' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
         },
         BuilderData = {
@@ -467,7 +516,7 @@ BuilderGroup {
         PlatoonTemplate = 'T3EngineerBuilder',
         PlatoonAIPlan = 'ManagerEngineerFindUnfinished',
         Priority = 1000,
-        InstanceCount = 2,
+        InstanceCount = 4,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'UnfinishedUnits', { 'LocationType', (categories.STRUCTURE - categories.MASSEXTRACTION) + categories.EXPERIMENTAL }},
@@ -475,7 +524,6 @@ BuilderGroup {
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, 'ENGINEER TECH3' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
         },
         BuilderData = {
@@ -496,7 +544,7 @@ BuilderGroup {
         Priority = 1000,
         InstanceCount = 2,
         BuilderConditions = {
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.25}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { UCBC, 'DamagedStructuresInArea', { 'LocationType', }},
             { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH1' }},
         },
@@ -512,7 +560,7 @@ BuilderGroup {
         Priority = 1000,
         InstanceCount = 2,
         BuilderConditions = {
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.25}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { UCBC, 'DamagedStructuresInArea', { 'LocationType', }},
             { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH2' }},
         },
@@ -525,6 +573,21 @@ BuilderGroup {
     --    Reclaim     --
     -- ============== --
     Builder {
+        BuilderName = 'U1 Reclaim always',
+        PlatoonTemplate = 'EngineerBuilder',
+        PlatoonAIPlan = 'ReclaimAIUveso',
+        Priority = 2095,
+        InstanceCount = 1,
+        BuilderConditions = {
+            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
+        },
+        BuilderData = {
+            LocationType = 'LocationType',
+            ReclaimTime = 30,
+        },
+        BuilderType = 'Any',
+    },
+    Builder {
         BuilderName = 'U1 Reclaim Auto MAIN',
         PlatoonTemplate = 'EngineerBuilder',
         PlatoonAIPlan = 'ReclaimAIUveso',
@@ -533,7 +596,7 @@ BuilderGroup {
         BuilderConditions = {
             { EBC, 'LessThanEconStorageRatio', { 0.80, 1.01}}, -- Ratio from 0 to 1. (1=100%)
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
-            { UCBC, 'EngineerManagerUnitsAtLocation', { 'MAIN', '>', 10,  'ENGINEER TECH1' } },
+            { UCBC, 'EngineerManagerUnitsAtLocation', { 'MAIN', '>', 8,  'ENGINEER TECH1' } },
         },
         BuilderData = {
             LocationType = 'LocationType',

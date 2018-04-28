@@ -22,27 +22,6 @@ PlatoonTemplate {
 
 -- Bomber
 PlatoonTemplate {
-    Name = 'U123 SingleBomber 1 1',
-    Plan = 'InterceptorAIUveso', -- is targetting in order from Platoondata.PrioritizedCategories.
-    GlobalSquads = {
-        { categories.MOBILE * categories.AIR * categories.BOMBER - categories.EXPERIMENTAL - categories.ANTINAVY, 1, 1, 'Attack', 'none' },
-    }
-}
-PlatoonTemplate {
-    Name = 'U123-GroundAttackBomberGrow 1 2',
-    Plan = 'InterceptorAIUveso', -- is targetting in order from Platoondata.PrioritizedCategories.
-    GlobalSquads = {
-        { categories.MOBILE * categories.AIR * categories.BOMBER - categories.EXPERIMENTAL - categories.ANTINAVY, 1, 2, 'Attack', 'none' },
-    }
-}
-PlatoonTemplate {
-    Name = 'U123-GroundAttackBomberGrow 2 5',
-    Plan = 'InterceptorAIUveso', -- is targetting in order from Platoondata.PrioritizedCategories.
-    GlobalSquads = {
-        { categories.MOBILE * categories.AIR * categories.BOMBER - categories.EXPERIMENTAL - categories.ANTINAVY, 2, 5, 'Attack', 'none' },
-    }
-}
-PlatoonTemplate {
     Name = 'U123-ExperimentalAttackBomberGrow 3 100',
     Plan = 'InterceptorAIUveso', -- is targetting in order from Platoondata.PrioritizedCategories.
     GlobalSquads = {
@@ -62,14 +41,14 @@ PlatoonTemplate {
     Name = 'U123-AntiAirPanic 1 500', 
     Plan = 'InterceptorAIUveso', -- is targetting in order from Platoondata.PrioritizedCategories.
     GlobalSquads = {
-        { categories.MOBILE * categories.AIR * categories.ANTIAIR, 1, 500, 'Attack', 'none' },
+        { categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.EXPERIMENTAL, 1, 500, 'Attack', 'none' },
     }
 }
 PlatoonTemplate {
     Name = 'U123-AntiGroundPanic 1 500', 
     Plan = 'InterceptorAIUveso', -- is targetting in order from Platoondata.PrioritizedCategories.
     GlobalSquads = {
-        { categories.MOBILE * categories.AIR * ( categories.GROUNDATTACK + categories.BOMBER ), 1, 500, 'Attack', 'none' },
+        { categories.MOBILE * categories.AIR * ( categories.GROUNDATTACK + categories.BOMBER ) - categories.EXPERIMENTAL, 1, 500, 'Attack', 'none' },
     }
 }
 PlatoonTemplate {
@@ -87,31 +66,10 @@ PlatoonTemplate {
     }
 }
 PlatoonTemplate {
-    Name = 'U123-AntiAirInterceptor 2 500', 
-    Plan = 'InterceptorAIUveso', -- is targetting in order from Platoondata.PrioritizedCategories.
-    GlobalSquads = {
-        { categories.MOBILE * categories.AIR * categories.ANTIAIR * categories.HIGHALTAIR - categories.EXPERIMENTAL - categories.ANTINAVY, 2, 500, 'Attack', 'none' },
-    }
-}
-PlatoonTemplate {
     Name = 'U123-TransportInterceptor 1 12', 
     Plan = 'InterceptorAIUveso', -- is targetting in order from Platoondata.PrioritizedCategories.
     GlobalSquads = {
         { categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.EXPERIMENTAL, 1, 12, 'Attack', 'none' },
-    }
-}
-PlatoonTemplate {
-    Name = 'U123-SingleGunshipInterceptor 1 1',
-    Plan = 'InterceptorAIUveso', -- is targetting in order from Platoondata.PrioritizedCategories.
-    GlobalSquads = {
-        { categories.MOBILE * categories.AIR * categories.GROUNDATTACK - categories.EXPERIMENTAL - categories.ANTINAVY , 1, 1, 'Attack', 'none' }
-    }
-}
-PlatoonTemplate {
-    Name = 'U123-GroundAttackGunshipGrow 1 2',
-    Plan = 'InterceptorAIUveso', -- is targetting in order from Platoondata.PrioritizedCategories.
-    GlobalSquads = {
-        { categories.MOBILE * categories.AIR * categories.GROUNDATTACK - categories.EXPERIMENTAL - categories.ANTINAVY , 1, 2, 'Attack', 'none' }
     }
 }
 PlatoonTemplate {

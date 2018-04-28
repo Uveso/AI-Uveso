@@ -11,7 +11,6 @@ BuilderGroup {
         Priority = 1200,
         InstanceCount = 2,
         BuilderConditions = {
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.00}}, -- Ratio from 0 to 1. (1=100%)
             { UCBC, 'ExpansionBaseCheck', { } },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.MASSEXTRACTION * categories.TECH2 } },
             { UCBC, 'StartLocationNeedsEngineer', { 'LocationType', 1000, -1000, 5, 0, 'StructuresNotMex' } },
@@ -35,10 +34,13 @@ BuilderGroup {
                 ThreatType = 'StructuresNotMex',
                 ExpansionRadius = 50,
                 BuildStructures = {
-                    'T1Radar',
+                    'T1GroundDefense',
                     'T1AADefense',
                     'T1LandFactory',
+                    'T1Radar',
                     'T1AirFactory',
+                    'T1AADefense',
+                    'T1GroundDefense',
                 }
             },
         }
@@ -49,7 +51,6 @@ BuilderGroup {
         Priority = 1200,
         InstanceCount = 2,
         BuilderConditions = {
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.00}}, -- Ratio from 0 to 1. (1=100%)
             { UCBC, 'ExpansionBaseCheck', { } },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.MASSEXTRACTION * categories.TECH2 } },
             { UCBC, 'ExpansionAreaNeedsEngineer', { 'LocationType', 1000, -1000, 0, 2, 'StructuresNotMex' } },
@@ -73,9 +74,10 @@ BuilderGroup {
                 ThreatType = 'StructuresNotMex',
                 ExpansionRadius = 50,
                 BuildStructures = {
-                    'T1Radar',
+                    'T1GroundDefense',
                     'T1AADefense',
                     'T1LandFactory',
+                    'T1Radar',
                     'T1AirFactory',
                 }
             },
@@ -84,11 +86,11 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Naval Builder',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 1000,
+        Priority = 1200,
         InstanceCount = 4,
         BuilderConditions = {
---            { UCBC, 'ExpansionBaseCheck', { } },
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 6, categories.MASSEXTRACTION } },
+            { UCBC, 'NavalBaseCheck', { } },
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.MASSEXTRACTION * categories.TECH2 } },
             { UCBC, 'NavalAreaNeedsEngineer', { 'LocationType', 250, -1000, 10, 1, 'AntiSurface' } },
             { UCBC, 'HaveUnitRatioVersusCap', { 0.35, '<=', categories.STRUCTURE - categories.MASSEXTRACTION } },
             { UCBC, 'HaveUnitRatioVersusCap', { 0.024, '<=', categories.STRUCTURE * categories.FACTORY * categories.LAND } }, -- Maximal 3 factories at 125 unitcap, 12 factories at 500 unitcap...
@@ -114,6 +116,7 @@ BuilderGroup {
                     'T1NavalDefense',
                     'T1AADefense',
                     'T1SeaFactory',
+                    'T1NavalDefense',
                     'T1NavalDefense',
                 }
             }

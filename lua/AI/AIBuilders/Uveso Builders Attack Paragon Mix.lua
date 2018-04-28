@@ -30,6 +30,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -59,6 +60,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -88,6 +90,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -117,6 +120,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -146,6 +150,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -168,7 +173,7 @@ BuilderGroup {
         BuilderName = 'Turbo U3 SML',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 1100,
-        InstanceCount = 1,
+        InstanceCount = 5,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HasParagon', {} },
@@ -177,6 +182,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -196,6 +202,7 @@ BuilderGroup {
         BuilderName = 'Turbo U3 Artillery',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 1100,
+        InstanceCount = 5,
         DelayEqualBuildPlattons = {'Artillery', 20},
         BuilderConditions = {
             -- When do we want to build this ?
@@ -205,6 +212,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -221,6 +229,7 @@ BuilderGroup {
         BuilderName = 'Turbo U3 RapidArtillery',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 1100,
+        InstanceCount = 5,
         DelayEqualBuildPlattons = {'Artillery', 20},
         BuilderConditions = {
             -- When do we want to build this ?
@@ -230,6 +239,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -246,6 +256,7 @@ BuilderGroup {
         BuilderName = 'Turbo U4 Artillery',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 1100,
+        InstanceCount = 5,
         DelayEqualBuildPlattons = {'Artillery', 20},
         BuilderConditions = {
             -- When do we want to build this ?
@@ -255,6 +266,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -271,6 +283,7 @@ BuilderGroup {
         BuilderName = 'Turbo U4 Satellite',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 1100,
+        InstanceCount = 5,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HasParagon', {} },
@@ -279,6 +292,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -291,4 +305,150 @@ BuilderGroup {
             }
         }
     },
+-- ===================================================-======================================================== --
+-- ==                                          Factory upgrader                                              == --
+-- ===================================================-======================================================== --
+    Builder {
+        BuilderName = 'Turbo U1 Land Factory UP',
+        PlatoonTemplate = 'T1LandFactoryUpgrade',
+        Priority = 3000,
+        InstanceCount = 5,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HasParagon', {} },
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.20}}, -- Ratio from 0 to 1. (1=100%)
+            -- Don't build it if...
+        },
+        BuilderType = 'Any',
+    },
+    Builder {
+        BuilderName = 'Turbo U1 Air Factory UP',
+        PlatoonTemplate = 'T1AirFactoryUpgrade',
+        Priority = 3000,
+        InstanceCount = 5,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HasParagon', {} },
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.20}}, -- Ratio from 0 to 1. (1=100%)
+            -- Don't build it if...
+        },
+        BuilderType = 'Any',
+    },
+    Builder {
+        BuilderName = 'Turbo U1 Naval Factory UP',
+        PlatoonTemplate = 'T1SeaFactoryUpgrade',
+        Priority = 3000,
+        InstanceCount = 5,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HasParagon', {} },
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.20}}, -- Ratio from 0 to 1. (1=100%)
+            -- Don't build it if...
+        },
+        BuilderType = 'Any',
+    },
+    Builder {
+        BuilderName = 'Turbo U2 Land Factory UP',
+        PlatoonTemplate = 'T2LandFactoryUpgrade',
+        Priority = 3000,
+        InstanceCount = 5,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HasParagon', {} },
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.20}}, -- Ratio from 0 to 1. (1=100%)
+            -- Don't build it if...
+        },
+        BuilderType = 'Any',
+    },
+    Builder {
+        BuilderName = 'Turbo U2 Air Factory UP',
+        PlatoonTemplate = 'T2AirFactoryUpgrade',
+        Priority = 3000,
+        InstanceCount = 5,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HasParagon', {} },
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.20}}, -- Ratio from 0 to 1. (1=100%)
+            -- Don't build it if...
+        },
+        BuilderType = 'Any',
+    },
+    Builder {
+        BuilderName = 'Turbo U2 Naval Factory UP',
+        PlatoonTemplate = 'T2SeaFactoryUpgrade',
+        Priority = 3000,
+        InstanceCount = 5,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HasParagon', {} },
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.20}}, -- Ratio from 0 to 1. (1=100%)
+            -- Don't build it if...
+        },
+        BuilderType = 'Any',
+    },
+-- ===================================================-======================================================== --
+-- ==                                          Assist everything                                             == --
+-- ===================================================-======================================================== --
+    Builder {
+        BuilderName = 'U1 Assist PARA Turbo',
+        PlatoonTemplate = 'EngineerAssist',
+        Priority = 1000,
+        InstanceCount = 20,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HasParagon', {} },
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuilt', { 0, categories.STRUCTURE + categories.EXPERIMENTAL }},
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Assist = {
+                AssistLocation = 'LocationType',
+                AssisteeType = 'Engineer',
+                AssistRange = 80,
+                BeingBuiltCategories = {'STRUCTURE, EXPERIMENTAL'},
+                Time = 60,
+            },
+        }
+    },
+    Builder {
+        BuilderName = 'U2 Assist PARA Turbo',
+        PlatoonTemplate = 'T2EngineerAssist',
+        Priority = 1000,
+        InstanceCount = 20,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HasParagon', {} },
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuilt', { 0, categories.STRUCTURE + categories.EXPERIMENTAL }},
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Assist = {
+                AssistLocation = 'LocationType',
+                AssisteeType = 'Engineer',
+                AssistRange = 80,
+                BeingBuiltCategories = {'STRUCTURE, EXPERIMENTAL'},
+                Time = 60,
+            },
+        }
+    },
+    
+
 }

@@ -6,6 +6,9 @@ local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 local MABC = '/lua/editor/MarkerBuildConditions.lua'
 local MIBC = '/lua/editor/MiscBuildConditions.lua'
 
+local MaxCapMass = 0.10 -- 10% of all units can be mass extractors (STRUCTURE * MASSEXTRACTION)
+local MaxCapStructure = 0.14 -- 14% of all units can be structures (STRUCTURE -MASSEXTRACTION -DEFENSE -FACTORY)
+
 -- ============================================================================================================ --
 -- ==                                     Build MassExtractors / Creators                                    == --
 -- ============================================================================================================ --
@@ -27,7 +30,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.03, '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -51,7 +54,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.03, '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -75,7 +78,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.06, '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -100,7 +103,7 @@ BuilderGroup {
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, 'ENGINEER TECH1' }},
             -- Have we the eco to build it ?
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.10, '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -125,7 +128,7 @@ BuilderGroup {
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, 'ENGINEER TECH1' }},
             -- Have we the eco to build it ?
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.14, '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -153,7 +156,7 @@ BuilderGroup {
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.14, '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -180,7 +183,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { -0.0, 0.10}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.14, '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -211,7 +214,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.75, 0.75}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, 'MASSFABRICATION' } },
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.14, '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
 
         },
         BuilderType = 'Any',
@@ -250,7 +253,7 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 0, categories.MASSEXTRACTION} },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconIncome',  { 2.0, 20.0}}, -- Absolut Base income
+            { EBC, 'GreaterThanEconIncome',  { 2.0, -0.0}}, -- Absolut Base income
             -- Don't build it if...
         },
         BuilderData = {
@@ -270,7 +273,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 4, categories.STRUCTURE * categories.FACTORY } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconIncome',  { 0.1, 20.0}}, -- Absolut Base income
+            { EBC, 'GreaterThanEconIncome',  { 0.1, -0.0}}, -- Absolut Base income
             -- Don't build it if...
         },
         BuilderData = {
@@ -300,7 +303,7 @@ BuilderGroup {
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1,  'MASSSTORAGE' }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 7, categories.STRUCTURE * categories.MASSSTORAGE }},
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.35, '<=', categories.STRUCTURE - categories.MASSEXTRACTION } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<=', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
             { UCBC, 'LessThanEconStorageCurrent', { 20000, 10000000 } },
         },
         InstanceCount = 1,
@@ -330,7 +333,7 @@ BuilderGroup {
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1,  'MASSSTORAGE' }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 7, categories.STRUCTURE * categories.MASSSTORAGE }},
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.35, '<=', categories.STRUCTURE - categories.MASSEXTRACTION } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<=', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
             { UCBC, 'LessThanEconStorageCurrent', { 20000, 10000000 } },
         },
         BuilderType = 'Any',

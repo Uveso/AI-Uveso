@@ -35,7 +35,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.25}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.3, 'MOBILE AIR', '<=', 'MOBILE AIR' } },
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
+            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.STRUCTURE *categories.FACTORY * categories.AIR * categories.TECH3 }},
         },
         BuilderType = 'Air',
@@ -55,7 +55,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.25}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.3, 'MOBILE AIR', '<=', 'MOBILE AIR' } },
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
+            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.STRUCTURE *categories.FACTORY * categories.AIR * categories.TECH3 }},
         },
         BuilderType = 'Air',
@@ -75,7 +75,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.25}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.3, 'MOBILE AIR', '<=', 'MOBILE AIR' } },
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
+            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.STRUCTURE *categories.FACTORY * categories.AIR * categories.TECH3 }},
             { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE AIR GROUNDATTACK', '<','MOBILE AIR HIGHALTAIR ANTIAIR' } },
         },
@@ -96,7 +96,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.25}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.3, 'MOBILE AIR', '<=', 'MOBILE AIR' } },
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
+            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.STRUCTURE *categories.FACTORY * categories.AIR * categories.TECH3 }},
             { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE AIR BOMBER', '<','MOBILE AIR HIGHALTAIR ANTIAIR' } },
         },
@@ -118,7 +118,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.25}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.3, 'MOBILE AIR', '<=', 'MOBILE AIR' } },
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
+            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.STRUCTURE *categories.FACTORY * categories.AIR * categories.TECH3 }},
             { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE AIR ANTIAIR BOMBER', '<','MOBILE AIR HIGHALTAIR ANTIAIR'} },
         },
@@ -139,7 +139,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.25}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.3, 'MOBILE AIR', '<=', 'MOBILE AIR' } },
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
+            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.STRUCTURE *categories.FACTORY * categories.AIR * categories.TECH3 }},
             { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE AIR GROUNDATTACK', '<','MOBILE AIR HIGHALTAIR ANTIAIR' } },
         },
@@ -159,7 +159,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.25}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, 'MOBILE NAVAL', '<=', 'NAVAL' } },
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
+            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE AIR ANTINAVY', '<','MOBILE AIR HIGHALTAIR ANTIAIR' } },
         },
         BuilderType = 'Air',
@@ -173,14 +173,11 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 20, categories.MOBILE * categories.AIR * categories.ANTINAVY * categories.TECH2 }},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 2, categories.MOBILE * categories.AIR  * categories.ANTINAVY }},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.LAND * categories.FACTORY * categories.TECH2 }},
+            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, 'MOBILE AIR ANTINAVY', '<=', 'NAVAL' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.25}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, 'MOBILE NAVAL', '<=', 'NAVAL' } },
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.STRUCTURE *categories.FACTORY * categories.AIR * categories.TECH3 }},
             { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE AIR ANTINAVY', '<','MOBILE AIR HIGHALTAIR ANTIAIR' } },
         },
         BuilderType = 'Air',
@@ -211,7 +208,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.25}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
+            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -227,7 +224,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.25}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
+            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -244,7 +241,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.25}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
+            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE AIR GROUNDATTACK', '<','MOBILE AIR HIGHALTAIR ANTIAIR' } },
         },
         BuilderType = 'Air',
@@ -262,7 +259,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.25}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
+            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE AIR GROUNDATTACK', '<','MOBILE AIR HIGHALTAIR ANTIAIR' } },
         },
         BuilderType = 'Air',
@@ -280,7 +277,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.25}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
+            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE AIR BOMBER', '<','MOBILE AIR HIGHALTAIR ANTIAIR' } },
         },
         BuilderType = 'Air',
@@ -298,7 +295,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.25}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
+            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE AIR ANTINAVY', '<','MOBILE AIR HIGHALTAIR ANTIAIR' } },
         },
         BuilderType = 'Air',
@@ -328,6 +325,7 @@ BuilderGroup {
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'Transporter' }},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.MOBILE * categories.AIR * categories.TRANSPORTFOCUS }},
+            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -348,6 +346,7 @@ BuilderGroup {
             { UCBC, 'CheckBuildPlattonDelay', { 'Transporter' }},
             { UCBC, 'HaveUnitRatioVersusEnemy', { 0.7, 'MOBILE AIR ANTIAIR', '>','MOBILE AIR' } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 4, categories.MOBILE * categories.AIR * categories.TRANSPORTFOCUS - categories.uea0203 }},
+            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -366,6 +365,7 @@ BuilderGroup {
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusEnemy', { 0.7, 'MOBILE AIR ANTIAIR', '>','MOBILE AIR' } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 4, categories.MOBILE * categories.AIR * categories.TRANSPORTFOCUS - categories.uea0203 }},
+            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -384,6 +384,7 @@ BuilderGroup {
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusEnemy', { 0.7, 'MOBILE AIR ANTIAIR', '>','MOBILE AIR' } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 4, categories.MOBILE * categories.AIR * categories.TRANSPORTFOCUS - categories.uea0203 }},
+            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -407,7 +408,7 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatioVersusEnemy', { 0.7, 'MOBILE AIR ANTIAIR', '>','MOBILE AIR' } },
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'TRANSPORTFOCUS TECH1' } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 6, categories.MOBILE * categories.AIR * categories.TRANSPORTFOCUS - categories.uea0203 }},
-            { UCBC, 'UnitCapCheckLess', { 0.90 } },
+            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -428,7 +429,7 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatioVersusEnemy', { 0.7, 'MOBILE AIR ANTIAIR', '>','MOBILE AIR' } },
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'TRANSPORTFOCUS TECH2' } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 6, categories.MOBILE * categories.AIR * categories.TRANSPORTFOCUS - categories.uea0203 }},
-            { UCBC, 'UnitCapCheckLess', { 0.90 } },
+            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -449,7 +450,7 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatioVersusEnemy', { 0.7, 'MOBILE AIR ANTIAIR', '>','MOBILE AIR' } },
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'TRANSPORTFOCUS TECH3' } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 6, categories.MOBILE * categories.AIR * categories.TRANSPORTFOCUS - categories.uea0203 }},
-            { UCBC, 'UnitCapCheckLess', { 0.90 } },
+            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -473,6 +474,7 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatioVersusEnemy', { 0.7, 'MOBILE AIR ANTIAIR', '>','MOBILE AIR' } },
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'TRANSPORTFOCUS TECH1' } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 12, categories.MOBILE * categories.AIR * categories.TRANSPORTFOCUS - categories.uea0203 }},
+            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -493,6 +495,7 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatioVersusEnemy', { 0.7, 'MOBILE AIR ANTIAIR', '>','MOBILE AIR' } },
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'TRANSPORTFOCUS TECH2' } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 12, categories.MOBILE * categories.AIR * categories.TRANSPORTFOCUS - categories.uea0203 }},
+            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -513,7 +516,7 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatioVersusEnemy', { 0.7, 'MOBILE AIR ANTIAIR', '>','MOBILE AIR' } },
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'TRANSPORTFOCUS TECH1' } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 12, categories.MOBILE * categories.AIR * categories.TRANSPORTFOCUS - categories.uea0203 }},
-            { UCBC, 'UnitCapCheckLess', { 0.90 } },
+            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -537,8 +540,9 @@ BuilderGroup {
             SearchRadius = BasePanicZone,                       -- Searchradius for new target.
             UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
             IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
-            TargetSearchCategory = 'MOBILE',                    -- Only find targets matching these categories.
+            TargetSearchCategory = 'MOBILE LAND, STRUCTURE',    -- Only find targets matching these categories.
             PrioritizedCategories = {
+                'MOBILE LAND EXPERIMENTAL',
                 'MOBILE LAND ANTIAIR',
                 'MOBILE LAND INDIRECTFIRE',
                 'MOBILE LAND DIRECTFIRE',
@@ -564,8 +568,10 @@ BuilderGroup {
             SearchRadius = BasePanicZone,                       -- Searchradius for new target.
             UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
             IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
-            TargetSearchCategory = 'MOBILE',                    -- Only find targets matching these categories.
+            TargetSearchCategory = 'MOBILE, STRUCTURE',         -- Only find targets matching these categories.
             PrioritizedCategories = {
+                'MOBILE AIR EXPERIMENTAL',
+                'MOBILE LAND EXPERIMENTAL',
                 'MOBILE AIR BOMBER',
                 'MOBILE AIR ANTIAIR',
                 'ALLUNITS',
@@ -621,7 +627,7 @@ BuilderGroup {
             SearchRadius = BaseMilitaryZone,                    -- Searchradius for new target.
             UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
             IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
-            TargetSearchCategory = 'MOBILE AIR',                -- Only find targets matching these categories.
+            TargetSearchCategory = 'MOBILE AIR TRANSPORTFOCUS', -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'MOBILE AIR TRANSPORTFOCUS',
                 'MOBILE AIR BOMBER',
@@ -649,8 +655,10 @@ BuilderGroup {
             SearchRadius = BaseMilitaryZone,                     -- Searchradius for new target.
             UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
             IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
-            TargetSearchCategory = 'MOBILE',                    -- Only find targets matching these categories.
+            TargetSearchCategory = 'STRUCTURE, MOBILE LAND',    -- Only find targets matching these categories.
             PrioritizedCategories = {
+                'STRUCTURE ANTIAIR',
+                'STRUCTURE',
                 'MOBILE LAND ANTIAIR',
                 'MOBILE LAND INDIRECTFIRE',
                 'MOBILE LAND DIRECTFIRE',
@@ -679,13 +687,14 @@ BuilderGroup {
             TargetSearchCategory = 'NAVAL',                     -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'NAVAL ANTIAIR',
+                'NAVAL DEFENSE',
                 'MOBILE NAVAL',
                 'STRUCTURE NAVAL',
             },
         },
         BuilderConditions = {                                   -- platoon will be formed if all conditions are true
             -- When do we want to build this ?
-            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 0, categories.MOBILE * categories.NAVAL }}, -- radius, LocationType, unitCount, categoryEnemy
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 0, categories.NAVAL }}, -- radius, LocationType, unitCount, categoryEnemy
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             -- Don't build it if...
@@ -708,6 +717,10 @@ BuilderGroup {
             UseMoveOrder = false,                               -- if true, the unit will first move to the targetposition and then attack it.
             TargetSearchCategory = 'MOBILE AIR',                -- Only find targets matching these categories.
             PrioritizedCategories = {
+                'MOBILE AIR TRANSPORTFOCUS',
+                'MOBILE AIR BOMBER',
+                'MOBILE AIR ANTIAIR',
+                'MOBILE AIR ANTIAIR HIGHALTAIR',
                 'ALLUNITS',
             },
         },
@@ -731,12 +744,13 @@ BuilderGroup {
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
             UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
             IgnoreAntiAir = 1,                                  -- Don't attack if we have more then x anti air buildings at target position.
-            TargetSearchCategory = 'STRUCTURE, MASSEXTRACTION', -- Only find targets matching these categories.
+            TargetSearchCategory = 'STRUCTURE, MOBILE LAND',    -- Only find targets matching these categories.
             PrioritizedCategories = {
-                'STRUCTURE DEFENSE ANTIMISSILE TECH3',
-                'STRUCTURE ARTILLERY',
-                'STRUCTURE NUKE',
-                'STRUCTURE ENERGYPRODUCTION',
+                'STRUCTURE ANTIAIR',
+                'STRUCTURE',
+                'MOBILE LAND ANTIAIR',
+                'MOBILE LAND INDIRECTFIRE',
+                'MOBILE LAND DIRECTFIRE',
                 'ALLUNITS',
             },
         },
@@ -760,12 +774,13 @@ BuilderGroup {
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
             UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
             IgnoreAntiAir = 1,                                  -- Don't attack if we have more then x anti air buildings at target position.
-            TargetSearchCategory = 'MOBILE, STRUCTURE',         -- Only find targets matching these categories.
+            TargetSearchCategory = 'STRUCTURE, MOBILE LAND',    -- Only find targets matching these categories.
             PrioritizedCategories = {
-                'STRUCTURE DEFENSE ANTIMISSILE TECH3',
-                'STRUCTURE ARTILLERY',
-                'STRUCTURE NUKE',
-                'STRUCTURE ENERGYPRODUCTION',
+                'STRUCTURE ANTIAIR',
+                'STRUCTURE',
+                'MOBILE LAND ANTIAIR',
+                'MOBILE LAND INDIRECTFIRE',
+                'MOBILE LAND DIRECTFIRE',
                 'ALLUNITS',
             },
         },
@@ -778,33 +793,6 @@ BuilderGroup {
         },
         BuilderType = 'Any',                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
-    -- ============= --
-    --    Special    --
-    -- ============= --
-
-    Builder {
-        BuilderName = 'U123 AntiTransport Intercept',           -- Random Builder Name.
-        PlatoonTemplate = 'U123-TransportInterceptor 1 12',     -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesAir.lua"
-        PlatoonAddBehaviors = { 'AirUnitRefit' },               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
-        Priority = 1800,                                        -- Priority. 1000 is normal.
-        InstanceCount = 1,                                      -- Number of plattons that will be formed.
-        BuilderData = {
-            SearchRadius = BaseMilitaryZone,                    -- Searchradius for new target.
-            UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
-            IgnoreAntiAir = 2,                                  -- Don't attack if we have more then x anti air buildings at target position.
-            TargetSearchCategory = 'MOBILE AIR',                -- Only find targets matching these categories.
-            PrioritizedCategories = {
-                'AIR TRANSPORTFOCUS',                           -- Only attack transporter. (Then return to base and disband.)
-                'MOBILE',
-                'ALLUNITS',
-            },
-        },
-        BuilderConditions = {                                   -- platoon will be formed if all conditions are true
-            -- true, if the enemy has more then 0 (at least 1) transporter.
-            { UCBC, 'UnitsGreaterAtEnemy', { 0 , 'MOBILE AIR TRANSPORTFOCUS' } }, 
-        },
-        BuilderType = 'Any',                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
-    },
     -- ====================== --
     --    AntiExperimental    --
     -- ====================== --
@@ -812,21 +800,20 @@ BuilderGroup {
         BuilderName = 'U123 AntiExperimental Interceptor Grow',
         PlatoonTemplate = 'U123-ExperimentalAttackInterceptorGrow 3 100',
         PlatoonAddBehaviors = { 'AirUnitRefit' },               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
-        Priority = 2000,                                         -- Priority. 1000 is normal.
+        Priority = 2000,                                        -- Priority. 1000 is normal.
         InstanceCount = 4,                                      -- Number of plattons that will be formed.
         BuilderData = {
-            SearchRadius = BaseMilitaryZone,                                 -- Searchradius for new target.
-            UseMoveOrder = false,                                -- If true, the unit will first move to the targetposition and then attack it.
-            IgnoreAntiAir = 3,                         -- Don't attack if we have more then x anti air buildings at target position.
-            TargetSearchCategory = 'MOBILE AIR',                -- Only find targets matching these categories.
+            SearchRadius = BaseMilitaryZone,                    -- Searchradius for new target.
+            UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
+            IgnoreAntiAir = 3,                                  -- Don't attack if we have more then x anti air buildings at target position.
+            TargetSearchCategory = 'MOBILE AIR EXPERIMENTAL',   -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'MOBILE AIR EXPERIMENTAL',
-                'MOBILE',
                 'ALLUNITS',
             },
         },
         BuilderConditions = {                                   -- platoon will be formed if all conditions are true
-            { UCBC, 'UnitsGreaterAtEnemy', { 0 , 'MOBILE AIR EXPERIMENTAL' } },
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 0, categories.MOBILE * categories.AIR  * categories.EXPERIMENTAL}}, -- radius, LocationType, unitCount, categoryEnemy
         },
         BuilderType = 'Any',                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
@@ -834,16 +821,16 @@ BuilderGroup {
         BuilderName = 'U123 AntiExperimental Bomber Grow',
         PlatoonTemplate = 'U123-ExperimentalAttackBomberGrow 3 100',
         PlatoonAddBehaviors = { 'AirUnitRefit' },               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
-        Priority = 2000,                                         -- Priority. 1000 is normal.
+        Priority = 2000,                                        -- Priority. 1000 is normal.
         InstanceCount = 4,                                      -- Number of plattons that will be formed.
         BuilderData = {
-            SearchRadius = BaseMilitaryZone,                                 -- Searchradius for new target.
-            UseMoveOrder = false,                                -- If true, the unit will first move to the targetposition and then attack it.
-            IgnoreAntiAir = 3,                         -- Don't attack if we have more then x anti air buildings at target position.
-            TargetSearchCategory = 'MOBILE LAND, STRUCTURE',                -- Only find targets matching these categories.
+            SearchRadius = BaseMilitaryZone,                    -- Searchradius for new target.
+            UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
+            IgnoreAntiAir = 3,                                  -- Don't attack if we have more then x anti air buildings at target position.
+            TargetSearchCategory = 'LAND EXPERIMENTAL',         -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'MOBILE LAND EXPERIMENTAL',
-                'MOBILE',
+                'STRUCTURE LAND EXPERIMENTAL',
                 'ALLUNITS',
             },
         },
@@ -856,18 +843,17 @@ BuilderGroup {
         BuilderName = 'U123 AntiExperimental Gunship Grow',
         PlatoonTemplate = 'U123-ExperimentalAttackGunshipGrow 3 100',
         PlatoonAddBehaviors = { 'AirUnitRefit' },               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
-        Priority = 2000,                                         -- Priority. 1000 is normal.
+        Priority = 2000,                                        -- Priority. 1000 is normal.
         InstanceCount = 4,                                      -- Number of plattons that will be formed.
         BuilderData = {
-            SearchRadius = BaseMilitaryZone,                                 -- Searchradius for new target.
-            UseMoveOrder = false,                                -- If true, the unit will first move to the targetposition and then attack it.
-            IgnoreAntiAir = 3,                         -- Don't attack if we have more then x anti air buildings at target position.
-            TargetSearchCategory = 'MOBILE, STRUCTURE',         -- Only find targets matching these categories.
+            SearchRadius = BaseMilitaryZone,                    -- Searchradius for new target.
+            UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
+            IgnoreAntiAir = 3,                                  -- Don't attack if we have more then x anti air buildings at target position.
+            TargetSearchCategory = 'EXPERIMENTAL',              -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'MOBILE AIR EXPERIMENTAL',
                 'MOBILE LAND EXPERIMENTAL',
-                'STRUCTURE',
-                'MOBILE',
+                'STRUCTURE LAND EXPERIMENTAL',
                 'ALLUNITS',
             },
         },
@@ -882,18 +868,19 @@ BuilderGroup {
     Builder {
         BuilderName = 'U12 UnitCap AntiAir',
         PlatoonTemplate = 'U12-AntiAirCap 1 500',
-        Priority = 1550,                                         -- Priority. 1000 is normal.
+        Priority = 1550,                                        -- Priority. 1000 is normal.
         InstanceCount = 4,                                      -- Number of plattons that will be formed.
         BuilderData = {
-            SearchRadius = 10000,                                 -- Searchradius for new target.
+            SearchRadius = 10000,                               -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
-            UseMoveOrder = false,                                -- If true, the unit will first move to the targetposition and then attack it.
-            IgnoreAntiAir = false,                         -- Don't attack if we have more then x anti air buildings at target position.
-            TargetSearchCategory = 'MOBILE AIR',              -- Only find targets matching these categories.
+            UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
+            IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
+            TargetSearchCategory = 'MOBILE AIR',                -- Only find targets matching these categories.
             PrioritizedCategories = {
-                'TECH1',
-                'TECH2',
+                'EXPERIMENTAL',
                 'TECH3',
+                'TECH2',
+                'TECH1',
                 'ALLUNITS',
             },
         },
@@ -906,18 +893,18 @@ BuilderGroup {
         BuilderName = 'U12 UnitCap AntiGround',
         PlatoonTemplate = 'U12-AntiGroundCap 1 500',
         Priority = 1550,                                        -- Priority. 1000 is normal.
-        InstanceCount = 20,                                      -- Number of plattons that will be formed.
+        InstanceCount = 20,                                     -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
-            UseMoveOrder = false,                                -- If true, the unit will first move to the targetposition and then attack it.
+            UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
             IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
-            TargetSearchCategory = 'MOBILE LAND, STRUCTURE',    -- Only find targets matching these categories.
+            TargetSearchCategory = 'STRUCTURE',                 -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'STRUCTURE DEFENSE ANTIMISSILE TECH3',
                 'STRUCTURE ARTILLERY',
                 'STRUCTURE NUKE',
-                'STRUCTURE ENERGYPRODUCTION',
+                'STRUCTURE ENERGYPRODUCTION TECH3',
                 'ALLUNITS',
             },
         },
@@ -941,9 +928,10 @@ BuilderGroup {
             IgnoreAntiAir = false,                         -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'MOBILE AIR',              -- Only find targets matching these categories.
             PrioritizedCategories = {
-                'TECH1',
-                'TECH2',
+                'EXPERIMENTAL',
                 'TECH3',
+                'TECH2',
+                'TECH1',
                 'ALLUNITS',
             },
         },
@@ -964,11 +952,10 @@ BuilderGroup {
             IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'MOBILE LAND, STRUCTURE',    -- Only find targets matching these categories.
             PrioritizedCategories = {
-                'EXPERIMENTAL',
-                'STRUCTURE ENERGYPRODUCTION',
+                'STRUCTURE DEFENSE ANTIMISSILE TECH3',
+                'STRUCTURE ARTILLERY',
                 'STRUCTURE NUKE',
-                'STRUCTURE SHIELD',
-                'STRUCTURE ENERGYPRODUCTION',
+                'STRUCTURE ENERGYPRODUCTION TECH3',
                 'ALLUNITS',
             },
         },
@@ -993,6 +980,11 @@ BuilderGroup {
             IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'MOBILE AIR',                -- Only find targets matching these categories.
             PrioritizedCategories = {
+                'MOBILE AIR EXPERIMENTAL',
+                'MOBILE AIR BOMBER',
+                'MOBILE AIR ANTIAIR HIGHALTAIR',
+                'MOBILE AIR ANTIAIR',
+                'MOBILE AIR TRANSPORTFOCUS',
                 'ALLUNITS',
             },
         },
@@ -1016,12 +1008,13 @@ BuilderGroup {
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
             UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
             IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
-            TargetSearchCategory = 'MOBILE LAND, STRUCTURE',    -- Only find targets matching these categories.
+            TargetSearchCategory = 'STRUCTURE, MOBILE LAND',    -- Only find targets matching these categories.
             PrioritizedCategories = {
+                'MOBILE LAND EXPERIMENTAL',
                 'STRUCTURE DEFENSE ANTIMISSILE TECH3',
                 'STRUCTURE ARTILLERY',
                 'STRUCTURE NUKE',
-                'STRUCTURE ENERGYPRODUCTION',
+                'STRUCTURE ENERGYPRODUCTION TECH3',
                 'ALLUNITS',
             },
         },
@@ -1045,7 +1038,7 @@ BuilderGroup {
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
             UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
             IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
-            TargetSearchCategory = 'MOBILE, STRUCTURE',         -- Only find targets matching these categories.
+            TargetSearchCategory = 'STRUCTURE NAVAL, MOBILE NAVAL',-- Only find targets matching these categories.
             PrioritizedCategories = {
                 'ALLUNITS',
             },

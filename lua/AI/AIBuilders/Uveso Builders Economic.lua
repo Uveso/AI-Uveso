@@ -99,9 +99,11 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.05}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'ENGINEER TECH1' } },
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.35, '<=', categories.STRUCTURE - categories.MASSEXTRACTION } }, -- if we can't build more structures, we dont need more engineers.
+            { UCBC, 'HaveUnitRatioVersusCap', { 0.12, '<=', categories.MOBILE * categories.ENGINEER } }, -- if we can't build more structures, we dont need more engineers.
         },
         BuilderType = 'All',
     },
@@ -130,9 +132,9 @@ BuilderGroup {
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.10}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.05}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.35, '<=', categories.STRUCTURE - categories.MASSEXTRACTION } }, -- if we can't build more structures, we dont need more engineers.
+            { UCBC, 'HaveUnitRatioVersusCap', { 0.12, '<=', categories.MOBILE * categories.ENGINEER } }, -- if we can't build more structures, we dont need more engineers.
         },
         BuilderType = 'All',
     },
@@ -161,9 +163,9 @@ BuilderGroup {
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.10}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.05}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.35, '<=', categories.STRUCTURE - categories.MASSEXTRACTION } }, -- if we can't build more structures, we dont need more engineers.
+            { UCBC, 'HaveUnitRatioVersusCap', { 0.12, '<=', categories.MOBILE * categories.ENGINEER } }, -- if we can't build more structures, we dont need more engineers.
         },
         BuilderType = 'All',
     },
@@ -184,7 +186,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconEfficiencyOverTime', { 1.0, 1.0} },
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.35, '<=', categories.STRUCTURE - categories.MASSEXTRACTION } }, -- if we can't build more structures, we dont need more engineers.
+            { UCBC, 'HaveUnitRatioVersusCap', { 0.12, '<=', categories.MOBILE * categories.ENGINEER } }, -- if we can't build more structures, we dont need more engineers.
         },
         BuilderType = 'Gate',
     },

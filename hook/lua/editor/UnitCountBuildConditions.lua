@@ -12,6 +12,17 @@ function ExpansionBaseCheck(aiBrain)
     return ExpansionBaseCount(aiBrain, '<', checkNum)
 end
 
+OLDNavalBaseCheck = NavalBaseCheck
+function NavalBaseCheck(aiBrain)
+    -- Only use this with AI-Uveso
+    if not aiBrain.Uveso then
+        return OLDNavalBaseCheck(aiBrain)
+    end
+    -- Removed automatic setting of naval-Expasions-allowed. We have a User-Option for this.
+    local checkNum = tonumber(ScenarioInfo.Options.NavalExpansionsAllowed) or 2
+    return NavalBaseCount(aiBrain, '<', checkNum)
+end
+
 -- Uveso stuff
 
 --{ UCBC, 'ReturnTrue', {} },
