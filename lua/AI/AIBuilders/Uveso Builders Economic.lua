@@ -6,6 +6,8 @@ local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 local MABC = '/lua/editor/MarkerBuildConditions.lua'
 local MIBC = '/lua/editor/MiscBuildConditions.lua'
 
+local MaxCapEngineers = 0.10 -- 10% of all units can be Engineers (categories.MOBILE * categories.ENGINEER)
+
 -- ===================================================-======================================================== --
 -- ==                                         Build Start Base                                               == --
 -- ===================================================-======================================================== --
@@ -82,9 +84,10 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'EngineerCapCheck', { 'LocationType', 'Tech1' } },
             -- Do we need additional conditions to build it ?
-            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'ENGINEER TECH1' } },
             -- Have we the eco to build it ?
             -- Don't build it if...
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'ENGINEER TECH1' } },
+            -- Respect UnitCap
          },
         BuilderType = 'All',
     },
@@ -95,15 +98,34 @@ BuilderGroup {
         Priority = 1100,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanIdleEngineers', { 4, 1 }}, -- count, tech (1=TECH1, 2=Tech2, 3=FieldTech, 4=TECH3, 5=SubCommander)
+            { UCBC, 'HaveLessThanIdleEngineers', { 3, 1 }}, -- count, tech (1=TECH1, 2=Tech2, 3=FieldTech, 4=TECH3, 5=SubCommander)
             -- Do we need additional conditions to build it ?
-            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.05}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'ENGINEER TECH1' } },
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.12, '<=', categories.MOBILE * categories.ENGINEER } }, -- if we can't build more structures, we dont need more engineers.
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers, '<=', categories.MOBILE * categories.ENGINEER } },
+        },
+        BuilderType = 'All',
+    },
+    Builder {
+        -- Build more engineers if we don't find idle engineers
+        BuilderName = 'U1 Engineer noIdle ecovampire',
+        PlatoonTemplate = 'T1BuildEngineer',
+        Priority = 1100,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanIdleEngineers', { 1, 1 }}, -- count, tech (1=TECH1, 2=Tech2, 3=FieldTech, 4=TECH3, 5=SubCommander)
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.05}}, -- Ratio from 0 to 1. (1=100%)
+            -- Don't build it if...
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 3, 'ENGINEER TECH1' } },
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers, '<=', categories.MOBILE * categories.ENGINEER } },
         },
         BuilderType = 'All',
     },
@@ -115,8 +137,14 @@ BuilderGroup {
         PlatoonTemplate = 'T2BuildEngineer',
         Priority = 1100,
         BuilderConditions = {
+            -- When do we want to build this ?
             { UCBC, 'EngineerCapCheck', { 'LocationType', 'Tech2' } },
-            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'ENGINEER TECH2' } },
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'ENGINEER TECH2' } },
+            -- Respect UnitCap
         },
         BuilderType = 'All',
     },
@@ -127,14 +155,16 @@ BuilderGroup {
         Priority = 1100,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanIdleEngineers', { 2, 2 }}, -- location, count, tech (1=TECH1, 2=Tech2, 3=FieldTech, 4=TECH3, 5=SubCommander)
+            { UCBC, 'HaveLessThanIdleEngineers', { 2, 2 }}, -- count, tech (1=TECH1, 2=Tech2, 3=FieldTech, 4=TECH3, 5=SubCommander)
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.05}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.12, '<=', categories.MOBILE * categories.ENGINEER } }, -- if we can't build more structures, we dont need more engineers.
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'ENGINEER TECH1' } },
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers, '<=', categories.MOBILE * categories.ENGINEER } },
         },
         BuilderType = 'All',
     },
@@ -146,8 +176,14 @@ BuilderGroup {
         PlatoonTemplate = 'T3BuildEngineer',
         Priority = 1100,
         BuilderConditions = {
+            -- When do we want to build this ?
             { UCBC, 'EngineerCapCheck', { 'LocationType', 'Tech3' } },
-            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'ENGINEER TECH3' } },
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'ENGINEER TECH3' } },
+            -- Respect UnitCap
         },
         BuilderType = 'All',
     },
@@ -158,14 +194,15 @@ BuilderGroup {
         Priority = 1100,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanIdleEngineers', { 3, 4 }}, -- location, count, tech (1=TECH1, 2=Tech2, 3=FieldTech, 4=TECH3, 5=SubCommander)
+            { UCBC, 'HaveLessThanIdleEngineers', { 1, 3 }}, -- count, tech (1=TECH1, 2=Tech2, 3=FieldTech, 4=TECH3, 5=SubCommander)
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.05}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.12, '<=', categories.MOBILE * categories.ENGINEER } }, -- if we can't build more structures, we dont need more engineers.
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers, '<=', categories.MOBILE * categories.ENGINEER } },
         },
         BuilderType = 'All',
     },
@@ -181,12 +218,11 @@ BuilderGroup {
             { UCBC, 'EngineerCapCheck', { 'LocationType', 'SCU' } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
-            { IBC, 'BrainNotLowPowerMode', {} },
-            { IBC, 'BrainNotLowMassMode', {} },
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconEfficiencyOverTime', { 1.0, 1.0} },
+            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.05}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.12, '<=', categories.MOBILE * categories.ENGINEER } }, -- if we can't build more structures, we dont need more engineers.
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers, '<=', categories.MOBILE * categories.ENGINEER } },
         },
         BuilderType = 'Gate',
     },
@@ -204,11 +240,11 @@ BuilderGroup {
         BuilderName = 'U1 Engi Trans to MainBase',
         PlatoonTemplate = 'U1EngineerTransfer',
         Priority = 500,
-        InstanceCount = 5,
+        InstanceCount = 1,
         BuilderConditions = {
-            { UCBC, 'GreaterThanGameTimeSeconds', { 60*20 } },
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60*30 } },
             { UCBC, 'BuildNotOnLocation', { 'LocationType', 'MAIN' } },
-            { UCBC, 'EngineerManagerUnitsAtLocation', { 'LocationType', '>', 3,  'MOBILE TECH1' } },
+            { UCBC, 'EngineerManagerUnitsAtLocation', { 'LocationType', '>', 2,  'MOBILE TECH1' } },
         },
         BuilderData = {
             MoveToLocationType = 'MAIN',
@@ -219,9 +255,9 @@ BuilderGroup {
         BuilderName = 'U2 Engi Trans to MainBase',
         PlatoonTemplate = 'U2EngineerTransfer',
         Priority = 500,
-        InstanceCount = 5,
+        InstanceCount = 1,
         BuilderConditions = {
-            { UCBC, 'GreaterThanGameTimeSeconds', { 60*20 } },
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60*30 } },
             { UCBC, 'BuildNotOnLocation', { 'LocationType', 'MAIN' } },
             { UCBC, 'EngineerManagerUnitsAtLocation', { 'LocationType', '>', 2,  'MOBILE TECH2' } },
         },
@@ -234,9 +270,9 @@ BuilderGroup {
         BuilderName = 'U3 Engi Trans to MainBase',
         PlatoonTemplate = 'U3EngineerTransfer',
         Priority = 500,
-        InstanceCount = 10,
+        InstanceCount = 1,
         BuilderConditions = {
-            { UCBC, 'GreaterThanGameTimeSeconds', { 60*20 } },
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60*30 } },
             { UCBC, 'BuildNotOnLocation', { 'LocationType', 'MAIN' } },
             { UCBC, 'EngineerManagerUnitsAtLocation', { 'LocationType', '>', 2,  'MOBILE TECH3' } },
         },

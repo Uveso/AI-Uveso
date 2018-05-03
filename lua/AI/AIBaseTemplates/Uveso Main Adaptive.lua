@@ -167,13 +167,13 @@ BaseBuilderTemplate {
         FactoryCount = {
             Land = 5,
             Air = 5,
-            Sea = 2,
+            Sea = 3,
             Gate = 1,
         },
         EngineerCount = {
-            Tech1 = 10,
-            Tech2 = 2,
-            Tech3 = 4,
+            Tech1 = 6,
+            Tech2 = 3,
+            Tech3 = 3,
             SCU = 1,
         },
         MassToFactoryValues = {

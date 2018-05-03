@@ -120,7 +120,7 @@ function LocationRangeManagerThread(aiBrain)
             end
         end
         -- watching the unit Cap for AI balance.
---        unitcounterdelayer = unitcounterdelayer + 1
+        unitcounterdelayer = unitcounterdelayer + 1
 --        if unitcounterdelayer > 12 then
 --            unitcounterdelayer = 0
 --            local MaxCap = GetArmyUnitCap(aiBrain:GetArmyIndex())

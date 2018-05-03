@@ -205,7 +205,7 @@ function GraphRender()
                 DrawPathGraph('DefaultLand', false)
                 DrawPathGraph('DefaultAmphibious', false)
                 DrawPathGraph('DefaultWater', false)
-                --DrawPathGraph('DefaultAir', false)
+                DrawPathGraph('DefaultAir', false)
             end
             -- Draw the radius of each base(manager)
             DrawBaseRanger()

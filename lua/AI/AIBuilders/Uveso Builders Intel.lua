@@ -22,8 +22,8 @@ BuilderGroup {
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, categories.SCOUT * categories.LAND } },
             -- Have we the eco to build it ?
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 8, categories.LAND * categories.SCOUT }},
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.25, '<=', categories.MOBILE * categories.AIR } },
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 4, categories.LAND * categories.SCOUT }},
+            -- Respect UnitCap
         },
         BuilderType = 'Land',
     },
@@ -40,9 +40,9 @@ BuilderGroup {
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, categories.AIR * categories.SCOUT } },
             -- Have we the eco to build it ?
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 8, categories.AIR * categories.SCOUT }},
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 5, categories.AIR * categories.SCOUT }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.FACTORY * categories.AIR * categories.TECH3 } },
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.25, '<=', categories.MOBILE * categories.AIR } },
+            -- Respect UnitCap
         },
         BuilderType = 'Air',
     },
@@ -56,8 +56,8 @@ BuilderGroup {
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, categories.INTELLIGENCE * categories.AIR } },
             -- Have we the eco to build it ?
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 8, categories.INTELLIGENCE * categories.AIR * categories.TECH3 }},
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.25, '<=', categories.MOBILE * categories.AIR } },
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 5, categories.INTELLIGENCE * categories.AIR * categories.TECH3 }},
+            -- Respect UnitCap
         },
         BuilderType = 'Air',
     },
@@ -82,6 +82,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             -- Don't build it if...
+            -- Respect UnitCap
         },
         LocationType = 'LocationType',
         BuilderType = 'Any',
@@ -100,6 +101,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             -- Don't build it if...
+            -- Respect UnitCap
         },
         BuilderType = 'Any',
     },
@@ -111,10 +113,11 @@ BuilderGroup {
         InstanceCount = 5,
         BuilderConditions = {
             -- When do we want to build this ?
-             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.AIR * categories.INTELLIGENCE } },
-           -- Do we need additional conditions to build it ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.AIR * categories.INTELLIGENCE } },
+            -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             -- Don't build it if...
+            -- Respect UnitCap
         },
         BuilderType = 'Any',
     },
@@ -133,11 +136,11 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 1, (categories.RADAR + categories.OMNI) * categories.STRUCTURE}},
             -- Do we need additional conditions to build it ?
-             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND } },
-           -- Have we the eco to build it ?
-            { IBC, 'BrainNotLowPowerMode', {} },
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND } },
+            -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- Don't build it if...
+            -- Respect UnitCap
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -161,11 +164,12 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3 }},
             -- Have we the eco to build it ?
-            { IBC, 'BrainNotLowPowerMode', {} },
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconTrend', { 5.2, 400.0 } }, -- relative income
             -- Don't build it if...
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 1, categories.OMNI * categories.STRUCTURE } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.OMNI * categories.STRUCTURE } },
+            -- Respect UnitCap
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -190,10 +194,11 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3 }},
             -- Have we the eco to build it ?
-            { IBC, 'BrainNotLowPowerMode', {} },
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconTrend', { 5.2, 800.0 } }, -- relative income
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.OMNI * categories.STRUCTURE } },
+            -- Respect UnitCap
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -223,10 +228,10 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, 'ENERGYPRODUCTION TECH3' } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
-            { IBC, 'BrainNotLowPowerMode', {} },
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsInCategoryBeingUpgrade', { 1, categories.RADAR * categories.TECH1 }},
+            -- Respect UnitCap
         },
         BuilderType = 'Any',
     },

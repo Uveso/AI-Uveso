@@ -1323,13 +1323,15 @@ Platoon = Class(oldPlatoon) {
                 --LOG('Mass over 1000. Eco running with 30%')
                 ratio = 0.3
             elseif GetGameTimeSeconds() > 20 * 60 then
-                ratio = 0.6
+                ratio = 0.60
             elseif GetGameTimeSeconds() > 15 * 60 then
-                ratio = 0.5
+                ratio = 0.50
             elseif GetGameTimeSeconds() > 10 * 60 then
-                ratio = 0.4
-            elseif GetGameTimeSeconds() > 6 * 60 then -- run the first 6 minutes with 30% Eco and 70% Army
-                ratio = 0.3
+                ratio = 0.40
+            elseif GetGameTimeSeconds() > 5 * 60 then
+                ratio = 0.30
+            elseif GetGameTimeSeconds() < 5 * 60 then -- run the first 6 minutes with 30% Eco and 70% Army
+                ratio = 0.30
             end
             local platoonUnits = self:GetPlatoonUnits()
             local MassExtractorUnitList = aiBrain:GetListOfUnits(categories.MASSEXTRACTION * (categories.TECH1 + categories.TECH2 + categories.TECH3), false, false)

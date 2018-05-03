@@ -123,13 +123,13 @@ BaseBuilderTemplate {
 
     BaseSettings = {
         FactoryCount = {
-            Land = 1,
-            Air = 1,
+            Land = 2,
+            Air = 2,
             Sea = 1,
             Gate = 0,
         },
         EngineerCount = {
-            Tech1 = 1,
+            Tech1 = 2,
             Tech2 = 1,
             Tech3 = 1,
             SCU = 0,
