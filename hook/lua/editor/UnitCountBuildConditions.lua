@@ -36,7 +36,7 @@ function ReturnFalse(aiBrain)
     return false
 end
 
---            { UBC, 'HaveLessThanUnitsInCategoryBeingUpgrade', { 1, categories.RADAR * categories.TECH1 }},
+--            { UCBC, 'HaveLessThanUnitsInCategoryBeingUpgrade', { 1, categories.RADAR * categories.TECH1 }},
 function HaveUnitsInCategoryBeingUpgrade(aiBrain, numunits, category, compareType, DEBUG)
     -- convert text categories like 'MOBILE AIR' to 'categories.MOBILE * categories.AIR'
     if type(category) == 'string' then
@@ -65,7 +65,7 @@ function HaveGreaterThanUnitsInCategoryBeingUpgrade(aiBrain, numunits, category,
     return HaveUnitsInCategoryBeingUpgrade(aiBrain, numunits, category, '>')
 end
 
---            { UBC, 'CheckBuildPlattonDelay', { 'Factories' }},
+--            { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
 --                DelayEqualBuildPlattons = {'Factories', 1},
 function CheckBuildPlattonDelay(aiBrain, PlatoonName, DEBUG)
     if aiBrain.DelayEqualBuildPlattons[PlatoonName] and aiBrain.DelayEqualBuildPlattons[PlatoonName] > GetGameTimeSeconds() then
@@ -78,14 +78,14 @@ function CheckBuildPlattonDelay(aiBrain, PlatoonName, DEBUG)
 end
 
 -- function GreaterThanGameTime(aiBrain, num) is multiplying the time by 0.5, if we have an cheat AI. But i need the real time here.
---            { UBC, 'GreaterThanGameTimeSeconds', { 180 } },
+--            { UCBC, 'GreaterThanGameTimeSeconds', { 180 } },
 function GreaterThanGameTimeSeconds(aiBrain, num)
     if num < GetGameTimeSeconds() then
         return true
     end
     return false
 end
---            { UBC, 'LessThanGameTimeSeconds', { 180 } },
+--            { UCBC, 'LessThanGameTimeSeconds', { 180 } },
 function LessThanGameTimeSeconds(aiBrain, num)
     if num > GetGameTimeSeconds() then
         return true
@@ -93,7 +93,7 @@ function LessThanGameTimeSeconds(aiBrain, num)
     return false
 end
 
---            { UBC, 'BrainLowEnergyMode', {} },
+--            { UCBC, 'BrainLowEnergyMode', {} },
 function BrainLowEnergyMode(aiBrain)
     if not aiBrain.LowEnergyMode then
         return false
@@ -101,7 +101,7 @@ function BrainLowEnergyMode(aiBrain)
     return true
 end
 
---            { UBC, 'LessThanMassTrend', { 50.0 } },
+--            { UCBC, 'LessThanMassTrend', { 50.0 } },
 function LessThanMassTrend(aiBrain, mTrend)
     local econ = AIUtils.AIGetEconomyNumbers(aiBrain)
     if econ.MassTrend < mTrend then
@@ -111,7 +111,7 @@ function LessThanMassTrend(aiBrain, mTrend)
     end
 end
 
---            { UBC, 'LessThanEnergyTrend', { 50.0 } },
+--            { UCBC, 'LessThanEnergyTrend', { 50.0 } },
 function LessThanEnergyTrend(aiBrain, eTrend)
     local econ = AIUtils.AIGetEconomyNumbers(aiBrain)
     if econ.EnergyTrend < eTrend then
@@ -121,7 +121,7 @@ function LessThanEnergyTrend(aiBrain, eTrend)
     end
 end
 
---            { UBC, 'LessThanEconStorageCurrent', { 20000, 1000000 } },
+--            { UCBC, 'LessThanEconStorageCurrent', { 20000, 1000000 } },
 function LessThanEconStorageCurrent(aiBrain, mStorage, eStorage)
     local econ = AIUtils.AIGetEconomyNumbers(aiBrain)
     if (econ.MassStorage <= mStorage and econ.EnergyStorage <= eStorage) then
@@ -130,7 +130,7 @@ function LessThanEconStorageCurrent(aiBrain, mStorage, eStorage)
     return false
 end
 
---            { UBC, 'EnergyToMassRatioIncome', { 10.0, '>=',true } },  -- True if we have 10 times more Energy then Mass income ( 100 >= 10 = true )
+--            { UCBC, 'EnergyToMassRatioIncome', { 10.0, '>=',true } },  -- True if we have 10 times more Energy then Mass income ( 100 >= 10 = true )
 function EnergyToMassRatioIncome(aiBrain, ratio, compareType, DEBUG)
     local econ = AIUtils.AIGetEconomyNumbers(aiBrain)
     if DEBUG then
@@ -138,7 +138,7 @@ function EnergyToMassRatioIncome(aiBrain, ratio, compareType, DEBUG)
     end
     return CompareBody(econ.EnergyIncome / econ.MassIncome, ratio, compareType)
 end
---            { UBC, 'HaveUnitRatioVersusCap', { 0.024, '<=', categories.STRUCTURE * categories.FACTORY * categories.LAND } }, -- Maximal 3 factories at 125 unitcap, 12 factories at 500 unitcap...
+--            { UCBC, 'HaveUnitRatioVersusCap', { 0.024, '<=', categories.STRUCTURE * categories.FACTORY * categories.LAND } }, -- Maximal 3 factories at 125 unitcap, 12 factories at 500 unitcap...
 function HaveUnitRatioVersusCap(aiBrain, ratio, compareType, categoryOwn, DEBUG)
     local testCatOwn = categoryOwn
     if type(testCatOwn) == 'string' then
@@ -211,7 +211,7 @@ function HaveUnitRatioAtLocation(aiBrain, locType, ratio, categoryNeed, compareT
     return CompareBody(numNeedUnits / numHaveUnits, ratio, compareType)
 end
 
---{ UBC, 'HaveUnitRatioAtLocationRadiusVersusEnemy', { 1.50, 'LocationType', 90, 'STRUCTURE DEFENSE ANTIMISSILE TECH3', '<','SILO NUKE TECH3' } },
+--{ UCBC, 'HaveUnitRatioAtLocationRadiusVersusEnemy', { 1.50, 'LocationType', 90, 'STRUCTURE DEFENSE ANTIMISSILE TECH3', '<','SILO NUKE TECH3' } },
 function HaveUnitRatioAtLocationRadiusVersusEnemy(aiBrain, ratio, locType, radius, categoryOwn, compareType, categoryEnemy, DEBUG)
     local baseposition
     if aiBrain:PBMHasPlatoonList() then
@@ -243,7 +243,7 @@ function HaveUnitRatioAtLocationRadiusVersusEnemy(aiBrain, ratio, locType, radiu
     return CompareBody(numNeedUnits / numEnemyUnits, ratio, compareType)
 end
 
---            { UBC, 'HaveGreaterThanArmyPoolWithCategory', { 0, categories.MASSEXTRACTION} },
+--            { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 0, categories.MASSEXTRACTION} },
 function HavePoolUnitInArmy(aiBrain, unitCount, unitCategory, compareType)
     local testCat = unitCategory
     if type(unitCategory) == 'string' then
@@ -339,16 +339,18 @@ function HaveEnemyUnitAtLocation(aiBrain, radius, locationType, unitCount, categ
     end
     return CompareBody(numEnemyUnits, unitCount, compareType)
 end
---            { UBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.MOBILE * categories.LAND }}, -- radius, LocationType, unitCount, categoryEnemy
+--            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.MOBILE * categories.LAND }}, -- radius, LocationType, unitCount, categoryEnemy
 function EnemyUnitsGreaterAtLocationRadius(aiBrain, radius, locationType, unitCount, categoryEnemy, DEBUG)
     return HaveEnemyUnitAtLocation(aiBrain, radius, locationType, unitCount, categoryEnemy, '>', DEBUG)
 end
---            { UBC, 'EnemyUnitsLessAtLocationRadius', {  BasePanicZone, 'LocationType', 1, categories.MOBILE * categories.LAND }}, -- radius, LocationType, unitCount, categoryEnemy
+--            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BasePanicZone, 'LocationType', 1, categories.MOBILE * categories.LAND }}, -- radius, LocationType, unitCount, categoryEnemy
 function EnemyUnitsLessAtLocationRadius(aiBrain, radius, locationType, unitCount, categoryEnemy, DEBUG)
     return HaveEnemyUnitAtLocation(aiBrain, radius, locationType, unitCount, categoryEnemy, '<', DEBUG)
 end
 
 
+--            { UCBC, 'UnitsLessAtEnemy', { 1 , 'MOBILE EXPERIMENTAL' } },
+--            { UCBC, 'UnitsGreaterAtEnemy', { 1 , 'MOBILE EXPERIMENTAL' } },
 function GetEnemyUnits(aiBrain, unitCount, categoryEnemy, compareType, DEBUG)
     local testCatEnemy = categoryEnemy
     if type(testCatEnemy) == 'string' then
@@ -369,7 +371,7 @@ function UnitsGreaterAtEnemy(aiBrain, unitCount, categoryEnemy, DEBUG)
 end
 
 -- For debug
---             { UBC, 'HaveUnitRatio', { 0.75, 'MASSEXTRACTION TECH1', '<=','MASSEXTRACTION TECH2',true } },
+--             { UCBC, 'HaveUnitRatio', { 0.75, 'MASSEXTRACTION TECH1', '<=','MASSEXTRACTION TECH2',true } },
 function HaveUnitRatio(aiBrain, ratio, categoryOne, compareType, categoryTwo, DEBUG)
     local testCatOne = categoryOne
     if type(testCatOne) == 'string' then
@@ -432,7 +434,7 @@ end
 
 
 
---            { UBC, 'EngineerManagerUnitsAtLocation', { 'MAIN', '<=', 100,  'ENGINEER TECH3' } },
+--            { UCBC, 'EngineerManagerUnitsAtLocation', { 'MAIN', '<=', 100,  'ENGINEER TECH3' } },
 function EngineerManagerUnitsAtLocation(aiBrain, LocationType, compareType, numUnits, category, DEBUG)
     local testCat = category
     if type(testCat) == 'string' then
@@ -445,7 +447,7 @@ function EngineerManagerUnitsAtLocation(aiBrain, LocationType, compareType, numU
     return CompareBody( numEngineers, numUnits, compareType )
 end
 
---            { UBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
+--            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
 function BuildOnlyOnLocation(aiBrain, LocationType, AllowedLocationType)
     --LOG('* BuildOnlyOnLocation: we are on location '..LocationType..', Allowed locations are: '..AllowedLocationType..'')
     if string.find(LocationType, AllowedLocationType) then
@@ -453,7 +455,7 @@ function BuildOnlyOnLocation(aiBrain, LocationType, AllowedLocationType)
     end
     return false
 end
---            { UBC, 'BuildNotOnLocation', { 'LocationType', 'MAIN' } },
+--            { UCBC, 'BuildNotOnLocation', { 'LocationType', 'MAIN' } },
 function BuildNotOnLocation(aiBrain, LocationType, ForbiddenLocationType, DEBUG)
     if string.find(LocationType, ForbiddenLocationType) then
         if DEBUG then
@@ -543,13 +545,13 @@ function GetOwnUnitsAroundLocation(aiBrain, category, location, radius)
 end
 
 function HaveLessThanIdleEngineers(aiBrain, count, tech)
-    local ENGINEERs = aiBrain:GetListOfUnits(categories.ENGINEER, true, false)
+    local ENGINEER = aiBrain:GetListOfUnits(categories.ENGINEER, true, false)
     local engineers = {}
-    engineers[5] = EntityCategoryFilterDown(categories.SUBCOMMANDER, ENGINEERs)
-    engineers[4] = EntityCategoryFilterDown(categories.TECH3 - categories.SUBCOMMANDER, ENGINEERs)
-    engineers[3] = EntityCategoryFilterDown(categories.FIELDENGINEER, ENGINEERs)
-    engineers[2] = EntityCategoryFilterDown(categories.TECH2 - categories.FIELDENGINEER, ENGINEERs)
-    engineers[1] = EntityCategoryFilterDown(categories.TECH1 - categories.COMMAND, ENGINEERs)
+    engineers[5] = EntityCategoryFilterDown(categories.SUBCOMMANDER, ENGINEER)
+    engineers[4] = EntityCategoryFilterDown(categories.TECH3 - categories.SUBCOMMANDER, ENGINEER)
+    engineers[3] = EntityCategoryFilterDown(categories.FIELDENGINEER, ENGINEER)
+    engineers[2] = EntityCategoryFilterDown(categories.TECH2 - categories.FIELDENGINEER, ENGINEER)
+    engineers[1] = EntityCategoryFilterDown(categories.TECH1 - categories.COMMAND, ENGINEER)
     local c = 0
     for _, v in engineers[tech] do
         if v:IsIdleState() then

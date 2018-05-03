@@ -81,7 +81,7 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'U-ACU Power Emergency',
+        BuilderName = 'U-CDR Power Emergency',
         PlatoonTemplate = 'CommanderBuilder',
         Priority = 2100,
         BuilderConditions = {
@@ -107,7 +107,7 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'U-ACU Power Push 500',
+        BuilderName = 'U-CDR Power Push 500',
         PlatoonTemplate = 'CommanderBuilder',
         Priority = 2100,
         BuilderConditions = {
@@ -357,9 +357,9 @@ BuilderGroup {
         Priority = 1800,
         BuilderConditions = {
             -- When do we want to build this ?
+            { UCBC, 'LessEnergyStorageMax',  { 0.1 } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
-            { UCBC, 'LessEnergyStorageMax',  { 0.1 } },
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1,  'ENERGYSTORAGE' }},
         },
@@ -382,78 +382,14 @@ BuilderGroup {
         Priority = 1800,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 1, 'ENERGYSTORAGE' }},
+            { UCBC, 'LessEnergyStorageMax',  { 2000.0 } },
             -- Do we need additional conditions to build it ?
             { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH1' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.10, -0.00}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.95}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1,  'ENERGYSTORAGE' }},
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYSTORAGE }},
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.35, '<=', categories.STRUCTURE - categories.MASSEXTRACTION } },
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<=', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
-        },
-        BuilderType = 'Any',
-        BuilderData = {
-            Location = 'LocationType',
-            Construction = {
-                BuildClose = false,
-                AdjacencyCategory = 'STRUCTURE ENERGYPRODUCTION TECH3, STRUCTURE ENERGYPRODUCTION TECH2, STRUCTURE ENERGYPRODUCTION TECH1',
-                LocationType = 'LocationType',
-                BuildStructures = {
-                    'EnergyStorage',
-                },
-            }
-        }
-    },
-    Builder {
-        BuilderName = 'U1 Energy Storage II',
-        PlatoonTemplate = 'EngineerBuilder',
-        Priority = 1800,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 2, 'ENERGYSTORAGE' }},
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH1' }},
-            -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.10, -0.00}}, -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1,  'ENERGYSTORAGE' }},
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.STRUCTURE * categories.ENERGYSTORAGE }},
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.35, '<=', categories.STRUCTURE - categories.MASSEXTRACTION } },
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<=', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
-        },
-        BuilderType = 'Any',
-        BuilderData = {
-            Location = 'LocationType',
-            Construction = {
-                BuildClose = false,
-                AdjacencyCategory = 'STRUCTURE ENERGYPRODUCTION TECH3, STRUCTURE ENERGYPRODUCTION TECH2, STRUCTURE ENERGYPRODUCTION TECH1',
-                LocationType = 'LocationType',
-                BuildStructures = {
-                    'EnergyStorage',
-                },
-            }
-        }
-    },
-    Builder {
-        BuilderName = 'U1 Energy Storage III',
-        PlatoonTemplate = 'EngineerBuilder',
-        Priority = 1800,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 4, 'ENERGYSTORAGE' }},
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH1' }},
-            -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.10, -0.00}}, -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1,  'ENERGYSTORAGE' }},
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 7, categories.STRUCTURE * categories.ENERGYSTORAGE }},
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.35, '<=', categories.STRUCTURE - categories.MASSEXTRACTION } },
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<=', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
         },
         BuilderType = 'Any',
@@ -491,7 +427,7 @@ BuilderGroup {
         BuilderType = 'Any',
     },
     Builder {
-        BuilderName = 'U-ACU Reclaim T1 Pgens',
+        BuilderName = 'U-CDR Reclaim T1 Pgens',
         PlatoonTemplate = 'CommanderBuilder',
         PlatoonAIPlan = 'ReclaimStructuresAI',
         Priority = 790,

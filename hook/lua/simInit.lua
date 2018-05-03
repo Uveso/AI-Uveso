@@ -177,7 +177,7 @@ function GraphRender()
                 DrawPathGraph('DefaultLand', false)
                 DrawPathGraph('DefaultAmphibious', false)
                 DrawPathGraph('DefaultWater', false)
-                DrawPathGraph('DefaultAir', false)
+                --DrawPathGraph('DefaultAir', false)
             elseif GetGameTimeSeconds() < 20 then
                 --DrawPathGraph('DefaultAmphibious', false)
                 --DrawPathGraph('DefaultWater', false)
@@ -205,7 +205,7 @@ function GraphRender()
                 DrawPathGraph('DefaultLand', false)
                 DrawPathGraph('DefaultAmphibious', false)
                 DrawPathGraph('DefaultWater', false)
-                DrawPathGraph('DefaultAir', false)
+                --DrawPathGraph('DefaultAir', false)
             end
             -- Draw the radius of each base(manager)
             DrawBaseRanger()
@@ -236,6 +236,10 @@ function DrawBaseRanger()
     if Scenario.MasterChain._MASTERCHAIN_.BaseRanger then
         for Index, ArmyRanger in Scenario.MasterChain._MASTERCHAIN_.BaseRanger do
             for nodename, markerInfo in ArmyRanger do
+                if nodename == 'MAIN' then
+                    DrawCircle(markerInfo.Pos, 115, 'ffFF0000')
+                    DrawCircle(markerInfo.Pos, 231, 'ffFF0000')
+                end
                 -- Draw the inner circle black
                 DrawCircle(markerInfo.Pos, markerInfo.Rad-0.5, 'ff000000')
                 -- Draw the main circle white

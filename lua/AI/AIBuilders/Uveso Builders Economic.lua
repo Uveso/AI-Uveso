@@ -75,8 +75,8 @@ BuilderGroup {
     -- ============ --
     --    TECH 1    --
     -- ============ --
+    -- Build the minimum number of engineers to fill EngineerCap
     Builder {
-        -- Build the minimum number of engineers to fill EngineerCap
         BuilderName = 'U1 Engineer builder Cap',
         PlatoonTemplate = 'T1BuildEngineer',
         Priority = 1100,
@@ -91,8 +91,8 @@ BuilderGroup {
          },
         BuilderType = 'All',
     },
+    -- Build more engineers if we don't find idle engineers
     Builder {
-        -- Build more engineers if we don't find idle engineers
         BuilderName = 'U1 Engineer noIdle',
         PlatoonTemplate = 'T1BuildEngineer',
         Priority = 1100,
@@ -102,7 +102,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.05}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.75, 0.75}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'ENGINEER TECH1' } },
             -- Respect UnitCap
@@ -110,20 +110,19 @@ BuilderGroup {
         },
         BuilderType = 'All',
     },
+    -- Build more engineers if we don't find idle engineers
     Builder {
-        -- Build more engineers if we don't find idle engineers
         BuilderName = 'U1 Engineer noIdle ecovampire',
         PlatoonTemplate = 'T1BuildEngineer',
         Priority = 1100,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanIdleEngineers', { 1, 1 }}, -- count, tech (1=TECH1, 2=Tech2, 3=FieldTech, 4=TECH3, 5=SubCommander)
+            { UCBC, 'HaveLessThanIdleEngineers', { 2, 1 }}, -- count, tech (1=TECH1, 2=Tech2, 3=FieldTech, 4=TECH3, 5=SubCommander)
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.05}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 3, 'ENGINEER TECH1' } },
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'ENGINEER TECH1' } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers, '<=', categories.MOBILE * categories.ENGINEER } },
         },
@@ -201,6 +200,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.05}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'ENGINEER TECH3' } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers, '<=', categories.MOBILE * categories.ENGINEER } },
         },

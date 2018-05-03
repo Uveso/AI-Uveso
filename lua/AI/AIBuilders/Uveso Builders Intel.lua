@@ -12,7 +12,7 @@ BuilderGroup {
     --    Land Scouts Builder    --
     -- ========================= --
     Builder {
-        BuilderName = 'T1 Land Scout Always',
+        BuilderName = 'U1 Land Scout Always',
         PlatoonTemplate = 'T1LandScout',
         Priority = 1000,
         BuilderConditions = {
