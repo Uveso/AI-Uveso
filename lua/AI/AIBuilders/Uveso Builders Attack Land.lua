@@ -476,7 +476,7 @@ BuilderGroup {
         BuilderName = 'U123 AntiMass SingleHunt',               -- Random Builder Name.
         PlatoonTemplate = 'LandAttackHuntUveso 2 2',            -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
         Priority = 1100,                                        -- Priority. 1000 is normal.
-        InstanceCount = 2,                                      -- Number of plattons that will be formed.
+        InstanceCount = 4,                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
             RequireTransport = false,                            -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
