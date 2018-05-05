@@ -920,7 +920,7 @@ Platoon = Class(oldPlatoon) {
                     DistanceToTarget = VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, LastTargetPos[1] or 0, LastTargetPos[3] or 0)
                 end
                 -- only get a new target and make a move command if the target is dead or after 10 seconds
-                if DistanceToTarget < 10 or not target or target.Dead then
+                if not target or target.Dead then
                     --LOG('* AttackPrioritizedLandTargetsAIUveso: Targetting...')
                     target = AIUtils.AIFindNearestCategoryTargetInRange(aiBrain, self, 'Attack', PlatoonPos, maxRadius, PrioritizedTargetList, TargetSearchCategory, false )
                     if not target or target.Dead then
@@ -936,7 +936,8 @@ Platoon = Class(oldPlatoon) {
                         --LOG("* AttackPrioritizedLandTargetsAIUveso: GroundDefenseUnitsAtTargetPos: " .. GroundDefenseUnitsAtTargetPos)
                         if DistanceToTarget < 50 then
                             --LOG('* AttackPrioritizedLandTargetsAIUveso: AttackTarget! DistanceToTarget:'..DistanceToTarget)
-                            self:AttackTarget(target)
+                            self:MoveToLocation(LastTargetPos, false)
+                            --self:AttackTarget(target)
                         elseif IgnoreGroundDefense and GroundDefenseUnitsAtTargetPos > IgnoreGroundDefense then
                             --LOG('* AttackPrioritizedLandTargetsAIUveso: SimpleReturnToMainBase() (GroundDefenseUnitsAtTargetPos = '..GroundDefenseUnitsAtTargetPos..' )')
                             self:SimpleReturnToMainBase(basePosition)
@@ -1172,7 +1173,7 @@ Platoon = Class(oldPlatoon) {
                     while aiBrain:PlatoonExists(self) do
                         PlatoonPosition = self:GetPlatoonPosition() or {0,0,0}
                         dist = VDist2( path[i][1], path[i][3], PlatoonPosition[1], PlatoonPosition[3] )
-                        -- are we closer then 15 units from the next marker ? Then break and move to the next marker
+                        -- are we closer then 20 units from the next marker ? Then break and move to the next marker
                         if dist < 20 then
                             break
                         end

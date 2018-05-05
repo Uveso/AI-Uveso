@@ -37,25 +37,24 @@ PlatoonTemplate {
     }
 }
 PlatoonTemplate {
-    Name = 'LandAttackInterceptUveso 10 10',
-    Plan = 'InterceptorAIUveso',
-    GlobalSquads = {
-        { categories.MOBILE * categories.LAND - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT , 10, 10, 'Attack', 'none' },
-    }
-}
-PlatoonTemplate {
     Name = 'LandAttackHuntUveso 20 40',
     Plan = 'AttackPrioritizedLandTargetsAIUveso',
     GlobalSquads = {
         { categories.MOBILE * categories.LAND - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT , 20, 40, 'Attack', 'none' },
     }
 }
-
 PlatoonTemplate {
     Name = 'U12-LandCap 1 500', 
     Plan = 'AttackPrioritizedLandTargetsAIUveso', -- is targetting in order from Platoondata.PrioritizedCategories.
     GlobalSquads = {
         { categories.MOBILE * categories.LAND * ( categories.TECH1 + categories.TECH2 ) - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT, 1, 500, 'Attack', 'none' },
+    }
+}
+PlatoonTemplate {
+    Name = 'LandAttackInterceptUveso 2 5',
+    Plan = 'InterceptorAIUveso',
+    GlobalSquads = {
+        { categories.MOBILE * categories.LAND - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT , 2, 5, 'Attack', 'none' },
     }
 }
 

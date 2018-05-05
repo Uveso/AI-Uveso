@@ -164,6 +164,32 @@ BuilderGroup {
             }
         }
     },
+    Builder {
+        BuilderName = 'U-CDR Energy RECOVER',
+        PlatoonTemplate = 'CommanderBuilder',
+        Priority = 8100,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION } },
+            -- Do we need additional conditions to build it ?
+            --{ UCBC, 'GreaterThanGameTimeSeconds', { 180 } },
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+        },
+        InstanceCount = 1,
+        BuilderType = 'Any',
+        BuilderData = {
+            Construction = {
+                AdjacencyCategory = 'FACTORY STRUCTURE AIR, FACTORY STRUCTURE LAND',
+                AdjacencyDistance = 50,
+                BuildClose = false,
+                LocationType = 'LocationType',
+                BuildStructures = {
+                    'T1EnergyProduction',
+                },
+            }
+        }
+    },
     -- ============ --
     --    TECH 2    --
     -- ============ --

@@ -19,7 +19,7 @@ BuilderGroup {
         BuilderName = 'Uveso CDR Initial Default',
         PlatoonAddBehaviors = { 'CommanderBehaviorUveso', },
         PlatoonTemplate = 'CommanderBuilder',
-        Priority = 2000,
+        Priority = 8000,
         BuilderConditions = {
             { IBC, 'NotPreBuilt', {}},
         },
@@ -43,7 +43,7 @@ BuilderGroup {
         BuilderName = 'Uveso Initial ACU PreBuilt Default',
         PlatoonAddBehaviors = { 'CommanderBehaviorUveso', },
         PlatoonTemplate = 'CommanderBuilder',
-        Priority = 2000,
+        Priority = 8000,
         BuilderConditions = {
             { IBC, 'PreBuiltBase', {}},
         },
