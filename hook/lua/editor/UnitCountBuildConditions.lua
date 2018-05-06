@@ -564,7 +564,7 @@ end
 
 function LessEnergyStorageMax(aiBrain, eStorage)
     local econ = AIUtils.AIGetEconomyNumbers(aiBrain)
-    if econ.EnergyMaxStored < eStorage then
+    if econ.EnergyTrend != 0 and econ.EnergyMaxStored < eStorage then
         return true
     end
     return false
@@ -572,7 +572,7 @@ end
 
 function LessMassStorageMax(aiBrain, mStorage)
     local econ = AIUtils.AIGetEconomyNumbers(aiBrain)
-    if econ.MassMaxStored < mStorage then
+    if econ.MassTrend != 0 and econ.MassMaxStored < mStorage then
         return true
     end
     return false

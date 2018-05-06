@@ -355,7 +355,7 @@ BuilderGroup {
             -- When do we want to build this ?
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
-            { UCBC, 'LessMassStorageMax',  { 0.1 } },
+            { UCBC, 'LessMassStorageMax',  { 0.1 }, true },
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1,  'MASSSTORAGE' }},
         },
