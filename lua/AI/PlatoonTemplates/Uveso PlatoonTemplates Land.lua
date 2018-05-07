@@ -80,3 +80,4 @@ PlatoonTemplate {
         { categories.EXPERIMENTAL * categories.LAND * categories.MOBILE - categories.INSIGNIFICANTUNIT, 2, 2, 'attack', 'AttackFormation' }
     },
 }
+

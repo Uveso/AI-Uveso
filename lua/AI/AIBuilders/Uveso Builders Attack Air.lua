@@ -719,9 +719,9 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius from main base for new target. (A 5x5 Map is 256 high)
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
-            IgnoreAntiAir = 2,                                  -- Don't attack if we have more then x anti air buildings at target position.
+            IgnoreAntiAir = 10,                                 -- Don't attack if we have more then x anti air buildings at target position.
             UseMoveOrder = false,                               -- if true, the unit will first move to the targetposition and then attack it.
-            TargetSearchCategory = 'MOBILE AIR',                -- Only find targets matching these categories.
+            TargetSearchCategory = categories.MOBILE * categories.AIR - categories.SCOUT , -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'MOBILE AIR TRANSPORTFOCUS',
                 'MOBILE AIR BOMBER',

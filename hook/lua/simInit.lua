@@ -232,13 +232,19 @@ function GraphRender()
 end
 
 function DrawBaseRanger()
+    -- get the range of combat zones
+    local mapSizeX, mapSizeZ = GetMapSize()
+    local BaseMilitaryZone = math.max( mapSizeX-50, mapSizeZ-50 ) / 2 -- Half the map
+    local BasePanicZone = BaseMilitaryZone / 2
+    BasePanicZone = math.max( 40, BasePanicZone )
+    BasePanicZone = math.min( 120, BasePanicZone )
     -- Render the radius of any base and expansion location
     if Scenario.MasterChain._MASTERCHAIN_.BaseRanger then
         for Index, ArmyRanger in Scenario.MasterChain._MASTERCHAIN_.BaseRanger do
             for nodename, markerInfo in ArmyRanger do
                 if nodename == 'MAIN' then
-                    DrawCircle(markerInfo.Pos, 115, 'ffFF0000')
-                    DrawCircle(markerInfo.Pos, 231, 'ffFF0000')
+                    DrawCircle(markerInfo.Pos, BasePanicZone, 'ffFF0000')
+                    DrawCircle(markerInfo.Pos, BaseMilitaryZone, 'ffFF0000')
                 end
                 -- Draw the inner circle black
                 DrawCircle(markerInfo.Pos, markerInfo.Rad-0.5, 'ff000000')

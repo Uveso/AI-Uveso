@@ -503,22 +503,5 @@ BuilderGroup {
         },
         BuilderType = 'Any',
     },
-    Builder {
-        BuilderName = 'U1 Reclaim Auto Expansion',
-        PlatoonTemplate = 'EngineerBuilder',
-        PlatoonAIPlan = 'ReclaimAIUveso',
-        Priority = 700,
-        InstanceCount = 1,
-        BuilderConditions = {
-            { EBC, 'LessThanEconStorageRatio', { 0.80, 1.01}}, -- Ratio from 0 to 1. (1=100%)
-            { UCBC, 'BuildNotOnLocation', { 'LocationType', 'MAIN' } },
-            { UCBC, 'EngineerManagerUnitsAtLocation', { 'LocationType', '>', 1,  'ENGINEER TECH1' } },
-        },
-        BuilderData = {
-            LocationType = 'LocationType',
-            ReclaimTime = 30,
-        },
-        BuilderType = 'Any',
-    },
 }
 

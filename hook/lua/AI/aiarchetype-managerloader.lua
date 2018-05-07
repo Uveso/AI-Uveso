@@ -60,7 +60,17 @@ function LocationRangeManagerThread(aiBrain)
         -- Get all units from our ArmyPool. These are units without a special platoon or task. They have nothing to do.
         local ArmyUnits = aiBrain:GetListOfUnits(categories.ALLUNITS, false) -- also gets unbuilded units (planed to build)
         -- Loop over every unit that has no platton and is idle
+        local LoopDelay = 0
         for _, unit in ArmyUnits do
+            -- delay the loop after every 50 units. looping over 1000 units will take 2 seconds
+            LoopDelay = LoopDelay + 1
+            if LoopDelay > 50 then
+                LoopDelay = 0
+                WaitTicks(1)
+            end
+            if unit.Dead then
+                continue
+            end
             -- check if we have name debugging enabled (ScenarioInfo.Options.AIPLatoonNameDebug = Uveso or Sorian or Dilli)
             if aiBrain[ScenarioInfo.Options.AIPLatoonNameDebug] and not EntityCategoryContains(categories.STRUCTURE * categories.FACTORY, unit) then
                 if unit.PlatoonHandle then
@@ -70,6 +80,8 @@ function LocationRangeManagerThread(aiBrain)
                         unit:SetCustomName(''..(Builder or 'Unknown')..' ('..(Plan or 'Unknown')..')')
                     else
                         unit:SetCustomName('Empty PlatoonHandle')
+                        unit.PlatoonHandle:Stop()
+                        unit.PlatoonHandle = nil
                     end
                 else
                     unit:SetCustomName('')
@@ -110,7 +122,7 @@ function LocationRangeManagerThread(aiBrain)
                         if unit.PlatoonHandle and aiBrain:PlatoonExists(unit.PlatoonHandle) then
                             LOG('* AIDEBUG: LocationRangeManagerThread: Found idle Unit outside Basemanager range! Removing platoonhandle: ('..(unit.PlatoonHandle.PlanName or 'Unknown')..')')
                             unit.PlatoonHandle:Stop()
-                            unit.PlatoonHandle:PlatoonDisbandNoAssign()
+                            unit.PlatoonHandle:PlatoonDisband()
                         end
                         --LOG('* AIDEBUG: LocationRangeManagerThread: Moving idle unit inside next basemanager range: '..unit:GetBlueprint().BlueprintId..'  ')
                         IssueClearCommands({unit})
@@ -163,7 +175,7 @@ function BaseRanger(aiBrain)
                 local StartPos = v.FactoryManager.Location
                 local StartRad = v.FactoryManager.Radius
                 -- This is the maximum base radius.
-                local NewMax = 100
+                local NewMax = 120
                 -- Now check against every other baseLocation, and see if we need to reduce our base radius.
                 for k2,v2 in aiBrain.BuilderManagers do
                     -- Only check, if start and end marker are not the same.
@@ -173,17 +185,18 @@ function BaseRanger(aiBrain)
                         local dist = VDist2( StartPos[1], StartPos[3], EndPos[1], EndPos[3] )
                         -- This is true, then we compare MAIN base versus expansion location
                         if k == 'MAIN' then
-                            -- Mainbase can use 66% of the distance to the next location. But only if we have enough space for the second base (>=30)
-                            if NewMax > dist/3*2 and dist/3 >= 30 then
+                            -- Mainbase can use 66% of the distance to the next location (minimum 90). But only if we have enough space for the second base (>=30)
+                            if NewMax > dist/3*2 and dist/3*2 > 90 and dist/3 >= 30 then
                                 NewMax = dist/3*2
                                 --LOG('Distance from mainbase['..k..']->['..k2..']='..dist..' Mainbase radius='..StartRad..' Set Radius to '..dist/3*2)
                             -- If we have not enough spacee for the second base, then use half the distance as location radius
-                            elseif NewMax > dist/2 and dist/2 >= 30 then
+                            elseif NewMax > dist/2 and dist/2 > 90 and dist/2 >= 30 then
                                 NewMax = dist/2
                                 --LOG('Distance to location['..k..']->['..k2..']='..dist..' location radius='..StartRad..' Set Radius to '..dist/2)
+                            -- We have not enough space for the mainbase. Set it to 90. Wee need this radius for gathering plattons etc
+                            else
+                                NewMax = 90
                             end
-                            --DEBUG
-                            NewMax = 100
                         -- This is true, then we compare expansion location versus MAIN base
                         elseif k2 == 'MAIN' then
                             -- Expansion can use 33% of the distance to the Mainbase.

@@ -101,7 +101,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Naval Builder',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 1200,
+        Priority = 2100,
         InstanceCount = 4,
         BuilderConditions = {
             -- When do we want to build this ?

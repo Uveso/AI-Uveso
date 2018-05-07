@@ -173,7 +173,7 @@ function EngineerMoveWithSafePath(aiBrain, unit, destination)
                 return true
             end
         end
-        WaitTicks(3)
+        --WaitTicks(3)
         -- Search again for a redundant path with slight different destination.
         destination[1] = destination[1] + 5
         destination[3] = destination[3] + 5
@@ -207,6 +207,22 @@ function EngineerMoveWithSafePath(aiBrain, unit, destination)
     return false
 end
 
+function ValidateLayer(UnitPos,MovementLayer)
+    if MovementLayer == 'Air' then
+        return true
+    end
+    local height = GetTerrainHeight( UnitPos[1], UnitPos[3] ) -- terran high
+    local surfHeight = GetSurfaceHeight( UnitPos[1], UnitPos[3] ) -- water high
+    if height >= surfHeight and ( MovementLayer == 'Land' or MovementLayer == 'Amphibious' ) then
+        return true
+    end
+    if height < surfHeight  and ( MovementLayer == 'Water' or MovementLayer == 'Amphibious' ) then
+        return true
+    end
+--    LOG('MovementLayer '..MovementLayer..' - height '..height..' - surfHeight '..surfHeight)
+    return false
+end
+
 function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, maxRange, PrioritizedTargetList, TargetSearchCategory, enemyBrain)
     local TargetSearchCategory = TargetSearchCategory
     if type(TargetSearchCategory) == 'string' then
@@ -220,20 +236,22 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
     local RangeList = { [1] = maxRange }
     if maxRange > 512 then
         RangeList = {
-            [1] = 64,
-            [2] = 256,
-            [3] = 512,
-            [4] = maxRange,
+            [1] = 30,
+            [2] = 100,
+            [3] = 256,
+            [4] = 512,
+            [5] = maxRange,
         }
     elseif maxRange > 256 then
         RangeList = {
-            [1] = 64,
-            [2] = 256,
-            [3] = maxRange,
+            [1] = 30,
+            [2] = 100,
+            [3] = 256,
+            [4] = maxRange,
         }
     elseif maxRange > 64 then
         RangeList = {
-            [1] = 64,
+            [1] = 30,
             [2] = maxRange,
         }
     end
@@ -248,20 +266,29 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
             end
             local retUnit = false
             local distance = maxRange
+            local path, reason
             --LOG('* AIFindNearestCategoryTargetInRange: numTargets '..table.getn(TargetsInBaseRange[TargetSearchCategory])..'  ')
             for num, unit in TargetsInBaseRange do
+                if not ValidateLayer(unit:GetPosition(),platoon.MovementLayer) then continue end
                 if enemyBrain and enemyIndex and enemyBrain ~= enemyIndex then continue end
                 if not unit.Dead and EntityCategoryContains(category, unit) and platoon:CanAttackTarget(squad, unit) then
                     local targetRange = Utils.XZDistanceTwoVectors(position, unit:GetPosition())
                     if targetRange < distance then
-                        retUnit = unit
-                        distance = targetRange
-                        --LOG('* AIFindNearestCategoryTargetInRange: Possible target. distance '..distance..'  ')
+                        path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, platoon.MovementLayer, platoon:GetPlatoonPosition(), unit:GetPosition(), platoon.PlatoonData.NodeWeight or 10 )
+                        if path then
+                            retUnit = unit
+                            distance = targetRange
+                            --LOG('* AIFindNearestNavalCategoryTargetInRange: Possible target. distance '..distance..'  ')
+                        else
+                            if reason != 'NoPath' then
+                                --LOG('* AIFindNearestNavalCategoryTargetInRange: Bad Target. reason '..reason..'  ')
+                            end
+                        end
                     end
                 end
             end
             if retUnit then
-                return retUnit
+                return retUnit, path, reason
             end
         end
     end
@@ -281,20 +308,22 @@ function AIFindNearestNavalCategoryTargetInRange(aiBrain, platoon, squad, positi
     local RangeList = { [1] = maxRange }
     if maxRange > 512 then
         RangeList = {
-            [1] = 64,
-            [2] = 256,
-            [3] = 512,
-            [4] = maxRange,
+            [1] = 30,
+            [2] = 100,
+            [3] = 256,
+            [4] = 512,
+            [5] = maxRange,
         }
     elseif maxRange > 256 then
         RangeList = {
-            [1] = 64,
-            [2] = 256,
-            [3] = maxRange,
+            [1] = 30,
+            [2] = 100,
+            [3] = 256,
+            [4] = maxRange,
         }
     elseif maxRange > 64 then
         RangeList = {
-            [1] = 64,
+            [1] = 30,
             [2] = maxRange,
         }
     end
@@ -309,13 +338,15 @@ function AIFindNearestNavalCategoryTargetInRange(aiBrain, platoon, squad, positi
             end
             local retUnit = false
             local distance = maxRange
+            local path, reason
             --LOG('* AIFindNearestNavalCategoryTargetInRange: numTargets '..table.getn(TargetsInBaseRange)..'  ')
             for num, unit in TargetsInBaseRange do
+                if not ValidateLayer(unit:GetPosition(),platoon.MovementLayer) then continue end
                 if enemyBrain and enemyIndex and enemyBrain ~= enemyIndex then continue end
                 if not unit.Dead and EntityCategoryContains(category, unit) and platoon:CanAttackTarget(squad, unit) then
                     local targetRange = Utils.XZDistanceTwoVectors(position, unit:GetPosition())
                     if targetRange < distance then
-                        local path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, platoon.MovementLayer, platoon:GetPlatoonPosition(), unit:GetPosition(), platoon.PlatoonData.NodeWeight or 10 )
+                        path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, platoon.MovementLayer, platoon:GetPlatoonPosition(), unit:GetPosition(), platoon.PlatoonData.NodeWeight or 10 )
                         if path then
                             retUnit = unit
                             distance = targetRange
@@ -329,10 +360,8 @@ function AIFindNearestNavalCategoryTargetInRange(aiBrain, platoon, squad, positi
                 end
             end
             if retUnit then
-                return retUnit
+                return retUnit, path, reason
             end
-            -- Wait a tick before we scann the next target Category
-            WaitTicks(1)
         end
     end
     return false

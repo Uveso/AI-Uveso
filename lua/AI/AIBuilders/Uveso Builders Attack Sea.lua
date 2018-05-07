@@ -285,14 +285,14 @@ BuilderGroup {
         InstanceCount = 3,                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BasePanicZone,                       -- Searchradius for new target.
-            AggressiveMove = false,                              -- If true, the unit will attack everything while moving to the target.
+            AggressiveMove = true,                              -- If true, the unit will attack everything while moving to the target.
             IgnoreGroundDefense = false,                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
-            TargetSearchCategory = 'NAVAL',                     -- Only find targets matching these categories.
+            TargetSearchCategory = categories.MOBILE * categories.NAVAL, -- Only find targets matching these categories.
             PrioritizedCategories = {
-                'MOBILE NAVAL',
                 'STRUCTURE NAVAL DEFENSE',
+                'MOBILE NAVAL',
                 'STRUCTURE NAVAL',
-                'NAVAL',
+                'ALLUNITS',
             },
         },
         BuilderConditions = {                                   -- platoon will be formed if all conditions are true
@@ -313,15 +313,16 @@ BuilderGroup {
         Priority = 2000,                                        -- Priority. 1000 is normal.
         InstanceCount = 3,                                      -- Number of plattons that will be formed.
         BuilderData = {
-            SearchRadius = BaseMilitaryZone,                       -- Searchradius for new target.
-            AggressiveMove = false,                              -- If true, the unit will attack everything while moving to the target.
+            SearchRadius = BaseMilitaryZone,                    -- Searchradius for new target.
+            AggressiveMove = false,                             -- If true, the unit will attack everything while moving to the target.
             IgnoreGroundDefense = false,                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
-            TargetSearchCategory = 'NAVAL',                     -- Only find targets matching these categories.
+            TargetSearchCategory = categories.MOBILE * categories.NAVAL , -- Only find targets matching these categories.
+            TargetSearchCategory = 'NAVAL, MOBILE LAND, STRUCTURE', -- Only find targets matching these categories.
             PrioritizedCategories = {
-                'MOBILE NAVAL',
                 'STRUCTURE NAVAL DEFENSE',
+                'MOBILE NAVAL',
                 'STRUCTURE NAVAL',
-                'NAVAL',
+                'ALLUNITS',
             },
         },
         BuilderConditions = {                                   -- platoon will be formed if all conditions are true
@@ -343,14 +344,14 @@ BuilderGroup {
         InstanceCount = 5,
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
-            AggressiveMove = false,                             -- If true, the unit will attack everything while moving to the target.
+            AggressiveMove = false,                              -- If true, the unit will attack everything while moving to the target.
             IgnoreGroundDefense = false,                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
-            TargetSearchCategory = 'NAVAL',                     -- Only find targets matching these categories.
+            TargetSearchCategory = (categories.MOBILE - categories.AIR) + categories.STRUCTURE , -- Only find targets matching these categories.
             PrioritizedCategories = {
-                'MOBILE NAVAL',
                 'STRUCTURE NAVAL DEFENSE',
+                'MOBILE NAVAL',
                 'STRUCTURE NAVAL',
-                'NAVAL',
+                'ALLUNITS',
             },
         },
         BuilderConditions = {                                   -- platoon will be formed if all conditions are true
@@ -372,14 +373,13 @@ BuilderGroup {
         InstanceCount = 10,
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
-            AggressiveMove = false,                              -- If true, the unit will attack everything while moving to the target.
+            AggressiveMove = true,                              -- If true, the unit will attack everything while moving to the target.
             IgnoreGroundDefense = false,                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
-            TargetSearchCategory = 'ALLUNITS',                  -- Only find targets matching these categories.
+            TargetSearchCategory = (categories.MOBILE - categories.AIR) + categories.STRUCTURE , -- Only find targets matching these categories.
             PrioritizedCategories = {
-                'MOBILE NAVAL',
                 'STRUCTURE NAVAL DEFENSE',
+                'MOBILE NAVAL',
                 'STRUCTURE NAVAL',
-                'NAVAL',
                 'ALLUNITS',
             },
         },

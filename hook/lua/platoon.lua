@@ -820,11 +820,7 @@ Platoon = Class(oldPlatoon) {
                 -- only get a new target and make a move command if the target is dead or after 2 seconds
                 if DistanceToTarget < 20 or not target or target.Dead or LastTargetCheck + 1 < GetGameTimeSeconds() then
                     --LOG('* InterceptorAIUveso: Targetting...')
-                    target = AIUtils.AIFindNearestCategoryTargetInRange(aiBrain, self, 'Attack', GetTargetsFrom, maxRadius, PrioritizedTargetList, TargetSearchCategory, aiBrain:GetCurrentEnemy() )
-                    if not target or target.Dead then
-                        --LOG('* InterceptorAIUveso: No target found for focussed enemy. Searching for other enemies...')
-                        target = AIUtils.AIFindNearestCategoryTargetInRange(aiBrain, self, 'Attack', GetTargetsFrom, maxRadius, PrioritizedTargetList, TargetSearchCategory, false )
-                    end
+                    target = AIUtils.AIFindNearestCategoryTargetInRange(aiBrain, self, 'Attack', GetTargetsFrom, maxRadius, PrioritizedTargetList, TargetSearchCategory, false )
                     if target then
                         --LOG('* InterceptorAIUveso: Target!.')
                         LastTargetCheck = GetGameTimeSeconds()
@@ -837,11 +833,12 @@ Platoon = Class(oldPlatoon) {
                             --LOG('* InterceptorAIUveso: Return to MainBase (AntiAirUnitsAtTargetPos = '..AntiAirUnitsAtTargetPos..' )')
                             self:Stop()
                             self:SimpleReturnToMainBase(basePosition)
-                        elseif not self.PlatoonData.UseMoveOrder then
+                        elseif not self.PlatoonData.UseMoveOrder and not target.Dead then
                             --LOG('* InterceptorAIUveso: AttackTarget! UseMoveOrder=false.')
                             self:Stop()
                             --self:MoveToLocation(LastTargetPos, false)
-                            self:AttackTarget(target)
+                            self:AggressiveMoveToLocation(LastTargetPos)
+                            --self:AttackTarget(target)
                         else
                             --LOG('* InterceptorAIUveso: MoveToLocation! UseMoveOrder=true.')
                             self:Stop()
@@ -916,17 +913,10 @@ Platoon = Class(oldPlatoon) {
         while aiBrain:PlatoonExists(self) do
             if self:IsOpponentAIRunning() then
                 PlatoonPos = self:GetPlatoonPosition()
-                if target and not target.Dead then
-                    DistanceToTarget = VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, LastTargetPos[1] or 0, LastTargetPos[3] or 0)
-                end
                 -- only get a new target and make a move command if the target is dead or after 10 seconds
                 if not target or target.Dead then
                     --LOG('* AttackPrioritizedLandTargetsAIUveso: Targetting...')
                     target = AIUtils.AIFindNearestCategoryTargetInRange(aiBrain, self, 'Attack', PlatoonPos, maxRadius, PrioritizedTargetList, TargetSearchCategory, false )
-                    if not target or target.Dead then
-                        --LOG('* AttackPrioritizedLandTargetsAIUveso: No target found for focussed enemy. Searching for other enemies...')
-                        target = self:FindClosestUnit('Attack', 'Enemy', true, categories.LAND - categories.WALL)
-                    end
                     if target then
                         --LOG('* AttackPrioritizedLandTargetsAIUveso: Target!.')
                         LastTargetCheck = GetGameTimeSeconds()
@@ -943,8 +933,8 @@ Platoon = Class(oldPlatoon) {
                             self:SimpleReturnToMainBase(basePosition)
                         else
                             --LOG('* AttackPrioritizedLandTargetsAIUveso: MoveToLocationInclTransport() AggressiveMove='..repr(bAggroMove)..'. DistanceToTarget:'..DistanceToTarget)
-                            --self:MoveToLocationInclTransport(target, false, bAggroMove, WantsTransport, basePosition, ExperimentalInPlatoon)
-                            self:MoveToLocationInclTransport(target, false, bAggroMove, WantsTransport, basePosition, true)
+                            self:MoveToLocationInclTransport(target, false, bAggroMove, WantsTransport, basePosition, ExperimentalInPlatoon)
+                            --self:MoveToLocation(LastTargetPos, false)
                         end
                     else
                         -- we have no target return to main base
@@ -952,10 +942,11 @@ Platoon = Class(oldPlatoon) {
                         self:ForceReturnToNearestBaseAIUveso()
                     end
                 else
+                    DistanceToTarget = VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, LastTargetPos[1] or 0, LastTargetPos[3] or 0)
                     --LOG('* AttackPrioritizedLandTargetsAIUveso: Target Valid. range to target:'..DistanceToTarget..' - '.. LastPositionCheck + 30 - GetGameTimeSeconds() )
                     if LastPositionCheck + 30 < GetGameTimeSeconds() then
                         if PlatoonPos[1] == lastPlatoonPos[1] and PlatoonPos[3] == lastPlatoonPos[3] then
-                            --LOG('* AttackPrioritizedLandTargetsAIUveso: We are stucked! Return to MainBase.')
+                            LOG('* AttackPrioritizedLandTargetsAIUveso: We are stucked! Range to target:'..DistanceToTarget..' - time: '.. LastPositionCheck + 30 - GetGameTimeSeconds() )
                             self:ForceReturnToNearestBaseAIUveso()
                         else
                             --LOG('* AttackPrioritizedLandTargetsAIUveso: We are Ok, move on!')
@@ -1067,16 +1058,16 @@ Platoon = Class(oldPlatoon) {
                                         else
                                             Stuck = Stuck + 1
                                             if Stuck > 15 then
-                                                --LOG('* AttackPrioritizedSeaTargetsAIUveso: Stucked while moving to Waypoint. Stuck='..Stuck..' - '..repr(path[i]))
+                                                LOG('* AttackPrioritizedSeaTargetsAIUveso: Stucked while moving to Waypoint. Stuck='..Stuck..' - '..repr(path[i]))
                                                 self:Stop()
-                                                break
+                                                self:ForceReturnToNavalBaseAIUveso(aiBrain, basePosition)
                                             end
                                         end
                                         -- If we lose our target, stop moving to it.
                                         if not target then
                                             LOG('* AttackPrioritizedSeaTargetsAIUveso: Lost target while moving to Waypoint. '..repr(path[i]))
                                             self:Stop()
-                                            return
+                                            break
                                         end
                                         WaitTicks(10)
                                     end
@@ -1508,7 +1499,7 @@ Platoon = Class(oldPlatoon) {
             for _, Launcher in platoonUnits do
                 if not Launcher or Launcher.Dead or Launcher:BeenDestroyed() then
                     -- We found a dead unit inside this platoon. Disband the platton; It will be reformed
-                    self:PlatoonDisbandNoAssign()
+                    self:PlatoonDisband()
                     return
                 end
                 local NukeSiloAmmoCount = Launcher:GetNukeSiloAmmoCount() or 0
@@ -1542,7 +1533,7 @@ Platoon = Class(oldPlatoon) {
                 for k,Launcher in platoonUnits do
                     if not Launcher or Launcher.Dead or Launcher:BeenDestroyed() then
                         -- We found a dead unit inside this platoon. Disband the platton; It will be reformed
-                        self:PlatoonDisbandNoAssign()
+                        self:PlatoonDisband()
                         return
                     end
                     -- Check if the launcher is deactivated
@@ -1614,7 +1605,7 @@ Platoon = Class(oldPlatoon) {
                         for _, Launcher in platoonUnits do
                             if not Launcher or Launcher.Dead or Launcher:BeenDestroyed() then
                                 -- We found a dead unit inside this platoon. Disband the platton; It will be reformed
-                                self:PlatoonDisbandNoAssign()
+                                self:PlatoonDisband()
                                 return
                             end
                             -- check if the launcher has already launched a nuke
@@ -1707,7 +1698,7 @@ Platoon = Class(oldPlatoon) {
                         for Index, Launcher in platoonUnits do
                             if not Launcher or Launcher.Dead or Launcher:BeenDestroyed() then
                                 -- We found a dead unit inside this platoon. Disband the platton; It will be reformed
-                                self:PlatoonDisbandNoAssign()
+                                self:PlatoonDisband()
                                 return
                             end
                             --LOG('* NukePlatoonAI: Overwhelm: Fireing Nuke: '..repr(Index))
@@ -1826,7 +1817,7 @@ Platoon = Class(oldPlatoon) {
                 -- Well, if we are here then we don't have any primary targets. Enemy is almost dead, finish him!
                 ---------------------------------------------------------------------------------------------------
                 EnemyUnits = aiBrain:GetUnitsAroundPoint(categories.STRUCTURE + categories.MOBILE , Vector(mapSizeX/2,0,mapSizeZ/2), mapSizeX+mapSizeZ, 'Enemy')
-                if table.getn(EnemyUnits) > 0 then
+                if MissileCount > 1 and table.getn(EnemyUnits) > 0 then
                     ---------------------------------------------------------------------------------------------------
                     -- get enemy target positions
                     ---------------------------------------------------------------------------------------------------
@@ -1854,7 +1845,7 @@ Platoon = Class(oldPlatoon) {
                 ---------------------------------------------------------------------------------------------------
                 NukeBussy = {}
                 while table.getn(EnemyTargetPositions) > 0 do
-                    LOGLOG('* NukePlatoonAI: table.getn(EnemyTargetPositions) '..table.getn(EnemyTargetPositions))
+                    LOG('* NukePlatoonAI: table.getn(EnemyTargetPositions) '..table.getn(EnemyTargetPositions))
                     -- get a target and remove it from the target list
                     local ActualTargetPos = table.remove(EnemyTargetPositions)
                     -- loop over all nuke launcher
@@ -1901,17 +1892,14 @@ Platoon = Class(oldPlatoon) {
             for k,Launcher in platoonUnits do
                 if not Launcher or Launcher.Dead or Launcher:BeenDestroyed() then
                     -- We found a dead unit inside this platoon. Disband the platton; It will be reformed
-                    self:PlatoonDisbandNoAssign()
-                    --LOG('* NukePlatoonAI: PlatoonDisbandNoAssign')
+                    self:PlatoonDisband()
+                    --LOG('* NukePlatoonAI: PlatoonDisband')
                     return
                 end
             end
             WaitTicks(50)
         end
     end,
-
-    
-
 
     AntiNukePlatoonAI = function(self)
         local aiBrain = self:GetBrain()
@@ -1926,8 +1914,8 @@ Platoon = Class(oldPlatoon) {
             for k,unit in platoonUnits do
                 if not unit or unit.Dead or unit:BeenDestroyed() then
                     -- We found a dead unit inside this platoon. Disband the platton; It will be reformed
-                    self:PlatoonDisbandNoAssign()
-                    --LOG('* AntiNukePlatoonAI: PlatoonDisbandNoAssign')
+                    self:PlatoonDisband()
+                    --LOG('* AntiNukePlatoonAI: PlatoonDisband')
                     return
                 end
             end
