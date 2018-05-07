@@ -285,7 +285,7 @@ BuilderGroup {
         InstanceCount = 3,                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BasePanicZone,                       -- Searchradius for new target.
-            AggressiveMove = true,                              -- If true, the unit will attack everything while moving to the target.
+            AggressiveMove = false,                              -- If true, the unit will attack everything while moving to the target.
             IgnoreGroundDefense = false,                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
             TargetSearchCategory = 'NAVAL',                     -- Only find targets matching these categories.
             PrioritizedCategories = {
@@ -314,7 +314,7 @@ BuilderGroup {
         InstanceCount = 3,                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                       -- Searchradius for new target.
-            AggressiveMove = true,                              -- If true, the unit will attack everything while moving to the target.
+            AggressiveMove = false,                              -- If true, the unit will attack everything while moving to the target.
             IgnoreGroundDefense = false,                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
             TargetSearchCategory = 'NAVAL',                     -- Only find targets matching these categories.
             PrioritizedCategories = {
@@ -343,7 +343,7 @@ BuilderGroup {
         InstanceCount = 5,
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
-            AggressiveMove = true,                              -- If true, the unit will attack everything while moving to the target.
+            AggressiveMove = false,                             -- If true, the unit will attack everything while moving to the target.
             IgnoreGroundDefense = false,                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
             TargetSearchCategory = 'NAVAL',                     -- Only find targets matching these categories.
             PrioritizedCategories = {
@@ -372,7 +372,7 @@ BuilderGroup {
         InstanceCount = 10,
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
-            AggressiveMove = true,                              -- If true, the unit will attack everything while moving to the target.
+            AggressiveMove = false,                              -- If true, the unit will attack everything while moving to the target.
             IgnoreGroundDefense = false,                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
             TargetSearchCategory = 'ALLUNITS',                  -- Only find targets matching these categories.
             PrioritizedCategories = {

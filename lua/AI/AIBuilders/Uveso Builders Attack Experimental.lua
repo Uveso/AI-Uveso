@@ -185,18 +185,19 @@ BuilderGroup {
         BuilderName = 'U-T4 LandExp1 Minimum',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 810,
-        DelayEqualBuildPlattons = {'Experimental Effi', 10},
+        DelayEqualBuildPlattons = {'Experimental', 30},
         InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
             { EBC, 'GreaterThanEconIncome', { 20.0, 1000.0 }},
+            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.95 } }, -- Ratio from 0 to 1. (1=100%)
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
             -- Have we the eco to build it ?
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.EXPERIMENTAL * categories.LAND }},
-            { UCBC, 'CheckBuildPlattonDelay', { 'Experimental' }},
+            { UCBC, 'CheckBuildPlattonDelay', { 'Experimental Effi' }},
             { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
         BuilderType = 'Any',
@@ -522,11 +523,9 @@ BuilderGroup {
             SearchRadius = 10000,                               -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
             UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
-            TargetSearchCategory = 'STRUCTURE, MOBILE LAND',    -- Only find targets matching these categories.
+            TargetSearchCategory = 'STRUCTURE',                 -- Only find targets matching these categories.
             PrioritizedCategories = {
-                'DEFENSE ANTIMISSILE TECH3',
-                'ARTILLERY',
-                'NUKE',
+                'DEFENSE',
                 'ANTIAIR',
                 'ENERGYPRODUCTION',
                 'ALLUNITS',
@@ -553,12 +552,9 @@ BuilderGroup {
             SearchRadius = 10000,                               -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
             UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
-            IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
-            TargetSearchCategory = 'STRUCTURE, MOBILE',         -- Only find targets matching these categories.
+            IgnoreAntiAir = 10,                                 -- Don't attack if we have more then x anti air buildings at target position.
+            TargetSearchCategory = 'STRUCTURE',                 -- Only find targets matching these categories.
             PrioritizedCategories = {
-                'DEFENSE ANTIMISSILE TECH3',
-                'ARTILLERY',
-                'NUKE',
                 'ANTIAIR',
                 'ENERGYPRODUCTION',
                 'ALLUNITS',
@@ -568,6 +564,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.5, 'MOBILE', '>', 'MOBILE' } },
             -- Do we need additional conditions to build it ?
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , 'STRUCTURE' } },
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.EXPERIMENTAL * categories.MOBILE * categories.AIR } },
             -- Have we the eco to build it ?
             -- Don't build it if...

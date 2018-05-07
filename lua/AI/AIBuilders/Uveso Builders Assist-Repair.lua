@@ -368,29 +368,6 @@ BuilderGroup {
     --    Finisher     --
     -- =============== --
     Builder {
-        BuilderName = 'U1 econ Finisher Main',
-        PlatoonTemplate = 'EngineerBuilder',
-        PlatoonAIPlan = 'ManagerEngineerFindUnfinished',
-        Priority = 1000,
-        InstanceCount = 1,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'UnfinishedUnits', { 'LocationType', (categories.STRUCTURE - categories.MASSEXTRACTION) + categories.EXPERIMENTAL }},
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, 'ENGINEER TECH1' }},
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-        },
-        BuilderData = {
-            Assist = {
-                AssistLocation = 'LocationType',
-                BeingBuiltCategories = {'STRUCTURE'},
-            },
-        },
-        BuilderType = 'Any',
-    },
-    Builder {
         BuilderName = 'U1 econ Finisher',
         PlatoonTemplate = 'EngineerBuilder',
         PlatoonAIPlan = 'ManagerEngineerFindUnfinished',
@@ -398,9 +375,8 @@ BuilderGroup {
         InstanceCount = 4,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'UnfinishedUnits', { 'LocationType', (categories.STRUCTURE - categories.MASSEXTRACTION) + categories.EXPERIMENTAL }},
+            { UCBC, 'UnfinishedUnits', { 'LocationType', categories.STRUCTURE - categories.MASSEXTRACTION }},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, 'ENGINEER TECH1' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- Don't build it if...
@@ -421,9 +397,8 @@ BuilderGroup {
         InstanceCount = 4,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'UnfinishedUnits', { 'LocationType', (categories.STRUCTURE - categories.MASSEXTRACTION) + categories.EXPERIMENTAL }},
+            { UCBC, 'UnfinishedUnits', { 'LocationType', categories.STRUCTURE - categories.MASSEXTRACTION }},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, 'ENGINEER TECH2' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- Don't build it if...
@@ -444,9 +419,8 @@ BuilderGroup {
         InstanceCount = 4,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'UnfinishedUnits', { 'LocationType', (categories.STRUCTURE - categories.MASSEXTRACTION) + categories.EXPERIMENTAL }},
+            { UCBC, 'UnfinishedUnits', { 'LocationType', categories.STRUCTURE - categories.MASSEXTRACTION }},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, 'ENGINEER TECH3' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- Don't build it if...
@@ -517,7 +491,7 @@ BuilderGroup {
         PlatoonTemplate = 'EngineerBuilder',
         PlatoonAIPlan = 'ReclaimAIUveso',
         Priority = 700,
-        InstanceCount = 1,
+        InstanceCount = 3,
         BuilderConditions = {
             { EBC, 'LessThanEconStorageRatio', { 0.80, 1.01}}, -- Ratio from 0 to 1. (1=100%)
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },

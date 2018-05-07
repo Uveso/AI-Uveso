@@ -121,15 +121,6 @@ function LessThanEnergyTrend(aiBrain, eTrend)
     end
 end
 
---            { UCBC, 'LessThanEconStorageCurrent', { 20000, 1000000 } },
-function LessThanEconStorageCurrent(aiBrain, mStorage, eStorage)
-    local econ = AIUtils.AIGetEconomyNumbers(aiBrain)
-    if (econ.MassStorage <= mStorage and econ.EnergyStorage <= eStorage) then
-        return true
-    end
-    return false
-end
-
 --            { UCBC, 'EnergyToMassRatioIncome', { 10.0, '>=',true } },  -- True if we have 10 times more Energy then Mass income ( 100 >= 10 = true )
 function EnergyToMassRatioIncome(aiBrain, ratio, compareType, DEBUG)
     local econ = AIUtils.AIGetEconomyNumbers(aiBrain)
@@ -316,25 +307,18 @@ function CanNotBuildOnMassLessThanLocationDistance(aiBrain, locationType, distan
 end
 
 function HaveEnemyUnitAtLocation(aiBrain, radius, locationType, unitCount, categoryEnemy, compareType, DEBUG)
-    local engineerManager = aiBrain.BuilderManagers[locationType].EngineerManager
+    if not aiBrain.BuilderManagers[locationType] then
+        WARN('*AI WARNING: HaveEnemyUnitAtLocation - Invalid location - ' .. locationType)
+        return false
+    end
     local categoryEnemy = categoryEnemy
     if type(categoryEnemy) == 'string' then
         categoryEnemy = ParseEntityCategory(categoryEnemy)
     end
-    if not engineerManager then
-        WARN('*AI WARNING: HaveEnemyUnitAtLocation - Invalid location - ' .. locationType)
-        return false
-    end
-
-    local numUnits = 0
-    local UnitPos = 0
-    local dist = 0
-    local basePosition = aiBrain.BuilderManagers[locationType].Position
-    local numEnemyUnits = aiBrain:GetNumUnitsAroundPoint(categoryEnemy, basePosition, radius , 'Enemy')
-    --DrawCircle(basePosition, radius, '0000FF')
-    --DrawCircle(basePosition, radius+1, '0000FF')
-
+    local numEnemyUnits = aiBrain:GetNumUnitsAroundPoint(categoryEnemy, aiBrain.BuilderManagers[locationType].Position, radius , 'Enemy')
     if DEBUG then
+        DrawCircle(aiBrain.BuilderManagers[locationType].Position, radius, '0000FF')
+        DrawCircle(aiBrain.BuilderManagers[locationType].Position, radius+1, '0000FF')
         LOG(aiBrain:GetArmyIndex()..' CompareBody {World} radius:['..radius..'] '..repr(DEBUG)..' ['..numEnemyUnits..'] '..compareType..' ['..unitCount..'] return '..repr(CompareBody(numEnemyUnits, unitCount, compareType)))
     end
     return CompareBody(numEnemyUnits, unitCount, compareType)
@@ -564,7 +548,7 @@ end
 
 function LessEnergyStorageMax(aiBrain, eStorage)
     local econ = AIUtils.AIGetEconomyNumbers(aiBrain)
-    if econ.EnergyTrend != 0 and econ.EnergyMaxStored < eStorage then
+    if econ.EnergyMaxStored != 0 and econ.EnergyMaxStored < eStorage then
         return true
     end
     return false
@@ -572,7 +556,7 @@ end
 
 function LessMassStorageMax(aiBrain, mStorage)
     local econ = AIUtils.AIGetEconomyNumbers(aiBrain)
-    if econ.MassTrend != 0 and econ.MassMaxStored < mStorage then
+    if econ.MassMaxStored != 0 and econ.MassMaxStored < mStorage then
         return true
     end
     return false

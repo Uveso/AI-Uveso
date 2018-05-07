@@ -69,7 +69,7 @@ function LocationRangeManagerThread(aiBrain)
                     if Plan or Builder then
                         unit:SetCustomName(''..(Builder or 'Unknown')..' ('..(Plan or 'Unknown')..')')
                     else
-                        unit:SetCustomName('')
+                        unit:SetCustomName('Empty PlatoonHandle')
                     end
                 else
                     unit:SetCustomName('')
@@ -95,7 +95,7 @@ function LocationRangeManagerThread(aiBrain)
                     -- if we are in range of a base, continue. We don't need to move the unit. It's in range of a basemanager
                     if dist < base.Rad then
                         WeAreInRange = true
-                        continue
+                        break
                     end
                     -- remember the nearest base. We will move to it.
                     if not nearestbase or nearestbase.dist > dist then
@@ -163,7 +163,7 @@ function BaseRanger(aiBrain)
                 local StartPos = v.FactoryManager.Location
                 local StartRad = v.FactoryManager.Radius
                 -- This is the maximum base radius.
-                local NewMax = 120
+                local NewMax = 100
                 -- Now check against every other baseLocation, and see if we need to reduce our base radius.
                 for k2,v2 in aiBrain.BuilderManagers do
                     -- Only check, if start and end marker are not the same.
@@ -182,6 +182,8 @@ function BaseRanger(aiBrain)
                                 NewMax = dist/2
                                 --LOG('Distance to location['..k..']->['..k2..']='..dist..' location radius='..StartRad..' Set Radius to '..dist/2)
                             end
+                            --DEBUG
+                            NewMax = 100
                         -- This is true, then we compare expansion location versus MAIN base
                         elseif k2 == 'MAIN' then
                             -- Expansion can use 33% of the distance to the Mainbase.

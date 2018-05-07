@@ -16,6 +16,13 @@ PlatoonTemplate {
     }
 }
 PlatoonTemplate {
+    Name = 'LandAttackHuntUveso 6 8',
+    Plan = 'AttackPrioritizedLandTargetsAIUveso',
+    GlobalSquads = {
+        { categories.MOBILE * categories.LAND - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT , 6, 8, 'Attack', 'none' }
+    }
+}
+PlatoonTemplate {
     Name = 'LandAttackHuntUveso 2 10',
     Plan = 'AttackPrioritizedLandTargetsAIUveso',
     GlobalSquads = {
@@ -33,7 +40,7 @@ PlatoonTemplate {
     Name = 'LandAttackHuntUveso 10 10',
     Plan = 'AttackPrioritizedLandTargetsAIUveso',
     GlobalSquads = {
-        { categories.MOBILE * categories.LAND - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT , 10, 10, 'Attack', 'GrowthFormation' },
+        { categories.MOBILE * categories.LAND - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT , 10, 10, 'Attack', 'none' },
     }
 }
 PlatoonTemplate {

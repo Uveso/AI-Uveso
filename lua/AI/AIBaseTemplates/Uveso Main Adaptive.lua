@@ -130,6 +130,11 @@ BaseBuilderTemplate {
         -- Build Anti Air near AirFactories
         'Base Anti Air Defense Uveso',
 
+        -----------------------------------------------------------------------------
+        -- ==== FireBase BUILDER ==== --
+        -----------------------------------------------------------------------------
+        'U1 FirebaseBuilders',
+
         -- We need this even if we have Omni View to get target informations for experimentals attack.
         -----------------------------------------------------------------------------
         -- ==== Scout BUILDER ==== --
