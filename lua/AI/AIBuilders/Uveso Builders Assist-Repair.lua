@@ -368,7 +368,7 @@ BuilderGroup {
     --    Finisher     --
     -- =============== --
     Builder {
-        BuilderName = 'U1 econ Finisher',
+        BuilderName = 'U1 Finisher',
         PlatoonTemplate = 'EngineerBuilder',
         PlatoonAIPlan = 'ManagerEngineerFindUnfinished',
         Priority = 1000,
@@ -390,7 +390,7 @@ BuilderGroup {
         BuilderType = 'Any',
     },
     Builder {
-        BuilderName = 'U2 econ Finisher',
+        BuilderName = 'U2 Finisher',
         PlatoonTemplate = 'T2EngineerBuilder',
         PlatoonAIPlan = 'ManagerEngineerFindUnfinished',
         Priority = 1000,
@@ -412,7 +412,7 @@ BuilderGroup {
         BuilderType = 'Any',
     },
     Builder {
-        BuilderName = 'U3 econ Finisher',
+        BuilderName = 'U3 Finisher',
         PlatoonTemplate = 'T3EngineerBuilder',
         PlatoonAIPlan = 'ManagerEngineerFindUnfinished',
         Priority = 1000,
@@ -472,7 +472,7 @@ BuilderGroup {
     --    Reclaim     --
     -- ============== --
     Builder {
-        BuilderName = 'U1 Reclaim always',
+        BuilderName = 'U1 Reclaim Resource',
         PlatoonTemplate = 'EngineerBuilder',
         PlatoonAIPlan = 'ReclaimAIUveso',
         Priority = 2095,
@@ -491,7 +491,7 @@ BuilderGroup {
         PlatoonTemplate = 'EngineerBuilder',
         PlatoonAIPlan = 'ReclaimAIUveso',
         Priority = 700,
-        InstanceCount = 3,
+        InstanceCount = 1,
         BuilderConditions = {
             { EBC, 'LessThanEconStorageRatio', { 0.80, 1.01}}, -- Ratio from 0 to 1. (1=100%)
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },

@@ -30,6 +30,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             -- Don't build it if...
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Sea',
     },
@@ -47,6 +48,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Sea',
     },
@@ -64,6 +66,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Sea',
     },
@@ -84,6 +87,7 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL', '<=', 'NAVAL' } },
             { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { ExperimentalCount, categories.MOBILE * categories.NAVAL * categories.EXPERIMENTAL }},
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Sea',
     },
@@ -105,6 +109,7 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL', '<=', 'MOBILE NAVAL' } },
             { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { ExperimentalCount, categories.MOBILE * categories.NAVAL * categories.EXPERIMENTAL }},
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Sea',
     },
@@ -123,6 +128,7 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL', '<=', 'MOBILE NAVAL' } },
             { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { ExperimentalCount, categories.MOBILE * categories.NAVAL * categories.EXPERIMENTAL }},
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Sea',
     },
@@ -141,6 +147,7 @@ BuilderGroup {
 --            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL', '<=', 'MOBILE NAVAL' } },
             { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { ExperimentalCount, categories.MOBILE * categories.NAVAL * categories.EXPERIMENTAL }},
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Sea',
     },
@@ -159,6 +166,7 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL', '<=', 'MOBILE NAVAL' } },
             { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { ExperimentalCount, categories.MOBILE * categories.NAVAL * categories.EXPERIMENTAL }},
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Sea',
     },
@@ -177,6 +185,7 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL', '<=', 'MOBILE NAVAL' } },
             { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { ExperimentalCount, categories.MOBILE * categories.NAVAL * categories.EXPERIMENTAL }},
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Sea',
     },
@@ -197,6 +206,7 @@ BuilderGroup {
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL', '<=', 'MOBILE NAVAL' } },
             { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Sea',
     },
@@ -214,6 +224,7 @@ BuilderGroup {
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL', '<=', 'MOBILE NAVAL' } },
             { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Sea',
     },
@@ -231,6 +242,7 @@ BuilderGroup {
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL', '<=', 'MOBILE NAVAL' } },
             { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Sea',
     },
@@ -248,6 +260,7 @@ BuilderGroup {
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL', '<=', 'MOBILE NAVAL' } },
             { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Sea',
     },
@@ -265,6 +278,7 @@ BuilderGroup {
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL', '<=', 'MOBILE NAVAL' } },
             { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Sea',
     },

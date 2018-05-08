@@ -267,7 +267,7 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
             local retUnit = false
             local distance = maxRange
             local path, reason
-            --LOG('* AIFindNearestCategoryTargetInRange: numTargets '..table.getn(TargetsInBaseRange[TargetSearchCategory])..'  ')
+            --LOG('* AIFindNearestCategoryTargetInRange: numTargets '..table.getn(TargetsInBaseRange)..'  ')
             for num, unit in TargetsInBaseRange do
                 if not ValidateLayer(unit:GetPosition(),platoon.MovementLayer) then continue end
                 if enemyBrain and enemyIndex and enemyBrain ~= enemyIndex then continue end
@@ -275,13 +275,14 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
                     local targetRange = Utils.XZDistanceTwoVectors(position, unit:GetPosition())
                     if targetRange < distance then
                         path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, platoon.MovementLayer, platoon:GetPlatoonPosition(), unit:GetPosition(), platoon.PlatoonData.NodeWeight or 10 )
-                        if path then
+                        if path or reason == 'NoGraph' then
                             retUnit = unit
                             distance = targetRange
                             --LOG('* AIFindNearestNavalCategoryTargetInRange: Possible target. distance '..distance..'  ')
                         else
+                            --LOG('* AIFindNearestNavalCategoryTargetInRange: no path to target reason '..reason..'  ')
                             if reason != 'NoPath' then
-                                --LOG('* AIFindNearestNavalCategoryTargetInRange: Bad Target. reason '..reason..'  ')
+                                LOG('* AIFindNearestNavalCategoryTargetInRange: Bad Target. reason '..reason..'  ')
                             end
                         end
                     end
@@ -347,7 +348,7 @@ function AIFindNearestNavalCategoryTargetInRange(aiBrain, platoon, squad, positi
                     local targetRange = Utils.XZDistanceTwoVectors(position, unit:GetPosition())
                     if targetRange < distance then
                         path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, platoon.MovementLayer, platoon:GetPlatoonPosition(), unit:GetPosition(), platoon.PlatoonData.NodeWeight or 10 )
-                        if path then
+                        if path or reason == 'NoGraph' then
                             retUnit = unit
                             distance = targetRange
                             --LOG('* AIFindNearestNavalCategoryTargetInRange: Possible target. distance '..distance..'  ')

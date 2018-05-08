@@ -34,6 +34,7 @@ BuilderGroup {
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Land',
     },
@@ -49,6 +50,7 @@ BuilderGroup {
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Land',
     },
@@ -64,6 +66,7 @@ BuilderGroup {
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Land',
     },
@@ -83,6 +86,7 @@ BuilderGroup {
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Land',
     },
@@ -101,6 +105,7 @@ BuilderGroup {
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Land',
     },
@@ -172,6 +177,7 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.8, 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE', '<=', 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE' } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
     },
     Builder {
@@ -188,6 +194,7 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.8, 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE', '<=', 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE' } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
     },
     Builder {
@@ -204,6 +211,7 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.8, 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE', '<=', 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE' } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
     },
     Builder {
@@ -220,6 +228,7 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.8, 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE', '<=', 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE' } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
     },
     Builder {
@@ -237,6 +246,7 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.8, 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE', '<=', 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE' } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Land',
     },
@@ -257,6 +267,7 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.8, 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE', '<=', 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE' } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Land',
     },
@@ -274,6 +285,7 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.8, 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE', '<=', 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE' } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Land',
     },
@@ -291,6 +303,7 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.8, 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE', '<=', 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE' } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Land',
     },
@@ -308,6 +321,7 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.8, 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE', '<=', 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE' } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Land',
     },
@@ -325,6 +339,7 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.8, 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE', '<=', 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE' } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Land',
     },
@@ -342,6 +357,7 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.8, 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE', '<=', 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE' } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Land',
     },
@@ -378,7 +394,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U123 PANIC 2 5',                          -- Random Builder Name.
         PlatoonTemplate = 'LandAttackInterceptUveso 2 5',       -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
-        Priority = 1000,                                        -- Priority. 1000 is normal.
+        Priority = 1100,                                        -- Priority. 1000 is normal.
         InstanceCount = 20,                                     -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BasePanicZone,                       -- Searchradius for new target.
@@ -429,7 +445,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U123 EnemyZone 10 10',                    -- Random Builder Name.
         PlatoonTemplate = 'LandAttackHuntUveso 10 10',          -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
-        Priority = 1000,                                        -- Priority. 1000 is normal.
+        Priority = 900,                                        -- Priority. 1000 is normal.
         InstanceCount = 10,                                     -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                               -- Searchradius for new target.
@@ -448,7 +464,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U123 AntiMass SingleHunt',               -- Random Builder Name.
         PlatoonTemplate = 'LandAttackHuntUveso 2 2',            -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
-        Priority = 1200,                                        -- Priority. 1000 is normal.
+        Priority = 900,                                        -- Priority. 1000 is normal.
         InstanceCount = 3,                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
@@ -472,16 +488,41 @@ BuilderGroup {
     --    Finish him!    --
     -- ================= --
     Builder {
-        BuilderName = 'U123 Land Kill Them All!!! 10 10',
-        PlatoonTemplate = 'LandAttackInterceptUveso 2 5',       -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
-        Priority = 1200,                                        -- Priority. 1000 is normal.
+        BuilderName = 'U123 Kill Them All!!! STR 10 10',
+        PlatoonTemplate = 'LandAttackHuntUveso 10 10',          -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
+        Priority = 800,                                        -- Priority. 1000 is normal.
         InstanceCount = 20,                                     -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
             RequireTransport = false,                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = false,                             -- If true, the unit will attack everything while moving to the target.
             IgnoreGroundDefense = false,                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
-            TargetSearchCategory = categories.MOBILE * categories.LAND - categories.SCOUT, -- Only find targets matching these categories.
+            TargetSearchCategory = categories.STUCTURE,         -- Only find targets matching these categories.
+            PrioritizedCategories = {                           -- Attack these targets.
+                'DEFENSE',
+                'ALLUNITS',
+            },
+        },
+        BuilderConditions = {                                   -- platoon will be formed if all conditions are true
+            -- When do we want to build this ?
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , 'STUCTURE' } },
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+        },
+        BuilderType = 'Any',                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
+    },
+    Builder {
+        BuilderName = 'U123 Kill Them All!!! MOB 10 10',
+        PlatoonTemplate = 'LandAttackHuntUveso 10 10',          -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
+        Priority = 800,                                        -- Priority. 1000 is normal.
+        InstanceCount = 20,                                     -- Number of plattons that will be formed.
+        BuilderData = {
+            SearchRadius = 10000,                               -- Searchradius for new target.
+            RequireTransport = false,                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
+            AggressiveMove = false,                             -- If true, the unit will attack everything while moving to the target.
+            IgnoreGroundDefense = false,                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
+            TargetSearchCategory = categories.MOBILE * categories.LAND, -- Only find targets matching these categories.
             PrioritizedCategories = {                           -- Attack these targets.
                 'EXPERIMENTAL',
                 'MOBILE LAND',
@@ -491,7 +532,6 @@ BuilderGroup {
         },
         BuilderConditions = {                                   -- platoon will be formed if all conditions are true
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.5, 'MOBILE -ENGINEER', '>', 'MOBILE -ENGINEER' } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             -- Don't build it if...

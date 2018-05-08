@@ -21,7 +21,7 @@ BuilderGroup {
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 800,
         DelayEqualBuildPlattons = {'Experimental', 10},
-        InstanceCount = 3,
+        InstanceCount = 2,
         BuilderConditions = {
             -- When do we want to build this ?
             { EBC, 'GreaterThanEconTrend', { 2.0, 300.0 } }, -- relative income
@@ -33,8 +33,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconEfficiencyOverTime', { 1.0, 1.0 }}, -- relative baseincome 0=bad, 1=ok, 2=full
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'Experimental' }},
-            { UCBC, 'UnitCapCheckLess', { 0.98 } },
-        },
+       },
         BuilderType = 'Any',
         BuilderData = {
             Construction = {
@@ -66,7 +65,6 @@ BuilderGroup {
             { EBC, 'GreaterThanEconEfficiencyOverTime', { 1.0, 1.0 }}, -- relative baseincome 0=bad, 1=ok, 2=full
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'Experimental' }},
-            { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -347,7 +345,7 @@ BuilderGroup {
         --PlatoonAddPlans = {'NameUnitsSorian'},
         PlatoonTemplate = 'T4ExperimentalLandUveso 1 1',
         Priority = 1600,                                        -- Priority. 1000 is normal.
-        InstanceCount = 2,                                      -- Number of plattons that will be formed.
+        InstanceCount = 1,                                      -- Number of plattons that will be formed.
         FormRadius = 10000,
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                    -- Searchradius for new target.
@@ -371,7 +369,7 @@ BuilderGroup {
         PlatoonTemplate = 'U4-ExperimentalInterceptor 1 1',
         --PlatoonAddPlans = {'NameUnitsSorian'},
         Priority = 1500,                                        -- Priority. 1000 is normal.
-        InstanceCount = 2,                                      -- Number of plattons that will be formed.
+        InstanceCount = 1,                                      -- Number of plattons that will be formed.
         FormRadius = 10000,
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                        -- Searchradius for new target.
@@ -397,31 +395,6 @@ BuilderGroup {
     --    EnemyZone    --
     -- =============== --
     Builder {
-        BuilderName = 'U4 EnemyZone Mass',
-        --PlatoonAddPlans = {'NameUnitsSorian'},
-        PlatoonTemplate = 'T4ExperimentalLandGroupUveso 2 2',
-        Priority = 1500,                                        -- Priority. 1000 is normal.
-        InstanceCount = 1,                                      -- Number of plattons that will be formed.
-        FormRadius = 10000,
-        BuilderData = {
-            SearchRadius = 10000,                               -- Searchradius for new target.
-            GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
-            UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
-            TargetSearchCategory = 'STRUCTURE, MOBILE LAND',    -- Only find targets matching these categories.
-            PrioritizedCategories = {
-                'MOBILE LAND EXPERIMENTAL',
-                'MASSEXTRACTION',
-                'LAND ANTIAIR',
-                'STRUCTURE',
-                'ALLUNITS',
-            },
-        },
-        BuilderConditions = {                                   -- platoon will be formed if all conditions are true
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 3, categories.EXPERIMENTAL * categories.MOBILE * categories.LAND } },
-        },
-        BuilderType = 'Any',                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
-    },
-     Builder {
         BuilderName = 'U-T4 EnemyZone AntiNUKE',
         --PlatoonAddPlans = {'NameUnitsSorian'},
         PlatoonTemplate = 'T4ExperimentalLandGroupUveso 2 2',
@@ -489,18 +462,10 @@ BuilderGroup {
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
             UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
             IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
-            TargetSearchCategory = 'STRUCTURE, MOBILE',         -- Only find targets matching these categories.
+            TargetSearchCategory = 'STRUCTURE',                 -- Only find targets matching these categories.
             PrioritizedCategories = {
-                'MOBILE AIR EXPERIMENTAL',
-                'MOBILE LAND EXPERIMENTAL',
-                'LAND ANTIAIR',
-                'STRUCTURE DEFENSE ANTIMISSILE TECH3',
-                'STRUCTURE ARTILLERY',
-                'STRUCTURE NUKE',
-                'STRUCTURE ENERGYPRODUCTION',
-                'STRUCTURE',
-                'LAND',
-                'AIR',
+                'ANTIAIR',
+                'ENERGYPRODUCTION',
                 'ALLUNITS',
             },
         },
@@ -517,7 +482,7 @@ BuilderGroup {
         --PlatoonAddPlans = {'NameUnitsSorian'},
         PlatoonTemplate = 'T4ExperimentalLandGroupUveso 2 2',
         Priority = 1600,                                        -- Priority. 1000 is normal.
-        InstanceCount = 20,                                     -- Number of plattons that will be formed.
+        InstanceCount = 4,                                     -- Number of plattons that will be formed.
         FormRadius = 10000,
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
@@ -533,9 +498,9 @@ BuilderGroup {
         },
         BuilderConditions = {                                   -- platoon will be formed if all conditions are true
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.5, 'MOBILE', '>', 'MOBILE' } },
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 3, categories.EXPERIMENTAL * categories.MOBILE * categories.LAND } },
             -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, categories.EXPERIMENTAL * categories.MOBILE * categories.LAND } },
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , 'STRUCTURE' } },
             -- Have we the eco to build it ?
             -- Don't build it if...
         },
@@ -546,7 +511,7 @@ BuilderGroup {
         PlatoonTemplate = 'U4-ExperimentalInterceptor 1 1',
         --PlatoonAddPlans = {'NameUnitsSorian'},
         Priority = 1500,                                        -- Priority. 1000 is normal.
-        InstanceCount = 20,                                     -- Number of plattons that will be formed.
+        InstanceCount = 15,                                      -- Number of plattons that will be formed.
         FormRadius = 10000,
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
@@ -562,10 +527,9 @@ BuilderGroup {
         },
         BuilderConditions = {                                   -- platoon will be formed if all conditions are true
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.5, 'MOBILE', '>', 'MOBILE' } },
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, categories.EXPERIMENTAL * categories.MOBILE * categories.AIR } },
             -- Do we need additional conditions to build it ?
             { UCBC, 'UnitsGreaterAtEnemy', { 0 , 'STRUCTURE' } },
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.EXPERIMENTAL * categories.MOBILE * categories.AIR } },
             -- Have we the eco to build it ?
             -- Don't build it if...
         },

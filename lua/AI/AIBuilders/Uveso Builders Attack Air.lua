@@ -32,6 +32,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Air',
     },
@@ -48,6 +49,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.25}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Air',
     },
@@ -66,6 +68,7 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.3, 'MOBILE AIR', '<=', 'MOBILE AIR' } },
             { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.STRUCTURE *categories.FACTORY * categories.AIR * categories.TECH3 }},
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Air',
     },
@@ -87,6 +90,7 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.STRUCTURE *categories.FACTORY * categories.AIR * categories.TECH3 }},
             { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE AIR GROUNDATTACK', '<','MOBILE AIR HIGHALTAIR ANTIAIR' } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Air',
     },
@@ -108,6 +112,7 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.STRUCTURE *categories.FACTORY * categories.AIR * categories.TECH3 }},
             { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE AIR BOMBER', '<','MOBILE AIR HIGHALTAIR ANTIAIR' } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Air',
     },
@@ -130,6 +135,7 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.STRUCTURE *categories.FACTORY * categories.AIR * categories.TECH3 }},
             { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE AIR ANTIAIR BOMBER', '<','MOBILE AIR HIGHALTAIR ANTIAIR'} },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Air',
     },
@@ -151,6 +157,7 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.STRUCTURE *categories.FACTORY * categories.AIR * categories.TECH3 }},
             { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE AIR GROUNDATTACK', '<','MOBILE AIR HIGHALTAIR ANTIAIR' } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Air',
     },
@@ -170,6 +177,7 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, 'MOBILE NAVAL', '<=', 'NAVAL' } },
             { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE AIR ANTINAVY', '<','MOBILE AIR HIGHALTAIR ANTIAIR' } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Air',
     },
@@ -188,6 +196,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.99}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE AIR ANTINAVY', '<','MOBILE AIR HIGHALTAIR ANTIAIR' } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Air',
     },
@@ -218,6 +227,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.99}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Air',
     },
@@ -234,6 +244,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.99}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Air',
     },
@@ -252,6 +263,7 @@ BuilderGroup {
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE AIR GROUNDATTACK', '<','MOBILE AIR HIGHALTAIR ANTIAIR' } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Air',
     },
@@ -270,6 +282,7 @@ BuilderGroup {
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE AIR GROUNDATTACK', '<','MOBILE AIR HIGHALTAIR ANTIAIR' } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Air',
     },
@@ -288,6 +301,7 @@ BuilderGroup {
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE AIR BOMBER', '<','MOBILE AIR HIGHALTAIR ANTIAIR' } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Air',
     },
@@ -306,6 +320,7 @@ BuilderGroup {
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE AIR ANTINAVY', '<','MOBILE AIR HIGHALTAIR ANTIAIR' } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Air',
     },
@@ -666,6 +681,7 @@ BuilderGroup {
             IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'STRUCTURE',                 -- Only find targets matching these categories.
             PrioritizedCategories = {
+                'ANTIAIR',
                 'STRUCTURE ANTIAIR',
                 'STRUCTURE',
                 'ALLUNITS',
@@ -692,6 +708,7 @@ BuilderGroup {
             IgnoreAntiAir = 3,                                  -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'NAVAL',                     -- Only find targets matching these categories.
             PrioritizedCategories = {
+                'ANTIAIR',
                 'NAVAL ANTIAIR',
                 'NAVAL DEFENSE',
                 'MOBILE NAVAL',
@@ -752,6 +769,7 @@ BuilderGroup {
             IgnoreAntiAir = 10,                                 -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'STRUCTURE',                 -- Only find targets matching these categories.
             PrioritizedCategories = {
+                'ANTIAIR',
                 'STRUCTURE ANTIAIR',
                 'STRUCTURE',
                 'ALLUNITS',
@@ -779,7 +797,7 @@ BuilderGroup {
             IgnoreAntiAir = 1,                                  -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'STRUCTURE, MOBILE LAND',    -- Only find targets matching these categories.
             PrioritizedCategories = {
-                'STRUCTURE ANTIAIR',
+                'ANTIAIR',
                 'STRUCTURE',
                 'MOBILE LAND ANTIAIR',
                 'MOBILE LAND INDIRECTFIRE',
@@ -880,6 +898,7 @@ BuilderGroup {
             IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'MOBILE AIR',                -- Only find targets matching these categories.
             PrioritizedCategories = {
+                'ANTIAIR',
                 'EXPERIMENTAL',
                 'TECH3',
                 'TECH2',
@@ -904,6 +923,7 @@ BuilderGroup {
             IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'STRUCTURE',                 -- Only find targets matching these categories.
             PrioritizedCategories = {
+                'ANTIAIR',
                 'STRUCTURE DEFENSE ANTIMISSILE TECH3',
                 'STRUCTURE ARTILLERY',
                 'STRUCTURE NUKE',
@@ -931,6 +951,7 @@ BuilderGroup {
             IgnoreAntiAir = false,                         -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'MOBILE AIR',              -- Only find targets matching these categories.
             PrioritizedCategories = {
+                'ANTIAIR',
                 'EXPERIMENTAL',
                 'TECH3',
                 'TECH2',
@@ -955,6 +976,7 @@ BuilderGroup {
             IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'MOBILE LAND, STRUCTURE',    -- Only find targets matching these categories.
             PrioritizedCategories = {
+                'ANTIAIR',
                 'STRUCTURE DEFENSE ANTIMISSILE TECH3',
                 'STRUCTURE ARTILLERY',
                 'STRUCTURE NUKE',
@@ -983,6 +1005,7 @@ BuilderGroup {
             IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'MOBILE AIR',                -- Only find targets matching these categories.
             PrioritizedCategories = {
+                'ANTIAIR',
                 'MOBILE AIR EXPERIMENTAL',
                 'MOBILE AIR BOMBER',
                 'MOBILE AIR ANTIAIR HIGHALTAIR',
@@ -1013,6 +1036,7 @@ BuilderGroup {
             IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'STRUCTURE, MOBILE LAND',    -- Only find targets matching these categories.
             PrioritizedCategories = {
+                'ANTIAIR',
                 'MOBILE LAND EXPERIMENTAL',
                 'STRUCTURE DEFENSE ANTIMISSILE TECH3',
                 'STRUCTURE ARTILLERY',
@@ -1043,6 +1067,7 @@ BuilderGroup {
             IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'STRUCTURE NAVAL, MOBILE NAVAL',-- Only find targets matching these categories.
             PrioritizedCategories = {
+                'ANTIAIR',
                 'ALLUNITS',
             },
         },

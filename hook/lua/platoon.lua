@@ -808,6 +808,7 @@ Platoon = Class(oldPlatoon) {
         local GetTargetsFromBase = self.PlatoonData.GetTargetsFromBase or true
         local GetTargetsFrom = basePosition
         local TargetSearchCategory = self.PlatoonData.TargetSearchCategory or 'ALLUNITS'
+        local LastTargetCheck
         while aiBrain:PlatoonExists(self) do
             if self:IsOpponentAIRunning() then
                 PlatoonPos = self:GetPlatoonPosition()
@@ -906,7 +907,6 @@ Platoon = Class(oldPlatoon) {
         local lastPlatoonPos = table.copy(PlatoonPos)
         local LastPositionCheck = GetGameTimeSeconds()
         local LastTargetPos = PlatoonPos
-        local LastTargetCheck = GetGameTimeSeconds()
         local DistanceToTarget = 0
         local basePosition = aiBrain.BuilderManagers['MAIN'].Position
         local IgnoreGroundDefense = self.PlatoonData.IgnoreGroundDefense
@@ -919,15 +919,13 @@ Platoon = Class(oldPlatoon) {
                     target = AIUtils.AIFindNearestCategoryTargetInRange(aiBrain, self, 'Attack', PlatoonPos, maxRadius, PrioritizedTargetList, TargetSearchCategory, false )
                     if target then
                         --LOG('* AttackPrioritizedLandTargetsAIUveso: Target!.')
-                        LastTargetCheck = GetGameTimeSeconds()
                         LastTargetPos = table.copy(target:GetPosition())
                         DistanceToTarget = VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, LastTargetPos[1] or 0, LastTargetPos[3] or 0)
                         local GroundDefenseUnitsAtTargetPos = aiBrain:GetNumUnitsAroundPoint( (categories.STRUCTURE + categories.MOBILE) * (categories.DIRECTFIRE + categories.DIRECTFIRE) , LastTargetPos, 60, 'Enemy' )
                         --LOG("* AttackPrioritizedLandTargetsAIUveso: GroundDefenseUnitsAtTargetPos: " .. GroundDefenseUnitsAtTargetPos)
-                        if DistanceToTarget < 50 then
+                        if DistanceToTarget < 30 then
                             --LOG('* AttackPrioritizedLandTargetsAIUveso: AttackTarget! DistanceToTarget:'..DistanceToTarget)
-                            self:MoveToLocation(LastTargetPos, false)
-                            --self:AttackTarget(target)
+                            self:AttackTarget(target)
                         elseif IgnoreGroundDefense and GroundDefenseUnitsAtTargetPos > IgnoreGroundDefense then
                             --LOG('* AttackPrioritizedLandTargetsAIUveso: SimpleReturnToMainBase() (GroundDefenseUnitsAtTargetPos = '..GroundDefenseUnitsAtTargetPos..' )')
                             self:SimpleReturnToMainBase(basePosition)
@@ -942,21 +940,26 @@ Platoon = Class(oldPlatoon) {
                         self:ForceReturnToNearestBaseAIUveso()
                     end
                 else
+                    LastTargetPos = table.copy(target:GetPosition())
                     DistanceToTarget = VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, LastTargetPos[1] or 0, LastTargetPos[3] or 0)
+                    -- if we have moved to our destination and the target is not close, take a new target
+                    if DistanceToTarget >=30 then
+                        target = nil
+                    end                    
                     --LOG('* AttackPrioritizedLandTargetsAIUveso: Target Valid. range to target:'..DistanceToTarget..' - '.. LastPositionCheck + 30 - GetGameTimeSeconds() )
                     if LastPositionCheck + 30 < GetGameTimeSeconds() then
                         if PlatoonPos[1] == lastPlatoonPos[1] and PlatoonPos[3] == lastPlatoonPos[3] then
-                            LOG('* AttackPrioritizedLandTargetsAIUveso: We are stucked! Range to target:'..DistanceToTarget..' - time: '.. LastPositionCheck + 30 - GetGameTimeSeconds() )
+                            --LOG('* AttackPrioritizedLandTargetsAIUveso: We are stucked! Range to target:'..DistanceToTarget..' - time: '.. LastPositionCheck + 30 - GetGameTimeSeconds() )
                             self:ForceReturnToNearestBaseAIUveso()
                         else
                             --LOG('* AttackPrioritizedLandTargetsAIUveso: We are Ok, move on!')
+                            target = nil
                         end
                         lastPlatoonPos = table.copy(PlatoonPos)
                         LastPositionCheck = GetGameTimeSeconds()
                     end
                 end
             end
-            --LOG('* AttackPrioritizedLandTargetsAIUveso: WaitSeconds(3)')
             WaitSeconds(3)
         end
     end,
@@ -995,7 +998,9 @@ Platoon = Class(oldPlatoon) {
         local maxRadius = self.PlatoonData.SearchRadius or 250
         local TargetSearchCategory = self.PlatoonData.TargetSearchCategory or 'ALLUNITS'
         local PlatoonPos = self:GetPlatoonPosition()
+        local lastPlatoonPos = table.copy(PlatoonPos)
         local LastTargetPos = PlatoonPos
+        local LastPositionCheck = GetGameTimeSeconds()
         local DistanceToTarget = 0
         local DistanceToBase = 0
         local basePosition = PlatoonPos   -- Platoons will be created near a base, so we can return to this position if we don't have targets.
@@ -1003,16 +1008,12 @@ Platoon = Class(oldPlatoon) {
         while aiBrain:PlatoonExists(self) do
             if self:IsOpponentAIRunning() then
                 PlatoonPos = self:GetPlatoonPosition()
-                if target and not target.Dead then
-                    DistanceToTarget = VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, LastTargetPos[1] or 0, LastTargetPos[3] or 0)
-                end
                 -- only get a new target and make a move command if the target is dead or after 10 seconds
-                if DistanceToTarget < 10 or not target or target.Dead or LastTargetCheck + 3 < GetGameTimeSeconds() then
+                if not target or target.Dead then
                     --LOG('* AttackPrioritizedSeaTargetsAIUveso: Targetting...')
                     target = AIUtils.AIFindNearestNavalCategoryTargetInRange(aiBrain, self, 'Attack', PlatoonPos, maxRadius, PrioritizedTargetList, TargetSearchCategory, false )
                     if target then
                         --LOG('* AttackPrioritizedSeaTargetsAIUveso: Target!.')
-                        LastTargetCheck = GetGameTimeSeconds()
                         LastTargetPos = table.copy(target:GetPosition())
                         DistanceToTarget = VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, LastTargetPos[1] or 0, LastTargetPos[3] or 0)
                         local GroundDefenseUnitsAtTargetPos = aiBrain:GetNumUnitsAroundPoint( (categories.STRUCTURE + categories.MOBILE) * (categories.DIRECTFIRE + categories.DIRECTFIRE) , LastTargetPos, 60, 'Enemy' )
@@ -1047,7 +1048,7 @@ Platoon = Class(oldPlatoon) {
                                         PlatoonPosition = self:GetPlatoonPosition()
                                         dist = VDist2( path[i][1], path[i][3], PlatoonPosition[1], PlatoonPosition[3] )
                                         -- are we closer then 15 units from the next marker ? Then break and move to the next marker
-                                        if dist < 25 then
+                                        if dist < 50 then
                                             break
                                         end
                                         -- Do we move ?
@@ -1092,19 +1093,26 @@ Platoon = Class(oldPlatoon) {
                     else
                         -- we have no target return to main base
                         --LOG('* AttackPrioritizedSeaTargetsAIUveso: Return to MainBase (no target)')
-                        DistanceToBase = VDist2(PlatoonPos[1], PlatoonPos[3], basePosition[1], basePosition[3])
-                        if DistanceToBase > 30 then
-                            self:ForceReturnToNavalBaseAIUveso(aiBrain, basePosition)
-                        end
+                        self:ForceReturnToNavalBaseAIUveso(aiBrain, basePosition)
                     end
                 else
-                    --LOG('* AttackPrioritizedSeaTargetsAIUveso: Target Valid. range to target:'..DistanceToTarget..' - '.. LastTargetCheck - GetGameTimeSeconds() +10 )
-                    if LastTargetCheck + 15 < GetGameTimeSeconds() then
-                        --LOG('* AttackPrioritizedSeaTargetsAIUveso: We are stucked! Return to MainBase.')
-                        DistanceToBase = VDist2(PlatoonPos[1], PlatoonPos[3], basePosition[1], basePosition[3])
-                        if DistanceToBase > 30 then
-                            self:ForceReturnToNavalBaseAIUveso(aiBrain, basePosition)
+                    LastTargetPos = table.copy(target:GetPosition())
+                    DistanceToTarget = VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, LastTargetPos[1] or 0, LastTargetPos[3] or 0)
+                    -- if we have moved to our destination and the target is not close, take a new target
+                    if DistanceToTarget >=30 then
+                        target = nil
+                    end                    
+                    --LOG('* AttackPrioritizedSeaTargetsAIUveso: Target Valid. range to target:'..DistanceToTarget..' - '.. LastPositionCheck - GetGameTimeSeconds() +10 )
+                    if LastPositionCheck + 30 < GetGameTimeSeconds() then
+                        if PlatoonPos[1] == lastPlatoonPos[1] and PlatoonPos[3] == lastPlatoonPos[3] then
+                            --LOG('* AttackPrioritizedLandTargetsAIUveso: We are stucked! Range to target:'..DistanceToTarget..' - time: '.. LastPositionCheck + 30 - GetGameTimeSeconds() )
+                            self:ForceReturnToNearestBaseAIUveso()
+                        else
+                            --LOG('* AttackPrioritizedLandTargetsAIUveso: We are Ok, move on!')
+                            target = nil
                         end
+                        lastPlatoonPos = table.copy(PlatoonPos)
+                        LastPositionCheck = GetGameTimeSeconds()
                     end
                 end
             end
@@ -1118,22 +1126,14 @@ Platoon = Class(oldPlatoon) {
             TargetPosition = table.copy(target:GetPosition())
         end
         local aiBrain = self:GetBrain()
-        
         -- this will be true if we got our units transported to the destination
         local usedTransports = false
         local TransportNotNeeded, bestGoalPos
         -- check, if we can reach the destination without a transport
         local unit = AIAttackUtils.GetMostRestrictiveLayer(self) -- this will set self.MovementLayer to the platoon
         local path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, self.MovementLayer or 'Land' , self:GetPlatoonPosition(), TargetPosition, 1000, 512)
-        --LOG('* MoveToLocationInclTransport: PlatoonGenerateSafePathTo: '..repr(reason))
         if not aiBrain:PlatoonExists(self) then
-            --LOG('* MoveToLocationInclTransport: Unit died on his way to the destination.')
             return
-        end
-        if path then
-            --LOG('* MoveToLocationInclTransport: Land Path found. no transport needed.')
-        else
-            --LOG('* MoveToLocationInclTransport: No Path found. Transport needed!!')
         end
         -- use a transporter if we don't have a path, or if we want a transport
         if not ExperimentalInPlatoon and ((not path and reason ~= 'NoGraph') or WantsTransport)  then
@@ -1149,7 +1149,6 @@ Platoon = Class(oldPlatoon) {
                 if table.getn(path) > 1 then
                     --LOG('* MoveToLocationInclTransport: table.getn(path): '..table.getn(path))
                 end
-                --LOG('* MoveToLocationInclTransport: moving to destination by path.')
                 for i=1, table.getn(path) do
                     --LOG('* MoveToLocationInclTransport: moving to destination. i: '..i..' coords '..repr(path[i]))
                     if bAggroMove then
@@ -1157,7 +1156,6 @@ Platoon = Class(oldPlatoon) {
                     else
                         self:MoveToLocation(path[i], false)
                     end
-                    --LOG('* MoveToLocationInclTransport: moving to Waypoint')
                     local PlatoonPosition
                     local Lastdist
                     local dist
@@ -1165,6 +1163,7 @@ Platoon = Class(oldPlatoon) {
                     while aiBrain:PlatoonExists(self) do
                         PlatoonPosition = self:GetPlatoonPosition() or {0,0,0}
                         dist = VDist2( path[i][1], path[i][3], PlatoonPosition[1], PlatoonPosition[3] )
+                        --LOG('* MoveToLocationInclTransport: dist to next Waypoint: '..dist)
                         -- are we closer then 20 units from the next marker ? Then break and move to the next marker
                         if dist < 20 then
                             break
@@ -1179,7 +1178,7 @@ Platoon = Class(oldPlatoon) {
                             if Stuck > 20 then
                                 --LOG('* MoveToLocationInclTransport: Stucked while moving to Waypoint. Stuck='..Stuck..' - '..repr(path[i]))
                                 self:Stop()
-                                break
+                                break -- break the while aiBrain:PlatoonExists(self) do loop and move to the next waypoint
                             end
                         end
                         -- If we lose our target, stop moving to it.
@@ -1518,17 +1517,18 @@ Platoon = Class(oldPlatoon) {
             ---------------------------------------------------------------------------------------------------
             local EnemyAntiMissile = aiBrain:GetUnitsAroundPoint(categories.STRUCTURE * (categories.DEFENSE * categories.ANTIMISSILE * categories.TECH3) + (categories.SHIELD * categories.EXPERIMENTAL), Vector(mapSizeX/2,0,mapSizeZ/2), mapSizeX+mapSizeZ, 'Enemy')
             if (table.getn(EnemyAntiMissile) > 2 or aiBrain:GetEconomyStoredRatio('ENERGY') < 0.5 or aiBrain:GetEconomyStoredRatio('MASS') < 0.5) and not aiBrain.HasParagon then
-                -- We don't want to attack. Save the eco and disable all launchers.
+                -- We don't want to attack. Save the eco and disable launchers.
                 --LOG('* NukePlatoonAI: Too much Antimissiles or low mass/energy, deactivating all nuke launchers')
                 for k,Launcher in platoonUnits do
                     -- Check if the launcher is active
                     if not Launcher:IsPaused() then
                         -- yes, its active. Disable it.
                         Launcher:SetPaused( true )
+                        break
                     end
                 end
             else
-                -- Enemy has less then 3 Anti Missiles. Activate all nukes!
+                -- Enemy has less then 3 Anti Missiles. And we have good eco. Activate nukes!
                 --LOG('* NukePlatoonAI: Activating all nuke launchers')
                 for k,Launcher in platoonUnits do
                     if not Launcher or Launcher.Dead or Launcher:BeenDestroyed() then
@@ -1540,6 +1540,7 @@ Platoon = Class(oldPlatoon) {
                     if Launcher:IsPaused() then
                         -- yes, it's off. Turn it on.
                         Launcher:SetPaused( false )
+                        break
                     end
                 end
             
