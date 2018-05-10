@@ -955,7 +955,7 @@ Platoon = Class(oldPlatoon) {
                             LOG('* AttackPrioritizedLandTargetsAIUveso: We are stucked! Range to target:'..DistanceToTarget..' - time: '.. LastPositionCheck + 30 - GetGameTimeSeconds() )
                             self:ForceReturnToNearestBaseAIUveso()
                         else
-                            LOG('* AttackPrioritizedLandTargetsAIUveso: We are Ok, move on!')
+                            --LOG('* AttackPrioritizedLandTargetsAIUveso: We are Ok, move on!')
                             target = nil
                         end
                         lastPlatoonPos = table.copy(PlatoonPos)

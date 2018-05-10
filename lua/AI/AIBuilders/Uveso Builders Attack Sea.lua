@@ -7,7 +7,7 @@ local ExperimentalCount = 3
 local mapSizeX, mapSizeZ = GetMapSize()
 local BaseMilitaryZone = math.max( mapSizeX-50, mapSizeZ-50 ) / 2 -- Half the map
 local BasePanicZone = BaseMilitaryZone / 2
-BasePanicZone = math.max( 40, BasePanicZone )
+BasePanicZone = math.max( 60, BasePanicZone )
 BasePanicZone = math.min( 120, BasePanicZone )
 
 -- ===================================================-======================================================== --

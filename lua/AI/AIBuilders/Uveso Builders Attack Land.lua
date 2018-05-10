@@ -8,7 +8,7 @@ local MaxAttackForce = 0.45                                                     
 local mapSizeX, mapSizeZ = GetMapSize()
 local BaseMilitaryZone = math.max( mapSizeX-50, mapSizeZ-50 ) / 2               -- Half the map
 local BasePanicZone = BaseMilitaryZone / 2
-BasePanicZone = math.max( 40, BasePanicZone )
+BasePanicZone = math.max( 60, BasePanicZone )
 BasePanicZone = math.min( 120, BasePanicZone )
 LOG('* AI DEBUG: BasePanicZone= '..math.floor( BasePanicZone * 0.01953125 ) ..' Km - ('..BasePanicZone..' units)' )
 LOG('* AI DEBUG: BaseMilitaryZone= '..math.floor( BaseMilitaryZone * 0.01953125 )..' Km - ('..BaseMilitaryZone..' units)' )
@@ -430,7 +430,10 @@ BuilderGroup {
             IgnoreGroundDefense = false,                                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
             TargetSearchCategory = (categories.MOBILE * categories.LAND) + categories.STRUCTURE , -- Only find targets matching these categories.
             PrioritizedCategories = {                                           -- Attack these targets.
-                'EXPERIMENTAL',
+                'MOBILE LAND EXPERIMENTAL',
+                'MOBILE LAND',
+                'STRUCTURE LAND',
+                'STRUCTURE AIR',
                 'ALLUNITS',
             },
         },
@@ -454,7 +457,10 @@ BuilderGroup {
             IgnoreGroundDefense = false,                                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
             TargetSearchCategory = (categories.MOBILE * categories.LAND) + categories.STRUCTURE , -- Only find targets matching these categories.
             PrioritizedCategories = {                                           -- Attack these targets.
-                'EXPERIMENTAL',
+                'MOBILE LAND EXPERIMENTAL',
+                'MOBILE LAND',
+                'STRUCTURE LAND',
+                'STRUCTURE AIR',
                 'ALLUNITS',
             },
         },
