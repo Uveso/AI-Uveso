@@ -22,7 +22,11 @@ function CommanderThreadUveso(cdr, platoon)
         WaitTicks(2)
         -- Call platoon resume building deal...
         if not cdr:IsDead() and cdr:IsIdleState() then
-            if cdr.EngineerBuildQueue and table.getn(cdr.EngineerBuildQueue) != 0 then
+            if not cdr.EngineerBuildQueue or table.getn(cdr.EngineerBuildQueue) == 0 then
+                --LOG('* CommanderThreadUveso: Idle and no BuildQueue')
+                local pool = aiBrain:GetPlatoonUniquelyNamed('ArmyPool')
+                aiBrain:AssignUnitsToPlatoon( pool, {cdr}, 'Unassigned', 'None' )
+            elseif cdr.EngineerBuildQueue and table.getn(cdr.EngineerBuildQueue) != 0 then
                 --LOG('* CommanderThreadUveso: Idle and BuildQueue')
                 if not cdr.NotBuildingThread then
                     cdr.NotBuildingThread = cdr:ForkThread(platoon.WatchForNotBuilding)
@@ -36,7 +40,7 @@ end
 function CDRReturnHomeUveso(aiBrain, cdr)
     -- This is a reference... so it will autoupdate
     local cdrPos = cdr:GetPosition()
-    local distAway = 120
+    local distAway = 50
     local loc = cdr.CDRHome
     if not cdr.Dead and VDist2(cdrPos[1], cdrPos[3], loc[1], loc[3]) > distAway then
         repeat

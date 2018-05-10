@@ -792,10 +792,14 @@ Platoon = Class(oldPlatoon) {
         end
         self:SetPrioritizedTargetList('Attack', PrioritizedTargetList)
         local target
+        local path
+        local reason
         local DistanceToTarget = 0
         local IgnoreAntiAir = self.PlatoonData.IgnoreAntiAir
         local maxRadius = self.PlatoonData.SearchRadius or 100
         local PlatoonPos = self:GetPlatoonPosition()
+        local lastPlatoonPos = table.copy(PlatoonPos)
+        local LastPositionCheck = GetGameTimeSeconds()
         local LastTargetPos = PlatoonPos
         local basePosition
         if self.MovementLayer == 'Water' then
@@ -815,34 +819,20 @@ Platoon = Class(oldPlatoon) {
                 if not GetTargetsFromBase then
                     GetTargetsFrom = PlatoonPos
                 end
-                if target and not target.Dead then
-                    DistanceToTarget = VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, LastTargetPos[1] or 0, LastTargetPos[3] or 0)
-                end
-                -- only get a new target and make a move command if the target is dead or after 2 seconds
-                if DistanceToTarget < 20 or not target or target.Dead or LastTargetCheck + 1 < GetGameTimeSeconds() then
-                    --LOG('* InterceptorAIUveso: Targetting...')
-                    target = AIUtils.AIFindNearestCategoryTargetInRange(aiBrain, self, 'Attack', GetTargetsFrom, maxRadius, PrioritizedTargetList, TargetSearchCategory, false )
+                -- only get a new target and make a move command if the target is dead
+                if not target or target.Dead then
+                    target, AltTarget, path, reason = AIUtils.AIFindNearestCategoryTargetInRange(aiBrain, self, 'Attack', GetTargetsFrom, maxRadius, PrioritizedTargetList, TargetSearchCategory, false )
+                    --LOG('* InterceptorAIUveso: Targetting... recived retUnit, path, reason '..repr(reason)..'  ')
                     if target then
                         --LOG('* InterceptorAIUveso: Target!.')
-                        LastTargetCheck = GetGameTimeSeconds()
                         LastTargetPos = table.copy(target:GetPosition())
                         DistanceToTarget = VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, LastTargetPos[1] or 0, LastTargetPos[3] or 0)
-                        local AntiAirUnitsAtTargetPos = aiBrain:GetNumUnitsAroundPoint( (categories.STRUCTURE + categories.MOBILE) * categories.ANTIAIR , LastTargetPos, 60, 'Enemy' )
-                        --LOG("* InterceptorAIUveso: AntiAirUnitsAtTargetPos: " .. AntiAirUnitsAtTargetPos)
-
-                        if IgnoreAntiAir and AntiAirUnitsAtTargetPos > IgnoreAntiAir then
-                            --LOG('* InterceptorAIUveso: Return to MainBase (AntiAirUnitsAtTargetPos = '..AntiAirUnitsAtTargetPos..' )')
-                            self:Stop()
-                            self:SimpleReturnToMainBase(basePosition)
-                        elseif not self.PlatoonData.UseMoveOrder and not target.Dead then
+                        if not self.PlatoonData.UseMoveOrder and not target.Dead then
                             --LOG('* InterceptorAIUveso: AttackTarget! UseMoveOrder=false.')
-                            self:Stop()
-                            --self:MoveToLocation(LastTargetPos, false)
-                            self:AggressiveMoveToLocation(LastTargetPos)
-                            --self:AttackTarget(target)
+                            self:AttackTarget(target)
                         else
                             --LOG('* InterceptorAIUveso: MoveToLocation! UseMoveOrder=true.')
-                            self:Stop()
+                            --self:Stop()
                             self:MoveToLocation(LastTargetPos, false)
                         end
                     else
@@ -851,17 +841,25 @@ Platoon = Class(oldPlatoon) {
                         self:Stop()
                         self:SimpleReturnToMainBase(basePosition)
                     end
+                    LastTargetCheck = GetGameTimeSeconds()
+                    lastPlatoonPos = table.copy(PlatoonPos)
                 else
-                    --LOG('* InterceptorAIUveso: Target Valid. range to target:'..DistanceToTarget..' - '.. LastTargetCheck - GetGameTimeSeconds() +10 )
-                    if LastTargetCheck + 15 < GetGameTimeSeconds() then
-                        --LOG('* InterceptorAIUveso: We are stucked! Return to MainBase.')
-                        self:Stop()
-                        self:SimpleReturnToMainBase(basePosition)
+                    --LOG('* InterceptorAIUveso: Target Valid. range to target:'..DistanceToTarget..' - '.. LastPositionCheck + 30 - GetGameTimeSeconds() )
+                    if LastPositionCheck + 30 < GetGameTimeSeconds() then
+                        if PlatoonPos[1] == lastPlatoonPos[1] and PlatoonPos[3] == lastPlatoonPos[3] then
+                            --LOG('* InterceptorAIUveso: We are stucked! Range to target:'..DistanceToTarget..' - time: '.. LastPositionCheck + 30 - GetGameTimeSeconds() )
+                            self:ForceReturnToNearestBaseAIUveso()
+                        else
+                            --LOG('* InterceptorAIUveso: We are Ok, move on!')
+                            target = nil
+                        end
+                        lastPlatoonPos = table.copy(PlatoonPos)
+                        LastPositionCheck = GetGameTimeSeconds()
                     end
                 end
             end
             --LOG('* InterceptorAIUveso: WaitSeconds(3)')
-            WaitSeconds(1)
+            WaitSeconds(2)
         end
     end,
 
@@ -915,28 +913,33 @@ Platoon = Class(oldPlatoon) {
                 PlatoonPos = self:GetPlatoonPosition()
                 -- only get a new target and make a move command if the target is dead or after 10 seconds
                 if not target or target.Dead then
-                    --LOG('* AttackPrioritizedLandTargetsAIUveso: Targetting...')
-                    target = AIUtils.AIFindNearestCategoryTargetInRange(aiBrain, self, 'Attack', PlatoonPos, maxRadius, PrioritizedTargetList, TargetSearchCategory, false )
-                    if target then
+                    UnitWithPath, UnitNoPath, path, reason = AIUtils.AIFindNearestCategoryTargetInRange(aiBrain, self, 'Attack', PlatoonPos, maxRadius, PrioritizedTargetList, TargetSearchCategory, false )
+                    --LOG('* AttackPrioritizedLandTargetsAIUveso: Targetting... recived retUnit, path, reason '..repr(reason)..'  ')
+                    if UnitWithPath then
+                        self:Stop()
+                        target = UnitWithPath
                         --LOG('* AttackPrioritizedLandTargetsAIUveso: Target!.')
                         LastTargetPos = table.copy(target:GetPosition())
                         DistanceToTarget = VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, LastTargetPos[1] or 0, LastTargetPos[3] or 0)
-                        local GroundDefenseUnitsAtTargetPos = aiBrain:GetNumUnitsAroundPoint( (categories.STRUCTURE + categories.MOBILE) * (categories.DIRECTFIRE + categories.DIRECTFIRE) , LastTargetPos, 60, 'Enemy' )
-                        --LOG("* AttackPrioritizedLandTargetsAIUveso: GroundDefenseUnitsAtTargetPos: " .. GroundDefenseUnitsAtTargetPos)
                         if DistanceToTarget < 30 then
                             --LOG('* AttackPrioritizedLandTargetsAIUveso: AttackTarget! DistanceToTarget:'..DistanceToTarget)
                             self:AttackTarget(target)
-                        elseif IgnoreGroundDefense and GroundDefenseUnitsAtTargetPos > IgnoreGroundDefense then
-                            --LOG('* AttackPrioritizedLandTargetsAIUveso: SimpleReturnToMainBase() (GroundDefenseUnitsAtTargetPos = '..GroundDefenseUnitsAtTargetPos..' )')
-                            self:SimpleReturnToMainBase(basePosition)
+                        -- if we have a path then use the waypoints
+                        elseif path then
+                            self:MovePath(aiBrain, path, bAggroMove, target)
+                        -- if we dont have a path, but UnitWithPath is true, then we have no map markers but PathCanTo() found a direct path
                         else
-                            --LOG('* AttackPrioritizedLandTargetsAIUveso: MoveToLocationInclTransport() AggressiveMove='..repr(bAggroMove)..'. DistanceToTarget:'..DistanceToTarget)
-                            self:MoveToLocationInclTransport(target, false, bAggroMove, WantsTransport, basePosition, ExperimentalInPlatoon)
-                            --self:MoveToLocation(LastTargetPos, false)
+                            self:MoveDirect(aiBrain, bAggroMove, target)
                         end
+                    elseif UnitNoPath then
+                        self:Stop()
+                        target = UnitNoPath
+                        --LOG('* AttackPrioritizedLandTargetsAIUveso: MoveWithTransport() DistanceToTarget:'..DistanceToTarget)
+                        self:MoveWithTransport(bAggroMove, target, basePosition, ExperimentalInPlatoon)
                     else
                         -- we have no target return to main base
-                        --LOG('* AttackPrioritizedLandTargetsAIUveso: ForceReturnToNearestBaseAIUveso() (no target)')
+                        LOG('* AttackPrioritizedLandTargetsAIUveso: ForceReturnToNearestBaseAIUveso() (no target)')
+                        self:Stop()
                         self:ForceReturnToNearestBaseAIUveso()
                     end
                 else
@@ -949,10 +952,10 @@ Platoon = Class(oldPlatoon) {
                     --LOG('* AttackPrioritizedLandTargetsAIUveso: Target Valid. range to target:'..DistanceToTarget..' - '.. LastPositionCheck + 30 - GetGameTimeSeconds() )
                     if LastPositionCheck + 30 < GetGameTimeSeconds() then
                         if PlatoonPos[1] == lastPlatoonPos[1] and PlatoonPos[3] == lastPlatoonPos[3] then
-                            --LOG('* AttackPrioritizedLandTargetsAIUveso: We are stucked! Range to target:'..DistanceToTarget..' - time: '.. LastPositionCheck + 30 - GetGameTimeSeconds() )
+                            LOG('* AttackPrioritizedLandTargetsAIUveso: We are stucked! Range to target:'..DistanceToTarget..' - time: '.. LastPositionCheck + 30 - GetGameTimeSeconds() )
                             self:ForceReturnToNearestBaseAIUveso()
                         else
-                            --LOG('* AttackPrioritizedLandTargetsAIUveso: We are Ok, move on!')
+                            LOG('* AttackPrioritizedLandTargetsAIUveso: We are Ok, move on!')
                             target = nil
                         end
                         lastPlatoonPos = table.copy(PlatoonPos)
@@ -961,6 +964,116 @@ Platoon = Class(oldPlatoon) {
                 end
             end
             WaitSeconds(3)
+        end
+    end,
+
+    MoveWithTransport = function(self, bAggroMove, target, basePosition, ExperimentalInPlatoon)
+        local TargetPosition = table.copy(target:GetPosition())
+        --LOG('* MoveWithTransport: CanPathTo() failed for '..repr(TargetPosition)..' forcing SendPlatoonWithTransportsNoCheck.')
+        if not ExperimentalInPlatoon then
+            usedTransports = AIAttackUtils.SendPlatoonWithTransportsNoCheck(aiBrain, self, TargetPosition, true, false)
+        end
+        if not usedTransports then
+            LOG('* MoveWithTransport: SendPlatoonWithTransportsNoCheck failed.')
+            local PlatoonPos = self:GetPlatoonPosition()
+            local DistanceToTarget = VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, TargetPosition[1] or 0, TargetPosition[3] or 0)
+            local DistanceToBase = VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, basePosition[1] or 0, basePosition[3] or 0)
+            if DistanceToBase < DistanceToTarget or DistanceToTarget > 50 then
+                LOG('* MoveWithTransport: base is nearer then distance to target or distance to target over 50. Return To base')
+                self:SimpleReturnToMainBase(basePosition)
+            else
+                LOG('* MoveWithTransport: Direct move to Target')
+                if bAggroMove then
+                    self:AggressiveMoveToLocation(TargetPosition)
+                else
+                    self:MoveToLocation(TargetPosition, false)
+                end
+            end
+        else
+            LOG('* MoveWithTransport: We got a transport!!')
+        end
+    end,
+                    
+    MoveDirect = function(self, aiBrain, bAggroMove, target)
+        local TargetPosition = table.copy(target:GetPosition())
+        local PlatoonPosition
+        local Lastdist
+        local dist
+        local Stuck = 0
+        if bAggroMove then
+            self:AggressiveMoveToLocation(TargetPosition)
+        else
+            self:MoveToLocation(TargetPosition, false)
+        end
+        while aiBrain:PlatoonExists(self) do
+            PlatoonPosition = self:GetPlatoonPosition() or {0,0,0}
+            dist = VDist2( TargetPosition[1], TargetPosition[3], PlatoonPosition[1], PlatoonPosition[3] )
+            if dist < 20 then
+                break
+            end
+            -- Do we move ?
+            if Lastdist ~= dist then
+                Stuck = 0
+                Lastdist = dist
+            -- No, we are not moving, wait 100 ticks then break and use the next weaypoint
+            else
+                Stuck = Stuck + 1
+                if Stuck > 20 then
+                    LOG('* MovePath: Stucked while moving to target. Stuck='..Stuck)
+                    self:Stop()
+                    break -- break the while aiBrain:PlatoonExists(self) do loop and move to the next waypoint
+                end
+            end
+            -- If we lose our target, stop moving to it.
+            if not target then
+                LOG('* MovePath: Lost target while moving to target. ')
+                self:Stop()
+                return
+            end
+            WaitTicks(10)
+        end
+    end,
+
+    MovePath = function(self, aiBrain, path, bAggroMove, target)
+        for i=1, table.getn(path) do
+            local PlatoonPosition
+            local Lastdist
+            local dist
+            local Stuck = 0
+            --LOG('* MovePath: moving to destination. i: '..i..' coords '..repr(path[i]))
+            if bAggroMove then
+                self:AggressiveMoveToLocation(path[i])
+            else
+                self:MoveToLocation(path[i], false)
+            end
+            while aiBrain:PlatoonExists(self) do
+                PlatoonPosition = self:GetPlatoonPosition()
+                dist = VDist2( path[i][1], path[i][3], PlatoonPosition[1], PlatoonPosition[3] )
+                --LOG('* MovePath: dist to next Waypoint: '..dist)
+                -- are we closer then 20 units from the next marker ? Then break and move to the next marker
+                if dist < 20 then
+                    break
+                end
+                -- Do we move ?
+                if Lastdist ~= dist then
+                    Stuck = 0
+                    Lastdist = dist
+                -- No, we are not moving, wait 100 ticks then break and use the next weaypoint
+                else
+                    Stuck = Stuck + 1
+                    if Stuck > 20 then
+                        --LOG('* MovePath: Stucked while moving to Waypoint. Stuck='..Stuck..' - '..repr(path[i]))
+                        self:Stop()
+                        break -- break the while aiBrain:PlatoonExists(self) do loop and move to the next waypoint
+                    end
+                end
+                -- If we lose our target, stop moving to it.
+                if not target or target.Dead then
+                    --LOG('* MovePath: Lost target while moving to Waypoint. '..repr(path[i]))
+                    return
+                end
+                WaitTicks(10)
+            end
         end
     end,
 
@@ -1011,18 +1124,12 @@ Platoon = Class(oldPlatoon) {
                 -- only get a new target and make a move command if the target is dead or after 10 seconds
                 if not target or target.Dead then
                     --LOG('* AttackPrioritizedSeaTargetsAIUveso: Targetting...')
-                    target = AIUtils.AIFindNearestNavalCategoryTargetInRange(aiBrain, self, 'Attack', PlatoonPos, maxRadius, PrioritizedTargetList, TargetSearchCategory, false )
+                    target, AltTarget, path, reason = AIUtils.AIFindNearestCategoryTargetInRange(aiBrain, self, 'Attack', PlatoonPos, maxRadius, PrioritizedTargetList, TargetSearchCategory, false )
                     if target then
                         --LOG('* AttackPrioritizedSeaTargetsAIUveso: Target!.')
                         LastTargetPos = table.copy(target:GetPosition())
                         DistanceToTarget = VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, LastTargetPos[1] or 0, LastTargetPos[3] or 0)
-                        local GroundDefenseUnitsAtTargetPos = aiBrain:GetNumUnitsAroundPoint( (categories.STRUCTURE + categories.MOBILE) * (categories.DIRECTFIRE + categories.DIRECTFIRE) , LastTargetPos, 60, 'Enemy' )
-                        --LOG("* AttackPrioritizedSeaTargetsAIUveso: GroundDefenseUnitsAtTargetPos: " .. GroundDefenseUnitsAtTargetPos)
-
-                        if IgnoreGroundDefense and GroundDefenseUnitsAtTargetPos > IgnoreGroundDefense then
-                            --LOG('* AttackPrioritizedSeaTargetsAIUveso: Return to MainBase (GroundDefenseUnitsAtTargetPos = '..GroundDefenseUnitsAtTargetPos..' )')
-                            self:SimpleReturnToMainBase(basePosition)
-                        else
+                        if target then
                             --LOG('* AttackPrioritizedSeaTargetsAIUveso: MoveToLocation! AggressiveMove=false.')
                             local path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, self.MovementLayer or 'Water' , self:GetPlatoonPosition(), LastTargetPos, 1000, 512)
                             -- clear commands, so we don't get stuck if we have an unreachable destination
@@ -1145,7 +1252,7 @@ Platoon = Class(oldPlatoon) {
             -- clear commands, so we don't get stuck if we have an unreachable destination
             IssueClearCommands(self:GetPlatoonUnits())
             if path then
-                --LOG('* MoveToLocationInclTransport: No transport used, and we dont need it.')
+                LOG('* MoveToLocationInclTransport: No transport used, and we dont need it.')
                 if table.getn(path) > 1 then
                     --LOG('* MoveToLocationInclTransport: table.getn(path): '..table.getn(path))
                 end
@@ -1195,11 +1302,42 @@ Platoon = Class(oldPlatoon) {
                 if reason == 'NoGraph' then
                     local success, bestGoalPos = AIAttackUtils.CheckPlatoonPathingEx(self, TargetPosition)
                     if success then
-                        --LOG('* MoveToLocationInclTransport: No transport used, found a way with CanPathTo(). moving to destination')
+                        LOG('* MoveToLocationInclTransport: No transport used, found a way with CanPathTo(). moving to destination')
                         if bAggroMove then
-                            self:AggressiveMoveToLocation(TargetPosition)
+                            self:AggressiveMoveToLocation(bestGoalPos)
                         else
-                            self:MoveToLocation(TargetPosition, false)
+                            self:MoveToLocation(bestGoalPos, false)
+                        end
+                        local PlatoonPosition
+                        local Lastdist
+                        local dist
+                        local Stuck = 0
+                        while aiBrain:PlatoonExists(self) do
+                            PlatoonPosition = self:GetPlatoonPosition() or {0,0,0}
+                            dist = VDist2( bestGoalPos[1], bestGoalPos[3], PlatoonPosition[1], PlatoonPosition[3] )
+                            if dist < 20 then
+                                break
+                            end
+                            -- Do we move ?
+                            if Lastdist ~= dist then
+                                Stuck = 0
+                                Lastdist = dist
+                            -- No, we are not moving, wait 100 ticks then break and use the next weaypoint
+                            else
+                                Stuck = Stuck + 1
+                                if Stuck > 20 then
+                                    LOG('* MoveToLocationInclTransport: Stucked while moving to target. Stuck='..Stuck)
+                                    self:Stop()
+                                    break -- break the while aiBrain:PlatoonExists(self) do loop and move to the next waypoint
+                                end
+                            end
+                            -- If we lose our target, stop moving to it.
+                            if not target then
+                                LOG('* MoveToLocationInclTransport: Lost target while moving to target. ')
+                                self:Stop()
+                                return
+                            end
+                            WaitTicks(10)
                         end
                     else
                         --LOG('* MoveToLocationInclTransport: CanPathTo() failed for '..repr(TargetPosition)..' forcing SendPlatoonWithTransportsNoCheck.')
@@ -1207,15 +1345,15 @@ Platoon = Class(oldPlatoon) {
                             usedTransports = AIAttackUtils.SendPlatoonWithTransportsNoCheck(aiBrain, self, TargetPosition, true, false)
                         end
                         if not usedTransports then
-                            --LOG('* MoveToLocationInclTransport: CanPathTo() and SendPlatoonWithTransportsNoCheck failed. SimpleReturnToMainBase!')
+                            LOG('* MoveToLocationInclTransport: CanPathTo() and SendPlatoonWithTransportsNoCheck failed. SimpleReturnToMainBase!')
                             local PlatoonPos = self:GetPlatoonPosition()
                             local DistanceToTarget = VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, TargetPosition[1] or 0, TargetPosition[3] or 0)
                             local DistanceToBase = VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, basePosition[1] or 0, basePosition[3] or 0)
                             if DistanceToBase < DistanceToTarget and DistanceToTarget > 50 then
-                                --LOG('* MoveToLocationInclTransport: base is nearer then distance to target and distance to target over 50. Return To base')
+                                LOG('* MoveToLocationInclTransport: base is nearer then distance to target and distance to target over 50. Return To base')
                                 self:SimpleReturnToMainBase(basePosition)
                             else
-                                --LOG('* MoveToLocationInclTransport: Direct move to Target')
+                                LOG('* MoveToLocationInclTransport: Direct move to Target')
                                 if bAggroMove then
                                     self:AggressiveMoveToLocation(TargetPosition)
                                 else
@@ -1223,16 +1361,16 @@ Platoon = Class(oldPlatoon) {
                                 end
                             end
                         else
-                            --LOG('* MoveToLocationInclTransport: CanPathTo() failed BUT we got an transport!!')
+                            LOG('* MoveToLocationInclTransport: CanPathTo() failed BUT we got an transport!!')
                         end
 
                     end
                 else
-                    --LOG('* MoveToLocationInclTransport: We have no path but there is a Graph with markers. So why we don\'t get a path ??? (Island or threat too high?) - reason: '..repr(reason))
+                    LOG('* MoveToLocationInclTransport: We have no path but there is a Graph with markers. So why we don\'t get a path ??? (Island or threat too high?) - reason: '..repr(reason))
                 end
             end
         else
-            --LOG('* MoveToLocationInclTransport: TRANSPORTED.')
+            LOG('* MoveToLocationInclTransport: TRANSPORTED.')
         end
     end,
 
@@ -1372,6 +1510,7 @@ Platoon = Class(oldPlatoon) {
         if VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, basePosition[1] or 0, basePosition[3] or 0) > 40 then
             self:MoveToLocation(basePosition, false)
         end
+        WaitTicks(30)
         self:PlatoonDisband()
     end,
 
@@ -1402,6 +1541,7 @@ Platoon = Class(oldPlatoon) {
         self:Stop()
         self:MoveToLocationInclTransport(true, nearestbase.Pos, false, false, nearestbase.Pos, false)
         -- Disband the platoon so the locationmanager can assign a new task to the units.
+        WaitTicks(30)
         self:PlatoonDisband()
         return
     end,
@@ -1449,12 +1589,12 @@ Platoon = Class(oldPlatoon) {
         else
             --LOG('* ForceReturnToNavalBaseAIUveso: we have no Graph to reach the destination. Checking CanPathTo()')
             if reason == 'NoGraph' then
-                local success, bestGoalPos = AIAttackUtils.CheckPlatoonPathingEx(self, LastTargetPos)
+                local success, bestGoalPos = AIAttackUtils.CheckPlatoonPathingEx(self, basePosition)
                 if success then
                     --LOG('* ForceReturnToNavalBaseAIUveso: found a way with CanPathTo(). moving to destination')
-                    self:MoveToLocation(LastTargetPos, false)
+                    self:MoveToLocation(basePosition, false)
                 else
-                    --LOG('* ForceReturnToNavalBaseAIUveso: CanPathTo() failed for '..repr(LastTargetPos)..'.')
+                    --LOG('* ForceReturnToNavalBaseAIUveso: CanPathTo() failed for '..repr(basePosition)..'.')
                 end                    
             end
         end
@@ -1469,8 +1609,6 @@ Platoon = Class(oldPlatoon) {
                 -- Wait some second, so all platoon units have time to reach the base.
                 WaitSeconds(5)
                 self:Stop()
-                -- Disband the platoon so the locationmanager can assign a new task to the units.
-                self:PlatoonDisband()
                 break
             end
             -- if we haven't moved in 5 seconds... leave the loop
@@ -1480,6 +1618,9 @@ Platoon = Class(oldPlatoon) {
             oldDist = dist
             WaitSeconds(5)
         end
+        -- Disband the platoon so the locationmanager can assign a new task to the units.
+        WaitTicks(30)
+        self:PlatoonDisband()
     end,
 
     NukePlatoonAI = function(self)

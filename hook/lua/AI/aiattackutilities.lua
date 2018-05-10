@@ -18,7 +18,7 @@ function PlatoonGenerateSafePathTo(aiBrain, platoonLayer, start, destination, op
     if (aiBrain.Sorian or aiBrain.Duncan) and (VDist2(start[1], start[3], destination[1], destination[3]) <= 100
     or (testPathDist and VDist2Sq(start[1], start[3], destination[1], destination[3]) <= testPathDist)) then
         table.insert(finalPath, destination)
-        return finalPath
+        return finalPath, 'PathOK'
     end
 
     --Get the closest path node at the platoon's position
@@ -80,7 +80,7 @@ function PlatoonGenerateSafePathTo(aiBrain, platoonLayer, start, destination, op
     -- Add the destination to the end of the path
     table.insert(finalPath, destination)
     -- return the path
-    return finalPath
+    return finalPath, 'PathOK'
 end
 
 OLDGetPathGraphs = GetPathGraphs

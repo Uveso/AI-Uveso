@@ -48,6 +48,36 @@ BuilderGroup {
         }
     },
     Builder {
+        BuilderName = 'U1 Power Emergency II',
+        PlatoonTemplate = 'EngineerBuilder',
+        Priority = 2100,
+        DelayEqualBuildPlattons = {'Energy', 3},
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { EBC, 'LessThanEconStorageRatio', { 2.00, 0.90}}, -- Ratio from 0 to 1. (1=100%)
+            { UCBC, 'GreaterThanGameTimeSeconds', { 180 } },
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}}, -- Absolut Base income
+            -- Don't build it if...
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
+            { UCBC, 'CheckBuildPlattonDelay', { 'Energy' }},
+        },
+        InstanceCount = 1,
+        BuilderType = 'Any',
+        BuilderData = {
+            NumAssistees = 1,
+            Construction = {
+                AdjacencyCategory = categories.FACTORY * categories.STRUCTURE * (categories.AIR + categories.LAND),
+                AdjacencyDistance = 50,
+                BuildClose = false,
+                LocationType = 'LocationType',
+                BuildStructures = {
+                    'T1EnergyProduction',
+                },
+            }
+        }
+    },
+    Builder {
         BuilderName = 'U1 Power Push 500',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 2100,
@@ -380,11 +410,12 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Energy Storage Emergency',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 1800,
+        Priority = 2500,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'LessEnergyStorageMax',  { 0.1 } },
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYSTORAGE }},
             -- Do we need additional conditions to build it ?
+            { UCBC, 'GreaterThanGameTimeSeconds', { 180 } },
             -- Have we the eco to build it ?
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1,  'ENERGYSTORAGE' }},
@@ -408,7 +439,7 @@ BuilderGroup {
         Priority = 1800,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'LessEnergyStorageMax',  { 2000.0 } },
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 10, categories.STRUCTURE * categories.ENERGYSTORAGE }},
             -- Do we need additional conditions to build it ?
             { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH1' }},
             -- Have we the eco to build it ?

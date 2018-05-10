@@ -80,8 +80,6 @@ function LocationRangeManagerThread(aiBrain)
                         unit:SetCustomName(''..(Builder or 'Unknown')..' ('..(Plan or 'Unknown')..')')
                     else
                         unit:SetCustomName('Empty PlatoonHandle')
-                        unit.PlatoonHandle:Stop()
-                        unit.PlatoonHandle = nil
                     end
                 else
                     unit:SetCustomName('')

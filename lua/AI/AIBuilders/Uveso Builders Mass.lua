@@ -303,7 +303,6 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1,  'MASSSTORAGE' }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 7, categories.STRUCTURE * categories.MASSSTORAGE }},
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<=', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
-            { UCBC, 'LessMassStorageMax',  { 20000 } },
         },
         InstanceCount = 1,
         BuilderType = 'Any',
@@ -324,7 +323,7 @@ BuilderGroup {
         Priority = 1700,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'LessMassStorageMax',  { 20000 } },
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 10, categories.STRUCTURE * categories.ENERGYSTORAGE }},
             -- Do we need additional conditions to build it ?
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 2, 'MASSSTORAGE' }},
             { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH1' }},
@@ -351,12 +350,12 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Mass Storage Emergency',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 1800,
+        Priority = 2600,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'LessMassStorageMax',  { 100 } },
-            -- Do we need additional conditions to build it ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.MASSSTORAGE }},
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'GreaterThanGameTimeSeconds', { 180 } },
             -- Have we the eco to build it ?
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1,  'MASSSTORAGE' }},

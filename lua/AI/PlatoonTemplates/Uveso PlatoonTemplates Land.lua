@@ -64,6 +64,13 @@ PlatoonTemplate {
         { categories.MOBILE * categories.LAND - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT , 2, 5, 'Attack', 'none' },
     }
 }
+PlatoonTemplate {
+    Name = 'LandAttackInterceptUveso 30 60',
+    Plan = 'InterceptorAIUveso',
+    GlobalSquads = {
+        { categories.MOBILE * categories.LAND - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT , 30, 60, 'Attack', 'none' },
+    }
+}
 
 
 PlatoonTemplate {

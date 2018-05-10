@@ -546,22 +546,6 @@ function HaveLessThanIdleEngineers(aiBrain, count, tech)
     return c < count
 end
 
-function LessEnergyStorageMax(aiBrain, eStorage)
-    local econ = AIUtils.AIGetEconomyNumbers(aiBrain)
-    if econ.EnergyMaxStored != 0 and econ.EnergyMaxStored < eStorage then
-        return true
-    end
-    return false
-end
-
-function LessMassStorageMax(aiBrain, mStorage)
-    local econ = AIUtils.AIGetEconomyNumbers(aiBrain)
-    if econ.MassMaxStored != 0 and econ.MassMaxStored < mStorage then
-        return true
-    end
-    return false
-end
-
 -- { UCBC, 'NoParagon', {} },
 function NoParagon(aiBrain)
     local paragons = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC, false)
