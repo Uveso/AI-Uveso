@@ -24,6 +24,7 @@ BuilderGroup {
         InstanceCount = 2,
         BuilderConditions = {
             -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
             { EBC, 'GreaterThanEconTrend', { 2.0, 300.0 } }, -- relative income
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
@@ -56,6 +57,7 @@ BuilderGroup {
         InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
             { EBC, 'GreaterThanEconTrend', { 2.0, 300.0 } }, -- relative income
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
@@ -88,6 +90,7 @@ BuilderGroup {
         InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
             { EBC, 'GreaterThanEconTrend', { 2.0, 300.0 } }, -- relative income
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
@@ -121,6 +124,7 @@ BuilderGroup {
         InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
             { EBC, 'GreaterThanEconTrend', { 2.0, 300.0 } }, -- relative income
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
@@ -154,6 +158,7 @@ BuilderGroup {
         InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
             { EBC, 'GreaterThanEconTrend', { 2.0, 300.0 } }, -- relative income
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
@@ -296,7 +301,7 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = BasePanicZone,                       -- Searchradius for new target.
             GetTargetsFromBase = true,                          -- Get targets from base position (true) or platoon position (false)
-            UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
+            AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
             TargetSearchCategory = 'MOBILE LAND, STRUCTURE',    -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'MOBILE LAND EXPERIMENTAL',
@@ -320,7 +325,7 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = BasePanicZone,                       -- Searchradius for new target.
             GetTargetsFromBase = true,                          -- Get targets from base position (true) or platoon position (false)
-            UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
+            AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
             IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'MOBILE, STRUCTURE',         -- Only find targets matching these categories.
             PrioritizedCategories = {
@@ -350,7 +355,7 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                    -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
-            UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
+            AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
             TargetSearchCategory = 'MOBILE LAND, STRUCTURE',    -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'MOBILE LAND EXPERIMENTAL',
@@ -374,7 +379,7 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                        -- Searchradius for new target.
             GetTargetsFromBase = true,                          -- Get targets from base position (true) or platoon position (false)
-            UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
+            AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
             IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'MOBILE, STRUCTURE',         -- Only find targets matching these categories.
             PrioritizedCategories = {
@@ -404,7 +409,7 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
-            UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
+            AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
             TargetSearchCategory = 'STRUCTURE, MOBILE LAND',    -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'MOBILE LAND EXPERIMENTAL',
@@ -434,7 +439,7 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
-            UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
+            AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
             TargetSearchCategory = 'STRUCTURE, MOBILE LAND',    -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'MOBILE LAND EXPERIMENTAL',
@@ -460,7 +465,7 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
-            UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
+            AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
             IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'STRUCTURE',                 -- Only find targets matching these categories.
             PrioritizedCategories = {
@@ -487,7 +492,7 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
-            UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
+            AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
             TargetSearchCategory = 'STRUCTURE',                 -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'DEFENSE',
@@ -516,7 +521,7 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
-            UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
+            AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
             IgnoreAntiAir = 10,                                 -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'STRUCTURE',                 -- Only find targets matching these categories.
             PrioritizedCategories = {

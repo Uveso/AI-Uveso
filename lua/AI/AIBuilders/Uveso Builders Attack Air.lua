@@ -579,7 +579,7 @@ BuilderGroup {
         InstanceCount = 4,                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BasePanicZone,                       -- Searchradius for new target.
-            UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
+            AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
             IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'MOBILE LAND, STRUCTURE',    -- Only find targets matching these categories.
             PrioritizedCategories = {
@@ -607,7 +607,7 @@ BuilderGroup {
         InstanceCount = 4,                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BasePanicZone,                       -- Searchradius for new target.
-            UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
+            AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
             IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'MOBILE, STRUCTURE',         -- Only find targets matching these categories.
             PrioritizedCategories = {
@@ -638,7 +638,7 @@ BuilderGroup {
         InstanceCount = 2,                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                    -- Searchradius for new target.
-            UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
+            AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
             IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'MOBILE AIR',                -- Only find targets matching these categories.
             PrioritizedCategories = {
@@ -666,7 +666,7 @@ BuilderGroup {
         InstanceCount = 2,                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                    -- Searchradius for new target.
-            UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
+            AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
             IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'MOBILE AIR TRANSPORTFOCUS', -- Only find targets matching these categories.
             PrioritizedCategories = {
@@ -694,7 +694,7 @@ BuilderGroup {
         InstanceCount = 4,                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                     -- Searchradius for new target.
-            UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
+            AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
             IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'STRUCTURE',                 -- Only find targets matching these categories.
             PrioritizedCategories = {
@@ -721,7 +721,7 @@ BuilderGroup {
         InstanceCount = 2,                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                    -- Searchradius for new target.
-            UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
+            AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
             IgnoreAntiAir = 3,                                  -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'NAVAL',                     -- Only find targets matching these categories.
             PrioritizedCategories = {
@@ -754,7 +754,7 @@ BuilderGroup {
             SearchRadius = 10000,                               -- Searchradius from main base for new target. (A 5x5 Map is 256 high)
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
             IgnoreAntiAir = 10,                                 -- Don't attack if we have more then x anti air buildings at target position.
-            UseMoveOrder = false,                               -- if true, the unit will first move to the targetposition and then attack it.
+            AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
             TargetSearchCategory = categories.MOBILE * categories.AIR - categories.SCOUT , -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'MOBILE AIR TRANSPORTFOCUS',
@@ -782,7 +782,7 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
-            UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
+            AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
             IgnoreAntiAir = 10,                                 -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'STRUCTURE',                 -- Only find targets matching these categories.
             PrioritizedCategories = {
@@ -810,7 +810,7 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
-            UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
+            AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
             IgnoreAntiAir = 1,                                  -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'STRUCTURE, MOBILE LAND',    -- Only find targets matching these categories.
             PrioritizedCategories = {
@@ -842,7 +842,7 @@ BuilderGroup {
         InstanceCount = 4,                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                    -- Searchradius for new target.
-            UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
+            AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
             IgnoreAntiAir = 3,                                  -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'MOBILE AIR EXPERIMENTAL',   -- Only find targets matching these categories.
             PrioritizedCategories = {
@@ -863,7 +863,7 @@ BuilderGroup {
         InstanceCount = 4,                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                    -- Searchradius for new target.
-            UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
+            AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
             IgnoreAntiAir = 3,                                  -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'LAND EXPERIMENTAL',         -- Only find targets matching these categories.
             PrioritizedCategories = {
@@ -885,7 +885,7 @@ BuilderGroup {
         InstanceCount = 4,                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                    -- Searchradius for new target.
-            UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
+            AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
             IgnoreAntiAir = 3,                                  -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'EXPERIMENTAL',              -- Only find targets matching these categories.
             PrioritizedCategories = {
@@ -911,7 +911,7 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
-            UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
+            AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
             IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'MOBILE AIR',                -- Only find targets matching these categories.
             PrioritizedCategories = {
@@ -936,7 +936,7 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
-            UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
+            AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
             IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'STRUCTURE',                 -- Only find targets matching these categories.
             PrioritizedCategories = {
@@ -964,7 +964,7 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = 10000,                                 -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
-            UseMoveOrder = false,                                -- If true, the unit will first move to the targetposition and then attack it.
+            AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
             IgnoreAntiAir = false,                         -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'MOBILE AIR',              -- Only find targets matching these categories.
             PrioritizedCategories = {
@@ -989,7 +989,7 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
-            UseMoveOrder = false,                                -- If true, the unit will first move to the targetposition and then attack it.
+            AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
             IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'MOBILE LAND, STRUCTURE',    -- Only find targets matching these categories.
             PrioritizedCategories = {
@@ -1018,7 +1018,7 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
-            UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
+            AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
             IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'MOBILE AIR',                -- Only find targets matching these categories.
             PrioritizedCategories = {
@@ -1049,7 +1049,7 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
-            UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
+            AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
             IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'STRUCTURE, MOBILE LAND',    -- Only find targets matching these categories.
             PrioritizedCategories = {
@@ -1080,7 +1080,7 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
-            UseMoveOrder = false,                               -- If true, the unit will first move to the targetposition and then attack it.
+            AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
             IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
             TargetSearchCategory = 'STRUCTURE NAVAL, MOBILE NAVAL',-- Only find targets matching these categories.
             PrioritizedCategories = {
