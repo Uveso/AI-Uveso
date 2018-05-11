@@ -27,6 +27,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { EBC, 'LessThanEconStorageRatio', { 2.00, 0.99}}, -- Ratio from 0 to 1. (1=100%)
             -- Have we the eco to build it ?
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
             { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}}, -- Absolut Base income
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
@@ -37,7 +38,7 @@ BuilderGroup {
         BuilderData = {
             NumAssistees = 1,
             Construction = {
-                AdjacencyCategory = categories.FACTORY * categories.STRUCTURE * (categories.AIR + categories.LAND),
+--                AdjacencyCategory = categories.FACTORY * categories.STRUCTURE * (categories.AIR + categories.LAND),
                 AdjacencyDistance = 50,
                 BuildClose = false,
                 LocationType = 'LocationType',
@@ -57,6 +58,7 @@ BuilderGroup {
             { EBC, 'LessThanEconStorageRatio', { 2.00, 0.90}}, -- Ratio from 0 to 1. (1=100%)
             { UCBC, 'GreaterThanGameTimeSeconds', { 180 } },
             -- Have we the eco to build it ?
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
             { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}}, -- Absolut Base income
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
@@ -67,7 +69,7 @@ BuilderGroup {
         BuilderData = {
             NumAssistees = 1,
             Construction = {
-                AdjacencyCategory = categories.FACTORY * categories.STRUCTURE * (categories.AIR + categories.LAND),
+--                AdjacencyCategory = categories.FACTORY * categories.STRUCTURE * (categories.AIR + categories.LAND),
                 AdjacencyDistance = 50,
                 BuildClose = false,
                 LocationType = 'LocationType',
@@ -86,6 +88,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'LessThanEnergyTrend', { 50.0 } },
             -- Have we the eco to build it ?
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.05}}, -- Ratio from 0 to 1. (1=100%)
             { EBC, 'GreaterThanEconIncome',  { 0.6, 6.0}}, -- Absolut Base income
             { EBC, 'GreaterThanEconStorageRatio', { 0.10, -0.00}}, -- Ratio from 0 to 1. (1=100%)
@@ -176,7 +179,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { MABC, 'MarkerLessThanDistance',  { 'Hydrocarbon', 150}},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH1' }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 0.4, 2.0}}, -- Absolut Base income 4 60
             -- Don't build it if...
@@ -415,6 +418,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYSTORAGE }},
             -- Do we need additional conditions to build it ?
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
             { UCBC, 'GreaterThanGameTimeSeconds', { 180 } },
             -- Have we the eco to build it ?
             -- Don't build it if...
@@ -441,7 +445,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 10, categories.STRUCTURE * categories.ENERGYSTORAGE }},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH1' }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.95}}, -- Ratio from 0 to 1. (1=100%)
@@ -475,7 +479,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.00, 1.00}}, -- Ratio from 0 to 1. (1=100%)
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3 }},
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 0, categories.TECH1 * categories.ENERGYPRODUCTION }},
-            { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH1' }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
         },
         BuilderData = {
             Location = 'LocationType',
@@ -492,6 +496,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.00, 1.00}}, -- Ratio from 0 to 1. (1=100%)
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3 }},
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 0, categories.TECH1 * categories.ENERGYPRODUCTION }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
         },
         BuilderData = {
             Location = 'LocationType',
@@ -509,7 +514,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.00, 1.00}}, -- Ratio from 0 to 1. (1=100%)
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 3, categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3 }},
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 0, categories.TECH2 * categories.ENERGYPRODUCTION - categories.HYDROCARBON }},
-            { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH1' }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
         },
         BuilderData = {
             Location = 'LocationType',

@@ -98,7 +98,7 @@ BuilderGroup {
         Priority = 1100,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanIdleEngineers', { 3, 1 }}, -- count, tech (1=TECH1, 2=Tech2, 3=FieldTech, 4=TECH3, 5=SubCommander)
+            { UCBC, 'PoolLessAtLocation', { 'LocationType', 2, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
@@ -117,12 +117,11 @@ BuilderGroup {
         Priority = 1100,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanIdleEngineers', { 2, 1 }}, -- count, tech (1=TECH1, 2=Tech2, 3=FieldTech, 4=TECH3, 5=SubCommander)
+            { UCBC, 'PoolLessAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- Don't build it if...
-            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'ENGINEER TECH1' } },
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'ENGINEER TECH1' } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers, '<=', categories.MOBILE * categories.ENGINEER } },
         },
@@ -242,7 +241,7 @@ BuilderGroup {
         Priority = 500,
         InstanceCount = 1,
         BuilderConditions = {
-            { UCBC, 'GreaterThanGameTimeSeconds', { 60*30 } },
+            { UCBC, 'GreaterThanGameTimeSeconds', { 180 } },
             { UCBC, 'BuildNotOnLocation', { 'LocationType', 'MAIN' } },
             { UCBC, 'EngineerManagerUnitsAtLocation', { 'LocationType', '>', 2,  'MOBILE TECH1' } },
         },
@@ -257,7 +256,7 @@ BuilderGroup {
         Priority = 500,
         InstanceCount = 1,
         BuilderConditions = {
-            { UCBC, 'GreaterThanGameTimeSeconds', { 60*30 } },
+            { UCBC, 'GreaterThanGameTimeSeconds', { 180 } },
             { UCBC, 'BuildNotOnLocation', { 'LocationType', 'MAIN' } },
             { UCBC, 'EngineerManagerUnitsAtLocation', { 'LocationType', '>', 2,  'MOBILE TECH2' } },
         },
@@ -272,7 +271,7 @@ BuilderGroup {
         Priority = 500,
         InstanceCount = 1,
         BuilderConditions = {
-            { UCBC, 'GreaterThanGameTimeSeconds', { 60*30 } },
+            { UCBC, 'GreaterThanGameTimeSeconds', { 180 } },
             { UCBC, 'BuildNotOnLocation', { 'LocationType', 'MAIN' } },
             { UCBC, 'EngineerManagerUnitsAtLocation', { 'LocationType', '>', 2,  'MOBILE TECH3' } },
         },

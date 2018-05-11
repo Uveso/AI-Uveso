@@ -1,41 +1,40 @@
 
 OLDPlatoonGenerateSafePathTo = PlatoonGenerateSafePathTo
-function PlatoonGenerateSafePathTo(aiBrain, platoonLayer, start, destination, optThreatWeight, optMaxMarkerDist, testPathDist)
+function PlatoonGenerateSafePathTo(aiBrain, platoonLayer, startPos, endPos, optThreatWeight, optMaxMarkerDist, testPathDist)
     -- Only use this with AI-Uveso
     if not aiBrain.Uveso then
-        return OLDPlatoonGenerateSafePathTo(aiBrain, platoonLayer, start, destination, optThreatWeight, optMaxMarkerDist, testPathDist)
+        return OLDPlatoonGenerateSafePathTo(aiBrain, platoonLayer, startPos, endPos, optThreatWeight, optMaxMarkerDist, testPathDist)
     end
     if not GetPathGraphs()[platoonLayer] then
         --LOG('*AI DEBUG: PlatoonGenerateSafePathTo(): No graph for layer ('..platoonLayer..') found.')
         return false, 'NoGraph'
     end
-    local location = start
     optMaxMarkerDist = optMaxMarkerDist or 250
     optThreatWeight = optThreatWeight or 1
     local finalPath = {}
 
     --If we are within 100 units of the destination, don't bother pathing. (Sorian and Duncan AI)
-    if (aiBrain.Sorian or aiBrain.Duncan) and (VDist2(start[1], start[3], destination[1], destination[3]) <= 100
-    or (testPathDist and VDist2Sq(start[1], start[3], destination[1], destination[3]) <= testPathDist)) then
-        table.insert(finalPath, destination)
+    if (aiBrain.Sorian or aiBrain.Duncan) and (VDist2(startPos[1], startPos[3], endPos[1], endPos[3]) <= 100
+    or (testPathDist and VDist2Sq(startPos[1], startPos[3], endPos[1], endPos[3]) <= testPathDist)) then
+        table.insert(finalPath, endPos)
         return finalPath, 'PathOK'
     end
 
     --Get the closest path node at the platoon's position
     local startNode
     if (aiBrain.Sorian or aiBrain.Duncan) then
-        startNode = GetClosestPathNodeInRadiusByLayerSorian(location, destination, optMaxMarkerDist, platoonLayer)
+        startNode = GetClosestPathNodeInRadiusByLayerSorian(startPos, endPos, optMaxMarkerDist, platoonLayer)
     else
-        startNode = GetClosestPathNodeInRadiusByLayer(location, optMaxMarkerDist, platoonLayer)
+        startNode = GetClosestPathNodeInRadiusByLayer(startPos, optMaxMarkerDist, platoonLayer)
     end
     if not startNode then return false, 'NoStartNode' end
 
     --Get the matching path node at the destiantion
     local endNode
     if (aiBrain.Sorian or aiBrain.Duncan) then
-    	endNode = GetClosestPathNodeInRadiusByLayerSorian(destination, destination, optMaxMarkerDist, platoonLayer)
+    	endNode = GetClosestPathNodeInRadiusByLayerSorian(endPos, endPos, optMaxMarkerDist, platoonLayer)
     else
-        endNode = GetClosestPathNodeInRadiusByGraph(destination, optMaxMarkerDist, startNode.graphName)
+        endNode = GetClosestPathNodeInRadiusByGraph(endPos, optMaxMarkerDist, startNode.graphName)
     end
     if not endNode then return false, 'NoEndNode' end
 
@@ -43,13 +42,13 @@ function PlatoonGenerateSafePathTo(aiBrain, platoonLayer, start, destination, op
     local path
     if aiBrain.Sorian or aiBrain.Duncan then
         -- Sorian and Duncans AI are using a strong modified pathfinding with path shortcuts, range checks and path caching for better performance.
-        path = GeneratePathSorian(aiBrain, startNode, endNode, ThreatTable[platoonLayer], optThreatWeight, destination, location)
+        path = GeneratePathSorian(aiBrain, startNode, endNode, ThreatTable[platoonLayer], optThreatWeight, endPos, startPos)
     elseif aiBrain.Uveso then
         -- Uveso AI is using a optimized version of the original GeneratePath function with extended path caching.
-        path = GeneratePathUveso(aiBrain, startNode, endNode, ThreatTable[platoonLayer], optThreatWeight, destination, location)
+        path = GeneratePathUveso(aiBrain, startNode, endNode, ThreatTable[platoonLayer], optThreatWeight, endPos, startPos)
     else
         -- The original AI is using the vanilla version of GeneratePath. No cache, ugly (AStarLoopBody) code, but reacts faster on new situations.
-        path = GeneratePath(aiBrain, startNode, endNode, ThreatTable[platoonLayer], optThreatWeight, destination, location)
+        path = GeneratePath(aiBrain, startNode, endNode, ThreatTable[platoonLayer], optThreatWeight, endPos, startPos)
     end
     if not path then return false, 'NoPath' end
 
@@ -59,11 +58,11 @@ function PlatoonGenerateSafePathTo(aiBrain, platoonLayer, start, destination, op
         -- delete the first and last node only if they are very near (under 30 map units) to the start or end destination.
         for i,node in path.path do
             -- IF this is the first AND not the only waypoint AND its nearer 30 THEN continue and don't add it to the finalpath
-            if i == 1 and NodeCount > 1 and VDist2(location[1], location[3], node.position[1], node.position[3]) < 30 then  
+            if i == 1 and NodeCount > 1 and VDist2(startPos[1], startPos[3], node.position[1], node.position[3]) < 30 then  
                 continue
             end
             -- IF this is the last AND not the only waypoint AND its nearer 20 THEN continue and don't add it to the finalpath
-            if i == NodeCount and NodeCount > 1 and VDist2(destination[1], destination[3], node.position[1], node.position[3]) < 20 then  
+            if i == NodeCount and NodeCount > 1 and VDist2(endPos[1], endPos[3], node.position[1], node.position[3]) < 20 then  
                 continue
             end
             table.insert(finalPath, node.position)
@@ -78,7 +77,7 @@ function PlatoonGenerateSafePathTo(aiBrain, platoonLayer, start, destination, op
     end
 
     -- Add the destination to the end of the path
-    table.insert(finalPath, destination)
+    --table.insert(finalPath, endPos)
     -- return the path
     return finalPath, 'PathOK'
 end
@@ -117,7 +116,7 @@ function GetPathGraphs()
     return ScenarioInfo.PathGraphs or {}
 end
 
-function GeneratePathUveso(aiBrain, startNode, endNode, threatType, threatWeight, destination, location)
+function GeneratePathUveso(aiBrain, startNode, endNode, threatType, threatWeight, endPos, startPos)
     threatWeight = threatWeight or 1
     -- Check first if this path is bad at all. (no connection to the destination)
     if aiBrain.PathCache[startNode.name][endNode.name][1].path and aiBrain.PathCache[startNode.name][endNode.name][1].path == 'bad' then
@@ -146,15 +145,6 @@ function GeneratePathUveso(aiBrain, startNode, endNode, threatType, threatWeight
         threat = 0
         }
     }
-    -- Is the Start and End node the same OR is the distance to the first node longer then to the destination ?
-    if startNode.name == endNode.name or VDist2(location[1], location[3], startNode.position[1], startNode.position[3]) > VDist2(location[1], location[3], destination[1], destination[3]) then
-        -- remove the last table (path) from the queue table and store the removed table in queue
-        queue = table.remove(queue)
-        -- store as path our current destination. We will move the rest of the way with build or attack command
-        queue.path = { { position = location } }
-        -- return the destination position as path
-        return queue
-    end
     -- loop over all path's and remove any path from the cache table that is older then 60 seconds
     if aiBrain.PathCache then
         local GameTime = GetGameTimeSeconds()
@@ -183,6 +173,18 @@ function GeneratePathUveso(aiBrain, startNode, endNode, threatType, threatWeight
     aiBrain.PathCache[startNode.name] = aiBrain.PathCache[startNode.name] or {}
     aiBrain.PathCache[startNode.name][endNode.name] = aiBrain.PathCache[startNode.name][endNode.name] or {}
     aiBrain.PathCache[startNode.name][endNode.name][threatWeight] = {}
+    -- Is the Start and End node the same OR is the distance to the first node longer then to the destination ?
+    if startNode.name == endNode.name
+    or VDist2(startPos[1], startPos[3], startNode.position[1], startNode.position[3]) > VDist2(startPos[1], startPos[3], endPos[1], endPos[3])
+    or VDist2(startPos[1], startPos[3], endPos[1], endPos[3]) < 50 then
+        -- remove the last table (path) from the queue table and store the removed table in queue
+        queue = table.remove(queue)
+        -- store as path our current destination. We will move the rest of the way with build or attack command
+        queue.path = { { position = startPos } }
+        aiBrain.PathCache[startNode.name][endNode.name][threatWeight] = { settime = GetGameTimeSeconds(), path = queue }
+        -- return the destination position as path
+        return queue
+    end
     -- Set up local variables for our path search
     local AlreadyChecked = {}
     local curPath = {}

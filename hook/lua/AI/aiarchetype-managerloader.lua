@@ -117,14 +117,14 @@ function LocationRangeManagerThread(aiBrain)
                 -- if we are not in range of an base, then move to a base.
                 if WeAreInRange == false and not unit.Dead then
                     if nearestbase then
-                        if unit.PlatoonHandle and aiBrain:PlatoonExists(unit.PlatoonHandle) then
-                            LOG('* AIDEBUG: LocationRangeManagerThread: Found idle Unit outside Basemanager range! Removing platoonhandle: ('..(unit.PlatoonHandle.PlanName or 'Unknown')..')')
-                            unit.PlatoonHandle:Stop()
-                            unit.PlatoonHandle:PlatoonDisband()
-                        end
-                        --LOG('* AIDEBUG: LocationRangeManagerThread: Moving idle unit inside next basemanager range: '..unit:GetBlueprint().BlueprintId..'  ')
-                        IssueClearCommands({unit})
-                        IssueMove({unit}, nearestbase.Pos)
+--                        if unit.PlatoonHandle and aiBrain:PlatoonExists(unit.PlatoonHandle) then
+--                            LOG('* AIDEBUG: LocationRangeManagerThread: Found idle Unit outside Basemanager range! Removing platoonhandle: ('..(unit.PlatoonHandle.PlanName or 'Unknown')..')')
+--                            unit.PlatoonHandle:Stop()
+--                            unit.PlatoonHandle:PlatoonDisband()
+--                        end
+--                        --LOG('* AIDEBUG: LocationRangeManagerThread: Moving idle unit inside next basemanager range: '..unit:GetBlueprint().BlueprintId..'  ')
+--                        IssueClearCommands({unit})
+--                        IssueMove({unit}, nearestbase.Pos)
                     end
                 end
             end

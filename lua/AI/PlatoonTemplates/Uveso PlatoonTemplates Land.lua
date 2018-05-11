@@ -2,6 +2,13 @@
 -- ==== Global Form platoons ==== --
 
 PlatoonTemplate {
+    Name = 'CDR Attack',
+    Plan = 'AttackPrioritizedLandTargetsAIUveso',
+    GlobalSquads = {
+        { categories.COMMAND, 1, 1, 'Attack', 'none' }
+    }
+}
+PlatoonTemplate {
     Name = 'U123 SingleAttack',
     Plan = 'AttackPrioritizedLandTargetsAIUveso',
     GlobalSquads = {
@@ -59,14 +66,14 @@ PlatoonTemplate {
 }
 PlatoonTemplate {
     Name = 'LandAttackInterceptUveso 2 5',
-    Plan = 'InterceptorAIUveso',
+    Plan = 'AttackPrioritizedLandTargetsAIUveso',
     GlobalSquads = {
         { categories.MOBILE * categories.LAND - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT , 2, 5, 'Attack', 'none' },
     }
 }
 PlatoonTemplate {
     Name = 'LandAttackInterceptUveso 30 60',
-    Plan = 'InterceptorAIUveso',
+    Plan = 'AttackPrioritizedLandTargetsAIUveso',
     GlobalSquads = {
         { categories.MOBILE * categories.LAND - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT , 30, 60, 'Attack', 'none' },
     }

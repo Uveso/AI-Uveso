@@ -2,7 +2,7 @@
 function CommanderBehaviorUveso(platoon)
     for _, v in platoon:GetPlatoonUnits() do
         if not v.Dead and not v.CommanderThread then
-            v.CommanderThread = v:ForkThread(CommanderThreadUveso, platoon)
+--            v.CommanderThread = v:ForkThread(CommanderThreadUveso, platoon)
         end
     end
 end

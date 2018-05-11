@@ -83,19 +83,19 @@ function AIFindBrainTargetInRange(aiBrain, platoon, squad, maxRange, atkPri, ene
         if type(category) == 'string' then
             category = ParseEntityCategory(category)
         end
-        local UnitWithPath = false
+        local retUnit = false
         local distance = false
         for num, unit in targetUnits do
             if not unit.Dead and EntityCategoryContains(category, unit) and unit:GetAIBrain():GetArmyIndex() == enemyIndex and platoon:CanAttackTarget(squad, unit) then
                 local unitPos = unit:GetPosition()
-                if not UnitWithPath or Utils.XZDistanceTwoVectors(position, unitPos) < distance then
-                    UnitWithPath = unit
+                if not retUnit or Utils.XZDistanceTwoVectors(position, unitPos) < distance then
+                    retUnit = unit
                     distance = Utils.XZDistanceTwoVectors(position, unitPos)
                 end
             end
         end
-        if UnitWithPath then
-            return UnitWithPath
+        if retUnit then
+            return retUnit
         end
     end
 
@@ -272,8 +272,11 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
             --LOG('* AIFindNearestCategoryTargetInRange: numTargets '..table.getn(TargetsInBaseRange)..'  ')
             for num, unit in TargetsInBaseRange do
                 local TargetPosition = unit:GetPosition()
+                -- check if the target is on the same layer then the attacker
                 if not ValidateLayer(TargetPosition,platoon.MovementLayer) then continue end
+                -- check if we have a special player index as enemy
                 if enemyBrain and enemyIndex and enemyBrain ~= enemyIndex then continue end
+                -- check if the unit is still alive, matches our target priority and can be attacked from our platoon
                 if not unit.Dead and EntityCategoryContains(category, unit) and platoon:CanAttackTarget(squad, unit) then
 
 
@@ -295,12 +298,12 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
                             if reason == 'NoPath' then
                                 UnitNoPath = unit
                                 distance = targetRange
-                                LOG('* AIFindNearestCategoryTargetInRange: Possible target no path. distance '..distance..'  ')
+                                --LOG('* AIFindNearestCategoryTargetInRange: Possible target no path. distance '..distance..'  ')
                             -- NoGraph means we have no Map markers. Lets try to path with c-engine command CanPathTo()
                             elseif reason == 'NoGraph' then
                                 local unit = platoon:GetPlatoonUnits()[1]
                                 local success, bestGoalPos = AIAttackUtils.CheckPlatoonPathingEx(unit, TargetPosition)
-                                -- We found a path with c-engine command.
+                                -- check if we found a path with c-engine command.
                                 if success then
                                     UnitWithPath = unit
                                     distance = targetRange

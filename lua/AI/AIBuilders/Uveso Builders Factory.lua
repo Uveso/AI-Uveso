@@ -121,6 +121,8 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 0, categories.MOBILE * categories.LAND - categories.SCOUT}}, -- radius, LocationType, unitCount, categoryEnemy
             -- Do we need additional conditions to build it ?
+            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
             { UCBC, 'GreaterThanGameTimeSeconds', { 240 } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
@@ -255,6 +257,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'FactoryCapCheck', { 'LocationType', 'Land' } },
             -- Do we need additional conditions to build it ?
+            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             { UCBC, 'GreaterThanGameTimeSeconds', { 120 } },
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH1' }},
             -- Have we the eco to build it ?

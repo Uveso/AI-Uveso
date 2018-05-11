@@ -581,9 +581,6 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------------
 
-
-
-
 local timedilatation = false
 function IsGameSimSpeedLow(aiBrain)
     local SystemTime = GetSystemTimeSecondsOnlyForProfileUse()
@@ -601,4 +598,33 @@ function IsGameSimSpeedLow(aiBrain)
     LOG('** true')
     return true
 end
-
+-----------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------
+-- In progess, next project, not working...
+-----------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------
+function HavePoolUnitComparisonAtLocationII(aiBrain, locationType, unitCount, unitCategory, compareType)
+    local engineerManager = aiBrain.BuilderManagers[locationType].EngineerManager
+    local testCat = unitCategory
+    if type(unitCategory) == 'string' then
+        testCat = ParseEntityCategory(unitCategory)
+    end
+    if not engineerManager then
+        WARN('*AI WARNING: HavePoolUnitComparisonAtLocationII - Invalid location - ' .. locationType)
+        return false
+    end
+    local poolPlatoon = aiBrain:GetPlatoonUniquelyNamed('ArmyPool')
+    local numUnits = poolPlatoon:GetNumCategoryUnits(testCat, engineerManager:GetLocationCoords(), engineerManager:GetLocationRadius())
+    LOG('* PoolGreaterAtLocationII: numUnits from GetPlatoonUniquelyNamed(ArmyPool) '..numUnits..' - '..locationType)
+    return CompareBody(numUnits, unitCount, compareType)
+end
+function PoolLessAtLocationII(aiBrain, locationType, unitCount, unitCategory)
+    return HavePoolUnitComparisonAtLocationII(aiBrain, locationType, unitCount, unitCategory, '<')
+end
+function PoolGreaterAtLocationII(aiBrain, locationType, unitCount, unitCategory)
+    return HavePoolUnitComparisonAtLocationII(aiBrain, locationType, unitCount, unitCategory, '>')
+end

@@ -16,10 +16,9 @@ BasePanicZone = math.min( 120, BasePanicZone )
 BuilderGroup {
     BuilderGroupName = 'SeaFactoryBuilders Uveso',
     BuildersType = 'FactoryBuilder',
-    -- ============ --
-    --    TECH 1    --
-    -- ============ --
-    -- Panic builder, in case the enemy is in front of our base 
+    -- ======================== --
+    --    TECH 1   PanicZone    --
+    -- ======================== --
     Builder {
         BuilderName = 'U1 Sub PANIC',
         PlatoonTemplate = 'T1SeaSub',
@@ -34,7 +33,9 @@ BuilderGroup {
         },
         BuilderType = 'Sea',
     },
-    -- Default T1 builder will not respect eco and build as long as we have less units then the enemy
+    -- =========================== --
+    --    TECH 1   MilitaryZone    --
+    -- =========================== --
     Builder {
         BuilderName = 'U1 Sub',
         PlatoonTemplate = 'T1SeaSub',
@@ -46,6 +47,8 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.NAVAL * categories.FACTORY * categories.TECH1 }},
             -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
             { UCBC, 'UnitCapCheckLess', { 0.95 } },
@@ -60,10 +63,12 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 10, categories.MOBILE * categories.NAVAL - categories.SUBMERSIBLE } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 50, categories.MOBILE * categories.NAVAL }},
---            { UCBC, 'HaveUnitRatio', { 1.0, 'NAVAL MOBILE ANTIAIR', '<','NAVAL MOBILE SUBMERSIBLE' } },
+            { UCBC, 'HaveUnitRatio', { 1.0, 'NAVAL MOBILE ANTIAIR', '<','NAVAL MOBILE SUBMERSIBLE' } },
             -- Do we need additional conditions to build it ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.NAVAL * categories.FACTORY * categories.TECH1 }},
             -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
             { UCBC, 'UnitCapCheckLess', { 0.95 } },
@@ -81,9 +86,9 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 30, 'MOBILE NAVAL SUBMERSIBLE' } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.25}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL', '<=', 'NAVAL' } },
             { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { ExperimentalCount, categories.MOBILE * categories.NAVAL * categories.EXPERIMENTAL }},

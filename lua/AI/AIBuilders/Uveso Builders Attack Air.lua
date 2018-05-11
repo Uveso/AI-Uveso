@@ -46,7 +46,8 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.AIR * categories.FACTORY * categories.TECH1 }},
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.25}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.90}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'UnitCapCheckLess', { 0.95 } },
@@ -84,7 +85,7 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.LAND * categories.FACTORY * categories.TECH1 }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.25}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.90}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.3, 'MOBILE AIR', '<=', 'MOBILE AIR' } },
             { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
@@ -106,7 +107,7 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.LAND * categories.FACTORY * categories.TECH1 }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.25}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.90}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.3, 'MOBILE AIR', '<=', 'MOBILE AIR' } },
             { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
@@ -337,11 +338,10 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Air Transport 1st',
         PlatoonTemplate = 'T1AirTransport',
-        Priority = 1000, 
+        Priority = 1100, 
         DelayEqualBuildPlattons = {'Transporter', 5},
         BuilderConditions = {
             -- When do we want to build this ?
-            { MIBC, 'ArmyNeedsTransports', {} },
             -- Do we need additional conditions to build it ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.TRANSPORTFOCUS }},
             -- Have we the eco to build it ?
@@ -354,9 +354,26 @@ BuilderGroup {
         BuilderType = 'Air',
     },
     Builder {
+        BuilderName = 'U1 Air Transport 1st Island',
+        PlatoonTemplate = 'T1AirTransport',
+        Priority = 1100, 
+        DelayEqualBuildPlattons = {'Transporter', 5},
+        BuilderConditions = {
+            -- When do we want to build this ?
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.TRANSPORTFOCUS }},
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+            { UCBC, 'CheckBuildPlattonDelay', { 'Transporter' }},
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.MOBILE * categories.AIR * categories.TRANSPORTFOCUS }},
+            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
+        },
+        BuilderType = 'Air',
+    },
+    Builder {
         BuilderName = 'U1 Air Transport minimum',
         PlatoonTemplate = 'T1AirTransport',
-        Priority = 1000, 
+        Priority = 1100, 
         DelayEqualBuildPlattons = {'Transporter', 5},
         BuilderConditions = {
             -- When do we want to build this ?
@@ -377,7 +394,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 Air Transport minimum',
         PlatoonTemplate = 'T2AirTransport',
-        Priority = 1000,
+        Priority = 1100,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.TRANSPORTFOCUS * categories.TECH2 }},
@@ -396,7 +413,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Air Transport minimum',
         PlatoonTemplate = 'T3AirTransport',
-        Priority = 1000,
+        Priority = 1100,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.TRANSPORTFOCUS * categories.TECH3 }},
@@ -484,7 +501,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Air Transport Island',
         PlatoonTemplate = 'T1AirTransport',
-        Priority = 1000,
+        Priority = 1100,
         BuilderConditions = {
             -- When do we want to build this ?
             { MIBC, 'ArmyNeedsTransports', {} },
@@ -505,7 +522,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 Air Transport Island',
         PlatoonTemplate = 'T2AirTransport',
-        Priority = 1000,
+        Priority = 1100,
         BuilderConditions = {
             -- When do we want to build this ?
             { MIBC, 'ArmyNeedsTransports', {} },
@@ -526,7 +543,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Air Transport Island',
         PlatoonTemplate = 'T3AirTransport',
-        Priority = 1000,
+        Priority = 1100,
         BuilderConditions = {
             -- When do we want to build this ?
             { MIBC, 'ArmyNeedsTransports', {} },

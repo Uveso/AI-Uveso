@@ -935,10 +935,10 @@ Platoon = Class(oldPlatoon) {
                         self:Stop()
                         target = UnitNoPath
                         --LOG('* AttackPrioritizedLandTargetsAIUveso: MoveWithTransport() DistanceToTarget:'..DistanceToTarget)
-                        self:MoveWithTransport(bAggroMove, target, basePosition, ExperimentalInPlatoon)
+                        self:MoveWithTransport(aiBrain, bAggroMove, target, basePosition, ExperimentalInPlatoon)
                     else
                         -- we have no target return to main base
-                        LOG('* AttackPrioritizedLandTargetsAIUveso: ForceReturnToNearestBaseAIUveso() (no target)')
+                        --LOG('* AttackPrioritizedLandTargetsAIUveso: ForceReturnToNearestBaseAIUveso() (no target)')
                         self:Stop()
                         self:ForceReturnToNearestBaseAIUveso()
                     end
@@ -952,7 +952,7 @@ Platoon = Class(oldPlatoon) {
                     --LOG('* AttackPrioritizedLandTargetsAIUveso: Target Valid. range to target:'..DistanceToTarget..' - '.. LastPositionCheck + 30 - GetGameTimeSeconds() )
                     if LastPositionCheck + 30 < GetGameTimeSeconds() then
                         if PlatoonPos[1] == lastPlatoonPos[1] and PlatoonPos[3] == lastPlatoonPos[3] then
-                            LOG('* AttackPrioritizedLandTargetsAIUveso: We are stucked! Range to target:'..DistanceToTarget..' - time: '.. LastPositionCheck + 30 - GetGameTimeSeconds() )
+                            --LOG('* AttackPrioritizedLandTargetsAIUveso: We are stucked! Range to target:'..DistanceToTarget..' - time: '.. LastPositionCheck + 30 - GetGameTimeSeconds() )
                             self:ForceReturnToNearestBaseAIUveso()
                         else
                             --LOG('* AttackPrioritizedLandTargetsAIUveso: We are Ok, move on!')
@@ -967,10 +967,10 @@ Platoon = Class(oldPlatoon) {
         end
     end,
 
-    MoveWithTransport = function(self, bAggroMove, target, basePosition, ExperimentalInPlatoon)
+    MoveWithTransport = function(self, aiBrain, bAggroMove, target, basePosition, ExperimentalInPlatoon)
         local TargetPosition = table.copy(target:GetPosition())
-        --LOG('* MoveWithTransport: CanPathTo() failed for '..repr(TargetPosition)..' forcing SendPlatoonWithTransportsNoCheck.')
-        if not ExperimentalInPlatoon then
+        LOG('#* MoveWithTransport: CanPathTo() failed for '..repr(TargetPosition)..' forcing SendPlatoonWithTransportsNoCheck.')
+        if not ExperimentalInPlatoon and aiBrain:PlatoonExists(self) then
             usedTransports = AIAttackUtils.SendPlatoonWithTransportsNoCheck(aiBrain, self, TargetPosition, true, false)
         end
         if not usedTransports then
@@ -1052,13 +1052,15 @@ Platoon = Class(oldPlatoon) {
                 --LOG('* MovePath: dist to next Waypoint: '..dist)
                 -- are we closer then 20 units from the next marker ? Then break and move to the next marker
                 if dist < 20 then
+                    -- If we don't stop the movement here, then we have heavy traffic on this Map marker with blocking units
+                    self:Stop()
                     break
                 end
                 -- Do we move ?
                 if Lastdist ~= dist then
                     Stuck = 0
                     Lastdist = dist
-                -- No, we are not moving, wait 100 ticks then break and use the next weaypoint
+                -- No, we are not moving, wait 20 ticks then break and use the next weaypoint
                 else
                     Stuck = Stuck + 1
                     if Stuck > 20 then
@@ -1156,6 +1158,8 @@ Platoon = Class(oldPlatoon) {
                                         dist = VDist2( path[i][1], path[i][3], PlatoonPosition[1], PlatoonPosition[3] )
                                         -- are we closer then 15 units from the next marker ? Then break and move to the next marker
                                         if dist < 50 then
+                                            -- If we don't stop the movement here, then we have heavy traffic on this Map marker with blocking units
+                                            self:Stop()
                                             break
                                         end
                                         -- Do we move ?
@@ -1252,7 +1256,7 @@ Platoon = Class(oldPlatoon) {
             -- clear commands, so we don't get stuck if we have an unreachable destination
             IssueClearCommands(self:GetPlatoonUnits())
             if path then
-                LOG('* MoveToLocationInclTransport: No transport used, and we dont need it.')
+                --LOG('* MoveToLocationInclTransport: No transport used, and we dont need it.')
                 if table.getn(path) > 1 then
                     --LOG('* MoveToLocationInclTransport: table.getn(path): '..table.getn(path))
                 end
@@ -1273,6 +1277,8 @@ Platoon = Class(oldPlatoon) {
                         --LOG('* MoveToLocationInclTransport: dist to next Waypoint: '..dist)
                         -- are we closer then 20 units from the next marker ? Then break and move to the next marker
                         if dist < 20 then
+                            -- If we don't stop the movement here, then we have heavy traffic on this Map marker with blocking units
+                            self:Stop()
                             break
                         end
                         -- Do we move ?
@@ -1522,11 +1528,10 @@ Platoon = Class(oldPlatoon) {
         local aiBrain = self:GetBrain()
         local nearestbase = false
         for k,v in aiBrain.BuilderManagers do
-            -- Check if we have a Naval Area
-            if string.find('Naval', v.FactoryManager.LocationType ) then
-                -- We can't return to a Naval Area with Land units. Skip this location
-                LOG('ForceReturnToNearestBaseAIUveso Can\'t return to a naval area: '..repr(v.FactoryManager.LocationType))
-                continue
+            -- check if we can move to this base
+            if not AIUtils.ValidateLayer(v.FactoryManager.Location,self.MovementLayer) then
+                --LOG('ForceReturnToNearestBaseAIUveso Can\'t return to This base. Wrong movementlayer: '..repr(v.FactoryManager.LocationType))
+                continue 
             end
             local dist = VDist2( platPos[1], platPos[3], v.FactoryManager.Location[1], v.FactoryManager.Location[3] )
             if not nearestbase or nearestbase.dist > dist then
@@ -1568,6 +1573,8 @@ Platoon = Class(oldPlatoon) {
                     dist = VDist2( path[i][1], path[i][3], PlatoonPosition[1], PlatoonPosition[3] )
                     -- are we closer then 15 units from the next marker ? Then break and move to the next marker
                     if dist < 25 then
+                        -- If we don't stop the movement here, then we have heavy traffic on this Map marker with blocking units
+                        self:Stop()
                         break
                     end
                     -- Do we move ?
