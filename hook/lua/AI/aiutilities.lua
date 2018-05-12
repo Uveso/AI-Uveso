@@ -23,6 +23,24 @@ function AIGetMarkerLocationsEx(aiBrain, markerType)
     return markerList
 end
 
+-- hook until AI patch
+function AIGetSortedMassLocations(aiBrain, maxNum, tMin, tMax, tRings, tType, position)
+    local markerList = AIGetMarkerLocations(aiBrain, 'Mass')
+    local newList = {}
+    for _, v in markerList do
+        -- check distance to map border. (game engine can't build mass closer then 8 mapunits to the map border.) 
+        if v.Position[1] < 8 or v.Position[1] > ScenarioInfo.size[1] - 8 or v.Position[3] < 8 or v.Position[3] > ScenarioInfo.size[2] - 8 then
+            -- mass marker is too close to border, skip it.
+            continue
+        end
+        if aiBrain:CanBuildStructureAt('ueb1103', v.Position) then
+            table.insert(newList, v)
+        end
+    end
+
+    return AISortMarkersFromLastPos(aiBrain, newList, maxNum, tMin, tMax, tRings, tType, position)
+end
+
 function GenerateMarkerList(markerList,markers,markerType)
     for k, v in markers do
         if v.type == markerType then
@@ -224,7 +242,18 @@ function ValidateLayer(UnitPos,MovementLayer)
 end
 
 function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, maxRange, PrioritizedTargetList, TargetSearchCategory, enemyBrain)
-    local TargetSearchCategory = TargetSearchCategory
+    if not maxRange then
+        LOG('* AIFindNearestCategoryTargetInRange: function called with empty "maxRange"')
+        return false, false, false, 'NoRange'
+    end
+    if not TargetSearchCategory then
+        LOG('* AIFindNearestCategoryTargetInRange: function called with empty "TargetSearchCategory"')
+        return false, false, false, 'NoCat'
+    end
+    if not position then
+        LOG('* AIFindNearestCategoryTargetInRange: function called with empty "position"')
+        return false, false, false, 'NoPos'
+    end
     if type(TargetSearchCategory) == 'string' then
         TargetSearchCategory = ParseEntityCategory(TargetSearchCategory)
     end
@@ -329,76 +358,3 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
     return UnitWithPath, UnitNoPath, path, reason
 end
 
-function AIFindNearestNavalCategoryTargetInRange(aiBrain, platoon, squad, position, maxRange, PrioritizedTargetList, TargetSearchCategory, enemyBrain)
-    local TargetSearchCategory = TargetSearchCategory
-    if type(TargetSearchCategory) == 'string' then
-        TargetSearchCategory = ParseEntityCategory(TargetSearchCategory)
-    end
-    local enemyIndex = false
-    if enemyBrain then
-        enemyIndex = enemyBrain:GetArmyIndex()
-    end
-
-    local RangeList = { [1] = maxRange }
-    if maxRange > 512 then
-        RangeList = {
-            [1] = 30,
-            [2] = 100,
-            [3] = 256,
-            [4] = 512,
-            [5] = maxRange,
-        }
-    elseif maxRange > 256 then
-        RangeList = {
-            [1] = 30,
-            [2] = 100,
-            [3] = 256,
-            [4] = maxRange,
-        }
-    elseif maxRange > 64 then
-        RangeList = {
-            [1] = 30,
-            [2] = maxRange,
-        }
-    end
-
-    local path = false
-    local reason = false
-    for _, range in RangeList do
-        TargetsInBaseRange = aiBrain:GetUnitsAroundPoint(TargetSearchCategory, position, range, 'Enemy')
-        --DrawCircle(position, range, '0000FF')
-        for _, v in PrioritizedTargetList do
-            local category = v
-            if type(category) == 'string' then
-                category = ParseEntityCategory(category)
-            end
-            local UnitWithPath = false
-            local UnitNoPath = false
-            local distance = maxRange
-            --LOG('* AIFindNearestNavalCategoryTargetInRange: numTargets '..table.getn(TargetsInBaseRange)..'  ')
-            for num, unit in TargetsInBaseRange do
-                if not ValidateLayer(unit:GetPosition(),platoon.MovementLayer) then continue end
-                if enemyBrain and enemyIndex and enemyBrain ~= enemyIndex then continue end
-                if not unit.Dead and EntityCategoryContains(category, unit) and platoon:CanAttackTarget(squad, unit) then
-                    local targetRange = Utils.XZDistanceTwoVectors(position, unit:GetPosition())
-                    if targetRange < distance then
-                        path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, platoon.MovementLayer, platoon:GetPlatoonPosition(), unit:GetPosition(), platoon.PlatoonData.NodeWeight or 10 )
-                        if path then
-                            UnitWithPath = unit
-                            distance = targetRange
-                            --LOG('* AIFindNearestCategoryTargetInRange: Possible target with path. distance '..distance..'  ')
-                        else
-                            UnitNoPath = unit
-                            distance = targetRange
-                            --LOG('* AIFindNearestCategoryTargetInRange: Possible target no path. distance '..distance..'  ')
-                        end
-                    end
-                end
-            end
-            if UnitWithPath then
-                return UnitWithPath, UnitNoPath, path, reason
-            end
-        end
-    end
-    return UnitWithPath, UnitNoPath, path, reason
-end

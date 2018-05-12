@@ -822,7 +822,7 @@ Platoon = Class(oldPlatoon) {
                 end
                 -- only get a new target and make a move command if the target is dead
                 if not target or target.Dead then
-                    UnitWithPath, UnitNoPath, path, reason = AIUtils.AIFindNearestCategoryTargetInRange(aiBrain, self, 'Attack', PlatoonPos, maxRadius, PrioritizedTargetList, TargetSearchCategory, false )
+                    UnitWithPath, UnitNoPath, path, reason = AIUtils.AIFindNearestCategoryTargetInRange(aiBrain, self, 'Attack', GetTargetsFrom, maxRadius, PrioritizedTargetList, TargetSearchCategory, false )
                     --LOG('* AttackPrioritizedLandTargetsAIUveso: Targetting... recived retUnit, path, reason '..repr(reason)..'  ')
                     if UnitWithPath then
                         self:Stop()

@@ -87,6 +87,7 @@ local colors = {
     [19] = 'ff000000',
 }
 function ValidateMapAndMarkers()
+    local mapSizeX, mapSizeZ = GetMapSize()
     -- Check norushradius
     if ScenarioInfo.norushradius and ScenarioInfo.norushradius > 0 then
         if ScenarioInfo.norushradius < 10 then
@@ -112,7 +113,14 @@ function ValidateMapAndMarkers()
                 UNKNOWNMARKER[v.type] = true
             end
         end
-        -- Check Waypoint Maker
+        -- Check Mass Marker
+        if v.type == 'Mass' then
+            if v.position[1] <= 8 or v.position[1] >= mapSizeX - 8 or v.position[3] <= 8 or v.position[3] >= mapSizeZ - 8 then
+                WARN('* ValidateMapAndMarkers: MarkerType: [\''..v.type..'\'] is too close to map border. IndexName = ['..k..'].')
+                --Scenario.MasterChain._MASTERCHAIN_.Markers[k] = nil
+            end
+        end
+        -- Check Waypoint Marker
         if MarkerDefaults[v.type] then
             if v.adjacentTo then
                 local adjancents = STR_GetTokens(v.adjacentTo, ' ')
