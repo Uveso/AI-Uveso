@@ -1033,7 +1033,7 @@ Platoon = Class(oldPlatoon) {
             end
             -- If we lose our target, stop moving to it.
             if not target or target.Dead then
-                LOG('* MoveDirect: Lost target while moving to target. ')
+                --LOG('* MoveDirect: Lost target while moving to target. ')
                 return
             end
             WaitTicks(10)

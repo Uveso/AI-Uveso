@@ -192,7 +192,7 @@ BuilderGroup {
         Priority = 1100,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanIdleEngineers', { 1, 3 }}, -- count, tech (1=TECH1, 2=Tech2, 3=FieldTech, 4=TECH3, 5=SubCommander)
+            { UCBC, 'HaveLessThanIdleEngineers', { 1, 4 }}, -- count, tech (1=TECH1, 2=Tech2, 3=FieldTech, 4=TECH3, 5=SubCommander)
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
