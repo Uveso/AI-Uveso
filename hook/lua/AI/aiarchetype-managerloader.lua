@@ -79,7 +79,7 @@ function LocationRangeManagerThread(aiBrain)
                     if Plan or Builder then
                         unit:SetCustomName(''..(Builder or 'Unknown')..' ('..(Plan or 'Unknown')..')')
                     else
-                        unit:SetCustomName('Empty PlatoonHandle')
+                        unit:SetCustomName('c[_]')
                     end
                 else
                     unit:SetCustomName('')

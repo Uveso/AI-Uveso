@@ -489,8 +489,10 @@ BuilderGroup {
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             IgnoreGroundDefense = false,                                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
-            TargetSearchCategory = categories.MOBILE * categories.LAND - categories.SCOUT - categories.ENGINEER, -- Only find targets matching these categories.
+            TargetSearchCategory = categories.MOBILE * categories.LAND  - categories.SCOUT - categories.ENGINEER + categories.STRUCTURE * categories.LAND, -- Only find targets matching these categories.
             PrioritizedCategories = {                                           -- Attack these targets.
+                'MOBILE LAND',
+                'STRUCTURE LAND',
                 'ALLUNITS',
             },
         },
@@ -512,8 +514,10 @@ BuilderGroup {
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
             IgnoreGroundDefense = false,                                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
-            TargetSearchCategory = categories.MOBILE * categories.LAND - categories.SCOUT - categories.ENGINEER, -- Only find targets matching these categories.
+            TargetSearchCategory = categories.MOBILE * categories.LAND + categories.STRUCTURE * categories.LAND, -- Only find targets matching these categories.
             PrioritizedCategories = {                                           -- Attack these targets.
+                'MOBILE LAND',
+                'STRUCTURE LAND',
                 'ALLUNITS',
             },
         },
@@ -557,8 +561,10 @@ BuilderGroup {
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
             IgnoreGroundDefense = false,                                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
-            TargetSearchCategory = categories.STUCTURE,                         -- Only find targets matching these categories.
+            TargetSearchCategory = categories.MOBILE * categories.LAND + categories.STRUCTURE * categories.LAND, -- Only find targets matching these categories.
             PrioritizedCategories = {                                           -- Attack these targets.
+                'STRUCTURE LAND',
+                'MOBILE LAND',
                 'ALLUNITS',
             },
         },
@@ -581,8 +587,10 @@ BuilderGroup {
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
             IgnoreGroundDefense = false,                                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
-            TargetSearchCategory = categories.MOBILE * categories.LAND,         -- Only find targets matching these categories.
+            TargetSearchCategory = categories.MOBILE * categories.LAND + categories.STRUCTURE * categories.LAND, -- Only find targets matching these categories.
             PrioritizedCategories = {                                           -- Attack these targets.
+                'MOBILE LAND',
+                'STRUCTURE LAND',
                 'ALLUNITS',
             },
         },
@@ -607,8 +615,10 @@ BuilderGroup {
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             IgnoreGroundDefense = false,                                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
-            TargetSearchCategory = categories.STUCTURE,                         -- Only find targets matching these categories.
+            TargetSearchCategory = categories.MOBILE * categories.LAND + categories.STRUCTURE * categories.LAND, -- Only find targets matching these categories.
             PrioritizedCategories = {                                           -- Attack these targets.
+                'STRUCTURE LAND',
+                'MOBILE LAND',
                 'ALLUNITS',
             },
         },
@@ -632,8 +642,10 @@ BuilderGroup {
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             IgnoreGroundDefense = false,                                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
-            TargetSearchCategory = categories.MOBILE * categories.LAND,         -- Only find targets matching these categories.
+            TargetSearchCategory = categories.MOBILE * categories.LAND + categories.STRUCTURE * categories.LAND, -- Only find targets matching these categories.
             PrioritizedCategories = {                                           -- Attack these targets.
+                'MOBILE LAND',
+                'STRUCTURE LAND',
                 'ALLUNITS',
             },
         },

@@ -299,14 +299,14 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
             end
             local distance = maxRange
             --LOG('* AIFindNearestCategoryTargetInRange: numTargets '..table.getn(TargetsInBaseRange)..'  ')
-            for num, unit in TargetsInBaseRange do
-                local TargetPosition = unit:GetPosition()
+            for num, Target in TargetsInBaseRange do
+                local TargetPosition = Target:GetPosition()
                 -- check if the target is on the same layer then the attacker
                 if not ValidateLayer(TargetPosition,platoon.MovementLayer) then continue end
                 -- check if we have a special player index as enemy
                 if enemyBrain and enemyIndex and enemyBrain ~= enemyIndex then continue end
-                -- check if the unit is still alive, matches our target priority and can be attacked from our platoon
-                if not unit.Dead and EntityCategoryContains(category, unit) and platoon:CanAttackTarget(squad, unit) then
+                -- check if the Target is still alive, matches our target priority and can be attacked from our platoon
+                if not Target.Dead and EntityCategoryContains(category, Target) and platoon:CanAttackTarget(squad, Target) then
 
 
                     --local GroundDefenseUnitsAtTargetPos = aiBrain:GetNumUnitsAroundPoint( (categories.STRUCTURE + categories.MOBILE) * (categories.DIRECTFIRE + categories.DIRECTFIRE) , TargetPosition, 60, 'Enemy' )
@@ -318,32 +318,31 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
                         path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, platoon.MovementLayer, platoon:GetPlatoonPosition(), TargetPosition, platoon.PlatoonData.NodeWeight or 10 )
                         -- Check if we found a path with markers
                         if path then
-                            UnitWithPath = unit
+                            UnitWithPath = Target
                             distance = targetRange
                             --LOG('* AIFindNearestCategoryTargetInRange: Possible target with path. distance '..distance..'  ')
                         -- We don't find a path with markers
                         else
                             -- NoPath happens if we have markers, but can't find a way to the destination. (We need transport)
                             if reason == 'NoPath' then
-                                UnitNoPath = unit
+                                UnitNoPath = Target
                                 distance = targetRange
                                 --LOG('* AIFindNearestCategoryTargetInRange: Possible target no path. distance '..distance..'  ')
                             -- NoGraph means we have no Map markers. Lets try to path with c-engine command CanPathTo()
                             elseif reason == 'NoGraph' then
-                                local unit = platoon:GetPlatoonUnits()[1]
-                                local success, bestGoalPos = AIAttackUtils.CheckPlatoonPathingEx(unit, TargetPosition)
+                                local success, bestGoalPos = AIAttackUtils.CheckPlatoonPathingEx(platoon, TargetPosition)
                                 -- check if we found a path with c-engine command.
                                 if success then
-                                    UnitWithPath = unit
+                                    UnitWithPath = Target
                                     distance = targetRange
-                                    LOG('* AIFindNearestCategoryTargetInRange: Possible target with CanPathTo(). distance '..distance..'  ')
+                                    --LOG('* AIFindNearestCategoryTargetInRange: Possible target with CanPathTo(). distance '..distance..'  ')
                                     -- break out of the loop, so we don't use CanPathTo too often.
                                     break
                                 -- There is no path to the target.
                                 else
-                                    UnitNoPath = unit
+                                    UnitNoPath = Target
                                     distance = targetRange
-                                    LOG('* AIFindNearestCategoryTargetInRange: Possible target failed CanPathTo(). distance '..distance..'  ')
+                                    --LOG('* AIFindNearestCategoryTargetInRange: Possible target failed CanPathTo(). distance '..distance..'  ')
                                 end
                             end
                         end

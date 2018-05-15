@@ -1016,7 +1016,7 @@ Platoon = Class(oldPlatoon) {
             dist = VDist2( TargetPosition[1], TargetPosition[3], PlatoonPosition[1], PlatoonPosition[3] )
             --LOG('* MoveDirect: dist to next Waypoint: '..dist)
             if dist < 20 then
-                break
+                return
             end
             -- Do we move ?
             if Lastdist ~= dist then
@@ -1028,13 +1028,12 @@ Platoon = Class(oldPlatoon) {
                 if Stuck > 20 then
                     LOG('* MoveDirect: Stucked while moving to target. Stuck='..Stuck)
                     self:Stop()
-                    break -- break the while aiBrain:PlatoonExists(self) do loop and move to the next waypoint
+                    return
                 end
             end
             -- If we lose our target, stop moving to it.
             if not target or target.Dead then
                 LOG('* MoveDirect: Lost target while moving to target. ')
-                self:Stop()
                 return
             end
             WaitTicks(10)

@@ -1,5 +1,4 @@
--- This is for debug Option Platoon-Names
-
+-- This hook is for debug Option Platoon-Names
 OLDFactoryBuilderManager = FactoryBuilderManager
 FactoryBuilderManager = Class(OLDFactoryBuilderManager) {
 
@@ -24,10 +23,13 @@ FactoryBuilderManager = Class(OLDFactoryBuilderManager) {
             end
             self.Brain:BuildPlatoon(template, {factory}, 1)
         else
+            -- rename factory
+            if self.Brain[ScenarioInfo.Options.AIPLatoonNameDebug] then
+                factory:SetCustomName('')
+            end
             -- No builder found setup way to check again
             self:ForkThread(self.DelayBuildOrder, factory, bType, 2)
         end
     end,
+    
 }
-
-
