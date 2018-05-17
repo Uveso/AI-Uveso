@@ -193,7 +193,7 @@ BuilderGroup {
         BuilderConditions = {
             -- When do we want to build this ?
             { EBC, 'GreaterThanEconIncome', { 20.0, 1000.0 }},
-            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.95 } }, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.00, 0.95 } }, -- Ratio from 0 to 1. (1=100%)
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},

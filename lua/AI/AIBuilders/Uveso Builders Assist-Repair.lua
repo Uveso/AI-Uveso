@@ -119,7 +119,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.ENERGYPRODUCTION * (categories.TECH2 + categories.TECH3) , categories.CONSTRUCTION * categories.MOBILE }},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH2 } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- Don't build it if...
@@ -147,7 +147,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.ENERGYPRODUCTION * (categories.TECH2 + categories.TECH3) , categories.CONSTRUCTION * categories.MOBILE }},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH3 } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- Don't build it if...
@@ -173,7 +173,7 @@ BuilderGroup {
         PlatoonTemplate = 'EngineerAssist',
         Priority = 810,
         DelayEqualBuildPlattons = {'Assist Experimental', 15},
-        InstanceCount = 20,
+        InstanceCount = 10,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.MOBILE * categories.EXPERIMENTAL, categories.CONSTRUCTION * categories.MOBILE }},
@@ -181,7 +181,7 @@ BuilderGroup {
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.75, 0.75}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.90}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'Assist Experimental' }},
         },
@@ -191,7 +191,7 @@ BuilderGroup {
                 AssistLocation = 'LocationType',
                 AssisteeType = 'Engineer',
                 AssistRange = 80,
-                BeingBuiltCategories = {'EXPERIMENTAL MOBILE'},
+                BeingBuiltCategories = {'EXPERIMENTAL'},
                 Time = 60,
             },
         }
@@ -201,15 +201,16 @@ BuilderGroup {
         PlatoonTemplate = 'T2EngineerAssist',
         Priority = 810,
         DelayEqualBuildPlattons = {'Assist Experimental', 5},
-        InstanceCount = 20,
+        InstanceCount = 10,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.MOBILE * categories.EXPERIMENTAL, categories.CONSTRUCTION * categories.MOBILE }},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH2 } },
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH2 } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.75, 0.75}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.90}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'Assist Experimental' }},
         },
@@ -219,7 +220,7 @@ BuilderGroup {
                 AssistLocation = 'LocationType',
                 AssisteeType = 'Engineer',
                 AssistRange = 80,
-                BeingBuiltCategories = {'EXPERIMENTAL MOBILE'},
+                BeingBuiltCategories = {'EXPERIMENTAL'},
                 Time = 60,
             },
         }
@@ -234,10 +235,10 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.MOBILE * categories.EXPERIMENTAL, categories.CONSTRUCTION * categories.MOBILE }},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH3 } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.75, 0.75}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.30, 0.90}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'Assist Experimental' }},
         },
@@ -247,7 +248,7 @@ BuilderGroup {
                 AssistLocation = 'LocationType',
                 AssisteeType = 'Engineer',
                 AssistRange = 80,
-                BeingBuiltCategories = {'EXPERIMENTAL MOBILE'},
+                BeingBuiltCategories = {'EXPERIMENTAL'},
                 Time = 60,
             },
         }
@@ -262,10 +263,10 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.MOBILE * categories.EXPERIMENTAL, categories.CONSTRUCTION * categories.MOBILE }},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH3 } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.10}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.90}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'Assist Experimental' }},
         },
@@ -275,7 +276,7 @@ BuilderGroup {
                 AssistLocation = 'LocationType',
                 AssisteeType = 'Engineer',
                 AssistRange = 80,
-                BeingBuiltCategories = {'EXPERIMENTAL MOBILE'},
+                BeingBuiltCategories = {'EXPERIMENTAL'},
                 Time = 60,
             },
         }
@@ -467,7 +468,7 @@ BuilderGroup {
         BuilderConditions = {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { UCBC, 'DamagedStructuresInArea', { 'LocationType', }},
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH2 } },
         },
         BuilderData = {
             LocationType = 'LocationType',
