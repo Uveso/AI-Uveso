@@ -9,7 +9,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'T1 Firebase Expansion Area',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 1,
+        Priority = 0,
         InstanceCount = 1,
         BuilderConditions = {
             { MABC, 'CanBuildFirebase', { 'LocationType', 256, 'Expansion Area', -1000, 5, 1, 'AntiSurface', 1, 'STRATEGIC', 20} },
@@ -42,7 +42,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'T1 Firebase Defensive Point',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 1,
+        Priority = 0,
         InstanceCount = 1,
         BuilderConditions = {
             { MABC, 'CanBuildFirebase', { 'LocationType', 256, 'Expansion Area', -1000, 5, 1, 'AntiSurface', 1, 'STRATEGIC', 20} },
@@ -75,7 +75,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'T1 Firebase Combat Zone',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 1,
+        Priority = 0,
         InstanceCount = 1,
         BuilderConditions = {
             { MABC, 'CanBuildFirebase', { 'LocationType', 256, 'Expansion Area', -1000, 5, 1, 'AntiSurface', 1, 'STRATEGIC', 20} },
@@ -108,10 +108,10 @@ BuilderGroup {
     Builder {
         BuilderName = 'T1 Firebase Naval Defensive Point',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 1,
+        Priority = 0,
         InstanceCount = 1,
         BuilderConditions = {
-            { MABC, 'CanBuildFirebase', { 'LocationType', 256, 'Expansion Area', -1000, 5, 1, 'AntiSurface', 1, 'STRATEGIC', 20} },
+            { MABC, 'CanBuildFirebase', { 'LocationType', 256, 'Naval Area', -1000, 5, 1, 'AntiSurface', 1, 'STRATEGIC', 20} },
             { UCBC, 'GreaterThanGameTimeSeconds', { 600 } },
         },
         BuilderType = 'Any',

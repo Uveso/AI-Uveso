@@ -4,6 +4,8 @@ local IBC = '/lua/editor/InstantBuildConditions.lua'
 local MIBC = '/lua/editor/MiscBuildConditions.lua'
 local TBC = '/lua/editor/ThreatBuildConditions.lua'
 
+local MaxAttackForce = 0.45                                                     -- 45% of all units can be attacking units (categories.MOBILE - categories.ENGINEER)
+
 local ExperimentalCount = 10
 local mapSizeX, mapSizeZ = GetMapSize()
 local BaseMilitaryZone = math.max( mapSizeX-50, mapSizeZ-50 ) / 2 -- Half the map
@@ -17,6 +19,27 @@ BasePanicZone = math.min( 120, BasePanicZone )
 BuilderGroup {
     BuilderGroupName = 'AntiAirBuilders Uveso',
     BuildersType = 'FactoryBuilder',
+    -- =========================== --
+    --    TECH 1   MilitaryZone    --
+    -- =========================== --
+    Builder {
+        BuilderName = 'U1 MilitaryZone Arty',
+        PlatoonTemplate = 'T1LandArtillery',
+        Priority = 1500,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 1, categories.MOBILE * categories.AIR - categories.SCOUT}}, -- radius, LocationType, unitCount, categoryEnemy
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
+            -- Don't build it if...
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
+        },
+        BuilderType = 'Land',
+    },
     -- ============ --
     --    TECH 1    --
     -- ============ --
@@ -30,8 +53,10 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.AIR * categories.FACTORY * categories.TECH1 }},
             -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Air',
@@ -47,9 +72,9 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.AIR * categories.FACTORY * categories.TECH1 }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.90}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Air',
@@ -65,9 +90,11 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 6, categories.MOBILE * categories.ENGINEER}},
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.LAND * categories.FACTORY * categories.TECH1 }},
             -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.3, 'MOBILE AIR', '<=', 'MOBILE AIR' } },
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.STRUCTURE *categories.FACTORY * categories.AIR * categories.TECH3 }},
             { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
@@ -85,10 +112,10 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.LAND * categories.FACTORY * categories.TECH1 }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.90}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.3, 'MOBILE AIR', '<=', 'MOBILE AIR' } },
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.STRUCTURE *categories.FACTORY * categories.AIR * categories.TECH3 }},
             { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE AIR GROUNDATTACK', '<','MOBILE AIR HIGHALTAIR ANTIAIR' } },
             { UCBC, 'UnitCapCheckLess', { 0.95 } },
@@ -107,10 +134,10 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.LAND * categories.FACTORY * categories.TECH1 }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.90}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.3, 'MOBILE AIR', '<=', 'MOBILE AIR' } },
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.STRUCTURE *categories.FACTORY * categories.AIR * categories.TECH3 }},
             { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE AIR BOMBER', '<','MOBILE AIR HIGHALTAIR ANTIAIR' } },
             { UCBC, 'UnitCapCheckLess', { 0.95 } },
@@ -130,10 +157,10 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.LAND * categories.FACTORY * categories.TECH2 }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.99}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.30, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.3, 'MOBILE AIR', '<=', 'MOBILE AIR' } },
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.STRUCTURE *categories.FACTORY * categories.AIR * categories.TECH3 }},
             { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE AIR ANTIAIR BOMBER', '<','MOBILE AIR HIGHALTAIR ANTIAIR'} },
             { UCBC, 'UnitCapCheckLess', { 0.95 } },
@@ -152,10 +179,10 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.LAND * categories.FACTORY * categories.TECH2 }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.99}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.30, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.3, 'MOBILE AIR', '<=', 'MOBILE AIR' } },
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.STRUCTURE *categories.FACTORY * categories.AIR * categories.TECH3 }},
             { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE AIR GROUNDATTACK', '<','MOBILE AIR HIGHALTAIR ANTIAIR' } },
             { UCBC, 'UnitCapCheckLess', { 0.95 } },
@@ -173,10 +200,10 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 6, categories.MOBILE * categories.ENGINEER}},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.99}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.30, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, 'MOBILE NAVAL', '<=', 'NAVAL' } },
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE AIR ANTINAVY', '<','MOBILE AIR HIGHALTAIR ANTIAIR' } },
             { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
@@ -194,9 +221,10 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, 'MOBILE AIR ANTINAVY', '<=', 'NAVAL' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.99}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.30, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE AIR ANTINAVY', '<','MOBILE AIR HIGHALTAIR ANTIAIR' } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Air',
@@ -225,9 +253,9 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.99}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.30, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Air',
@@ -242,9 +270,9 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.99}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.30, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Air',
@@ -260,9 +288,9 @@ BuilderGroup {
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'MAIN', 0, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL}}, -- radius, LocationType, unitCount, categoryEnemy
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.99}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.30, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE AIR GROUNDATTACK', '<','MOBILE AIR HIGHALTAIR ANTIAIR' } },
             { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
@@ -279,9 +307,9 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.99}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.30, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE AIR GROUNDATTACK', '<','MOBILE AIR HIGHALTAIR ANTIAIR' } },
             { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
@@ -298,9 +326,9 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.99}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.30, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE AIR BOMBER', '<','MOBILE AIR HIGHALTAIR ANTIAIR' } },
             { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
@@ -317,9 +345,9 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.99}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.30, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE AIR ANTINAVY', '<','MOBILE AIR HIGHALTAIR ANTIAIR' } },
             { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },

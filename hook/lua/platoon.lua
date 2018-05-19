@@ -1124,13 +1124,13 @@ Platoon = Class(oldPlatoon) {
                             self:AttackTarget(target)
                         else
                             self:Stop()
-                            self:SimpleReturnToMainBase(basePosition)
+                            self:SimpleReturnToBase(basePosition)
                         end
                     else
                         -- we have no target return to main base
                         --LOG('* AttackPrioritizedLandTargetsAIUveso: ForceReturnToNearestBaseAIUveso() (no target)')
                         self:Stop()
-                        self:SimpleReturnToMainBase(basePosition)
+                        self:SimpleReturnToBase(basePosition)
                     end
                 else
                     DistanceToTarget = VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, LastTargetPos[1] or 0, LastTargetPos[3] or 0)
@@ -1255,7 +1255,7 @@ Platoon = Class(oldPlatoon) {
             local DistanceToBase = VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, basePosition[1] or 0, basePosition[3] or 0)
             if DistanceToBase < DistanceToTarget or DistanceToTarget > 50 then
                 LOG('* MoveWithTransport: base is nearer then distance to target or distance to target over 50. Return To base')
-                self:SimpleReturnToMainBase(basePosition)
+                self:SimpleReturnToBase(basePosition)
             else
                 LOG('* MoveWithTransport: Direct move to Target')
                 if bAggroMove then
@@ -1626,13 +1626,13 @@ Platoon = Class(oldPlatoon) {
                             usedTransports = AIAttackUtils.SendPlatoonWithTransportsNoCheck(aiBrain, self, TargetPosition, true, false)
                         end
                         if not usedTransports then
-                            --LOG('* MoveToLocationInclTransport: CanPathTo() and SendPlatoonWithTransportsNoCheck failed. SimpleReturnToMainBase!')
+                            --LOG('* MoveToLocationInclTransport: CanPathTo() and SendPlatoonWithTransportsNoCheck failed. SimpleReturnToBase!')
                             local PlatoonPos = self:GetPlatoonPosition()
                             local DistanceToTarget = VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, TargetPosition[1] or 0, TargetPosition[3] or 0)
                             local DistanceToBase = VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, basePosition[1] or 0, basePosition[3] or 0)
                             if DistanceToBase < DistanceToTarget and DistanceToTarget > 50 then
                                 --LOG('* MoveToLocationInclTransport: base is nearer then distance to target and distance to target over 50. Return To base')
-                                self:SimpleReturnToMainBase(basePosition)
+                                self:SimpleReturnToBase(basePosition)
                             else
                                 --LOG('* MoveToLocationInclTransport: Direct move to Target')
                                 if bAggroMove then
@@ -1670,7 +1670,7 @@ Platoon = Class(oldPlatoon) {
             -- Move the unit to the desired base after transfering BuilderManagers to the new LocationType
             local basePosition = aiBrain.BuilderManagers[self.PlatoonData.MoveToLocationType].Position
             --LOG('* TransferAIUveso: Moving transfer-units to - ' .. self.PlatoonData.MoveToLocationType)
-            self:ForceReturnToNearestBaseAIUveso()
+            self:SimpleReturnToBase(basePosition)
         end
         if aiBrain:PlatoonExists(self) then
             self:PlatoonDisband()
@@ -1784,14 +1784,38 @@ Platoon = Class(oldPlatoon) {
         -- No return here. We will never reach this position. After disbanding this platoon, the forked 'ExtractorUpgradeAI' thread will be terminated from outside.
     end,
     
-    SimpleReturnToMainBase = function(self, basePosition)
+    SimpleReturnToBase = function(self, basePosition)
         local aiBrain = self:GetBrain()
-        --local basePosition = aiBrain.BuilderManagers['MAIN'].Position
-        local PlatoonPos = self:GetPlatoonPosition()
-        if VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, basePosition[1] or 0, basePosition[3] or 0) > 40 then
-            self:MoveToLocation(basePosition, false)
+        local PlatoonPosition
+        local Lastdist
+        local dist
+        local Stuck = 0
+        self:Stop()
+        self:MoveToLocation(basePosition, false)
+        while aiBrain:PlatoonExists(self) do
+            PlatoonPosition = self:GetPlatoonPosition()
+            if not PlatoonPosition then
+                LOG('* SimpleReturnToBase: no Platoon Position')
+                break
+            end
+            dist = VDist2( basePosition[1], basePosition[3], PlatoonPosition[1], PlatoonPosition[3] )
+            if dist < 20 then
+                break
+            end
+            -- Do we move ?
+            if Lastdist ~= dist then
+                Stuck = 0
+                Lastdist = dist
+            -- No, we are not moving, wait 100 ticks then break and use the next weaypoint
+            else
+                Stuck = Stuck + 1
+                if Stuck > 20 then
+                    self:Stop()
+                    break
+                end
+            end
+            WaitTicks(10)
         end
-        WaitTicks(30)
         self:PlatoonDisband()
     end,
 

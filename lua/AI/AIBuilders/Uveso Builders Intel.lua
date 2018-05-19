@@ -40,7 +40,7 @@ BuilderGroup {
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, categories.AIR * categories.SCOUT } },
             -- Have we the eco to build it ?
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 5, categories.AIR * categories.SCOUT }},
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.AIR * categories.SCOUT }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.FACTORY * categories.AIR * categories.TECH3 } },
             -- Respect UnitCap
         },
@@ -56,7 +56,7 @@ BuilderGroup {
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, categories.INTELLIGENCE * categories.AIR } },
             -- Have we the eco to build it ?
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 5, categories.INTELLIGENCE * categories.AIR * categories.TECH3 }},
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.INTELLIGENCE * categories.AIR * categories.TECH3 }},
             -- Respect UnitCap
         },
         BuilderType = 'Air',
