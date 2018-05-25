@@ -50,7 +50,7 @@ BuilderGroup {
         BuilderName = 'U1 Mass 30',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 2200,
-        InstanceCount = 4,
+        InstanceCount = 6,
         BuilderConditions = {
             -- When do we want to build this ?
             { MABC, 'CanBuildOnMassLessThanDistance', { 'LocationType', 30, 0, 0, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
@@ -74,7 +74,7 @@ BuilderGroup {
         BuilderName = 'U1 Mass 150',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 2090,
-        InstanceCount = 4,
+        InstanceCount = 6,
         BuilderConditions = {
             -- When do we want to build this ?
             { MABC, 'CanBuildOnMassLessThanDistance', { 'LocationType', 150, 0, 0, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum

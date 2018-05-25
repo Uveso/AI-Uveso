@@ -79,10 +79,10 @@ function LocationRangeManagerThread(aiBrain)
                     if Plan or Builder then
                         unit:SetCustomName(''..(Builder or 'Unknown')..' ('..(Plan or 'Unknown')..')')
                     else
-                        unit:SetCustomName('c[_]')
+                        unit:SetCustomName('+')
                     end
                 else
-                    unit:SetCustomName('')
+                    unit:SetCustomName('-')
                 end
             end
 

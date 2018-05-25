@@ -546,8 +546,8 @@ function HaveLessThanIdleEngineers(aiBrain, count, tech)
     return c < count
 end
 
--- { UCBC, 'NoParagon', {} },
-function NoParagon(aiBrain)
+-- { UCBC, 'CheckParagonPresent', {} },
+function CheckParagonPresent(aiBrain)
     local paragons = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC, false)
     local count = 0
     for unitNum, unit in paragons do
@@ -571,6 +571,13 @@ function HasParagon(aiBrain)
     return false
 end
 
+-- { UCBC, 'HasNotParagon', {} },
+function HasNotParagon(aiBrain)
+    if not aiBrain.HasParagon then
+        return true
+    end
+    return false
+end
 -----------------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------------

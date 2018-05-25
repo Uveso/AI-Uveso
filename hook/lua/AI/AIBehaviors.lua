@@ -21,7 +21,7 @@ function CommanderThreadUveso(cdr, platoon)
         end
         WaitTicks(2)
         -- Call platoon resume building deal...
-        if not cdr:IsDead() and cdr:IsIdleState() then
+        if not cdr.Dead and cdr:IsIdleState() then
             if not cdr.EngineerBuildQueue or table.getn(cdr.EngineerBuildQueue) == 0 then
                 --LOG('* CommanderThreadUveso: Idle and no BuildQueue')
                 local pool = aiBrain:GetPlatoonUniquelyNamed('ArmyPool')

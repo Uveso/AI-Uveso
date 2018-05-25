@@ -404,7 +404,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Assist PARA Turbo',
         PlatoonTemplate = 'EngineerAssist',
-        Priority = 1000,
+        Priority = 1,
         InstanceCount = 20,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -428,7 +428,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 Assist PARA Turbo',
         PlatoonTemplate = 'T2EngineerAssist',
-        Priority = 1000,
+        Priority = 1,
         InstanceCount = 20,
         BuilderConditions = {
             -- When do we want to build this ?

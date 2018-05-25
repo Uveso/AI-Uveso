@@ -19,8 +19,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'StartLocationNeedsEngineer', { 'LocationType', 1000, -1000, 5, 0, 'StructuresNotMex' } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.05}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapFactory, '<=', categories.STRUCTURE * categories.FACTORY * categories.LAND } }, -- Maximal 3 factories at 125 unitcap, 12 factories at 500 unitcap...
@@ -43,13 +42,9 @@ BuilderGroup {
                 ThreatType = 'StructuresNotMex',
                 ExpansionRadius = 50,
                 BuildStructures = {
-                    'T1GroundDefense',
-                    'T1AADefense',
-                    'T1LandFactory',
                     'T1Radar',
-                    'T1AirFactory',
-                    'T1AADefense',
                     'T1GroundDefense',
+                    'T1AADefense',
                 }
             },
         }
@@ -65,8 +60,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'ExpansionAreaNeedsEngineer', { 'LocationType', 1000, -1000, 0, 2, 'StructuresNotMex' } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.05}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapFactory, '<=', categories.STRUCTURE * categories.FACTORY * categories.LAND } }, -- Maximal 3 factories at 125 unitcap, 12 factories at 500 unitcap...
@@ -89,11 +83,9 @@ BuilderGroup {
                 ThreatType = 'StructuresNotMex',
                 ExpansionRadius = 50,
                 BuildStructures = {
+                    'T1Radar',
                     'T1GroundDefense',
                     'T1AADefense',
-                    'T1LandFactory',
-                    'T1Radar',
-                    'T1AirFactory',
                 }
             },
         }

@@ -6,6 +6,13 @@ PlatoonTemplate {
     }
 }
 PlatoonTemplate {
+    Name = 'U123-EnemyAntiGround Bomber 3 5',
+    Plan = 'InterceptorAIUveso', -- is targetting in order from Platoondata.PrioritizedCategories.
+    GlobalSquads = {
+        { categories.MOBILE * categories.AIR * categories.BOMBER - categories.EXPERIMENTAL - categories.ANTINAVY, 3, 5, 'Attack', 'GrowthFormation' },
+    }
+}
+PlatoonTemplate {
     Name = 'U123-EnemyAntiGround Bomber 10 20',
     Plan = 'InterceptorAIUveso', -- is targetting in order from Platoondata.PrioritizedCategories.
     GlobalSquads = {
