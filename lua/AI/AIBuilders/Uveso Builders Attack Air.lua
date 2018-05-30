@@ -25,7 +25,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 MilitaryZone AIR',
         PlatoonTemplate = 'T1AirFighter',
-        Priority = 1700,
+        Priority = 180,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 1, categories.MOBILE * categories.AIR - categories.SCOUT}}, -- radius, LocationType, unitCount, categoryEnemy
@@ -47,7 +47,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Interceptors Minimum',
         PlatoonTemplate = 'T1AirFighter',
-        Priority = 1700,
+        Priority = 180,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.ANTIAIR }},
@@ -66,7 +66,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Bomber Minimum',
         PlatoonTemplate = 'T1AirBomber',
-        Priority = 1700,
+        Priority = 180,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.MOBILE * categories.AIR  * categories.BOMBER }},
@@ -86,7 +86,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Interceptors',
         PlatoonTemplate = 'T1AirFighter',
-        Priority = 1700,
+        Priority = 180,
         BuilderConditions = {
             -- When do we want to build this ?
             -- Do we need additional conditions to build it ?
@@ -94,7 +94,7 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.LAND * categories.FACTORY * categories.TECH1 }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.3, 'MOBILE AIR', '<=', 'MOBILE AIR' } },
@@ -107,7 +107,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Gunship',
         PlatoonTemplate = 'T1Gunship',
-        Priority = 1700,
+        Priority = 180,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 2, categories.MOBILE * categories.AIR  * categories.GROUNDATTACK }},
@@ -130,7 +130,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Bomber',
         PlatoonTemplate = 'T1AirBomber',
-        Priority = 1700,
+        Priority = 180,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 2, categories.MOBILE * categories.AIR  * categories.BOMBER }},
@@ -156,7 +156,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 FighterBomber < 20',
         PlatoonTemplate = 'T2FighterBomber',
-        Priority = 1600,
+        Priority = 180,
         BuilderConditions = {
             -- When do we want to build this ?
             -- Do we need additional conditions to build it ?
@@ -177,7 +177,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 Air Gunship < 20',
         PlatoonTemplate = 'T2AirGunship',
-        Priority = 1600,
+        Priority = 180,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 20, categories.MOBILE * categories.AIR * categories.GROUNDATTACK * categories.TECH2 }},
@@ -200,7 +200,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 TorpedoBomber PANIC',
         PlatoonTemplate = 'T2AirTorpedoBomber',
-        Priority = 1600,
+        Priority = 180,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 5, categories.MOBILE * categories.AIR * categories.ANTINAVY * categories.TECH2 }},
@@ -221,7 +221,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 TorpedoBomber < 20',
         PlatoonTemplate = 'T2AirTorpedoBomber',
-        Priority = 1600,
+        Priority = 180,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 20, categories.MOBILE * categories.AIR * categories.ANTINAVY * categories.TECH2 }},
@@ -255,7 +255,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Air Fighter Enemy',
         PlatoonTemplate = 'T3AirFighter',
-        Priority = 1700,
+        Priority = 180,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, 'MOBILE AIR HIGHALTAIR ANTIAIR', '<=', 'MOBILE AIR HIGHALTAIR ANTIAIR' } },
@@ -271,7 +271,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Air Fighter < 60',
         PlatoonTemplate = 'T3AirFighter',
-        Priority = 1500,
+        Priority = 180,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 60, categories.MOBILE * categories.AIR  * categories.HIGHALTAIR * categories.ANTIAIR * categories.TECH3 }},
@@ -287,7 +287,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Air Gunship < 60',
         PlatoonTemplate = 'T3AirGunship',
-        Priority = 1500,
+        Priority = 180,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 60, categories.MOBILE * categories.AIR * categories.GROUNDATTACK * categories.TECH3 }},
@@ -305,7 +305,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Air Bomber < 60',
         PlatoonTemplate = 'T3AirBomber',
-        Priority = 1500,
+        Priority = 180,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 60, categories.MOBILE * categories.AIR * categories.BOMBER }},
@@ -323,7 +323,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 TorpedoBomber < 20',
         PlatoonTemplate = 'T3TorpedoBomber',
-        Priority = 1500,
+        Priority = 180,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 20, categories.MOBILE * categories.AIR * categories.ANTINAVY }},
@@ -351,7 +351,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Air Transport 1st',
         PlatoonTemplate = 'T1AirTransport',
-        Priority = 1100, 
+        Priority = 170, 
         DelayEqualBuildPlattons = {'Transporter', 5},
         BuilderConditions = {
             -- When do we want to build this ?
@@ -369,7 +369,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Air Transport 1st Island',
         PlatoonTemplate = 'T1AirTransport',
-        Priority = 1100, 
+        Priority = 170, 
         DelayEqualBuildPlattons = {'Transporter', 5},
         BuilderConditions = {
             -- When do we want to build this ?
@@ -386,7 +386,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Air Transport minimum',
         PlatoonTemplate = 'T1AirTransport',
-        Priority = 1100, 
+        Priority = 170, 
         DelayEqualBuildPlattons = {'Transporter', 5},
         BuilderConditions = {
             -- When do we want to build this ?
@@ -407,7 +407,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 Air Transport minimum',
         PlatoonTemplate = 'T2AirTransport',
-        Priority = 1100,
+        Priority = 170,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.TRANSPORTFOCUS * categories.TECH2 }},
@@ -426,7 +426,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Air Transport minimum',
         PlatoonTemplate = 'T3AirTransport',
-        Priority = 1100,
+        Priority = 170,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.TRANSPORTFOCUS * categories.TECH3 }},
@@ -448,7 +448,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Air Transport NoIsland',
         PlatoonTemplate = 'T1AirTransport',
-        Priority = 1000, 
+        Priority = 170, 
         BuilderConditions = {
             -- When do we want to build this ?
             { MIBC, 'ArmyNeedsTransports', {} },
@@ -469,7 +469,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 Air Transport NoIsland',
         PlatoonTemplate = 'T2AirTransport',
-        Priority = 1000,
+        Priority = 170,
         BuilderConditions = {
             -- When do we want to build this ?
             { MIBC, 'ArmyNeedsTransports', {} },
@@ -490,7 +490,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Air Transport NoIsland',
         PlatoonTemplate = 'T3AirTransport',
-        Priority = 1000,
+        Priority = 170,
         BuilderConditions = {
             -- When do we want to build this ?
             { MIBC, 'ArmyNeedsTransports', {} },
@@ -514,7 +514,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Air Transport Island',
         PlatoonTemplate = 'T1AirTransport',
-        Priority = 1100,
+        Priority = 170,
         BuilderConditions = {
             -- When do we want to build this ?
             { MIBC, 'ArmyNeedsTransports', {} },
@@ -535,7 +535,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 Air Transport Island',
         PlatoonTemplate = 'T2AirTransport',
-        Priority = 1100,
+        Priority = 170,
         BuilderConditions = {
             -- When do we want to build this ?
             { MIBC, 'ArmyNeedsTransports', {} },
@@ -556,7 +556,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Air Transport Island',
         PlatoonTemplate = 'T3AirTransport',
-        Priority = 1100,
+        Priority = 170,
         BuilderConditions = {
             -- When do we want to build this ?
             { MIBC, 'ArmyNeedsTransports', {} },
@@ -588,7 +588,7 @@ BuilderGroup {
         BuilderName = 'U123 PANIC AntiGround',
         PlatoonTemplate = 'U123-AntiGroundPanic 1 500',
         PlatoonAddBehaviors = { 'AirUnitRefit' },               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
-        Priority = 2000,                                        -- Priority. 1000 is normal.
+        Priority = 90,                                        -- Priority. 1000 is normal.
         InstanceCount = 4,                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BasePanicZone,                       -- Searchradius for new target.
@@ -616,7 +616,7 @@ BuilderGroup {
         BuilderName = 'U123 PANIC AntiAir',
         PlatoonTemplate = 'U123-AntiAirPanic 1 500',
         PlatoonAddBehaviors = { 'AirUnitRefit' },               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
-        Priority = 2000,                                        -- Priority. 1000 is normal.
+        Priority = 90,                                        -- Priority. 1000 is normal.
         InstanceCount = 4,                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BasePanicZone,                       -- Searchradius for new target.
@@ -647,7 +647,7 @@ BuilderGroup {
         BuilderName = 'U123 AntiAir MilitaryZone',                 -- Random Builder Name.
         PlatoonTemplate = 'U123-EnemyAntiAirInterceptor 10 20', -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesAir.lua"
         PlatoonAddBehaviors = { 'AirUnitRefit' },               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
-        Priority = 1900,                                        -- Priority. 1000 is normal.
+        Priority = 80,                                        -- Priority. 1000 is normal.
         InstanceCount = 15,                                     -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius from main base for new target. (A 5x5 Map is 256 high)
@@ -676,7 +676,7 @@ BuilderGroup {
         BuilderName = 'U123 Military AntiTransport',
         PlatoonTemplate = 'U123-AntiAirPanic 1 500',
         PlatoonAddBehaviors = { 'AirUnitRefit' },               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
-        Priority = 1900,                                        -- Priority. 1000 is normal.
+        Priority = 70,                                        -- Priority. 1000 is normal.
         InstanceCount = 2,                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                    -- Searchradius for new target.
@@ -708,7 +708,7 @@ BuilderGroup {
         BuilderName = 'U123 AntiAir EnemyZone',                 -- Random Builder Name.
         PlatoonTemplate = 'U123-EnemyAntiAirInterceptor 10 20', -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesAir.lua"
         PlatoonAddBehaviors = { 'AirUnitRefit' },               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
-        Priority = 1900,                                        -- Priority. 1000 is normal.
+        Priority = 60,                                        -- Priority. 1000 is normal.
         InstanceCount = 15,                                     -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius from main base for new target. (A 5x5 Map is 256 high)
@@ -737,7 +737,7 @@ BuilderGroup {
         BuilderName = 'U123 AntiGround Bomber',                 -- Random Builder Name.
         PlatoonTemplate = 'U123-EnemyAntiGround Bomber 3 5',   -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesAir.lua"
         PlatoonAddBehaviors = { 'AirUnitRefit' },               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
-        Priority = 1900,                                        -- Priority. 1000 is normal.
+        Priority = 60,                                        -- Priority. 1000 is normal.
         InstanceCount = 5,                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
@@ -764,7 +764,7 @@ BuilderGroup {
         BuilderName = 'U123 AntiGround Gunship',                -- Random Builder Name.
         PlatoonTemplate = 'U123-EnemyAntiGround Gunship 10 20', -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesAir.lua"
         PlatoonAddBehaviors = { 'AirUnitRefit' },               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
-        Priority = 1900,                                        -- Priority. 1000 is normal.
+        Priority = 60,                                        -- Priority. 1000 is normal.
         InstanceCount = 1,                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
@@ -794,7 +794,7 @@ BuilderGroup {
         BuilderName = 'U123 Military AntiNaval',
         PlatoonTemplate = 'U123-TorpedoBomber 1 100',
         PlatoonAddBehaviors = { 'AirUnitRefit' },               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
-        Priority = 1900,                                        -- Priority. 1000 is normal.
+        Priority = 60,                                        -- Priority. 1000 is normal.
         InstanceCount = 2,                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                    -- Searchradius for new target.
@@ -825,7 +825,7 @@ BuilderGroup {
         BuilderName = 'U123 AntiExperimental Interceptor Grow',
         PlatoonTemplate = 'U123-ExperimentalAttackInterceptorGrow 3 100',
         PlatoonAddBehaviors = { 'AirUnitRefit' },               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
-        Priority = 2000,                                        -- Priority. 1000 is normal.
+        Priority = 70,                                        -- Priority. 1000 is normal.
         InstanceCount = 4,                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                    -- Searchradius for new target.
@@ -846,7 +846,7 @@ BuilderGroup {
         BuilderName = 'U123 AntiExperimental Bomber Grow',
         PlatoonTemplate = 'U123-ExperimentalAttackBomberGrow 3 100',
         PlatoonAddBehaviors = { 'AirUnitRefit' },               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
-        Priority = 2000,                                        -- Priority. 1000 is normal.
+        Priority = 70,                                        -- Priority. 1000 is normal.
         InstanceCount = 4,                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                    -- Searchradius for new target.
@@ -868,7 +868,7 @@ BuilderGroup {
         BuilderName = 'U123 AntiExperimental Gunship Grow',
         PlatoonTemplate = 'U123-ExperimentalAttackGunshipGrow 3 100',
         PlatoonAddBehaviors = { 'AirUnitRefit' },               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
-        Priority = 2000,                                        -- Priority. 1000 is normal.
+        Priority = 70,                                        -- Priority. 1000 is normal.
         InstanceCount = 4,                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                    -- Searchradius for new target.
@@ -893,7 +893,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U12 UnitCap AntiAir',
         PlatoonTemplate = 'U12-AntiAirCap 1 500',
-        Priority = 1550,                                        -- Priority. 1000 is normal.
+        Priority = 70,                                        -- Priority. 1000 is normal.
         InstanceCount = 4,                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
@@ -918,7 +918,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U12 UnitCap AntiGround',
         PlatoonTemplate = 'U12-AntiGroundCap 1 500',
-        Priority = 1550,                                        -- Priority. 1000 is normal.
+        Priority = 70,                                        -- Priority. 1000 is normal.
         InstanceCount = 20,                                     -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
@@ -946,7 +946,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U12 ExperimentalCap AntiAir',
         PlatoonTemplate = 'U12-AntiAirCap 1 500',
-        Priority = 1550,                                         -- Priority. 1000 is normal.
+        Priority = 70,                                         -- Priority. 1000 is normal.
         InstanceCount = 4,                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = 10000,                                 -- Searchradius for new target.
@@ -971,7 +971,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U12 ExperimentalCap AntiGround',
         PlatoonTemplate = 'U12-AntiGroundCap 1 500',
-        Priority = 1550,                                        -- Priority. 1000 is normal.
+        Priority = 70,                                        -- Priority. 1000 is normal.
         InstanceCount = 20,                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
@@ -1000,7 +1000,7 @@ BuilderGroup {
         BuilderName = 'U123 Air Kill Them All!!!',
         PlatoonTemplate = 'U123-AntiAirPanic 1 500',
         PlatoonAddBehaviors = { 'AirUnitRefit' },               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
-        Priority = 1100,                                        -- Priority. 1000 is normal.
+        Priority = 50,                                        -- Priority. 1000 is normal.
         InstanceCount = 3,                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
@@ -1031,7 +1031,7 @@ BuilderGroup {
         BuilderName = 'U123 Ground Kill Them All!!!',
         PlatoonTemplate = 'U123-AntiGroundPanic 1 500',
         PlatoonAddBehaviors = { 'AirUnitRefit' },               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
-        Priority = 1100,                                        -- Priority. 1000 is normal.
+        Priority = 50,                                        -- Priority. 1000 is normal.
         InstanceCount = 3,                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
@@ -1062,7 +1062,7 @@ BuilderGroup {
         BuilderName = 'U123 Torpedo Kill Them All!!!',
         PlatoonTemplate = 'U123-TorpedoBomber 1 100',
         PlatoonAddBehaviors = { 'AirUnitRefit' },               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
-        Priority = 1100,                                        -- Priority. 1000 is normal.
+        Priority = 50,                                        -- Priority. 1000 is normal.
         InstanceCount = 3,                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.

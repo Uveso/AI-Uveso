@@ -22,7 +22,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Sub PANIC',
         PlatoonTemplate = 'T1SeaSub',
-        Priority = 1700,
+        Priority = 190,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.MOBILE * categories.NAVAL }}, -- radius, LocationType, unitCount, categoryEnemy
@@ -39,7 +39,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Sub',
         PlatoonTemplate = 'T1SeaSub',
-        Priority = 1700,
+        Priority = 180,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 10, categories.MOBILE * categories.NAVAL * categories.SUBMERSIBLE } },
@@ -59,7 +59,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Sea Frigate ratio Sub',
         PlatoonTemplate = 'T1SeaFrigate',
-        Priority = 1700,
+        Priority = 180,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 10, categories.MOBILE * categories.NAVAL - categories.SUBMERSIBLE } },
@@ -81,7 +81,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Sea AntiAir',
         PlatoonTemplate = 'T1SeaAntiAir',
-        Priority = 1700,
+        Priority = 180,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.4, 'MOBILE NAVAL ANTIAIR', '<=', 'MOBILE AIR' } },
@@ -105,7 +105,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 Sea Destroyer',
         PlatoonTemplate = 'T2SeaDestroyer',
-        Priority = 1600,
+        Priority = 180,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL', '<=', 'NAVAL' } },
@@ -125,7 +125,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 Sea Cruiser',
         PlatoonTemplate = 'T2SeaCruiser',
-        Priority = 1600,
+        Priority = 180,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL', '<=', 'NAVAL' } },
@@ -145,7 +145,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 Sea SubKiller',
         PlatoonTemplate = 'T2SubKiller',
-        Priority = 1600,
+        Priority = 180,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL SUBMERSIBLE', '<=', 'NAVAL' } },
@@ -165,7 +165,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 Sea ShieldBoat',
         PlatoonTemplate = 'T2ShieldBoat',
-        Priority = 1600,
+        Priority = 180,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL', '<=', 'NAVAL' } },
@@ -185,7 +185,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 Sea CounterIntelBoat',
         PlatoonTemplate = 'T2CounterIntelBoat',
-        Priority = 1600,
+        Priority = 180,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL', '<=', 'NAVAL' } },
@@ -208,7 +208,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Sea Battleship',
         PlatoonTemplate = 'T3SeaBattleship',
-        Priority = 1500,
+        Priority = 180,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL', '<=', 'NAVAL' } },
@@ -226,7 +226,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Sea NukeSub',
         PlatoonTemplate = 'T3SeaNukeSub',
-        Priority = 1500,
+        Priority = 180,
         BuilderConditions = {
             -- When do we want to build this ?
            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL SUBMERSIBLE', '<=', 'NAVAL' } },
@@ -244,7 +244,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Sea MissileBoat',
         PlatoonTemplate = 'T3MissileBoat',
-        Priority = 1500,
+        Priority = 180,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL', '<=', 'NAVAL' } },
@@ -262,7 +262,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Sea SubKiller',
         PlatoonTemplate = 'T3SubKiller',
-        Priority = 1500,
+        Priority = 180,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL SUBMERSIBLE', '<=', 'NAVAL' } },
@@ -280,7 +280,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Sea Battlecruiser',
         PlatoonTemplate = 'T3Battlecruiser',
-        Priority = 1500,
+        Priority = 180,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL', '<=', 'NAVAL' } },
@@ -308,7 +308,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U123 PANIC AntiSea',
         PlatoonTemplate = 'U123 Panic AntiSea 1 500',
-        Priority = 2000,                                        -- Priority. 1000 is normal.
+        Priority = 90,                                        -- Priority. 1000 is normal.
         InstanceCount = 3,                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BasePanicZone,                       -- Searchradius for new target.
@@ -337,7 +337,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U123 Military AntiSea',
         PlatoonTemplate = 'U123 Military AntiSea 5 5',
-        Priority = 2000,                                        -- Priority. 1000 is normal.
+        Priority = 80,                                        -- Priority. 1000 is normal.
         InstanceCount = 3,                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                    -- Searchradius for new target.
@@ -367,7 +367,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U123 Enemy AntiSea',
         PlatoonTemplate = 'U123 Enemy AntiSea 10 10',
-        Priority = 1000,
+        Priority = 60,
         InstanceCount = 5,
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
@@ -396,7 +396,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U123 Sea Kill Them All!!!',
         PlatoonTemplate = 'U123 KILLALL 10 10',
-        Priority = 1000,
+        Priority = 50,
         InstanceCount = 10,
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.

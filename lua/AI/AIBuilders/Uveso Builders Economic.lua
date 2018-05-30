@@ -19,7 +19,7 @@ BuilderGroup {
         BuilderName = 'Uveso CDR Initial Default',
         PlatoonAddBehaviors = { 'CommanderBehaviorUveso', },
         PlatoonTemplate = 'CommanderBuilder',
-        Priority = 8000,
+        Priority = 19500,
         BuilderConditions = {
             { IBC, 'NotPreBuilt', {}},
         },
@@ -43,7 +43,7 @@ BuilderGroup {
         BuilderName = 'Uveso Initial ACU PreBuilt Default',
         PlatoonAddBehaviors = { 'CommanderBehaviorUveso', },
         PlatoonTemplate = 'CommanderBuilder',
-        Priority = 8000,
+        Priority = 19500,
         BuilderConditions = {
             { IBC, 'PreBuiltBase', {}},
         },
@@ -79,7 +79,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Engineer builder Cap',
         PlatoonTemplate = 'T1BuildEngineer',
-        Priority = 1700,
+        Priority = 18500,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'EngineerCapCheck', { 'LocationType', 'Tech1' } },
@@ -95,30 +95,13 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Engineer noIdle',
         PlatoonTemplate = 'T1BuildEngineer',
-        Priority = 1800,
+        Priority = 18400,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'PoolLessAtLocation', { 'LocationType', 4, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'HaveLessThanIdleEngineers', { 1, 1 }}, -- count, tech (1=TECH1, 2=Tech2, 3=FieldTech, 4=TECH3, 5=SubCommander)
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            -- Don't build it if...
-            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'ENGINEER TECH1' } },
-            -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers, '<=', categories.MOBILE * categories.ENGINEER } },
-        },
-        BuilderType = 'All',
-    },
-    -- Build more engineers if we don't find idle engineers
-    Builder {
-        BuilderName = 'U1 Engineer noIdle ecovampire',
-        PlatoonTemplate = 'T1BuildEngineer',
-        Priority = 1700,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanIdleEngineers', { 10, 1 }}, -- count, tech (1=TECH1, 2=Tech2, 3=FieldTech, 4=TECH3, 5=SubCommander)
-            -- Do we need additional conditions to build it ?
-            -- Have we the eco to build it ?
             -- Don't build it if...
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'ENGINEER TECH1' } },
             -- Respect UnitCap
@@ -132,7 +115,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 Engineer builder Cap',
         PlatoonTemplate = 'T2BuildEngineer',
-        Priority = 1800,
+        Priority = 18500,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'EngineerCapCheck', { 'LocationType', 'Tech2' } },
@@ -149,17 +132,16 @@ BuilderGroup {
         -- Build more engineers if we don't find idle engineers
         BuilderName = 'U2 Engineer noIdle',
         PlatoonTemplate = 'T2BuildEngineer',
-        Priority = 1700,
+        Priority = 18400,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanIdleEngineers', { 10, 2 }}, -- count, tech (1=TECH1, 2=Tech2, 3=FieldTech, 4=TECH3, 5=SubCommander)
+            { UCBC, 'HaveLessThanIdleEngineers', { 1, 2 }}, -- count, tech (1=TECH1, 2=Tech2, 3=FieldTech, 4=TECH3, 5=SubCommander)
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 1.00}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'ENGINEER TECH1' } },
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'ENGINEER TECH2' } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers, '<=', categories.MOBILE * categories.ENGINEER } },
         },
@@ -171,7 +153,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Engineer builder Cap',
         PlatoonTemplate = 'T3BuildEngineer',
-        Priority = 2000,
+        Priority = 18500,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'EngineerCapCheck', { 'LocationType', 'Tech3' } },
@@ -188,15 +170,15 @@ BuilderGroup {
         -- Build more engineers if we don't find idle engineers
         BuilderName = 'U3 Engineer noIdle',
         PlatoonTemplate = 'T3BuildEngineer',
-        Priority = 2000,
+        Priority = 18400,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanIdleEngineers', { 10, 4 }}, -- count, tech (1=TECH1, 2=Tech2, 3=FieldTech, 4=TECH3, 5=SubCommander)
+            { UCBC, 'HaveLessThanIdleEngineers', { 1, 4 }}, -- count, tech (1=TECH1, 2=Tech2, 3=FieldTech, 4=TECH3, 5=SubCommander)
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.60, -0.00}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'ENGINEER TECH3' } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers, '<=', categories.MOBILE * categories.ENGINEER } },
         },
@@ -206,10 +188,11 @@ BuilderGroup {
         -- Build more engineers if we don't find idle engineers
         BuilderName = 'U3 Engineer ECOFULL',
         PlatoonTemplate = 'T3BuildEngineer',
-        Priority = 2000,
+        Priority = 18400,
         BuilderConditions = {
             -- When do we want to build this ?
             -- Do we need additional conditions to build it ?
+            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.95, -0.00}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
@@ -224,7 +207,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Sub Commander cap',
         PlatoonTemplate = 'T3LandSubCommander',
-        Priority = 1000,
+        Priority = 18400,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'EngineerCapCheck', { 'LocationType', 'SCU' } },
@@ -251,10 +234,10 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Engi Trans to MainBase',
         PlatoonTemplate = 'U1EngineerTransfer',
-        Priority = 500,
+        Priority = 18300,
         InstanceCount = 1,
         BuilderConditions = {
-            { UCBC, 'GreaterThanGameTimeSeconds', { 180 } },
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60*30 } },
             { UCBC, 'BuildNotOnLocation', { 'LocationType', 'MAIN' } },
             { UCBC, 'EngineerManagerUnitsAtLocation', { 'LocationType', '>', 2,  'MOBILE TECH1' } },
         },
@@ -266,10 +249,10 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 Engi Trans to MainBase',
         PlatoonTemplate = 'U2EngineerTransfer',
-        Priority = 500,
+        Priority = 18300,
         InstanceCount = 1,
         BuilderConditions = {
-            { UCBC, 'GreaterThanGameTimeSeconds', { 180 } },
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60*30 } },
             { UCBC, 'BuildNotOnLocation', { 'LocationType', 'MAIN' } },
             { UCBC, 'EngineerManagerUnitsAtLocation', { 'LocationType', '>', 2,  'MOBILE TECH2' } },
         },
@@ -281,10 +264,10 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Engi Trans to MainBase',
         PlatoonTemplate = 'U3EngineerTransfer',
-        Priority = 500,
+        Priority = 18300,
         InstanceCount = 1,
         BuilderConditions = {
-            { UCBC, 'GreaterThanGameTimeSeconds', { 180 } },
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60*30 } },
             { UCBC, 'BuildNotOnLocation', { 'LocationType', 'MAIN' } },
             { UCBC, 'EngineerManagerUnitsAtLocation', { 'LocationType', '>', 2,  'MOBILE TECH3' } },
         },

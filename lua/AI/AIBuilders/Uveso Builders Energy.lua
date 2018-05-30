@@ -21,7 +21,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Power Emergency',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 2100,
+        Priority = 16500,
         DelayEqualBuildPlattons = {'Energy', 3},
         BuilderConditions = {
             -- When do we want to build this ?
@@ -51,7 +51,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Power Emergency II',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 2100,
+        Priority = 16500,
         DelayEqualBuildPlattons = {'Energy', 3},
         BuilderConditions = {
             -- When do we want to build this ?
@@ -82,7 +82,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Power Push 500',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 2100,
+        Priority = 16500,
         DelayEqualBuildPlattons = {'Energy', 3},
         BuilderConditions = {
             -- When do we want to build this ?
@@ -116,7 +116,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U-CDR Power Emergency',
         PlatoonTemplate = 'CommanderBuilder',
-        Priority = 2100,
+        Priority = 16500,
         BuilderConditions = {
             -- When do we want to build this ?
             { EBC, 'LessThanEconStorageRatio', { 2.00, 0.99}}, -- Ratio from 0 to 1. (1=100%)
@@ -142,7 +142,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U-CDR Power Push 500',
         PlatoonTemplate = 'CommanderBuilder',
-        Priority = 2100,
+        Priority = 16500,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'LessThanEnergyTrend', { 50.0 } },
@@ -172,13 +172,12 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Power Hydrocarbon',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 2000,
+        Priority = 16400,
         DelayEqualBuildPlattons = {'Energy', 1},
         InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
-            { MABC, 'MarkerLessThanDistance',  { 'Hydrocarbon', 150}},
-            -- Do we need additional conditions to build it ?
+            { UCBC, 'CanBuildOnHydroLessThanDistance', { 'LocationType', 250, -1000, 100, 1, 'AntiSurface', 1 }},            -- Do we need additional conditions to build it ?
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 0.4, 2.0}}, -- Absolut Base income 4 60
@@ -200,7 +199,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U-CDR Energy RECOVER',
         PlatoonTemplate = 'CommanderBuilder',
-        Priority = 7900,
+        Priority = 19100,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION } },
@@ -229,7 +228,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 Power minimum',
         PlatoonTemplate = 'T2EngineerBuilder',
-        Priority = 2200,
+        Priority = 16500,
         DelayEqualBuildPlattons = {'Energy', 3},
         InstanceCount = 1,
         BuilderConditions = {
@@ -263,13 +262,14 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 Power Trend < 1000',
         PlatoonTemplate = 'T2EngineerBuilder',
-        Priority = 2200,
+        Priority = 16500,
         DelayEqualBuildPlattons = {'Energy', 3},
         InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'LessThanEnergyTrend', { 100.0 } },
             -- Do we need additional conditions to build it ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 2, categories.ENERGYPRODUCTION * ( categories.TECH2 + categories.TECH3 + categories.EXPERIMENTAL ) } },
             { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH2' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome', { 0.6, 6.8 }},
@@ -305,7 +305,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Power minimum',
         PlatoonTemplate = 'T3EngineerBuilder',
-        Priority = 2300,
+        Priority = 16500,
         DelayEqualBuildPlattons = {'Energy', 10},
         InstanceCount = 1,
         BuilderConditions = {
@@ -340,7 +340,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Power Emergency',
         PlatoonTemplate = 'T3EngineerBuilder',
-        Priority = 2300,
+        Priority = 16500,
         DelayEqualBuildPlattons = {'Energy', 10},
         InstanceCount = 2,
         BuilderConditions = {
@@ -375,7 +375,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Power Push 6000',
         PlatoonTemplate = 'T3EngineerBuilder',
-        Priority = 2300,
+        Priority = 16500,
         DelayEqualBuildPlattons = {'Energy', 10},
         InstanceCount = 2,
         BuilderConditions = {
@@ -413,7 +413,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Power MassFull',
         PlatoonTemplate = 'T3EngineerBuilder',
-        Priority = 2300,
+        Priority = 16500,
         DelayEqualBuildPlattons = {'Energy', 10},
         InstanceCount = 2,
         BuilderConditions = {

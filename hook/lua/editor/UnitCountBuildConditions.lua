@@ -578,6 +578,23 @@ function HasNotParagon(aiBrain)
     end
     return false
 end
+
+--                { SBC, 'CanBuildOnHydroLessThanDistance', { 'LocationType', 1000, -1000, 100, 1, 'AntiSurface', 1 }},
+function CanBuildOnHydroLessThanDistance(aiBrain, locationType, distance, threatMin, threatMax, threatRings, threatType, maxNum)
+    local engineerManager = aiBrain.BuilderManagers[locationType].EngineerManager
+    if not engineerManager then
+        WARN('*AI WARNING: Invalid location - ' .. locationType)
+        return false
+    end
+    local position = engineerManager:GetLocationCoords()
+
+    local markerTable = AIUtils.AIGetSortedHydroLocations(aiBrain, maxNum, threatMin, threatMax, threatRings, threatType, position)
+    if markerTable[1] and VDist3(markerTable[1], position) < distance then
+        return true
+    end
+    return false
+end
+
 -----------------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------------

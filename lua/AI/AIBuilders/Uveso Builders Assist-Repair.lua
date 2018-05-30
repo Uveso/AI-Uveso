@@ -15,7 +15,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Assist 1st T2 Factory Upgrade',
         PlatoonTemplate = 'EngineerAssist',
-        Priority = 890,
+        Priority = 20,
         InstanceCount = 20,
         BuilderConditions = {
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH2 , categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH1 }},
@@ -38,7 +38,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Assist 1st T3 Factory Upgrade',
         PlatoonTemplate = 'EngineerAssist',
-        Priority = 890,
+        Priority = 20,
         InstanceCount = 20,
         BuilderConditions = {
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH3 , categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH2 }},
@@ -61,7 +61,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 Assist 1st T3 Factory Upgrade',
         PlatoonTemplate = 'T2EngineerAssist',
-        Priority = 890,
+        Priority = 20,
         InstanceCount = 20,
         BuilderConditions = {
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH3 , categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH2 }},
@@ -87,7 +87,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Assist Energy Turbo',
         PlatoonTemplate = 'EngineerAssist',
-        Priority = 870,
+        Priority = 20,
         InstanceCount = 10,
         DelayEqualBuildPlattons = {'Assist Energy', 5},
         BuilderConditions = {
@@ -116,7 +116,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 Assist Energy Turbo',
         PlatoonTemplate = 'T2EngineerAssist',
-        Priority = 870,
+        Priority = 20,
         DelayEqualBuildPlattons = {'Assist Energy', 5},
         InstanceCount = 10,
         BuilderConditions = {
@@ -144,7 +144,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Assist Energy Turbo',
         PlatoonTemplate = 'T3EngineerAssist',
-        Priority = 870,
+        Priority = 20,
         DelayEqualBuildPlattons = {'Assist Energy', 5},
         InstanceCount = 10,
         BuilderConditions = {
@@ -175,7 +175,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Assist Experimental',
         PlatoonTemplate = 'EngineerAssist',
-        Priority = 810,
+        Priority = 20,
         DelayEqualBuildPlattons = {'Assist Experimental', 15},
         InstanceCount = 10,
         BuilderConditions = {
@@ -203,7 +203,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U-T2 Assist Experimental',
         PlatoonTemplate = 'T2EngineerAssist',
-        Priority = 810,
+        Priority = 20,
         DelayEqualBuildPlattons = {'Assist Experimental', 5},
         InstanceCount = 10,
         BuilderConditions = {
@@ -232,7 +232,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U-T3 Assist Experimental',
         PlatoonTemplate = 'T3EngineerAssist',
-        Priority = 1000,
+        Priority = 20,
         DelayEqualBuildPlattons = {'Assist Experimental', 5},
         InstanceCount = 10,
         BuilderConditions = {
@@ -260,7 +260,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U-T3 Assist Experimental force',
         PlatoonTemplate = 'T3EngineerAssist',
-        Priority = 1000,
+        Priority = 20,
         DelayEqualBuildPlattons = {'Assist Experimental', 5},
         InstanceCount = 4,
         BuilderConditions = {
@@ -291,7 +291,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Assist PARA',
         PlatoonTemplate = 'EngineerAssist',
-        Priority = 1000,
+        Priority = 30,
         DelayEqualBuildPlattons = {'AssistParagon', 15},
         InstanceCount = 10,
         BuilderConditions = {
@@ -319,7 +319,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 Assist PARA',
         PlatoonTemplate = 'T2EngineerAssist',
-        Priority = 1000,
+        Priority = 30,
         DelayEqualBuildPlattons = {'AssistParagon', 15},
         InstanceCount = 10,
         BuilderConditions = {
@@ -347,7 +347,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Assist PARA',
         PlatoonTemplate = 'T3EngineerAssist',
-        Priority = 1000,
+        Priority = 30,
         DelayEqualBuildPlattons = {'AssistParagon', 15},
         InstanceCount = 10,
         BuilderConditions = {
@@ -378,7 +378,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Assist Shield',
         PlatoonTemplate = 'EngineerAssist',
-        Priority = 1000,
+        Priority = 40,
         InstanceCount = 2,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -408,7 +408,7 @@ BuilderGroup {
         BuilderName = 'U1 Finisher',
         PlatoonTemplate = 'EngineerBuilder',
         PlatoonAIPlan = 'ManagerEngineerFindUnfinished',
-        Priority = 1000,
+        Priority = 50,
         InstanceCount = 4,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -431,7 +431,7 @@ BuilderGroup {
         BuilderName = 'U2 Finisher',
         PlatoonTemplate = 'T2EngineerBuilder',
         PlatoonAIPlan = 'ManagerEngineerFindUnfinished',
-        Priority = 1000,
+        Priority = 50,
         InstanceCount = 4,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -455,7 +455,7 @@ BuilderGroup {
         BuilderName = 'U3 Finisher',
         PlatoonTemplate = 'T3EngineerBuilder',
         PlatoonAIPlan = 'ManagerEngineerFindUnfinished',
-        Priority = 1000,
+        Priority = 50,
         InstanceCount = 4,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -482,7 +482,7 @@ BuilderGroup {
         BuilderName = 'U1 Engineer Repair',
         PlatoonTemplate = 'EngineerBuilder',
         PlatoonAIPlan = 'RepairAI',
-        Priority = 1000,
+        Priority = 60,
         InstanceCount = 2,
         BuilderConditions = {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
@@ -498,7 +498,7 @@ BuilderGroup {
         BuilderName = 'U2 Engineer Repair',
         PlatoonTemplate = 'T2EngineerBuilder',
         PlatoonAIPlan = 'RepairAI',
-        Priority = 1000,
+        Priority = 60,
         InstanceCount = 2,
         BuilderConditions = {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
@@ -517,7 +517,7 @@ BuilderGroup {
         BuilderName = 'U1 Reclaim Resource',
         PlatoonTemplate = 'EngineerBuilder',
         PlatoonAIPlan = 'ReclaimAIUveso',
-        Priority = 2095,
+        Priority = 10,
         InstanceCount = 1,
         BuilderConditions = {
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
@@ -533,7 +533,7 @@ BuilderGroup {
         BuilderName = 'U1 Reclaim Auto MAIN',
         PlatoonTemplate = 'EngineerBuilder',
         PlatoonAIPlan = 'ReclaimAIUveso',
-        Priority = 700,
+        Priority = 10,
         InstanceCount = 1,
         BuilderConditions = {
             { EBC, 'LessThanEconStorageRatio', { 0.80, 1.01}}, -- Ratio from 0 to 1. (1=100%)

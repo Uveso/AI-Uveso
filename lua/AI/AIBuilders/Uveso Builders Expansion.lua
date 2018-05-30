@@ -11,15 +11,15 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Vacant Start Location',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 1200,
+        Priority = 2150,
         InstanceCount = 2,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'ExpansionBaseCheck', { } },
             -- Do we need additional conditions to build it ?
-            { UCBC, 'StartLocationNeedsEngineer', { 'LocationType', 1000, -1000, 5, 0, 'StructuresNotMex' } },
+            { UCBC, 'StartLocationNeedsEngineer', { 'LocationType', 1000, -1000, 100, 1, 'StructuresNotMex' } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
+--            { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}}, -- Absolut Base income
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapFactory, '<=', categories.STRUCTURE * categories.FACTORY * categories.LAND } }, -- Maximal 3 factories at 125 unitcap, 12 factories at 500 unitcap...
@@ -28,7 +28,7 @@ BuilderGroup {
         },
         BuilderType = 'Any',
         BuilderData = {
-            RequireTransport = true,
+            RequireTransport = false,
             Construction = {
                 BuildClose = false,
                 BaseTemplate = 'ExpansionBaseTemplates',
@@ -40,11 +40,12 @@ BuilderGroup {
                 ThreatMax = 100,
                 ThreatRings = 2,
                 ThreatType = 'StructuresNotMex',
-                ExpansionRadius = 50,
+                ExpansionRadius = 100,
                 BuildStructures = {
-                    'T1Radar',
-                    'T1GroundDefense',
-                    'T1AADefense',
+                    'T1LandFactory',
+--                    'T1Radar',
+--                    'T1AADefense',
+--                    'T1GroundDefense',
                 }
             },
         }
@@ -52,15 +53,15 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Vacant Expansion Area',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 1200,
-        InstanceCount = 2,
+        Priority = 2150,
+        InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'ExpansionBaseCheck', { } },
             -- Do we need additional conditions to build it ?
-            { UCBC, 'ExpansionAreaNeedsEngineer', { 'LocationType', 1000, -1000, 0, 2, 'StructuresNotMex' } },
+            { UCBC, 'ExpansionAreaNeedsEngineer', { 'LocationType', 1000, -1000, 100, 1, 'StructuresNotMex' } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
+--            { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}}, -- Absolut Base income
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapFactory, '<=', categories.STRUCTURE * categories.FACTORY * categories.LAND } }, -- Maximal 3 factories at 125 unitcap, 12 factories at 500 unitcap...
@@ -69,7 +70,7 @@ BuilderGroup {
         },
         BuilderType = 'Any',
         BuilderData = {
-            RequireTransport = true,
+            RequireTransport = false,
             Construction = {
                 BuildClose = false,
                 BaseTemplate = 'ExpansionBaseTemplates',
@@ -81,11 +82,12 @@ BuilderGroup {
                 ThreatMax = 100,
                 ThreatRings = 2,
                 ThreatType = 'StructuresNotMex',
-                ExpansionRadius = 50,
+                ExpansionRadius = 100,
                 BuildStructures = {
-                    'T1Radar',
-                    'T1GroundDefense',
-                    'T1AADefense',
+                    'T1LandFactory',
+--                    'T1Radar',
+--                    'T1AADefense',
+--                    'T1GroundDefense',
                 }
             },
         }
@@ -93,7 +95,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Naval Builder',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 2100,
+        Priority = 2150,
         InstanceCount = 4,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -101,8 +103,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'NavalAreaNeedsEngineer', { 'LocationType', 250, -1000, 10, 1, 'AntiSurface' } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.05}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}}, -- Absolut Base income
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapFactory, '<=', categories.STRUCTURE * categories.FACTORY * categories.NAVAL } }, -- Maximal 3 factories at 125 unitcap, 12 factories at 500 unitcap...
@@ -121,7 +122,7 @@ BuilderGroup {
                 ThreatMax = 100,
                 ThreatRings = 2,
                 ThreatType = 'AntiSurface',
-                ExpansionRadius = 70,
+                ExpansionRadius = 120,
                 BuildStructures = {
                     'T1SeaFactory',
                     'T1Sonar',

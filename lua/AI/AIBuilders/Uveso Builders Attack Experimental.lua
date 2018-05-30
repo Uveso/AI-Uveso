@@ -19,7 +19,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U-T4 LandExp1 1st',
         PlatoonTemplate = 'T3EngineerBuilder',
-        Priority = 810,
+        Priority = 150,
         DelayEqualBuildPlattons = {'Experimental', 30},
         InstanceCount = 1,
         BuilderConditions = {
@@ -53,7 +53,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'Uveso T4AirExperimental1',
         PlatoonTemplate = 'T3EngineerBuilder',
-        Priority = 800,
+        Priority = 150,
         DelayEqualBuildPlattons = {'Experimental', 10},
         InstanceCount = 2,
         BuilderConditions = {
@@ -86,7 +86,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'Uveso T4LandExperimental3',
         PlatoonTemplate = 'T3EngineerBuilder',
-        Priority = 800,
+        Priority = 150,
         DelayEqualBuildPlattons = {'Experimental', 10},
         InstanceCount = 1,
         BuilderConditions = {
@@ -119,7 +119,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'Uveso T4SeaExperimental1',
         PlatoonTemplate = 'T3EngineerBuilder',
-        Priority = 800,
+        Priority = 150,
         DelayEqualBuildPlattons = {'Experimental', 10},
         InstanceCount = 1,
         BuilderConditions = {
@@ -153,7 +153,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'Uveso T4LandExperimental2',
         PlatoonTemplate = 'T3EngineerBuilder',
-        Priority = 800,
+        Priority = 150,
         DelayEqualBuildPlattons = {'Experimental', 10},
         InstanceCount = 1,
         BuilderConditions = {
@@ -187,7 +187,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'Uveso T4LandExperimental1',
         PlatoonTemplate = 'T3EngineerBuilder',
-        Priority = 800,
+        Priority = 150,
         DelayEqualBuildPlattons = {'Experimental', 10},
         InstanceCount = 1,
         BuilderConditions = {
@@ -221,7 +221,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U-T4 LandExp1 Minimum',
         PlatoonTemplate = 'T3EngineerBuilder',
-        Priority = 810,
+        Priority = 150,
         DelayEqualBuildPlattons = {'Experimental', 30},
         InstanceCount = 1,
         BuilderConditions = {
@@ -261,7 +261,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Paragon 1st',
         PlatoonTemplate = 'T3EngineerBuilder',
-        Priority = 1000,
+        Priority = 190,
         DelayEqualBuildPlattons = {'Paragon', 30},
         BuilderConditions = {
             { UCBC, 'CheckParagonPresent', { } },
@@ -291,7 +291,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Paragon 2nd',
         PlatoonTemplate = 'T3EngineerBuilder',
-        Priority = 1000,
+        Priority = 190,
         BuilderConditions = {
             { UCBC, 'HasParagon', {} },
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
@@ -329,7 +329,7 @@ BuilderGroup {
         BuilderName = 'U4 BasePanicZone LAND',
         --PlatoonAddPlans = {'NameUnitsSorian'},
         PlatoonTemplate = 'T4ExperimentalLandUveso 1 1',
-        Priority = 1600,                                        -- Priority. 1000 is normal.
+        Priority = 90,                                        -- Priority. 1000 is normal.
         InstanceCount = 2,                                      -- Number of plattons that will be formed.
         FormRadius = 10000,
         BuilderData = {
@@ -356,7 +356,7 @@ BuilderGroup {
         BuilderName = 'U4 BasePanicZone AIR',
         PlatoonTemplate = 'U4-ExperimentalInterceptor 1 1',
         --PlatoonAddPlans = {'NameUnitsSorian'},
-        Priority = 1500,                                        -- Priority. 1000 is normal.
+        Priority = 90,                                        -- Priority. 1000 is normal.
         InstanceCount = 2,                                      -- Number of plattons that will be formed.
         FormRadius = 10000,
         BuilderData = {
@@ -386,7 +386,7 @@ BuilderGroup {
         BuilderName = 'U4 BaseMilitaryZone LAND',
         --PlatoonAddPlans = {'NameUnitsSorian'},
         PlatoonTemplate = 'T4ExperimentalLandUveso 1 1',
-        Priority = 1600,                                        -- Priority. 1000 is normal.
+        Priority = 80,                                        -- Priority. 1000 is normal.
         InstanceCount = 1,                                      -- Number of plattons that will be formed.
         FormRadius = 10000,
         BuilderData = {
@@ -413,7 +413,7 @@ BuilderGroup {
         BuilderName = 'U4 BaseMilitaryZone AIR',
         PlatoonTemplate = 'U4-ExperimentalInterceptor 1 1',
         --PlatoonAddPlans = {'NameUnitsSorian'},
-        Priority = 1500,                                        -- Priority. 1000 is normal.
+        Priority = 80,                                        -- Priority. 1000 is normal.
         InstanceCount = 1,                                      -- Number of plattons that will be formed.
         FormRadius = 10000,
         BuilderData = {
@@ -443,7 +443,7 @@ BuilderGroup {
         BuilderName = 'U-T4 EnemyBase Land',
         --PlatoonAddPlans = {'NameUnitsSorian'},
         PlatoonTemplate = 'T4ExperimentalLandGroupUveso 2 2',
-        Priority = 1500,                                        -- Priority. 1000 is normal.
+        Priority = 60,                                        -- Priority. 1000 is normal.
         InstanceCount = 1,                                      -- Number of plattons that will be formed.
         FormRadius = 10000,
         BuilderData = {
@@ -470,7 +470,7 @@ BuilderGroup {
         BuilderName = 'U4 EnemyBase Air',
         PlatoonTemplate = 'U4-ExperimentalInterceptor 1 1',
         --PlatoonAddPlans = {'NameUnitsSorian'},
-        Priority = 1500,                                        -- Priority. 1000 is normal.
+        Priority = 60,                                        -- Priority. 1000 is normal.
         InstanceCount = 1,                                      -- Number of plattons that will be formed.
         FormRadius = 10000,
         BuilderData = {
@@ -497,7 +497,7 @@ BuilderGroup {
         BuilderName = 'U-T4 Land. Kill Them All!!!',
         --PlatoonAddPlans = {'NameUnitsSorian'},
         PlatoonTemplate = 'T4ExperimentalLandGroupUveso 2 2',
-        Priority = 1600,                                        -- Priority. 1000 is normal.
+        Priority = 50,                                        -- Priority. 1000 is normal.
         InstanceCount = 4,                                     -- Number of plattons that will be formed.
         FormRadius = 10000,
         BuilderData = {
@@ -529,7 +529,7 @@ BuilderGroup {
         BuilderName = 'U-T4 Air. Kill Them All!!!',
         PlatoonTemplate = 'U4-ExperimentalInterceptor 1 1',
         --PlatoonAddPlans = {'NameUnitsSorian'},
-        Priority = 1500,                                        -- Priority. 1000 is normal.
+        Priority = 50,                                        -- Priority. 1000 is normal.
         InstanceCount = 15,                                      -- Number of plattons that will be formed.
         FormRadius = 10000,
         BuilderData = {
