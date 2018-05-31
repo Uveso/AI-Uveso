@@ -21,7 +21,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Power Emergency',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 16500,
+        Priority = 16700,
         DelayEqualBuildPlattons = {'Energy', 3},
         BuilderConditions = {
             -- When do we want to build this ?
@@ -51,7 +51,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Power Emergency II',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 16500,
+        Priority = 16700,
         DelayEqualBuildPlattons = {'Energy', 3},
         BuilderConditions = {
             -- When do we want to build this ?
@@ -116,7 +116,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U-CDR Power Emergency',
         PlatoonTemplate = 'CommanderBuilder',
-        Priority = 16500,
+        Priority = 16700,
         BuilderConditions = {
             -- When do we want to build this ?
             { EBC, 'LessThanEconStorageRatio', { 2.00, 0.99}}, -- Ratio from 0 to 1. (1=100%)

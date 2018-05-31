@@ -98,7 +98,16 @@ BuilderManager = Class(OLDBuilderManager) {
             end
             -- DEBUG - End
             if DebugNames then
-                LOG('* AI DEBUG: GetHighestBuilder: Priority = '..found..' - SelectedBuilder = '..repr(self.BuilderData[bType].Builders[ possibleBuilders[whichBuilder] ].BuilderName))
+                local percent = self.Brain:GetEconomyStoredRatio('MASS')
+                local percentbar = ''
+                for i = 1, percent*20 do
+                    percentbar = percentbar..'#'
+                end
+                for i = percent*20, 20 do
+                    percentbar = percentbar..'~'
+                end
+                
+                LOG('* GetHighestBuilder: Mass:['..percentbar..'] Priority = '..found..' - SelectedBuilder = '..repr(self.BuilderData[bType].Builders[ possibleBuilders[whichBuilder] ].BuilderName))
             end
             return self.BuilderData[bType].Builders[ possibleBuilders[whichBuilder] ]
         end

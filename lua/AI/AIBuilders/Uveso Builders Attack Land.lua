@@ -25,7 +25,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Always Arty',
         PlatoonTemplate = 'T1LandArtillery',
-        Priority = 0,
+        Priority = 150,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.LAND * categories.FACTORY * categories.TECH1 }},
@@ -48,10 +48,11 @@ BuilderGroup {
         BuilderName = 'U1 ECO FULL Arty',
         PlatoonTemplate = 'T1LandArtillery',
         Priority = 150,
+        InstanceCount = 4,
         BuilderConditions = {
             -- When do we want to build this ?
             { EBC, 'GreaterThanEconTrend', { 1.0, 10.0 } }, -- relative income 10,60
-            { EBC, 'GreaterThanEconStorageRatio', { 1.00, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.35, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
@@ -69,7 +70,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 PanicZone Arty',
         PlatoonTemplate = 'T1LandArtillery',
-        Priority = 190,
+        Priority = 160,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 1, categories.MOBILE * categories.LAND - categories.SCOUT}}, -- radius, LocationType, unitCount, categoryEnemy
@@ -85,7 +86,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 PanicZone/2 AA',
         PlatoonTemplate = 'T1LandAA',
-        Priority = 190,
+        Priority = 160,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone/2, 'LocationType', 1, categories.MOBILE * categories.AIR - categories.SCOUT}}, -- radius, LocationType, unitCount, categoryEnemy
@@ -101,9 +102,9 @@ BuilderGroup {
     },
 -- expansions
     Builder {
-        BuilderName = 'U1 PanicZone Arty',
+        BuilderName = 'U1 PanicExpansion Arty',
         PlatoonTemplate = 'T1LandArtillery',
-        Priority = 190,
+        Priority = 160,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  50, 'LocationType', 1, categories.MOBILE * categories.LAND - categories.SCOUT}}, -- radius, LocationType, unitCount, categoryEnemy
@@ -117,9 +118,9 @@ BuilderGroup {
         BuilderType = 'Land',
     },
     Builder {
-        BuilderName = 'U1 PanicZone/2 AA',
+        BuilderName = 'U1 PanicPanicExpansion AA',
         PlatoonTemplate = 'T1LandAA',
-        Priority = 190,
+        Priority = 160,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  50, 'LocationType', 1, categories.MOBILE * categories.AIR - categories.SCOUT}}, -- radius, LocationType, unitCount, categoryEnemy
@@ -139,7 +140,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 MilitaryZone Arty',
         PlatoonTemplate = 'T1LandArtillery',
-        Priority = 180,
+        Priority = 150,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 1, categories.MOBILE * categories.LAND - categories.SCOUT}}, -- radius, LocationType, unitCount, categoryEnemy
@@ -161,7 +162,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 EnemyZone Arty',
         PlatoonTemplate = 'T1LandArtillery',
-        Priority = 160,
+        Priority = 140,
         BuilderConditions = {
             -- When do we want to build this ?
             -- Do we need additional conditions to build it ?
@@ -183,7 +184,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Island Tank',
         PlatoonTemplate = 'T1LandDFTank',
-        Priority = 170,
+        Priority = 150,
         BuilderConditions = {
             -- When do we want to build this ?
             { MIBC, 'IsIsland', { true } },
@@ -262,7 +263,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 Artillery',
         PlatoonTemplate = 'T2LandArtillery',
-        Priority = 160,
+        Priority = 150,
         BuilderType = 'Land',
         BuilderConditions = {
             -- When do we want to build this ?
@@ -354,7 +355,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Mobile Artillery',
         PlatoonTemplate = 'T3LandArtillery',
-        Priority = 160,
+        Priority = 150,
         BuilderConditions = {
             -- When do we want to build this ?
             -- Do we need additional conditions to build it ?
@@ -549,7 +550,7 @@ BuilderGroup {
         BuilderName = 'U123 AntiMass Military',                                 -- Random Builder Name.
         PlatoonTemplate = 'LandAttackInterceptUveso 2 5',                       -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
         Priority = 80,                                                        -- Priority. 1000 is normal.
-        InstanceCount = 0,                                                      -- Number of plattons that will be formed.
+        InstanceCount = 1,                                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                                    -- Searchradius for new target.
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
@@ -661,7 +662,7 @@ BuilderGroup {
         BuilderName = 'U123 BigIntercept STR 30 60',
         PlatoonTemplate = 'LandAttackInterceptUveso 30 60',                     -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
         Priority = 40,                                                        -- Priority. 1000 is normal.
-        InstanceCount = 3,                                                      -- Number of plattons that will be formed.
+        InstanceCount = 10,                                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = 10000,                                               -- Searchradius for new target.
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.

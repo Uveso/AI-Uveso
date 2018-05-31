@@ -62,12 +62,6 @@ function LocationRangeManagerThread(aiBrain)
         -- Loop over every unit that has no platton and is idle
         local LoopDelay = 0
         for _, unit in ArmyUnits do
-            -- delay the loop after every 50 units. looping over 1000 units will take 2 seconds
-            LoopDelay = LoopDelay + 1
-            if LoopDelay > 50 then
-                LoopDelay = 0
-                WaitTicks(1)
-            end
             if unit.Dead then
                 continue
             end
@@ -79,10 +73,10 @@ function LocationRangeManagerThread(aiBrain)
                     if Plan or Builder then
                         unit:SetCustomName(''..(Builder or 'Unknown')..' ('..(Plan or 'Unknown')..')')
                     else
-                        unit:SetCustomName('+')
+                        --unit:SetCustomName('+')
                     end
                 else
-                    unit:SetCustomName('-')
+                    --unit:SetCustomName('-')
                 end
             end
 
@@ -123,10 +117,17 @@ function LocationRangeManagerThread(aiBrain)
                             unit.PlatoonHandle:PlatoonDisband()
                         end
                         --LOG('* AIDEBUG: LocationRangeManagerThread: Moving idle unit inside next basemanager range: '..unit:GetBlueprint().BlueprintId..'  ')
+                        unit:SetCustomName('Outside LocManager')
                         IssueClearCommands({unit})
                         IssueMove({unit}, nearestbase.Pos)
                     end
                 end
+            end
+            -- delay the loop after every 50 units. looping over 1000 units will take 2 seconds
+            LoopDelay = LoopDelay + 1
+            if LoopDelay > 50 then
+                LoopDelay = 0
+                WaitTicks(1)
             end
         end
         -- watching the unit Cap for AI balance.
