@@ -1,4 +1,4 @@
--- hook until AI patch
+-- overwriting original function until AIpatch is released
 OLDAIGetMarkerLocationsEx = AIGetMarkerLocationsEx
 function AIGetMarkerLocationsEx(aiBrain, markerType)
     local markerList = {}
@@ -23,7 +23,7 @@ function AIGetMarkerLocationsEx(aiBrain, markerType)
     return markerList
 end
 
--- hook until AI patch
+-- overwriting original function until AIpatch is released
 function AIGetSortedMassLocations(aiBrain, maxNum, tMin, tMax, tRings, tType, position)
     local markerList = AIGetMarkerLocations(aiBrain, 'Mass')
     local newList = {}
@@ -82,7 +82,7 @@ function GenerateAmphibiousMarkerList(markerList,markers,markerType)
     return markerList
 end
 
--- hook until AI patch
+-- overwriting original function until AIpatch is released
 OLDAIFindBrainTargetInRange = AIFindBrainTargetInRange
 function AIFindBrainTargetInRange(aiBrain, platoon, squad, maxRange, atkPri, enemyBrain)
     -- Only use this with AI-Uveso
@@ -120,7 +120,7 @@ function AIFindBrainTargetInRange(aiBrain, platoon, squad, maxRange, atkPri, ene
     return false
 end
 
--- Hook only for Uveso AI
+-- overwriting original function until AIpatch is released
 OLDEngineerMoveWithSafePath = EngineerMoveWithSafePath
 function EngineerMoveWithSafePath(aiBrain, unit, destination)
     -- Only use this with AI-Uveso

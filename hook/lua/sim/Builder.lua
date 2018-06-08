@@ -1,4 +1,4 @@
--- hook until AI patch is out
+-- overwriting original function until AIpatch is released
 OLDBuilder = Builder
 Builder = Class(OLDBuilder) {
 
@@ -29,7 +29,7 @@ Builder = Class(OLDBuilder) {
 
 }
 
--- For Platoon debugging
+-- For Platoon debugging. Unremarking the debugline will print all platoons with priority inside game.log
 OLDPlatoonBuilder = PlatoonBuilder
 PlatoonBuilder = Class(OLDPlatoonBuilder) {
 

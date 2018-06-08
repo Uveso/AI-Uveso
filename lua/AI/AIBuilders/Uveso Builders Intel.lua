@@ -6,7 +6,7 @@ local EBC = '/lua/editor/EconomyBuildConditions.lua'
 -- ==                                 Scouts T1 T2 T3 Builder Land+Air                                       == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'ScoutBuilder Uveso',
+    BuilderGroupName = 'ScoutBuilder Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'FactoryBuilder',
     -- ========================= --
     --    Land Scouts Builder    --
@@ -53,7 +53,7 @@ BuilderGroup {
         BuilderConditions = {
             -- When do we want to build this ?
             -- Do we need additional conditions to build it ?
-            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, categories.INTELLIGENCE * categories.AIR } },
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, categories.AIR * categories.SCOUT } },
             -- Have we the eco to build it ?
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.INTELLIGENCE * categories.AIR * categories.TECH3 }},
@@ -66,7 +66,7 @@ BuilderGroup {
 -- ==                                   Scouts T1 T3 Former Land+Air                                         == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'ScoutFormer Uveso',
+    BuilderGroupName = 'ScoutFormer Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     -- ======================== --
     --    Land Scouts Former    --
@@ -126,19 +126,18 @@ BuilderGroup {
 -- ==                                        Radar T1 T3 builder                                             == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'RadarBuilders Uveso',
+    BuilderGroupName = 'RadarBuilders Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'U1 Radar',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 1000,
+        Priority = 16600,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 1, (categories.RADAR + categories.OMNI) * categories.STRUCTURE}},
             -- Do we need additional conditions to build it ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- Don't build it if...
             -- Respect UnitCap
         },
@@ -186,7 +185,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Radar Backup',
         PlatoonTemplate = 'T3EngineerBuilder',
-        Priority = 1000,
+        Priority = 0,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 1, categories.OMNI * categories.STRUCTURE } },
@@ -218,7 +217,7 @@ BuilderGroup {
 -- ==                                    Radar T1 Upgrade Land+Air                                           == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'RadarUpgrade Uveso',
+    BuilderGroupName = 'RadarUpgrade Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     Builder {
         BuilderName = 'U1 Radar Upgrade',

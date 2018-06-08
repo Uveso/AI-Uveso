@@ -1,9 +1,10 @@
-local DebugNames = true -- Display next building Platoonn inside LOG
+local DebugNames = false -- Display next building Platoonn inside LOG
 -- AI DEBUG
 local AntiSpamList = {}
 local AntiSpamCounter = 0
 local LastBuilder = ''
 
+-- overwriting original function until AIpatch is released
 OLDBuilderManager = BuilderManager
 BuilderManager = Class(OLDBuilderManager) {
 
@@ -89,9 +90,9 @@ BuilderManager = Class(OLDBuilderManager) {
                 AntiSpamCounter = 0
             elseif not AntiSpamList[BuilderName] then
                 AntiSpamCounter = AntiSpamCounter + 1
-                if AntiSpamCounter > 6 then
+                if AntiSpamCounter > 10 then
                     -- Warn the programmer that something is going wrong.
-                    WARN('* AI DEBUG: GetHighestBuilder: Builder is spaming. Maybe wrong Buildconditions for Builder = '..repr(self.BuilderData[bType].Builders[ possibleBuilders[whichBuilder] ].BuilderName)..' ???')
+                    WARN('* AI DEBUG: GetHighestBuilder: Builder is spaming. Maybe wrong Buildconditions for Builder = '..self.BuilderData[bType].Builders[ possibleBuilders[whichBuilder] ].BuilderName..' ???')
                     AntiSpamCounter = 0
                     AntiSpamList[BuilderName] = true
                 end                
@@ -100,14 +101,17 @@ BuilderManager = Class(OLDBuilderManager) {
             if DebugNames then
                 local percent = self.Brain:GetEconomyStoredRatio('MASS')
                 local percentbar = ''
-                for i = 1, percent*20 do
+                local count = 1
+                for i = count, percent*20 do
                     percentbar = percentbar..'#'
+                    count = count + 1
                 end
-                for i = percent*20, 20 do
+                for i = count, 20 do
                     percentbar = percentbar..'~'
                 end
-                
-                LOG('* GetHighestBuilder: Mass:['..percentbar..'] Priority = '..found..' - SelectedBuilder = '..repr(self.BuilderData[bType].Builders[ possibleBuilders[whichBuilder] ].BuilderName))
+--                if not string.find(self.BuilderData[bType].Builders[ possibleBuilders[whichBuilder] ].BuilderName,'U1 ') then
+                LOG('* GetHighestBuilder: Mass:['..percentbar..'] Priority = '..found..' - SelectedBuilder = '..self.BuilderData[bType].Builders[ possibleBuilders[whichBuilder] ].BuilderName)
+--                end
             end
             return self.BuilderData[bType].Builders[ possibleBuilders[whichBuilder] ]
         end

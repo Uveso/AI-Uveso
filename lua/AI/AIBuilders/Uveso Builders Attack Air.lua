@@ -17,7 +17,7 @@ BasePanicZone = math.min( 120, BasePanicZone )
 -- ==                                 Air Fighter/Bomber T1 T2 T3 Builder                                    == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'AntiAirBuilders Uveso',
+    BuilderGroupName = 'AntiAirBuilders Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'FactoryBuilder',
     -- =========================== --
     --    TECH 1   MilitaryZone    --
@@ -287,7 +287,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Air Gunship < 60',
         PlatoonTemplate = 'T3AirGunship',
-        Priority = 180,
+        Priority = 190,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 60, categories.MOBILE * categories.AIR * categories.GROUNDATTACK * categories.TECH3 }},
@@ -305,7 +305,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Air Bomber < 60',
         PlatoonTemplate = 'T3AirBomber',
-        Priority = 180,
+        Priority = 190,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 60, categories.MOBILE * categories.AIR * categories.BOMBER }},
@@ -323,7 +323,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 TorpedoBomber < 20',
         PlatoonTemplate = 'T3TorpedoBomber',
-        Priority = 180,
+        Priority = 190,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 20, categories.MOBILE * categories.AIR * categories.ANTINAVY }},
@@ -343,7 +343,7 @@ BuilderGroup {
 -- ==                                   AirTransport T1 T2 T3 Builder                                        == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'Air Transport Builder Uveso',
+    BuilderGroupName = 'Air Transport Builder Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'FactoryBuilder',
     -- ============= --
     --    AllMaps    --
@@ -579,7 +579,7 @@ BuilderGroup {
 -- ==                                          Air Formbuilder                                               == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'Air FormBuilders',
+    BuilderGroupName = 'Air FormBuilders',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     -- =============== --
     --    PanicZone    --

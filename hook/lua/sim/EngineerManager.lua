@@ -1,4 +1,4 @@
--- Don't disable units on low energy/mass
+-- Don't disable units on low energy/mass for AI-Uveso
 
 OLDEngineerManager = EngineerManager
 EngineerManager = Class(OLDEngineerManager) {

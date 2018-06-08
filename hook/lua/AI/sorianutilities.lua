@@ -1,5 +1,5 @@
--- hook until game patch is released
 
+-- overwriting original function until AIpatch is released
 OLDLeadTarget = LeadTarget
 function LeadTarget(platoon, target)
     local aiBrain = platoon:GetBrain()

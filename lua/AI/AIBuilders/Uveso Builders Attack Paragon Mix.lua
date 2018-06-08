@@ -2,6 +2,7 @@ local IBC = '/lua/editor/InstantBuildConditions.lua'
 local EBC = '/lua/editor/EconomyBuildConditions.lua'
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 local SIBC = '/lua/editor/SorianInstantBuildConditions.lua'
+local MIBC = '/lua/editor/MiscBuildConditions.lua'
 
 local ExperimentalCount = 3
 local mapSizeX, mapSizeZ = GetMapSize()
@@ -14,7 +15,7 @@ BasePanicZone = math.min( 120, BasePanicZone )
 -- ==                                 Mobile Experimental Land/Air/Sea                                       == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'Paragon Turbo Builder',
+    BuilderGroupName = 'Paragon Turbo Builder',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'Turbo T4AirExperimental1',
@@ -288,6 +289,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HasParagon', {} },
             -- Do we need additional conditions to build it ?
+            { MIBC, 'FactionIndex', { 1 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
@@ -420,7 +422,7 @@ BuilderGroup {
                 AssistLocation = 'LocationType',
                 AssisteeType = 'Engineer',
                 AssistRange = 80,
-                BeingBuiltCategories = {'STRUCTURE, EXPERIMENTAL'},
+                BeingBuiltCategories = {'STRUCTURE', 'EXPERIMENTAL'},
                 Time = 60,
             },
         }
@@ -444,7 +446,7 @@ BuilderGroup {
                 AssistLocation = 'LocationType',
                 AssisteeType = 'Engineer',
                 AssistRange = 80,
-                BeingBuiltCategories = {'STRUCTURE, EXPERIMENTAL'},
+                BeingBuiltCategories = {'STRUCTURE', 'EXPERIMENTAL'},
                 Time = 60,
             },
         }

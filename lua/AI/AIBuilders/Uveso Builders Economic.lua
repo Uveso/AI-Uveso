@@ -8,15 +8,21 @@ local MIBC = '/lua/editor/MiscBuildConditions.lua'
 
 local MaxCapEngineers = 0.10 -- 10% of all units can be Engineers (categories.MOBILE * categories.ENGINEER)
 
+local mapSizeX, mapSizeZ = GetMapSize()
+local BaseMilitaryZone = math.max( mapSizeX-50, mapSizeZ-50 ) / 2               -- Half the map
+local BasePanicZone = BaseMilitaryZone / 2
+BasePanicZone = math.max( 60, BasePanicZone )
+BasePanicZone = math.min( 120, BasePanicZone )
+
 -- ===================================================-======================================================== --
 -- ==                                         Build Start Base                                               == --
 -- ===================================================-======================================================== --
 BuilderGroup {
     -- Build Main Base (only once). Factory and basic Energy
-    BuilderGroupName = 'Initial ACU Builders Uveso',
+    BuilderGroupName = 'Initial ACU Builders Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
-        BuilderName = 'Uveso CDR Initial Default',
+        BuilderName = 'UC CDR Initial Default',
         PlatoonAddBehaviors = { 'CommanderBehaviorUveso', },
         PlatoonTemplate = 'CommanderBuilder',
         Priority = 19500,
@@ -40,7 +46,7 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'Uveso Initial ACU PreBuilt Default',
+        BuilderName = 'UC Initial ACU PreBuilt Default',
         PlatoonAddBehaviors = { 'CommanderBehaviorUveso', },
         PlatoonTemplate = 'CommanderBuilder',
         Priority = 19500,
@@ -70,7 +76,7 @@ BuilderGroup {
 -- ===================================================-======================================================== --
 BuilderGroup {
     -- Build Engineers TECH 1,2,3 and SACU
-    BuilderGroupName = 'EngineerFactoryBuilders Uveso',
+    BuilderGroupName = 'EngineerFactoryBuilders Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'FactoryBuilder',
     -- ============ --
     --    TECH 1    --
@@ -102,10 +108,12 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'ENGINEER TECH1' } },
+            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BasePanicZone, 'LocationType', 1, categories.MOBILE * categories.LAND - categories.SCOUT - categories.ENGINEER}}, -- radius, LocationType, unitCount, categoryEnemy
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'ENGINEER TECH1' } },
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers, '<=', categories.MOBILE * categories.ENGINEER } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers/2, '<=', categories.MOBILE * categories.ENGINEER } },
         },
         BuilderType = 'All',
     },
@@ -123,6 +131,7 @@ BuilderGroup {
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             -- Don't build it if...
+            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BasePanicZone, 'LocationType', 1, categories.MOBILE * categories.LAND - categories.SCOUT - categories.ENGINEER}}, -- radius, LocationType, unitCount, categoryEnemy
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'ENGINEER TECH2' } },
             -- Respect UnitCap
         },
@@ -141,6 +150,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- Don't build it if...
+            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BasePanicZone, 'LocationType', 1, categories.MOBILE * categories.LAND - categories.SCOUT - categories.ENGINEER}}, -- radius, LocationType, unitCount, categoryEnemy
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'ENGINEER TECH2' } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers, '<=', categories.MOBILE * categories.ENGINEER } },
@@ -161,6 +171,7 @@ BuilderGroup {
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             -- Don't build it if...
+            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BasePanicZone, 'LocationType', 1, categories.MOBILE * categories.LAND - categories.SCOUT - categories.ENGINEER}}, -- radius, LocationType, unitCount, categoryEnemy
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'ENGINEER TECH3' } },
             -- Respect UnitCap
         },
@@ -226,7 +237,7 @@ BuilderGroup {
 -- ==                                          Engineer Transfers                                            == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'Engineer Transfer To MainBase',
+    BuilderGroupName = 'Engineer Transfer To MainBase',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     -- ============================================ --
     --    Transfer from LocationType to MainBase    --
@@ -235,9 +246,9 @@ BuilderGroup {
         BuilderName = 'U1 Engi Trans to MainBase',
         PlatoonTemplate = 'U1EngineerTransfer',
         Priority = 18300,
-        InstanceCount = 1,
+        InstanceCount = 3,
         BuilderConditions = {
-            { UCBC, 'GreaterThanGameTimeSeconds', { 60*30 } },
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60*20 } },
             { UCBC, 'BuildNotOnLocation', { 'LocationType', 'MAIN' } },
             { UCBC, 'EngineerManagerUnitsAtLocation', { 'LocationType', '>', 2,  'MOBILE TECH1' } },
         },
@@ -250,9 +261,9 @@ BuilderGroup {
         BuilderName = 'U2 Engi Trans to MainBase',
         PlatoonTemplate = 'U2EngineerTransfer',
         Priority = 18300,
-        InstanceCount = 1,
+        InstanceCount = 2,
         BuilderConditions = {
-            { UCBC, 'GreaterThanGameTimeSeconds', { 60*30 } },
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60*20 } },
             { UCBC, 'BuildNotOnLocation', { 'LocationType', 'MAIN' } },
             { UCBC, 'EngineerManagerUnitsAtLocation', { 'LocationType', '>', 2,  'MOBILE TECH2' } },
         },
@@ -267,7 +278,7 @@ BuilderGroup {
         Priority = 18300,
         InstanceCount = 1,
         BuilderConditions = {
-            { UCBC, 'GreaterThanGameTimeSeconds', { 60*30 } },
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60*20 } },
             { UCBC, 'BuildNotOnLocation', { 'LocationType', 'MAIN' } },
             { UCBC, 'EngineerManagerUnitsAtLocation', { 'LocationType', '>', 2,  'MOBILE TECH3' } },
         },

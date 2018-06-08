@@ -14,13 +14,13 @@ local MaxCapStructure = 0.14 -- 14% of all units can be structures (STRUCTURE -M
 -- ============================================================================================================ --
 BuilderGroup {
     -- Build MassExtractors / Creators 
-    BuilderGroupName = 'MassBuilders Uveso',
+    BuilderGroupName = 'MassBuilders Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     -- ================== --
     --    TECH 1 - CDR    --
     -- ================== --
     Builder {
-        BuilderName = 'UCDR Mass 12',
+        BuilderName = 'UC Mass 12',
         PlatoonTemplate = 'CommanderBuilder',
         Priority = 19600,
         BuilderConditions = {
@@ -73,7 +73,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Mass 150',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 17500,
+        Priority = 16600,
         InstanceCount = 6,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -97,7 +97,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Mass 250',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 17500,
+        Priority = 16600,
         InstanceCount = 4,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -121,7 +121,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Mass 450',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 17500,
+        Priority = 16600,
         InstanceCount = 4,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -145,7 +145,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Mass 10-12 Trans',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 17500,
+        Priority = 16400,
         InstanceCount = 2,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -172,15 +172,16 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'U-CDR Resource RECOVER',
+        BuilderName = 'UC Resource RECOVER',
         PlatoonTemplate = 'CommanderBuilder',
         Priority = 19200,
         BuilderConditions = {
             -- When do we want to build this ?
-            { MABC, 'CanBuildOnMassLessThanDistance', { 'LocationType', 10000, -5000, 5000, 1, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRings, threatType, maxNum
+            { MABC, 'CanBuildOnMassLessThanDistance', { 'LocationType', 450, -5000, 5000, 1, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRings, threatType, maxNum
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.MASSEXTRACTION } },
             -- Do we need additional conditions to build it ?
             { UCBC, 'GreaterThanGameTimeSeconds', { 180 } },
+            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             -- Don't build it if...
         },
@@ -239,7 +240,7 @@ BuilderGroup {
 -- ============================================================================================================ --
 BuilderGroup {
     -- Upgrade MassExtractors from Tech 1 to 2 AND from Tech 2 to 3
-    BuilderGroupName = 'ExtractorUpgrades Uveso',
+    BuilderGroupName = 'ExtractorUpgrades Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     Builder {
         BuilderName = 'Extractor upgrade >20 mass',
@@ -252,7 +253,7 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 0, categories.MASSEXTRACTION} },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconIncome',  { 4.0, -0.0}}, -- Absolut Base income
+            { EBC, 'GreaterThanEconIncome',  { 2.0, -0.0}}, -- Absolut Base income
             -- Don't build it if...
         },
         BuilderData = {
@@ -280,12 +281,32 @@ BuilderGroup {
         },
         BuilderType = 'Any',
     },
+    Builder {
+        BuilderName = 'Extractor upgrade > 4 minutes',
+        PlatoonTemplate = 'AddToMassExtractorUpgradePlatoon',
+        Priority = 17500,
+        InstanceCount = 1,
+        FormRadius = 10000,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 0, categories.MASSEXTRACTION} },
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'GreaterThanGameTimeSeconds', { 4*60 } },
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconIncome',  { 0.1, -0.0}}, -- Absolut Base income
+            -- Don't build it if...
+        },
+        BuilderData = {
+            AIPlan = 'ExtractorUpgradeAI',
+        },
+        BuilderType = 'Any',
+    },
 }
 -- ===================================================-======================================================== --
 -- ==                                     Build MassStorage/Adjacency                                        == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'MassStorageBuilder Uveso',
+    BuilderGroupName = 'MassStorageBuilder Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'U1 Mass Adjacency Engineer',

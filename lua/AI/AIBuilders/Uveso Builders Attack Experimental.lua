@@ -14,58 +14,23 @@ BasePanicZone = math.min( 120, BasePanicZone )
 -- ==                                 Mobile Experimental Land/Air/Sea                                       == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'Mobile Experimental Builder Uveso',
+    BuilderGroupName = 'Mobile Experimental Builder Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
-    Builder {
-        BuilderName = 'U-T4 LandExp1 1st',
-        PlatoonTemplate = 'T3EngineerBuilder',
-        Priority = 150,
-        DelayEqualBuildPlattons = {'Experimental', 30},
-        InstanceCount = 1,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
-            { EBC, 'GreaterThanEconIncome', { 20.0, 1000.0 }},
-            { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.95 } }, -- Ratio from 0 to 1. (1=100%)
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
-            { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.EXPERIMENTAL * categories.LAND }},
-            { UCBC, 'CheckBuildPlattonDelay', { 'Experimental Effi' }},
-            { UCBC, 'UnitCapCheckLess', { 0.98 } },
-        },
-        BuilderType = 'Any',
-        BuilderData = {
-            Construction = {
-                DesiresAssist = true,
-                NumAssistees = 10,
-                BuildClose = true,
-                AdjacencyCategory = 'SHIELD STRUCTURE, FACTORY TECH3, FACTORY TECH2, FACTORY TECH1',
-                BuildStructures = {
-                    'T4LandExperimental1',
-                },
-                Location = 'LocationType',
-            }
-        }
-    },
     Builder {
         BuilderName = 'Uveso T4AirExperimental1',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 150,
-        DelayEqualBuildPlattons = {'Experimental', 10},
-        InstanceCount = 2,
+        DelayEqualBuildPlattons = {'Experimental', 30},
+        InstanceCount = 3,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
-            { EBC, 'GreaterThanEconTrend', { 2.0, 300.0 } }, -- relative income
+            { EBC, 'GreaterThanEconTrend', { 10.0, 300.0 } }, -- relative income
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.95, 0.95 }}, -- Ratio from 0 to 1. (1=100%)
-            { EBC, 'GreaterThanEconEfficiencyOverTime', { 1.0, 1.0 }}, -- relative baseincome 0=bad, 1=ok, 2=full
+            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.95 } }, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'Experimental' }},
        },
@@ -87,18 +52,17 @@ BuilderGroup {
         BuilderName = 'Uveso T4LandExperimental3',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 150,
-        DelayEqualBuildPlattons = {'Experimental', 10},
+        DelayEqualBuildPlattons = {'Experimental', 30},
         InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
-            { EBC, 'GreaterThanEconTrend', { 2.0, 300.0 } }, -- relative income
+            { EBC, 'GreaterThanEconTrend', { 40.0, 300.0 } }, -- relative income
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.95, 0.95 }}, -- Ratio from 0 to 1. (1=100%)
-            { EBC, 'GreaterThanEconEfficiencyOverTime', { 1.0, 1.0 }}, -- relative baseincome 0=bad, 1=ok, 2=full
+            { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.95 } }, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'Experimental' }},
         },
@@ -120,17 +84,17 @@ BuilderGroup {
         BuilderName = 'Uveso T4SeaExperimental1',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 150,
-        DelayEqualBuildPlattons = {'Experimental', 10},
-        InstanceCount = 1,
+        DelayEqualBuildPlattons = {'Experimental', 30},
+        InstanceCount = 2,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
-            { EBC, 'GreaterThanEconTrend', { 2.0, 300.0 } }, -- relative income
+            { EBC, 'GreaterThanEconTrend', { 10.0, 300.0 } }, -- relative income
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.95, 0.95 }}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.95 } }, -- Ratio from 0 to 1. (1=100%)
             { EBC, 'GreaterThanEconEfficiencyOverTime', { 1.0, 1.0 }}, -- relative baseincome 0=bad, 1=ok, 2=full
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'Experimental' }},
@@ -154,17 +118,18 @@ BuilderGroup {
         BuilderName = 'Uveso T4LandExperimental2',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 150,
-        DelayEqualBuildPlattons = {'Experimental', 10},
+        DelayEqualBuildPlattons = {'Experimental', 30},
+        InstanceCount = 1,
         InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
-            { EBC, 'GreaterThanEconTrend', { 2.0, 300.0 } }, -- relative income
+            { EBC, 'GreaterThanEconTrend', { 30.0, 300.0 } }, -- relative income
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.95, 0.95 }}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.95 } }, -- Ratio from 0 to 1. (1=100%)
             { EBC, 'GreaterThanEconEfficiencyOverTime', { 1.0, 1.0 }}, -- relative baseincome 0=bad, 1=ok, 2=full
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'Experimental' }},
@@ -188,12 +153,12 @@ BuilderGroup {
         BuilderName = 'Uveso T4LandExperimental1',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 150,
-        DelayEqualBuildPlattons = {'Experimental', 10},
-        InstanceCount = 1,
+        DelayEqualBuildPlattons = {'Experimental', 30},
+        InstanceCount = 3,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
-            { EBC, 'GreaterThanEconTrend', { 2.0, 300.0 } }, -- relative income
+            { EBC, 'GreaterThanEconTrend', { 10.0, 300.0 } }, -- relative income
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
@@ -221,20 +186,19 @@ BuilderGroup {
     Builder {
         BuilderName = 'U-T4 LandExp1 Minimum',
         PlatoonTemplate = 'T3EngineerBuilder',
-        Priority = 150,
+        Priority = 160,
         DelayEqualBuildPlattons = {'Experimental', 30},
         InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
-            { EBC, 'GreaterThanEconIncome', { 20.0, 1000.0 }},
+            { EBC, 'GreaterThanEconIncome', { 7.0, 1000.0 }},
             { EBC, 'GreaterThanEconStorageRatio', { 0.75, 0.95 } }, -- Ratio from 0 to 1. (1=100%)
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
-            { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
             -- Have we the eco to build it ?
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.EXPERIMENTAL * categories.LAND }},
-            { UCBC, 'CheckBuildPlattonDelay', { 'Experimental Effi' }},
+            { UCBC, 'CheckBuildPlattonDelay', { 'Experimental' }},
             { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
         BuilderType = 'Any',
@@ -251,12 +215,80 @@ BuilderGroup {
             }
         }
     },
+    Builder {
+        BuilderName = 'U-T4 LandExp1 1st',
+        PlatoonTemplate = 'T3EngineerBuilder',
+        Priority = 160,
+        DelayEqualBuildPlattons = {'Experimental', 30},
+        InstanceCount = 1,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
+            { EBC, 'GreaterThanEconIncome', { 7.0, 100.0 }},
+            { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.95 } }, -- Ratio from 0 to 1. (1=100%)
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.EXPERIMENTAL * categories.LAND }},
+            { UCBC, 'CheckBuildPlattonDelay', { 'Experimental' }},
+            { UCBC, 'UnitCapCheckLess', { 0.98 } },
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Construction = {
+                DesiresAssist = true,
+                NumAssistees = 10,
+                BuildClose = true,
+                AdjacencyCategory = 'SHIELD STRUCTURE, FACTORY TECH3, FACTORY TECH2, FACTORY TECH1',
+                BuildStructures = {
+                    'T4LandExperimental1',
+                },
+                Location = 'LocationType',
+            }
+        }
+    },
+    -- ============== --
+    --    ECO Full    --
+    -- ============== --
+    Builder {
+        BuilderName = 'U-T4 LandExp1 1st',
+        PlatoonTemplate = 'T3EngineerBuilder',
+        Priority = 160,
+        DelayEqualBuildPlattons = {'Experimental', 30},
+        InstanceCount = 10,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { EBC, 'GreaterThanEconIncome', { 7.0, 100.0 }},
+            { EBC, 'GreaterThanEconStorageRatio', { 0.99, 0.99 } }, -- Ratio from 0 to 1. (1=100%)
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+            { UCBC, 'CheckBuildPlattonDelay', { 'Experimental' }},
+            { UCBC, 'UnitCapCheckLess', { 0.98 } },
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Construction = {
+                DesiresAssist = true,
+                NumAssistees = 10,
+                BuildClose = true,
+                AdjacencyCategory = 'SHIELD STRUCTURE, FACTORY TECH3, FACTORY TECH2, FACTORY TECH1',
+                BuildStructures = {
+                    'T4LandExperimental1',
+                },
+                Location = 'LocationType',
+            }
+        }
+    },
+
 }
 -- ===================================================-======================================================== --
 -- ==                                 Economic Experimental (Paragon etc)                                    == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'Economic Experimental Builder Uveso',
+    BuilderGroupName = 'Economic Experimental Builder Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'U3 Paragon 1st',
@@ -320,7 +352,7 @@ BuilderGroup {
 -- ==                                  Experimental Attack FormBuilder                                       == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'ExperimentalAttackFormBuilders Uveso',
+    BuilderGroupName = 'ExperimentalAttackFormBuilders Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     -- ================== --
     --    BasePanicZone    --

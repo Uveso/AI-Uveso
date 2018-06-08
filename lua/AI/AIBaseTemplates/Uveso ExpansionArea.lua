@@ -134,7 +134,7 @@ BaseBuilderTemplate {
         end
         local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
         --LOG('*** E-ExpansionFunction: personality: [ '..personality..' ] - markerType: [ '..markerType..' ] - Uveso ExpansionArea.lua')
-        if personality == 'UvesoReflectiveFull' then
+        if personality == 'UvesoAdaptiveBalanced' then
             if markerType == 'Expansion Area' then
                 --LOG('### E-ExpansionFunction: personality: [ '..personality..' ] - markerType: [ '..markerType..' ] - Uveso ExpansionArea.lua')
                 return 1000, 'UvesoExpansionArea'

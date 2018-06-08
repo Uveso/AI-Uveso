@@ -76,8 +76,6 @@ function PlatoonGenerateSafePathTo(aiBrain, platoonLayer, startPos, endPos, optT
         end
     end
 
-    -- Add the destination to the end of the path
-    --table.insert(finalPath, endPos)
     -- return the path
     return finalPath, 'PathOK'
 end
@@ -222,9 +220,9 @@ function GeneratePathUveso(aiBrain, startNode, endNode, threatType, threatWeight
                 -- copy the path from the startNode to the lastNode inside fork,
                 -- so we can add a new marker at the end and make a new path with it
                 fork = {
-                    cost = curPath.cost, -- cost from the startNode to the lastNode
-                    path = {unpack(curPath.path)}, -- full path from starnode to the lastNode
-                    threat = curPath.threat -- threat from the startNode to the lastNode
+                    cost = curPath.cost,            -- cost from the startNode to the lastNode
+                    path = {unpack(curPath.path)},  -- full path from starnode to the lastNode
+                    threat = curPath.threat         -- threat from the startNode to the lastNode
                 }
                 -- get distance from new node to destination node
                 dist = VDist2(newNode.position[1], newNode.position[3], endNode.position[1], endNode.position[3])

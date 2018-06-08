@@ -1,6 +1,7 @@
 -- hook for additional build conditions used from AIBuilders
 
 
+-- overwriting original function until AIpatch is released
 OLDExpansionBaseCheck = ExpansionBaseCheck
 function ExpansionBaseCheck(aiBrain)
     -- Only use this with AI-Uveso
@@ -12,6 +13,7 @@ function ExpansionBaseCheck(aiBrain)
     return ExpansionBaseCount(aiBrain, '<', checkNum)
 end
 
+-- overwriting original function until AIpatch is released
 OLDNavalBaseCheck = NavalBaseCheck
 function NavalBaseCheck(aiBrain)
     -- Only use this with AI-Uveso

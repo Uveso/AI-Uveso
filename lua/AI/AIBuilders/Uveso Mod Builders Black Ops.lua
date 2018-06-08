@@ -5,6 +5,7 @@ for index, moddata in __active_mods do
     if moddata.name == 'BlackOps FAF: Unleashed' then
         LOG('* AI-Uveso: BlackOps FAF: Unleashed is installed. Adding BuilderGroups')
         LoadModBuilder = true
+        break
     end
 end
 
@@ -16,7 +17,7 @@ local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 local EBC = '/lua/editor/EconomyBuildConditions.lua'
 -- Hydrocarbon Power Plant upgrade (Black Ops)
 BuilderGroup {
-    BuilderGroupName = 'HydrocarbonUpgrade BlackOps',
+    BuilderGroupName = 'HydrocarbonUpgrade BlackOps',                           -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     Builder {
         BuilderName = 'U1 HydroUpgrade',
@@ -53,7 +54,7 @@ BuilderGroup {
 else
 
 BuilderGroup {
-    BuilderGroupName = 'HydrocarbonUpgrade BlackOps',
+    BuilderGroupName = 'HydrocarbonUpgrade BlackOps',                           -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
 }
 

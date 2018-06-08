@@ -14,7 +14,7 @@ BasePanicZone = math.min( 120, BasePanicZone )
 -- ==                                        Build T1 T2 T3 Land                                             == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'SeaFactoryBuilders Uveso',
+    BuilderGroupName = 'SeaFactoryBuilders Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'FactoryBuilder',
     -- ======================== --
     --    TECH 1   PanicZone    --
@@ -300,7 +300,7 @@ BuilderGroup {
 -- ==                                      NAVAL T1 T2 T3 Formbuilder                                        == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'SeaAttack FormBuilders Uveso',
+    BuilderGroupName = 'SeaAttack FormBuilders Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     -- =============== --
     --    PanicZone    --
@@ -313,7 +313,7 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = BasePanicZone,                       -- Searchradius for new target.
             AggressiveMove = true,                              -- If true, the unit will attack everything while moving to the target.
-            IgnoreGroundDefense = false,                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
+            IgnoreGroundDefenseNum = false,                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
             TargetSearchCategory = categories.MOBILE * categories.NAVAL, -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'STRUCTURE NAVAL DEFENSE',
@@ -342,7 +342,7 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                    -- Searchradius for new target.
             AggressiveMove = false,                             -- If true, the unit will attack everything while moving to the target.
-            IgnoreGroundDefense = false,                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
+            IgnoreGroundDefenseNum = false,                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
             TargetSearchCategory = categories.MOBILE * categories.NAVAL , -- Only find targets matching these categories.
             TargetSearchCategory = 'NAVAL, MOBILE LAND, STRUCTURE', -- Only find targets matching these categories.
             PrioritizedCategories = {
@@ -372,7 +372,7 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
             AggressiveMove = false,                              -- If true, the unit will attack everything while moving to the target.
-            IgnoreGroundDefense = false,                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
+            IgnoreGroundDefenseNum = false,                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
             TargetSearchCategory = (categories.MOBILE - categories.AIR) + categories.STRUCTURE , -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'STRUCTURE NAVAL DEFENSE',
@@ -401,7 +401,7 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
             AggressiveMove = true,                              -- If true, the unit will attack everything while moving to the target.
-            IgnoreGroundDefense = false,                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
+            IgnoreGroundDefenseNum = false,                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
             TargetSearchCategory = (categories.MOBILE - categories.AIR) + categories.STRUCTURE , -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'STRUCTURE NAVAL DEFENSE',

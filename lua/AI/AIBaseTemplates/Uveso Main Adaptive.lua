@@ -193,7 +193,7 @@ BaseBuilderTemplate {
         end
         local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
         --LOG('*** E-ExpansionFunction: personality: [ '..personality..' ] - markerType: [ '..markerType..' ] - Uveso MainBase.lua')
-        if personality == 'UvesoReflectiveFull' then
+        if personality == 'UvesoAdaptiveBalanced' then
             --LOG('### E-ExpansionFunction: personality: [ '..personality..' ] - markerType: [ '..markerType..' ] - Uveso MainBase.lua')
             return -1
         else
@@ -211,7 +211,7 @@ BaseBuilderTemplate {
         local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
         if personality == 'uveso' or personality == 'uvesocheat' then
             --LOG('### M-FirstBaseFunction '..personality)
-            return 1000, 'UvesoReflectiveFull'
+            return 1000, 'UvesoAdaptiveBalanced'
         end
         return -1
     end,

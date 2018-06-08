@@ -4,7 +4,7 @@ local MABC = '/lua/editor/MarkerBuildConditions.lua'
 local EBC = '/lua/editor/EconomyBuildConditions.lua'
 
 BuilderGroup {
-    BuilderGroupName = 'U1 FirebaseBuilders',
+    BuilderGroupName = 'U1 FirebaseBuilders',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'T1 Firebase Expansion Area',

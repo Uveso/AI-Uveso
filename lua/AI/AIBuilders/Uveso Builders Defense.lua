@@ -9,7 +9,7 @@ local MaxDefense = 0.15 -- 15% of all units can be defenses (categories.STRUCTUR
 -- ==                                       Build T2 & T3 Shields                                            == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'Shields Uveso',
+    BuilderGroupName = 'Shields Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'U2 Shield',
@@ -23,7 +23,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { MIBC, 'FactionIndex', { 1, 3, 4 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.75, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'Shield' }},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.SHIELD}},
@@ -61,7 +61,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { MIBC, 'FactionIndex', { 2 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.75, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'Shield' }},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.SHIELD}},
@@ -92,7 +92,7 @@ BuilderGroup {
 -- ==                                      Upgrade T1 & T2 Shields                                           == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'ShieldUpgrades Uveso',
+    BuilderGroupName = 'ShieldUpgrades Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     Builder {
         BuilderName = 'U2 Shield Cybran 1',
@@ -137,7 +137,7 @@ BuilderGroup {
         BuilderConditions = {
             { IBC, 'BrainNotLowPowerMode', {} },
             { IBC, 'BrainNotLowMassMode', {} },
-            { EBC, 'GreaterThanEconStorageRatio', { 0.60, 0.10}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.10}}, -- Ratio from 0 to 1. (1=100%)
             { EBC, 'GreaterThanEconEfficiencyOverTime', { 1.0, 1.0 }}, -- relative baseincome 0=bad, 1=ok, 2=full
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 0, categories.TECH3 * categories.ENERGYPRODUCTION}},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingUpgrade', { 3, categories.STRUCTURE * categories.SHIELD }},
@@ -154,7 +154,7 @@ BuilderGroup {
         BuilderConditions = {
             { IBC, 'BrainNotLowPowerMode', {} },
             { IBC, 'BrainNotLowMassMode', {} },
-            { EBC, 'GreaterThanEconStorageRatio', { 0.75, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             { EBC, 'GreaterThanEconEfficiencyOverTime', { 1.0, 1.0 }}, -- relative baseincome 0=bad, 1=ok, 2=full
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 1, categories.TECH3 * categories.ENERGYPRODUCTION}},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingUpgrade', { 3, categories.STRUCTURE * categories.SHIELD }},
@@ -171,7 +171,7 @@ BuilderGroup {
         BuilderConditions = {
             { IBC, 'BrainNotLowPowerMode', {} },
             { IBC, 'BrainNotLowMassMode', {} },
-            { EBC, 'GreaterThanEconStorageRatio', { 0.75, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             { EBC, 'GreaterThanEconEfficiencyOverTime', { 1.0, 1.0 }}, -- relative baseincome 0=bad, 1=ok, 2=full
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 1, categories.TECH3 * categories.ENERGYPRODUCTION}},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingUpgrade', { 3, categories.STRUCTURE * categories.SHIELD }},
@@ -184,7 +184,7 @@ BuilderGroup {
 -- ==                                    T2 Tactical Missile Launcher                                        == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'Tactical Missile Launcher minimum Uveso',
+    BuilderGroupName = 'Tactical Missile Launcher minimum Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'U2 TML Minimum',
@@ -218,7 +218,7 @@ BuilderGroup {
     },
 }
 BuilderGroup {
-    BuilderGroupName = 'Tactical Missile Launcher Maximum Uveso',
+    BuilderGroupName = 'Tactical Missile Launcher Maximum Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'U2 TML Maximum',
@@ -248,7 +248,7 @@ BuilderGroup {
     },
 }
 BuilderGroup {
-    BuilderGroupName = 'Tactical Missile Launcher TacticalAISorian Uveso',
+    BuilderGroupName = 'Tactical Missile Launcher TacticalAISorian Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     Builder {
         BuilderName = 'U2 TML AI',
@@ -263,7 +263,7 @@ BuilderGroup {
 -- ==                                     T2 Tactical Missile Defenses                                       == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'Tactical Missile Defenses Uveso',
+    BuilderGroupName = 'Tactical Missile Defenses Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'U2 TMD Panic 1',
@@ -384,14 +384,14 @@ BuilderGroup {
 -- ==                                    T3 Strategic Missile LAUNCHER                                       == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'Strategic Missile Launcher Uveso',
+    BuilderGroupName = 'Strategic Missile Launcher Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'U3 SML',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 1000,
         BuilderConditions = {
-            { EBC, 'GreaterThanEconStorageRatio', { 0.75, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.90, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             { EBC, 'GreaterThanEconTrend', { 8.0, 500.0 } }, -- relative income
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 3, categories.ENERGYPRODUCTION * categories.TECH3 } },
 
@@ -416,7 +416,7 @@ BuilderGroup {
 }
 BuilderGroup {
     -- Add all nukes to a single nuke-platton
-    BuilderGroupName = 'Strategic Missile Launcher NukeAI Uveso',
+    BuilderGroupName = 'Strategic Missile Launcher NukeAI Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     Builder {
         BuilderName = 'NukePlatoonAI',
@@ -441,7 +441,7 @@ BuilderGroup {
 -- ==                                    T3 Strategic Missile Defense                                        == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'Strategic Missile Defense Uveso',
+    BuilderGroupName = 'Strategic Missile Defense Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'U3 SMD 1st Main',
@@ -505,7 +505,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 SMD Enemy Expansion',
         PlatoonTemplate = 'T3EngineerBuilder',
-        Priority = 2100,
+        Priority = 2090,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioAtLocationRadiusVersusEnemy', { 1.50, 'LocationType', 90, 'STRUCTURE DEFENSE ANTIMISSILE TECH3', '<','SILO NUKE TECH3, SILO NUKE EXPERIMENTAL' } },
@@ -537,7 +537,7 @@ BuilderGroup {
 }
 BuilderGroup {
     -- Add all anti-nukes to a single nuke-platton
-    BuilderGroupName = 'Strategic Missile Defense Anti-NukeAI Uveso',
+    BuilderGroupName = 'Strategic Missile Defense Anti-NukeAI Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     Builder {
         BuilderName = 'AntiNukePlatoonAI',
@@ -559,7 +559,7 @@ BuilderGroup {
 -- ==                                          T3/T4 Artillery                                               == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'Artillery Builder Uveso',
+    BuilderGroupName = 'Artillery Builder Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'U3 Artillery',
@@ -571,14 +571,11 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.EXPERIMENTAL}},
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.95, 0.95 }}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.90, 1.00 }}, -- Ratio from 0 to 1. (1=100%)
             { EBC, 'GreaterThanEconTrend', { 2.0, 300.0 } }, -- relative income
-            { EBC, 'GreaterThanEconEfficiencyOverTime', { 1.0, 1.0 }}, -- relative baseincome 0=bad, 1=ok, 2=full
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'Artillery' }},
-            { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<=', categories.STRUCTURE * categories.DEFENSE } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -601,14 +598,11 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 2, categories.EXPERIMENTAL}},
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.80, 0.95 }}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.90, 1.00 }}, -- Ratio from 0 to 1. (1=100%)
             { EBC, 'GreaterThanEconTrend', { 2.0, 300.0 } }, -- relative income
-            { EBC, 'GreaterThanEconEfficiencyOverTime', { 1.0, 1.0 }}, -- relative baseincome 0=bad, 1=ok, 2=full
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'Artillery' }},
-            { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<=', categories.STRUCTURE * categories.DEFENSE } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -633,12 +627,9 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.80, 0.95 }}, -- Ratio from 0 to 1. (1=100%)
             { EBC, 'GreaterThanEconTrend', { 2.0, 300.0 } }, -- relative income
-            { EBC, 'GreaterThanEconEfficiencyOverTime', { 1.0, 1.0 }}, -- relative baseincome 0=bad, 1=ok, 2=full
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'Artillery' }},
-            { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<=', categories.STRUCTURE * categories.DEFENSE } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -660,14 +651,13 @@ BuilderGroup {
             { EBC, 'GreaterThanEconIncome', { 20.0, 1000.0 }},
             { EBC, 'GreaterThanEconStorageRatio', { 0.75, 0.95 } }, -- Ratio from 0 to 1. (1=100%)
             -- Do we need additional conditions to build it ?
+            { MIBC, 'FactionIndex', { 1 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
-            { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
             -- Have we the eco to build it ?
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.EXPERIMENTAL * categories.LAND }},
             { UCBC, 'CheckBuildPlattonDelay', { 'Experimental Effi' }},
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<=', categories.STRUCTURE * categories.DEFENSE } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -687,7 +677,7 @@ BuilderGroup {
 -- ===================================================-======================================================== --
 
 BuilderGroup {
-    BuilderGroupName = 'Base Anti Air Defense Uveso',
+    BuilderGroupName = 'Base Anti Air Defense Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'U1 AirFactory AA',
@@ -770,7 +760,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.99}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.99}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 32, categories.STRUCTURE * categories.DEFENSE * categories.ANTIAIR }},
             -- Respect UnitCap

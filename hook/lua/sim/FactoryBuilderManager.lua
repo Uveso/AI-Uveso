@@ -1,4 +1,4 @@
--- This hook is for debug Option Platoon-Names
+-- This hook is for debug Option Platoon-Names. Hook for all AI's
 OLDFactoryBuilderManager = FactoryBuilderManager
 FactoryBuilderManager = Class(OLDFactoryBuilderManager) {
 

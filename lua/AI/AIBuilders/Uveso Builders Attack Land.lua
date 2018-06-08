@@ -17,7 +17,7 @@ LOG('* AI DEBUG: BaseMilitaryZone= '..math.floor( BaseMilitaryZone * 0.01953125 
 -- ==                                        Build T1 T2 T3 Land                                             == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'LandAttackBuilders Uveso',
+    BuilderGroupName = 'LandAttackBuilders Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'FactoryBuilder',
     -- ======================== --
     --    TECH 1   ALWAYS       --
@@ -31,10 +31,10 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.LAND * categories.FACTORY * categories.TECH1 }},
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
+            { UCBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.MOBILE * categories.LAND * ( categories.DIRECTFIRE + categories.INDIRECTFIRE ) }},
-            { UCBC, 'HasNotParagon', {} },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
             { UCBC, 'UnitCapCheckLess', { 0.92 } },
@@ -52,7 +52,7 @@ BuilderGroup {
         BuilderConditions = {
             -- When do we want to build this ?
             { EBC, 'GreaterThanEconTrend', { 1.0, 10.0 } }, -- relative income 10,60
-            { EBC, 'GreaterThanEconStorageRatio', { 0.35, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.80, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
@@ -70,7 +70,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 PanicZone Arty',
         PlatoonTemplate = 'T1LandArtillery',
-        Priority = 160,
+        Priority = 18600,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 1, categories.MOBILE * categories.LAND - categories.SCOUT}}, -- radius, LocationType, unitCount, categoryEnemy
@@ -86,10 +86,10 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 PanicZone/2 AA',
         PlatoonTemplate = 'T1LandAA',
-        Priority = 160,
+        Priority = 18600,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone/2, 'LocationType', 1, categories.MOBILE * categories.AIR - categories.SCOUT}}, -- radius, LocationType, unitCount, categoryEnemy
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 1, categories.MOBILE * categories.AIR - categories.SCOUT}}, -- radius, LocationType, unitCount, categoryEnemy
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
@@ -147,7 +147,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HasNotParagon', {} },
             -- Respect UnitCap
@@ -168,12 +168,12 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HasNotParagon', {} },
-            { UCBC, 'HaveUnitRatioVersusEnemy', { 2.0, 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE', '<=', 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE' } },
+--            { UCBC, 'HaveUnitRatioVersusEnemy', { 2.0, 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE', '<=', 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE' } },
             -- Respect UnitCap
-            --{ UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
             { UCBC, 'UnitCapCheckLess', { 0.92 } },
         },
         BuilderType = 'Land',
@@ -193,7 +193,7 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 20, categories.MOBILE * categories.LAND * ( categories.DIRECTFIRE + categories.INDIRECTFIRE ) }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE', '<=', 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE' } },
@@ -215,7 +215,7 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatio', { 0.80, 'MOBILE LAND DIRECTFIRE TECH1', '<','MOBILE LAND INDIRECTFIRE TECH1' } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
@@ -231,8 +231,9 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatio', { 0.3, 'MOBILE LAND BOT TECH1', '<','MOBILE LAND INDIRECTFIRE TECH1' } },
             -- Do we need additional conditions to build it ?
+            { MIBC, 'FactionIndex', { 1, 2, 3 , 5 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
@@ -249,7 +250,7 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatio', { 0.1, 'MOBILE LAND ANTIAIR TECH1', '<','MOBILE LAND INDIRECTFIRE TECH1' } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
@@ -463,21 +464,22 @@ BuilderGroup {
 -- ==                                         Land Formbuilder                                               == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'Land FormBuilders',                                     -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates"
+    BuilderGroupName = 'Land FormBuilders',                                     -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',                                        -- BuilderTypes are: EngineerBuilder, FactoryBuilder, PlatoonFormBuilder.
     -- =============== --
     --    PanicZone    --
     -- =============== --
     Builder {
         BuilderName = 'U123 AntiCDR PANIC',                                     -- Random Builder Name.
-        PlatoonTemplate = 'LandAttackInterceptUveso 2 5',                       -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
-        Priority = 90,                                                        -- Priority. 1000 is normal.
-        InstanceCount = 5,                                                      -- Number of plattons that will be formed.
+        PlatoonTemplate = 'LandAttackInterceptUveso 2 5',                       -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
+        Priority = 90,                                                          -- Priority. Higher priotity will be build more often then lower priotity.
+        InstanceCount = 5,                                                      -- Number of plattons that will be formed with this template.
         BuilderData = {
             SearchRadius = BasePanicZone,                                       -- Searchradius for new target.
+            GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
             RequireTransport = true,                                            -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
-            IgnoreGroundDefense = false,                                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
+            IgnoreGroundDefenseNum = false,                                     -- Don't attack if we have more then x ground defense buildings at target position. false = no check
             TargetSearchCategory = categories.COMMAND,                          -- Only find targets matching these categories.
             PrioritizedCategories = {                                           -- Attack these targets.
                 'COMMAND',
@@ -498,7 +500,7 @@ BuilderGroup {
             GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
-            IgnoreGroundDefense = false,                                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
+            IgnoreGroundDefenseNum = false,                                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
             TargetSearchCategory = categories.MOBILE * categories.LAND - categories.SCOUT - categories.ENGINEER, -- Only find targets matching these categories.
             PrioritizedCategories = {                                           -- Attack these targets.
                 'EXPERIMENTAL',
@@ -518,14 +520,14 @@ BuilderGroup {
     Builder {
         BuilderName = 'CDR PANIC ACU',                                          -- Random Builder Name.
         PlatoonTemplate = 'CDR Attack',                                         -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
-        Priority = 90,                                                        -- Priority. 1000 is normal.
+        Priority = 0,                                                        -- Priority. 1000 is normal.
         InstanceCount = 0,                                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BasePanicZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
-            IgnoreGroundDefense = false,                                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
+            IgnoreGroundDefenseNum = false,                                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
             TargetSearchCategory = categories.MOBILE * categories.LAND - categories.SCOUT - categories.ENGINEER, -- Only find targets matching these categories.
             PrioritizedCategories = {                                           -- Attack these targets.
                 'EXPERIMENTAL',
@@ -539,7 +541,7 @@ BuilderGroup {
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
-            { UCBC, 'PoolGreaterAtLocationII', { 'MAIN', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.MOBILE * categories.LAND - categories.SCOUT}}, -- radius, LocationType, unitCount, categoryEnemy
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
@@ -547,20 +549,24 @@ BuilderGroup {
     --    MilitaryZone    --
     -- ================== --
     Builder {
-        BuilderName = 'U123 AntiMass Military',                                 -- Random Builder Name.
+        BuilderName = 'U123 AntiMass Military 2 5',                             -- Random Builder Name.
         PlatoonTemplate = 'LandAttackInterceptUveso 2 5',                       -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
-        Priority = 80,                                                        -- Priority. 1000 is normal.
+        Priority = 0,                                                          -- Priority. 1000 is normal.
         InstanceCount = 1,                                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                                    -- Searchradius for new target.
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
-            IgnoreGroundDefense = false,                                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
-            TargetSearchCategory = categories.MASSEXTRACTION,                   -- Only find targets matching these categories.
+            IgnoreGroundDefenseNum = false,                                     -- Don't attack if we have more then x ground defense buildings at target position. false = no check
+            TargetSearchCategory = categories.MASSEXTRACTION + categories.STRUCTURE - categories.NAVAL, -- Only find targets matching these categories.
             PrioritizedCategories = {                                           -- Attack these targets.
                 'MASSEXTRACTION TECH1',
                 'MASSEXTRACTION TECH2',
                 'MASSEXTRACTION TECH3',
+                'STRUCTURE TECH1',
+                'STRUCTURE TECH2',
+                'STRUCTURE TECH3',
+                'ALLUNITS',
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
@@ -569,16 +575,16 @@ BuilderGroup {
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
     Builder {
-        BuilderName = 'U123 Military 10 10',                                    -- Random Builder Name.
+        BuilderName = 'U123 Military 2 5',                                    -- Random Builder Name.
         PlatoonTemplate = 'LandAttackInterceptUveso 2 5',                       -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
-        Priority = 80,                                                        -- Priority. 1000 is normal.
+        Priority = 0,                                                        -- Priority. 1000 is normal.
         InstanceCount = 1,                                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                                    -- Searchradius for new target.
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
-            IgnoreGroundDefense = false,                                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
-            TargetSearchCategory = categories.MOBILE * categories.LAND - categories.SCOUT + categories.STRUCTURE * categories.LAND, -- Only find targets matching these categories.
+            IgnoreGroundDefenseNum = false,                                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
+            TargetSearchCategory = categories.MOBILE * categories.LAND - categories.SCOUT + categories.STRUCTURE - categories.NAVAL, -- Only find targets matching these categories.
             PrioritizedCategories = {                                           -- Attack these targets.
                 'EXPERIMENTAL',
                 'MOBILE LAND INDIRECTFIRE',
@@ -598,7 +604,7 @@ BuilderGroup {
     --    EnemyZone    --
     -- =============== --
     Builder {
-        BuilderName = 'U123 AntiMass Enemy',                                    -- Random Builder Name.
+        BuilderName = 'U123 AntiMass Enemy 10 10',                                    -- Random Builder Name.
         PlatoonTemplate = 'LandAttackHuntUveso 10 10',                          -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
         Priority = 60,                                                         -- Priority. 1000 is normal.
         InstanceCount = 10,                                                     -- Number of plattons that will be formed.
@@ -606,19 +612,45 @@ BuilderGroup {
             SearchRadius = 10000,                                               -- Searchradius for new target.
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
-            IgnoreGroundDefense = false,                                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
-            TargetSearchCategory = categories.MASSEXTRACTION,                   -- Only find targets matching these categories.
+            IgnoreGroundDefenseNum = false,                                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
+            TargetSearchCategory = categories.MASSEXTRACTION + categories.STRUCTURE - categories.NAVAL, -- Only find targets matching these categories.
             PrioritizedCategories = {                                           -- Attack these targets.
                 'MASSEXTRACTION TECH1',
                 'MASSEXTRACTION TECH2',
                 'MASSEXTRACTION TECH3',
-                'EXPERIMENTAL',
-                'STRUCTURE DEFENSE',
-                'STRUCTURE ANTIAIR',
+                'STRUCTURE TECH1',
+                'STRUCTURE TECH2',
+                'STRUCTURE TECH3',
+                'ALLUNITS',
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             { UCBC, 'UnitsGreaterAtEnemy', { 0 , 'MASSEXTRACTION' } },
+        },
+        BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
+    },
+    Builder {
+        BuilderName = 'U123 Enemy 10 10',                                       -- Random Builder Name.
+        PlatoonTemplate = 'LandAttackHuntUveso 10 10',                          -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
+        Priority = 60,                                                          -- Priority. 1000 is normal.
+        InstanceCount = 10,                                                     -- Number of plattons that will be formed.
+        BuilderData = {
+            SearchRadius = 10000,                                               -- Searchradius for new target.
+            RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
+            AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
+            IgnoreGroundDefenseNum = false,                                     -- Don't attack if we have more then x ground defense buildings at target position. false = no check
+            TargetSearchCategory = categories.MOBILE * categories.LAND - categories.SCOUT + categories.STRUCTURE - categories.NAVAL, -- Only find targets matching these categories.
+            PrioritizedCategories = {                                           -- Attack these targets.
+                'EXPERIMENTAL',
+                'MOBILE LAND INDIRECTFIRE',
+                'MOBILE LAND DIRECTFIRE',
+                'STRUCTURE DEFENSE',
+                'MOBILE LAND ANTIAIR',
+                'STRUCTURE ANTIAIR',
+                'ALLUNITS',
+            },
+        },
+        BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
@@ -633,16 +665,17 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = 10000,                                               -- Searchradius for new target.
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
-            AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
-            IgnoreGroundDefense = false,                                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
-            TargetSearchCategory = categories.MOBILE * categories.LAND + categories.STRUCTURE * categories.LAND, -- Only find targets matching these categories.
+            AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
+            IgnoreGroundDefenseNum = false,                                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
+            TargetSearchCategory = categories.MOBILE * categories.LAND + categories.STRUCTURE - categories.NAVAL, -- Only find targets matching these categories.
             PrioritizedCategories = {                                           -- Attack these targets.
                 'EXPERIMENTAL',
+                'STRUCTURE TECH1',
+                'STRUCTURE TECH2',
+                'STRUCTURE TECH3',
                 'MOBILE LAND INDIRECTFIRE',
                 'MOBILE LAND DIRECTFIRE',
-                'STRUCTURE DEFENSE',
                 'MOBILE LAND ANTIAIR',
-                'STRUCTURE ANTIAIR',
                 'ALLUNITS',
             },
         },
@@ -659,7 +692,7 @@ BuilderGroup {
     --    Big LandInterceptor groups   --
     -- =============================== --
     Builder {
-        BuilderName = 'U123 BigIntercept STR 30 60',
+        BuilderName = 'U123 BigIntercept 30 60',
         PlatoonTemplate = 'LandAttackInterceptUveso 30 60',                     -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
         Priority = 40,                                                        -- Priority. 1000 is normal.
         InstanceCount = 10,                                                      -- Number of plattons that will be formed.
@@ -667,23 +700,24 @@ BuilderGroup {
             SearchRadius = 10000,                                               -- Searchradius for new target.
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
-            IgnoreGroundDefense = false,                                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
-            TargetSearchCategory = categories.STRUCTURE * categories.LAND,     -- Only find targets matching these categories.
+            IgnoreGroundDefenseNum = false,                                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
+            TargetSearchCategory = categories.MOBILE * categories.LAND + categories.STRUCTURE - categories.NAVAL, -- Only find targets matching these categories.
             PrioritizedCategories = {                                           -- Attack these targets.
                 'EXPERIMENTAL',
+                'STRUCTURE TECH1',
+                'STRUCTURE TECH2',
+                'STRUCTURE TECH3',
                 'MOBILE LAND INDIRECTFIRE',
                 'MOBILE LAND DIRECTFIRE',
-                'STRUCTURE DEFENSE',
                 'MOBILE LAND ANTIAIR',
-                'STRUCTURE ANTIAIR',
                 'ALLUNITS',
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to build this ?
-            { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 40, categories.MOBILE * categories.LAND - categories.SCOUT - categories.ENGINEER}},
+            { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 30, categories.MOBILE * categories.LAND - categories.SCOUT - categories.ENGINEER}},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'UnitsGreaterAtEnemy', { 0 , 'STUCTURE' } },
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , 'STUCTURE, MOBILE' } },
             -- Have we the eco to build it ?
             -- Don't build it if...
         },

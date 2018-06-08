@@ -1,3 +1,4 @@
+-- This hook is for debug Option Platoon-Names. Hook for all AI's
 
 OLDExecutePlan = ExecutePlan
 function ExecutePlan(aiBrain)
@@ -73,26 +74,33 @@ function LocationRangeManagerThread(aiBrain)
                     if Plan or Builder then
                         unit:SetCustomName(''..(Builder or 'Unknown')..' ('..(Plan or 'Unknown')..')')
                     else
-                        --unit:SetCustomName('+')
+                        unit:SetCustomName('+')
                     end
                 else
-                    --unit:SetCustomName('-')
+                    unit:SetCustomName('-')
                 end
             end
-
             local WeAreInRange = false
             local nearestbase
-            if not unit.Dead and EntityCategoryContains(categories.MOBILE - categories.COMMAND, unit) and unit:GetFractionComplete() == 1 and unit:IsIdleState() and not unit:IsMoving() and not unit.PlatoonHandle then
+            if not unit.Dead
+                and EntityCategoryContains(categories.MOBILE - categories.COMMAND, unit)
+                and unit:GetFractionComplete() == 1
+                and unit:IsIdleState()
+                and not unit:IsMoving()
+                and (not unit.PlatoonHandle or (not unit.PlatoonHandle.PlanName and not unit.PlatoonHandle.BuilderName))
+            then
                 local UnitPos = unit:GetPosition()
                 local NeedNavalBase = EntityCategoryContains(categories.NAVAL, unit)
                 -- loop over every location and check the distance between the unit and the location
                 for location, base in BasePositions do
                     -- If we need a naval base then skip all non naval areas
                     if NeedNavalBase and base.Type ~= 'Naval Area' then
+                        --LOG('Need naval; but got land base: '..base.Type)
                         continue
                     end
                     -- If we need a land base then skip all naval areas
                     if not NeedNavalBase and base.Type == 'Naval Area' then
+                        --LOG('Need land; but got naval base: '..base.Type)
                         continue
                     end
                     local dist = VDist2( UnitPos[1], UnitPos[3], base.Pos[1], base.Pos[3] )
@@ -111,14 +119,17 @@ function LocationRangeManagerThread(aiBrain)
                 -- if we are not in range of an base, then move to a base.
                 if WeAreInRange == false and not unit.Dead then
                     if nearestbase then
-                        if unit.PlatoonHandle and aiBrain:PlatoonExists(unit.PlatoonHandle) then
-                            LOG('* AIDEBUG: LocationRangeManagerThread: Found idle Unit outside Basemanager range! Removing platoonhandle: ('..(unit.PlatoonHandle.PlanName or 'Unknown')..')')
-                            unit.PlatoonHandle:Stop()
-                            unit.PlatoonHandle:PlatoonDisband()
-                        end
+--                        if unit.PlatoonHandle and aiBrain:PlatoonExists(unit.PlatoonHandle) then
+--                            LOG('* AIDEBUG: LocationRangeManagerThread: Found idle Unit outside Basemanager range! Removing platoonhandle: ('..(unit.PlatoonHandle.PlanName or 'Unknown')..')')
+--                            unit.PlatoonHandle:Stop()
+--                            unit.PlatoonHandle:PlatoonDisband()
+--                        end
                         --LOG('* AIDEBUG: LocationRangeManagerThread: Moving idle unit inside next basemanager range: '..unit:GetBlueprint().BlueprintId..'  ')
-                        unit:SetCustomName('Outside LocManager')
+                        if aiBrain[ScenarioInfo.Options.AIPLatoonNameDebug] then
+                            unit:SetCustomName('Outside LocationManager')
+                        end
                         IssueClearCommands({unit})
+                        IssueStop({unit})
                         IssueMove({unit}, nearestbase.Pos)
                     end
                 end
