@@ -1,4 +1,5 @@
 
+--hook to inject own pathfinding function
 OLDPlatoonGenerateSafePathTo = PlatoonGenerateSafePathTo
 function PlatoonGenerateSafePathTo(aiBrain, platoonLayer, startPos, endPos, optThreatWeight, optMaxMarkerDist, testPathDist)
     -- Only use this with AI-Uveso
@@ -80,40 +81,7 @@ function PlatoonGenerateSafePathTo(aiBrain, platoonLayer, startPos, endPos, optT
     return finalPath, 'PathOK'
 end
 
-OLDGetPathGraphs = GetPathGraphs
-function GetPathGraphs()
-    if ScenarioInfo.PathGraphs then
-        return ScenarioInfo.PathGraphs
-    else
-        ScenarioInfo.PathGraphs = {}
-    end
-
-    local markerGroups = {
-        Land = AIUtils.AIGetMarkerLocationsEx(nil, 'Land Path Node') or {},
-        Water = AIUtils.AIGetMarkerLocationsEx(nil, 'Water Path Node') or {},
-        Air = AIUtils.AIGetMarkerLocationsEx(nil, 'Air Path Node') or {},
-        Amphibious = AIUtils.AIGetMarkerLocationsEx(nil, 'Amphibious Path Node') or {},
-    }
-    local distAdjacent
-    local posAdjacent
-    for gk, markerGroup in markerGroups do
-        for mk, marker in markerGroup do
-            --Create stuff if it doesn't exist
-            ScenarioInfo.PathGraphs[gk] = ScenarioInfo.PathGraphs[gk] or {}
-            ScenarioInfo.PathGraphs[gk][marker.graph] = ScenarioInfo.PathGraphs[gk][marker.graph] or {}
-            -- If the marker has no adjacentTo then don't use it. We can't build a path with this node.
-            if not (marker.adjacentTo) then
-                LOG('*AI DEBUG: GetPathGraphs(): Path Node '..marker.name..' has no adjacentTo entry!')
-                continue
-            end
-            --Add the marker to the graph.
-            ScenarioInfo.PathGraphs[gk][marker.graph][marker.name] = {name = marker.name, layer = gk, graphName = marker.graph, position = marker.position, adjacent = STR_GetTokens(marker.adjacentTo, ' '), color = marker.color}
-        end
-    end
-
-    return ScenarioInfo.PathGraphs or {}
-end
-
+-- new function for pathing
 function GeneratePathUveso(aiBrain, startNode, endNode, threatType, threatWeight, endPos, startPos)
     threatWeight = threatWeight or 1
     -- Check first if this path is bad at all. (no connection to the destination)

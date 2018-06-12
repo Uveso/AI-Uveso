@@ -1,4 +1,4 @@
--- hook for loading custom AI templates and builder from moddirectory
+-- hooks for map validation on game start and debugstuff for pathfinding and base ranger.
 
 local OLDSetupSession = SetupSession
 function SetupSession()

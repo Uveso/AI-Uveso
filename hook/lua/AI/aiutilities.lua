@@ -1,126 +1,5 @@
--- overwriting original function until AIpatch is released
-OLDAIGetMarkerLocationsEx = AIGetMarkerLocationsEx
-function AIGetMarkerLocationsEx(aiBrain, markerType)
-    local markerList = {}
-    local markers = ScenarioUtils.GetMarkers()
-    if markers then
-        markerList = GenerateMarkerList(markerList,markers,markerType)
-        LOG('AIGetMarkerLocationsEx '..table.getn(markerList)..' markers for '..markerType)
-        -- If we have no Amphibious Path Nodes, generate them from Land and Water Nodes
-        if markerType == 'Amphibious Path Node' and table.getn(markerList) <= 0 then
-            markerList = GenerateAmphibiousMarkerList(markerList,markers,'Land Path Node')
-            markerList = GenerateAmphibiousMarkerList(markerList,markers,'Water Path Node')
-            LOG('AIGetMarkerLocationsEx '..table.getn(markerList)..' markers for '..markerType..' (generated from Land/Water markers).')
-            -- Inject the new amphibious marker to the MasterChain
-            for k, v in markerList do
-                if v.type == 'Amphibious Path Node' then
-                    Scenario.MasterChain._MASTERCHAIN_.Markers[v.name] = v
-                end
-            end
-        end
-    end
-    -- Make a list of all the markers in the scenario that are of the markerType
-    return markerList
-end
 
--- overwriting original function until AIpatch is released
-function AIGetSortedMassLocations(aiBrain, maxNum, tMin, tMax, tRings, tType, position)
-    local markerList = AIGetMarkerLocations(aiBrain, 'Mass')
-    local newList = {}
-    for _, v in markerList do
-        -- check distance to map border. (game engine can't build mass closer then 8 mapunits to the map border.) 
-        if v.Position[1] < 8 or v.Position[1] > ScenarioInfo.size[1] - 8 or v.Position[3] < 8 or v.Position[3] > ScenarioInfo.size[2] - 8 then
-            -- mass marker is too close to border, skip it.
-            continue
-        end
-        if aiBrain:CanBuildStructureAt('ueb1103', v.Position) then
-            table.insert(newList, v)
-        end
-    end
-
-    return AISortMarkersFromLastPos(aiBrain, newList, maxNum, tMin, tMax, tRings, tType, position)
-end
-
-function GenerateMarkerList(markerList,markers,markerType)
-    for k, v in markers do
-        if v.type == markerType then
-            -- copy the marker to a local variable. We don't want to change values inside the original markers array
-            local marker = table.copy(v)
-            marker.name = k
-            -- insert the (default)graph if missing.
-            if not marker.graph then
-                marker.graph = 'Default'..markerType
-            end
-            table.insert(markerList, marker)
-        end
-    end
-    return markerList
-end
-
-function GenerateAmphibiousMarkerList(markerList,markers,markerType)
-    for k, v in markers do
-        local marker = table.copy(v)
-        if marker.type == markerType then
-            -- transform adjacentTo to Amphibious marker names
-            local adjacentTo = ''
-            for i, node in STR_GetTokens(marker.adjacentTo, ' ') do
-                if adjacentTo == '' then
-                    adjacentTo = 'Amph'..node
-                else
-                    adjacentTo = adjacentTo..' '..'Amph'..node
-                end
-            end
-            marker.adjacentTo = adjacentTo
-            -- Add 'Amph' to marker name
-            marker.name = 'Amph'..k
-            marker.graph = 'DefaultAmphibious'
-            marker.type = 'Amphibious Path Node'
-            marker.color = 'ff00FFFF'
-            table.insert(markerList, marker)
-        end
-    end
-    return markerList
-end
-
--- overwriting original function until AIpatch is released
-OLDAIFindBrainTargetInRange = AIFindBrainTargetInRange
-function AIFindBrainTargetInRange(aiBrain, platoon, squad, maxRange, atkPri, enemyBrain)
-    -- Only use this with AI-Uveso
-    if not aiBrain.Uveso then
-        return OLDAIFindBrainTargetInRange(aiBrain, platoon, squad, maxRange, atkPri, enemyBrain)
-    end
-    local position = platoon:GetPlatoonPosition()
-    if not aiBrain or not position or not maxRange or not platoon or not enemyBrain then
-        return false
-    end
-
-    local enemyIndex = enemyBrain:GetArmyIndex()
-    local targetUnits = aiBrain:GetUnitsAroundPoint(categories.ALLUNITS, position, maxRange, 'Enemy')
-    for _, v in atkPri do
-        local category = v
-        if type(category) == 'string' then
-            category = ParseEntityCategory(category)
-        end
-        local retUnit = false
-        local distance = false
-        for num, unit in targetUnits do
-            if not unit.Dead and EntityCategoryContains(category, unit) and unit:GetAIBrain():GetArmyIndex() == enemyIndex and platoon:CanAttackTarget(squad, unit) then
-                local unitPos = unit:GetPosition()
-                if not retUnit or Utils.XZDistanceTwoVectors(position, unitPos) < distance then
-                    retUnit = unit
-                    distance = Utils.XZDistanceTwoVectors(position, unitPos)
-                end
-            end
-        end
-        if retUnit then
-            return retUnit
-        end
-    end
-
-    return false
-end
-
--- overwriting original function until AIpatch is released
+-- Hook for own engineer pathing
 OLDEngineerMoveWithSafePath = EngineerMoveWithSafePath
 function EngineerMoveWithSafePath(aiBrain, unit, destination)
     -- Only use this with AI-Uveso
@@ -225,6 +104,7 @@ function EngineerMoveWithSafePath(aiBrain, unit, destination)
     return false
 end
 
+-- Helper function for targeting
 function ValidateLayer(UnitPos,MovementLayer)
     if MovementLayer == 'Air' then
         return true
@@ -241,6 +121,7 @@ function ValidateLayer(UnitPos,MovementLayer)
     return false
 end
 
+-- target function
 function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, maxRange, PrioritizedTargetList, TargetSearchCategory, enemyBrain)
     if not maxRange then
         LOG('* AIFindNearestCategoryTargetInRange: function called with empty "maxRange"')

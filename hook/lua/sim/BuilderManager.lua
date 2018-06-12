@@ -4,54 +4,9 @@ local AntiSpamList = {}
 local AntiSpamCounter = 0
 local LastBuilder = ''
 
--- overwriting original function until AIpatch is released
+-- Hook for debugging
 OLDBuilderManager = BuilderManager
 BuilderManager = Class(OLDBuilderManager) {
-
-    AddInstancedBuilder = function(self,newBuilder, builderType)
-        -- Only use this with AI-Uveso
-        if not self.Brain.Uveso then
-            return OLDBuilderManager.AddInstancedBuilder(self,newBuilder, builderType)
-        end
-        builderType = builderType or newBuilder:GetBuilderType()
-        if not builderType then
-            -- Warn the programmer that something is wrong. We can continue, hopefully the builder is not too important for the AI ;)
-            -- But god for testing, and the case that a mod has bad builders.
-            -- Output: WARNING: [buildermanager.lua, line:xxx] *BUILDERMANAGER ERROR: No BuilderData for builder: T3 Air Scout
-            WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *BUILDERMANAGER ERROR: Invalid builder type: ' .. repr(builderType) .. ' - in builder: ' .. newBuilder.BuilderName)
-            return
-        end
-        if newBuilder then
-            if not self.BuilderData[builderType] then
-                -- Warn the programmer that something is wrong here. Same here, we can continue.
-                -- Output: WARNING: [buildermanager.lua, line:xxx] *BUILDERMANAGER ERROR: No BuilderData for builder: T3 Air Scout
-                WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *BUILDERMANAGER ERROR: No BuilderData for builder: ' .. newBuilder.BuilderName)
-                return
-            end
-            table.insert(self.BuilderData[builderType].Builders, newBuilder)
-            self.BuilderData[builderType].NeedSort = true
-            self.BuilderList = true
-        end
-        self.NumBuilders = self.NumBuilders + 1
-        if newBuilder.InstantCheck then
-            self:ManagerLoopBody(newBuilder)
-        end
-    end,
-
-    IsPlattonBuildDelayed = function(self, DelayEqualBuildPlattons)
-        if DelayEqualBuildPlattons then
-            local CheckDelayTime = GetGameTimeSeconds()
-            local PlatoonName = DelayEqualBuildPlattons[1]
-            if not self.Brain.DelayEqualBuildPlattons[PlatoonName] or self.Brain.DelayEqualBuildPlattons[PlatoonName] < CheckDelayTime then
-                --LOG('Setting '..DelayEqualBuildPlattons[2]..' sec. delaytime for builder ['..PlatoonName..']')
-                self.Brain.DelayEqualBuildPlattons[PlatoonName] = CheckDelayTime + DelayEqualBuildPlattons[2]
-                return false
-            else
-                --LOG('Builder ['..PlatoonName..'] still delayed for '..(CheckDelayTime - self.Brain.DelayEqualBuildPlattons[PlatoonName])..' seconds.')
-                return true
-            end
-        end
-    end,
 
     GetHighestBuilder = function(self,bType,factory)
         -- Only use this with AI-Uveso

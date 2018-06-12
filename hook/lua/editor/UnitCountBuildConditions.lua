@@ -1,31 +1,17 @@
+
+-- For AI Patch V2. This is for delaying build platoons
+function CheckBuildPlattonDelay(aiBrain, PlatoonName, DEBUG)
+    if aiBrain.DelayEqualBuildPlattons[PlatoonName] and aiBrain.DelayEqualBuildPlattons[PlatoonName] > GetGameTimeSeconds() then
+        if DEBUG then
+            LOG('Builder, ['..PlatoonName..'] delayed.')
+        end
+        return false
+    end
+    return true
+end
+
+
 -- hook for additional build conditions used from AIBuilders
-
-
--- overwriting original function until AIpatch is released
-OLDExpansionBaseCheck = ExpansionBaseCheck
-function ExpansionBaseCheck(aiBrain)
-    -- Only use this with AI-Uveso
-    if not aiBrain.Uveso then
-        return OLDExpansionBaseCheck(aiBrain)
-    end
-    -- Removed automatic setting of Land-Expasions-allowed. We have a User-Option for this.
-    local checkNum = tonumber(ScenarioInfo.Options.LandExpansionsAllowed) or 3
-    return ExpansionBaseCount(aiBrain, '<', checkNum)
-end
-
--- overwriting original function until AIpatch is released
-OLDNavalBaseCheck = NavalBaseCheck
-function NavalBaseCheck(aiBrain)
-    -- Only use this with AI-Uveso
-    if not aiBrain.Uveso then
-        return OLDNavalBaseCheck(aiBrain)
-    end
-    -- Removed automatic setting of naval-Expasions-allowed. We have a User-Option for this.
-    local checkNum = tonumber(ScenarioInfo.Options.NavalExpansionsAllowed) or 2
-    return NavalBaseCount(aiBrain, '<', checkNum)
-end
-
--- Uveso stuff
 
 --{ UCBC, 'ReturnTrue', {} },
 function ReturnTrue(aiBrain)
@@ -33,6 +19,7 @@ function ReturnTrue(aiBrain)
     return true
 end
 
+--{ UCBC, 'ReturnFalse', {} },
 function ReturnFalse(aiBrain)
     LOG('** false')
     return false
@@ -67,17 +54,6 @@ function HaveGreaterThanUnitsInCategoryBeingUpgrade(aiBrain, numunits, category,
     return HaveUnitsInCategoryBeingUpgrade(aiBrain, numunits, category, '>')
 end
 
---            { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
---                DelayEqualBuildPlattons = {'Factories', 1},
-function CheckBuildPlattonDelay(aiBrain, PlatoonName, DEBUG)
-    if aiBrain.DelayEqualBuildPlattons[PlatoonName] and aiBrain.DelayEqualBuildPlattons[PlatoonName] > GetGameTimeSeconds() then
-        if DEBUG then
-            LOG('Builder, ['..PlatoonName..'] delayed.')
-        end
-        return false
-    end
-    return true
-end
 
 -- function GreaterThanGameTime(aiBrain, num) is multiplying the time by 0.5, if we have an cheat AI. But i need the real time here.
 --            { UCBC, 'GreaterThanGameTimeSeconds', { 180 } },
