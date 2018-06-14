@@ -146,7 +146,6 @@ Platoon = Class(oldPlatoon) {
         local path
         local reason
         local DistanceToTarget = 0
-        local IgnoreAntiAir = self.PlatoonData.IgnoreAntiAir
         local maxRadius = self.PlatoonData.SearchRadius or 100
         local PlatoonPos = self:GetPlatoonPosition()
         local lastPlatoonPos = table.copy(PlatoonPos)
@@ -178,7 +177,13 @@ Platoon = Class(oldPlatoon) {
                         self:Stop()
                         target = UnitWithPath
                         --LOG('* AttackPrioritizedLandTargetsAIUveso: UnitWithPath.')
-                        self:AttackTarget(target)
+                        if not self.PlatoonData.IgnorePathing then
+                            self:MovePath(aiBrain, path, bAggroMove, UnitWithPath)
+                        end
+                        -- We moved to the target, attack it now if its still exists
+                        if aiBrain:PlatoonExists(self) and UnitWithPath and not UnitWithPath.Dead then
+                            self:AttackTarget(UnitWithPath)
+                        end
                     elseif UnitNoPath then
                         self:Stop()
                         target = UnitNoPath
@@ -251,7 +256,6 @@ Platoon = Class(oldPlatoon) {
         local LastTargetPos = PlatoonPos
         local DistanceToTarget = 0
         local basePosition = aiBrain.BuilderManagers['MAIN'].Position
-        local IgnoreGroundDefenseNum = self.PlatoonData.IgnoreGroundDefenseNum
         while aiBrain:PlatoonExists(self) do
             if self:IsOpponentAIRunning() then
                 PlatoonPos = self:GetPlatoonPosition()
@@ -460,7 +464,6 @@ Platoon = Class(oldPlatoon) {
         local DistanceToTarget = 0
         local DistanceToBase = 0
         local basePosition = PlatoonPos   -- Platoons will be created near a base, so we can return to this position if we don't have targets.
-        local IgnoreGroundDefenseNum = self.PlatoonData.IgnoreGroundDefenseNum
         while aiBrain:PlatoonExists(self) do
             if self:IsOpponentAIRunning() then
                 PlatoonPos = self:GetPlatoonPosition()

@@ -88,13 +88,13 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'U1 Power Push 100',
+        BuilderName = 'U1 Power Push 150',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 16400,
         DelayEqualBuildPlattons = {'Energy', 3},
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'LessThanEnergyTrend', { 10.0 } },
+            { UCBC, 'LessThanEnergyTrend', { 15.0 } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 }},
             -- Do we need additional conditions to build it ?
@@ -184,12 +184,12 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'UC Power Push 100',
+        BuilderName = 'UC Power Push 200',
         PlatoonTemplate = 'CommanderBuilder',
         Priority = 16400,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'LessThanEnergyTrend', { 10.0 } },
+            { UCBC, 'LessThanEnergyTrend', { 20.0 } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 }},
             -- Do we need additional conditions to build it ?

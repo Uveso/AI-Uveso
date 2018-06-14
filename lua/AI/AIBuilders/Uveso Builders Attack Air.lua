@@ -156,7 +156,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 FighterBomber < 20',
         PlatoonTemplate = 'T2FighterBomber',
-        Priority = 180,
+        Priority = 280,
         BuilderConditions = {
             -- When do we want to build this ?
             -- Do we need additional conditions to build it ?
@@ -177,7 +177,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 Air Gunship < 20',
         PlatoonTemplate = 'T2AirGunship',
-        Priority = 180,
+        Priority = 280,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 20, categories.MOBILE * categories.AIR * categories.GROUNDATTACK * categories.TECH2 }},
@@ -200,7 +200,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 TorpedoBomber PANIC',
         PlatoonTemplate = 'T2AirTorpedoBomber',
-        Priority = 180,
+        Priority = 280,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 5, categories.MOBILE * categories.AIR * categories.ANTINAVY * categories.TECH2 }},
@@ -221,7 +221,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 TorpedoBomber < 20',
         PlatoonTemplate = 'T2AirTorpedoBomber',
-        Priority = 180,
+        Priority = 280,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 20, categories.MOBILE * categories.AIR * categories.ANTINAVY * categories.TECH2 }},
@@ -255,7 +255,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Air Fighter Enemy',
         PlatoonTemplate = 'T3AirFighter',
-        Priority = 180,
+        Priority = 480,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, 'MOBILE AIR HIGHALTAIR ANTIAIR', '<=', 'MOBILE AIR HIGHALTAIR ANTIAIR' } },
@@ -271,7 +271,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Air Fighter < 60',
         PlatoonTemplate = 'T3AirFighter',
-        Priority = 180,
+        Priority = 480,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 60, categories.MOBILE * categories.AIR  * categories.HIGHALTAIR * categories.ANTIAIR * categories.TECH3 }},
@@ -287,7 +287,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Air Gunship < 60',
         PlatoonTemplate = 'T3AirGunship',
-        Priority = 190,
+        Priority = 490,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 60, categories.MOBILE * categories.AIR * categories.GROUNDATTACK * categories.TECH3 }},
@@ -305,7 +305,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Air Bomber < 60',
         PlatoonTemplate = 'T3AirBomber',
-        Priority = 190,
+        Priority = 490,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 60, categories.MOBILE * categories.AIR * categories.BOMBER }},
@@ -323,7 +323,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 TorpedoBomber < 20',
         PlatoonTemplate = 'T3TorpedoBomber',
-        Priority = 190,
+        Priority = 490,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 20, categories.MOBILE * categories.AIR * categories.ANTINAVY }},
@@ -593,7 +593,8 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = BasePanicZone,                       -- Searchradius for new target.
             AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
-            IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
+            AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = 'MOBILE LAND, STRUCTURE',    -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'MOBILE LAND EXPERIMENTAL',
@@ -621,7 +622,8 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = BasePanicZone,                       -- Searchradius for new target.
             AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
-            IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
+            AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = 'MOBILE, STRUCTURE',         -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'MOBILE AIR EXPERIMENTAL',
@@ -652,7 +654,8 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius from main base for new target. (A 5x5 Map is 256 high)
             GetTargetsFromBase = true,                          -- Get targets from base position (true) or platoon position (false)
-            IgnoreAntiAir = 10,                                 -- Don't attack if we have more then x anti air buildings at target position.
+            AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
             TargetSearchCategory = categories.MOBILE * categories.AIR - categories.SCOUT , -- Only find targets matching these categories.
             PrioritizedCategories = {
@@ -682,7 +685,8 @@ BuilderGroup {
             SearchRadius = BaseMilitaryZone,                    -- Searchradius for new target.
             GetTargetsFromBase = true,                          -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
-            IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
+            AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = 'MOBILE AIR TRANSPORTFOCUS', -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'MOBILE AIR TRANSPORTFOCUS',
@@ -713,8 +717,9 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius from main base for new target. (A 5x5 Map is 256 high)
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
-            IgnoreAntiAir = 10,                                 -- Don't attack if we have more then x anti air buildings at target position.
+            AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
+            IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = categories.MOBILE * categories.AIR - categories.SCOUT , -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'MOBILE AIR TRANSPORTFOCUS',
@@ -743,7 +748,7 @@ BuilderGroup {
             SearchRadius = 10000,                               -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
-            IgnoreAntiAir = 0,                                 -- Don't attack if we have more then x anti air buildings at target position.
+            AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.MASSEXTRACTION,                   -- Only find targets matching these categories.
             PrioritizedCategories = {                                           -- Attack these targets.
                 'MASSEXTRACTION TECH1',
@@ -770,7 +775,7 @@ BuilderGroup {
             SearchRadius = 10000,                               -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
-            IgnoreAntiAir = 1,                                  -- Don't attack if we have more then x anti air buildings at target position.
+            AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = 'STRUCTURE, MOBILE LAND',    -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'ANTIAIR',
@@ -799,7 +804,7 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                    -- Searchradius for new target.
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
-            IgnoreAntiAir = 3,                                  -- Don't attack if we have more then x anti air buildings at target position.
+            AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = 'NAVAL',                     -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'ANTIAIR',
@@ -830,7 +835,8 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                    -- Searchradius for new target.
             AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
-            IgnoreAntiAir = 3,                                  -- Don't attack if we have more then x anti air buildings at target position.
+            AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = 'MOBILE AIR EXPERIMENTAL',   -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'MOBILE AIR EXPERIMENTAL',
@@ -851,7 +857,7 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                    -- Searchradius for new target.
             AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
-            IgnoreAntiAir = 3,                                  -- Don't attack if we have more then x anti air buildings at target position.
+            AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = 'LAND EXPERIMENTAL',         -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'MOBILE LAND EXPERIMENTAL',
@@ -873,7 +879,7 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                    -- Searchradius for new target.
             AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
-            IgnoreAntiAir = 3,                                  -- Don't attack if we have more then x anti air buildings at target position.
+            AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = 'EXPERIMENTAL',              -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'MOBILE AIR EXPERIMENTAL',
@@ -899,7 +905,8 @@ BuilderGroup {
             SearchRadius = 10000,                               -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
-            IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
+            AttackEnemyStrength = 10000,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = 'MOBILE AIR',                -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'ANTIAIR',
@@ -924,7 +931,7 @@ BuilderGroup {
             SearchRadius = 10000,                               -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
-            IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
+            AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = 'STRUCTURE',                 -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'ANTIAIR',
@@ -952,7 +959,8 @@ BuilderGroup {
             SearchRadius = 10000,                                 -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
-            IgnoreAntiAir = false,                         -- Don't attack if we have more then x anti air buildings at target position.
+            AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = 'MOBILE AIR',              -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'ANTIAIR',
@@ -977,7 +985,7 @@ BuilderGroup {
             SearchRadius = 10000,                               -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
-            IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
+            AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = 'MOBILE LAND, STRUCTURE',    -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'ANTIAIR',
@@ -1006,7 +1014,8 @@ BuilderGroup {
             SearchRadius = 10000,                               -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
-            IgnoreAntiAir = 3,                                  -- Don't attack if we have more then x anti air buildings at target position.
+            AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = 'MOBILE AIR',                -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'ANTIAIR',
@@ -1037,7 +1046,7 @@ BuilderGroup {
             SearchRadius = 10000,                               -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
-            IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
+            AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = 'STRUCTURE, MOBILE LAND',    -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'ANTIAIR',
@@ -1061,28 +1070,28 @@ BuilderGroup {
     Builder {
         BuilderName = 'U123 Torpedo Kill Them All!!!',
         PlatoonTemplate = 'U123-TorpedoBomber 1 100',
-        PlatoonAddBehaviors = { 'AirUnitRefit' },               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
-        Priority = 50,                                        -- Priority. 1000 is normal.
-        InstanceCount = 3,                                      -- Number of plattons that will be formed.
+        PlatoonAddBehaviors = { 'AirUnitRefit' },                               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
+        Priority = 50,                                                          -- Priority. 1000 is normal.
+        InstanceCount = 3,                                                      -- Number of plattons that will be formed.
         BuilderData = {
-            SearchRadius = 10000,                               -- Searchradius for new target.
-            GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
-            AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
-            IgnoreAntiAir = false,                              -- Don't attack if we have more then x anti air buildings at target position.
+            SearchRadius = 10000,                                               -- Searchradius for new target.
+            GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
+            AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
+            AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = 'STRUCTURE NAVAL, MOBILE NAVAL',-- Only find targets matching these categories.
             PrioritizedCategories = {
                 'ANTIAIR',
                 'ALLUNITS',
             },
         },
-        BuilderConditions = {                                   -- platoon will be formed if all conditions are true
+        BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.5, 'MOBILE, STRUCTURE', '>', 'MOBILE, STRUCTURE' } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             -- Don't build it if...
         },
-        BuilderType = 'Any',                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
+        BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
 }
 

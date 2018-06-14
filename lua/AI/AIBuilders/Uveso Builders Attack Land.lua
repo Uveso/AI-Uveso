@@ -264,7 +264,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 Artillery',
         PlatoonTemplate = 'T2LandArtillery',
-        Priority = 150,
+        Priority = 250,
         BuilderType = 'Land',
         BuilderConditions = {
             -- When do we want to build this ?
@@ -285,7 +285,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 DFTank',
         PlatoonTemplate = 'T2LandDFTank',
-        Priority = 170,
+        Priority = 270,
         BuilderType = 'Land',
         BuilderConditions = {
             -- When do we want to build this ?
@@ -302,7 +302,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 AttackTank',
         PlatoonTemplate = 'T2AttackTank',
-        Priority = 170,
+        Priority = 270,
         BuilderType = 'Land',
         BuilderConditions = {
             -- When do we want to build this ?
@@ -319,7 +319,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 Amphibious',
         PlatoonTemplate = 'T2LandAmphibious',
-        Priority = 170,
+        Priority = 270,
         BuilderType = 'Land',
         BuilderConditions = {
             -- When do we want to build this ?
@@ -336,7 +336,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 Mobile AA',
         PlatoonTemplate = 'T2LandAA',
-        Priority = 170,
+        Priority = 270,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatio', { 0.2, 'MOBILE LAND ANTIAIR TECH2', '<','MOBILE LAND INDIRECTFIRE TECH2' } },
@@ -356,7 +356,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Mobile Artillery',
         PlatoonTemplate = 'T3LandArtillery',
-        Priority = 150,
+        Priority = 350,
         BuilderConditions = {
             -- When do we want to build this ?
             -- Do we need additional conditions to build it ?
@@ -377,7 +377,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Siege Assault Bot',
         PlatoonTemplate = 'T3LandBot',
-        Priority = 170,
+        Priority = 370,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatio', { 0.2, 'MOBILE LAND DIRECTFIRE TECH3', '<','MOBILE LAND INDIRECTFIRE TECH3' } },
@@ -394,7 +394,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 SniperBots',
         PlatoonTemplate = 'T3SniperBots',
-        Priority = 170,
+        Priority = 370,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatio', { 0.2, 'MOBILE LAND DIRECTFIRE TECH3', '<','MOBILE LAND INDIRECTFIRE TECH3' } },
@@ -411,7 +411,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 ArmoredAssault',
         PlatoonTemplate = 'T3ArmoredAssault',
-        Priority = 170,
+        Priority = 370,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatio', { 0.2, 'MOBILE LAND DIRECTFIRE TECH3', '<','MOBILE LAND INDIRECTFIRE TECH3' } },
@@ -428,7 +428,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Mobile AA',
         PlatoonTemplate = 'T3LandAA',
-        Priority = 170,
+        Priority = 370,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatio', { 0.2, 'MOBILE LAND ANTIAIR TECH3', '<','MOBILE LAND INDIRECTFIRE TECH3' } },
@@ -477,9 +477,9 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = BasePanicZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
-            RequireTransport = true,                                            -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
+            RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
-            IgnoreGroundDefenseNum = false,                                     -- Don't attack if we have more then x ground defense buildings at target position. false = no check
+            AttackEnemyStrength = 100000,                                        -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.COMMAND,                          -- Only find targets matching these categories.
             PrioritizedCategories = {                                           -- Attack these targets.
                 'COMMAND',
@@ -493,14 +493,14 @@ BuilderGroup {
     Builder {
         BuilderName = 'U123 PANIC 2 5',                                         -- Random Builder Name.
         PlatoonTemplate = 'LandAttackInterceptUveso 2 5',                       -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
-        Priority = 90,                                                        -- Priority. 1000 is normal.
-        InstanceCount = 2,                                                     -- Number of plattons that will be formed.
+        Priority = 90,                                                          -- Priority. 1000 is normal.
+        InstanceCount = 2,                                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BasePanicZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
-            IgnoreGroundDefenseNum = false,                                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
+            AttackEnemyStrength = 100000,                                        -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.MOBILE * categories.LAND - categories.SCOUT - categories.ENGINEER, -- Only find targets matching these categories.
             PrioritizedCategories = {                                           -- Attack these targets.
                 'EXPERIMENTAL',
@@ -520,14 +520,14 @@ BuilderGroup {
     Builder {
         BuilderName = 'CDR PANIC ACU',                                          -- Random Builder Name.
         PlatoonTemplate = 'CDR Attack',                                         -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
-        Priority = 0,                                                        -- Priority. 1000 is normal.
+        Priority = 0,                                                            -- Priority. 1000 is normal.
         InstanceCount = 0,                                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BasePanicZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
-            IgnoreGroundDefenseNum = false,                                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
+            AttackEnemyStrength = 100000,                                        -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.MOBILE * categories.LAND - categories.SCOUT - categories.ENGINEER, -- Only find targets matching these categories.
             PrioritizedCategories = {                                           -- Attack these targets.
                 'EXPERIMENTAL',
@@ -549,54 +549,28 @@ BuilderGroup {
     --    MilitaryZone    --
     -- ================== --
     Builder {
-        BuilderName = 'U123 AntiMass Military 2 5',                             -- Random Builder Name.
-        PlatoonTemplate = 'LandAttackInterceptUveso 2 5',                       -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
-        Priority = 0,                                                          -- Priority. 1000 is normal.
-        InstanceCount = 1,                                                      -- Number of plattons that will be formed.
+        BuilderName = 'U123 Military 10 10',                                    -- Random Builder Name.
+        PlatoonTemplate = 'LandAttackHuntUveso 10 10',                          -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
+        Priority = 70,                                                          -- Priority. 1000 is normal.
+        InstanceCount = 2,                                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                                    -- Searchradius for new target.
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
-            IgnoreGroundDefenseNum = false,                                     -- Don't attack if we have more then x ground defense buildings at target position. false = no check
-            TargetSearchCategory = categories.MASSEXTRACTION + categories.STRUCTURE - categories.NAVAL, -- Only find targets matching these categories.
-            PrioritizedCategories = {                                           -- Attack these targets.
-                'MASSEXTRACTION TECH1',
-                'MASSEXTRACTION TECH2',
-                'MASSEXTRACTION TECH3',
-                'STRUCTURE TECH1',
-                'STRUCTURE TECH2',
-                'STRUCTURE TECH3',
-                'ALLUNITS',
-            },
-        },
-        BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
-            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 0, categories.MASSEXTRACTION}}, -- radius, LocationType, unitCount, categoryEnemy
-        },
-        BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
-    },
-    Builder {
-        BuilderName = 'U123 Military 2 5',                                    -- Random Builder Name.
-        PlatoonTemplate = 'LandAttackInterceptUveso 2 5',                       -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
-        Priority = 0,                                                        -- Priority. 1000 is normal.
-        InstanceCount = 1,                                                      -- Number of plattons that will be formed.
-        BuilderData = {
-            SearchRadius = BaseMilitaryZone,                                    -- Searchradius for new target.
-            RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
-            AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
-            IgnoreGroundDefenseNum = false,                                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
+            AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.MOBILE * categories.LAND - categories.SCOUT + categories.STRUCTURE - categories.NAVAL, -- Only find targets matching these categories.
             PrioritizedCategories = {                                           -- Attack these targets.
                 'EXPERIMENTAL',
                 'MOBILE LAND INDIRECTFIRE',
                 'MOBILE LAND DIRECTFIRE',
-                'STRUCTURE DEFENSE',
                 'MOBILE LAND ANTIAIR',
+                'STRUCTURE DEFENSE',
                 'STRUCTURE ANTIAIR',
                 'ALLUNITS',
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
-            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 0, categories.MOBILE * categories.LAND - categories.SCOUT}}, -- radius, LocationType, unitCount, categoryEnemy
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 0, categories.MOBILE * categories.LAND - categories.SCOUT + categories.STRUCTURE - categories.NAVAL}}, -- radius, LocationType, unitCount, categoryEnemy
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
@@ -604,15 +578,15 @@ BuilderGroup {
     --    EnemyZone    --
     -- =============== --
     Builder {
-        BuilderName = 'U123 AntiMass Enemy 10 10',                                    -- Random Builder Name.
+        BuilderName = 'U123 AntiMass Enemy 10 10',                              -- Random Builder Name.
         PlatoonTemplate = 'LandAttackHuntUveso 10 10',                          -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
-        Priority = 60,                                                         -- Priority. 1000 is normal.
+        Priority = 60,                                                          -- Priority. 1000 is normal.
         InstanceCount = 10,                                                     -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = 10000,                                               -- Searchradius for new target.
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
-            IgnoreGroundDefenseNum = false,                                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
+            AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.MASSEXTRACTION + categories.STRUCTURE - categories.NAVAL, -- Only find targets matching these categories.
             PrioritizedCategories = {                                           -- Attack these targets.
                 'MASSEXTRACTION TECH1',
@@ -638,7 +612,7 @@ BuilderGroup {
             SearchRadius = 10000,                                               -- Searchradius for new target.
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
-            IgnoreGroundDefenseNum = false,                                     -- Don't attack if we have more then x ground defense buildings at target position. false = no check
+            AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.MOBILE * categories.LAND - categories.SCOUT + categories.STRUCTURE - categories.NAVAL, -- Only find targets matching these categories.
             PrioritizedCategories = {                                           -- Attack these targets.
                 'EXPERIMENTAL',
@@ -660,13 +634,13 @@ BuilderGroup {
     Builder {
         BuilderName = 'U123 Kill Them All!!! STR 10 10',
         PlatoonTemplate = 'LandAttackHuntUveso 10 10',                          -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
-        Priority = 50,                                                         -- Priority. 1000 is normal.
+        Priority = 50,                                                          -- Priority. 1000 is normal.
         InstanceCount = 20,                                                     -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = 10000,                                               -- Searchradius for new target.
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
-            AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
-            IgnoreGroundDefenseNum = false,                                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
+            AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
+            AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.MOBILE * categories.LAND + categories.STRUCTURE - categories.NAVAL, -- Only find targets matching these categories.
             PrioritizedCategories = {                                           -- Attack these targets.
                 'EXPERIMENTAL',
@@ -694,19 +668,19 @@ BuilderGroup {
     Builder {
         BuilderName = 'U123 BigIntercept 30 60',
         PlatoonTemplate = 'LandAttackInterceptUveso 30 60',                     -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
-        Priority = 40,                                                        -- Priority. 1000 is normal.
-        InstanceCount = 10,                                                      -- Number of plattons that will be formed.
+        Priority = 40,                                                          -- Priority. 1000 is normal.
+        InstanceCount = 10,                                                     -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = 10000,                                               -- Searchradius for new target.
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
-            IgnoreGroundDefenseNum = false,                                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
+            AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.MOBILE * categories.LAND + categories.STRUCTURE - categories.NAVAL, -- Only find targets matching these categories.
             PrioritizedCategories = {                                           -- Attack these targets.
                 'EXPERIMENTAL',
-                'STRUCTURE TECH1',
-                'STRUCTURE TECH2',
                 'STRUCTURE TECH3',
+                'STRUCTURE TECH2',
+                'STRUCTURE TECH1',
                 'MOBILE LAND INDIRECTFIRE',
                 'MOBILE LAND DIRECTFIRE',
                 'MOBILE LAND ANTIAIR',

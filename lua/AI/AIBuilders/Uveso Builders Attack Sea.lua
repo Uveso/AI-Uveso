@@ -313,7 +313,7 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = BasePanicZone,                       -- Searchradius for new target.
             AggressiveMove = true,                              -- If true, the unit will attack everything while moving to the target.
-            IgnoreGroundDefenseNum = false,                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
+            AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.MOBILE * categories.NAVAL, -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'STRUCTURE NAVAL DEFENSE',
@@ -342,7 +342,7 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                    -- Searchradius for new target.
             AggressiveMove = false,                             -- If true, the unit will attack everything while moving to the target.
-            IgnoreGroundDefenseNum = false,                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
+            AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.MOBILE * categories.NAVAL , -- Only find targets matching these categories.
             TargetSearchCategory = 'NAVAL, MOBILE LAND, STRUCTURE', -- Only find targets matching these categories.
             PrioritizedCategories = {
@@ -372,7 +372,7 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
             AggressiveMove = false,                              -- If true, the unit will attack everything while moving to the target.
-            IgnoreGroundDefenseNum = false,                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
+            AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = (categories.MOBILE - categories.AIR) + categories.STRUCTURE , -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'STRUCTURE NAVAL DEFENSE',
@@ -401,7 +401,7 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
             AggressiveMove = true,                              -- If true, the unit will attack everything while moving to the target.
-            IgnoreGroundDefenseNum = false,                        -- Don't attack if we have more then x ground defense buildings at target position. false = no check
+            AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = (categories.MOBILE - categories.AIR) + categories.STRUCTURE , -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'STRUCTURE NAVAL DEFENSE',

@@ -135,7 +135,12 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
         LOG('* AIFindNearestCategoryTargetInRange: function called with empty "position"')
         return false, false, false, 'NoPos'
     end
-    if type(TargetSearchCategory) == 'string' then
+
+    local AttackEnemyStrength = platoon.PlatoonData.AttackEnemyStrength or 300
+    local platoonUnits = platoon:GetPlatoonUnits()
+    local PlatoonStrength = table.getn(platoonUnits)
+
+        if type(TargetSearchCategory) == 'string' then
         TargetSearchCategory = ParseEntityCategory(TargetSearchCategory)
     end
     local enemyIndex = false
@@ -170,6 +175,7 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
     local reason = false
     local UnitWithPath = false
     local UnitNoPath = false
+
     for _, range in RangeList do
         TargetsInBaseRange = aiBrain:GetUnitsAroundPoint(TargetSearchCategory, position, range, 'Enemy')
         --DrawCircle(position, range, '0000FF')
@@ -182,20 +188,27 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
             --LOG('* AIFindNearestCategoryTargetInRange: numTargets '..table.getn(TargetsInBaseRange)..'  ')
             for num, Target in TargetsInBaseRange do
                 local TargetPosition = Target:GetPosition()
+                local EnemyStrength = 0
                 -- check if the target is on the same layer then the attacker
                 if not ValidateLayer(TargetPosition,platoon.MovementLayer) then continue end
                 -- check if we have a special player index as enemy
                 if enemyBrain and enemyIndex and enemyBrain ~= enemyIndex then continue end
                 -- check if the Target is still alive, matches our target priority and can be attacked from our platoon
                 if not Target.Dead and EntityCategoryContains(category, Target) and platoon:CanAttackTarget(squad, Target) then
-
-
-                    --local GroundDefenseUnitsAtTargetPos = aiBrain:GetNumUnitsAroundPoint( (categories.STRUCTURE + categories.MOBILE) * (categories.DIRECTFIRE + categories.DIRECTFIRE) , TargetPosition, 60, 'Enemy' )
-                    --local AntiAirUnitsAtTargetPos = aiBrain:GetNumUnitsAroundPoint( (categories.STRUCTURE + categories.MOBILE) * categories.ANTIAIR , LastTargetPos, 60, 'Enemy' )
-
-
                     local targetRange = Utils.XZDistanceTwoVectors(position, TargetPosition)
                     if targetRange < distance then
+                        if platoon.MovementLayer == 'Land' then
+                            EnemyStrength = aiBrain:GetNumUnitsAroundPoint( (categories.STRUCTURE + categories.MOBILE) * (categories.DIRECTFIRE + categories.INDIRECTFIRE + categories.GROUNDATTACK) , TargetPosition, 30, 'Enemy' )
+                        elseif platoon.MovementLayer == 'Air' then
+                            EnemyStrength = aiBrain:GetNumUnitsAroundPoint( (categories.STRUCTURE + categories.MOBILE) * categories.ANTIAIR , TargetPosition, 40, 'Enemy' )
+                        elseif platoon.MovementLayer == 'Water' then
+                            EnemyStrength = aiBrain:GetNumUnitsAroundPoint( (categories.STRUCTURE + categories.MOBILE) * (categories.DIRECTFIRE + categories.INDIRECTFIRE + categories.GROUNDATTACK + categories.ANTINAVY) , TargetPosition, 30, 'Enemy' )
+                        elseif platoon.MovementLayer == 'Amphibious' then
+                            EnemyStrength = aiBrain:GetNumUnitsAroundPoint( (categories.STRUCTURE + categories.MOBILE) * (categories.DIRECTFIRE + categories.INDIRECTFIRE + categories.GROUNDATTACK + categories.ANTINAVY) , TargetPosition, 30, 'Enemy' )
+                        end
+                        --LOG('PlatoonStrength / 100 * AttackEnemyStrength <= '..(PlatoonStrength / 100 * AttackEnemyStrength)..' || EnemyStrength = '..EnemyStrength)
+                        -- Only attack if we have a chance to win
+                        if PlatoonStrength / 100 * AttackEnemyStrength < EnemyStrength then continue end
                         path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, platoon.MovementLayer, platoon:GetPlatoonPosition(), TargetPosition, platoon.PlatoonData.NodeWeight or 10 )
                         -- Check if we found a path with markers
                         if path then
