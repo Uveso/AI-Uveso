@@ -172,13 +172,18 @@ Platoon = Class(oldPlatoon) {
                 -- only get a new target and make a move command if the target is dead
                 if not target or target.Dead then
                     UnitWithPath, UnitNoPath, path, reason = AIUtils.AIFindNearestCategoryTargetInRange(aiBrain, self, 'Attack', GetTargetsFrom, maxRadius, PrioritizedTargetList, TargetSearchCategory, false )
-                    --LOG('* AttackPrioritizedLandTargetsAIUveso: Targetting... recived retUnit, path, reason '..repr(reason)..'  ')
+                    --LOG('* InterceptorAIUveso: Targetting... recived retUnit, path, reason '..repr(reason)..'  ')
                     if UnitWithPath then
                         self:Stop()
                         target = UnitWithPath
-                        --LOG('* AttackPrioritizedLandTargetsAIUveso: UnitWithPath.')
-                        if not self.PlatoonData.IgnorePathing then
+                        --LOG('* InterceptorAIUveso: UnitWithPath.')
+                        if path and not self.PlatoonData.IgnorePathing then
+                            --LOG('* InterceptorAIUveso: MovePath.')
                             self:MovePath(aiBrain, path, bAggroMove, UnitWithPath)
+                        -- if we dont have a path, but UnitWithPath is true, then we have no map markers but PathCanTo() found a direct path
+                        else
+                            --LOG('* InterceptorAIUveso: MoveDirect.')
+                            self:MoveDirect(aiBrain, bAggroMove, UnitWithPath)
                         end
                         -- We moved to the target, attack it now if its still exists
                         if aiBrain:PlatoonExists(self) and UnitWithPath and not UnitWithPath.Dead then
@@ -187,7 +192,7 @@ Platoon = Class(oldPlatoon) {
                     elseif UnitNoPath then
                         self:Stop()
                         target = UnitNoPath
-                        --LOG('* AttackPrioritizedLandTargetsAIUveso: MoveWithTransport() DistanceToTarget:'..DistanceToTarget)
+                        --LOG('* InterceptorAIUveso: MoveWithTransport() DistanceToTarget:'..DistanceToTarget)
                         if self.MovementLayer == 'Air' then
                             self:Stop()
                             self:AttackTarget(target)
@@ -197,13 +202,13 @@ Platoon = Class(oldPlatoon) {
                         end
                     else
                         -- we have no target return to main base
-                        --LOG('* AttackPrioritizedLandTargetsAIUveso: ForceReturnToNearestBaseAIUveso() (no target)')
+                        --LOG('* InterceptorAIUveso: ForceReturnToNearestBaseAIUveso() (no target)')
                         self:Stop()
                         self:SimpleReturnToBase(basePosition)
                     end
                 else
                     DistanceToTarget = VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, LastTargetPos[1] or 0, LastTargetPos[3] or 0)
-                    --LOG('* AttackPrioritizedLandTargetsAIUveso: Target Valid. range to target:'..DistanceToTarget)
+                    --LOG('* InterceptorAIUveso: Target Valid. range to target:'..DistanceToTarget)
                     self:AttackTarget(target)
                 end
             end
