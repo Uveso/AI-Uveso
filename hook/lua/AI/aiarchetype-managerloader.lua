@@ -59,7 +59,7 @@ function LocationRangeManagerThread(aiBrain)
         local BasePositions = BaseRanger(aiBrain)
         -- Check if we have units outside the range of any BaseManager
         -- Get all units from our ArmyPool. These are units without a special platoon or task. They have nothing to do.
-        local ArmyUnits = aiBrain:GetListOfUnits(categories.ALLUNITS, false) -- also gets unbuilded units (planed to build)
+        local ArmyUnits = aiBrain:GetListOfUnits(categories.MOBILE, false) -- also gets unbuilded units (planed to build)
         -- Loop over every unit that has no platton and is idle
         local LoopDelay = 0
         for _, unit in ArmyUnits do
@@ -83,7 +83,7 @@ function LocationRangeManagerThread(aiBrain)
             local WeAreInRange = false
             local nearestbase
             if not unit.Dead
-                and EntityCategoryContains(categories.MOBILE - categories.COMMAND, unit)
+                and EntityCategoryContains(categories.MOBILE - categories.COMMAND - categories.ENGINEER, unit)
                 and unit:GetFractionComplete() == 1
                 and unit:IsIdleState()
                 and not unit:IsMoving()

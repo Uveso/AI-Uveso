@@ -10,6 +10,7 @@ local BaseMilitaryZone = math.max( mapSizeX-50, mapSizeZ-50 ) / 2               
 local BasePanicZone = BaseMilitaryZone / 2
 BasePanicZone = math.max( 60, BasePanicZone )
 BasePanicZone = math.min( 120, BasePanicZone )
+BaseMilitaryZone = math.max( 250, BaseMilitaryZone )
 LOG('* AI DEBUG: BasePanicZone= '..math.floor( BasePanicZone * 0.01953125 ) ..' Km - ('..BasePanicZone..' units)' )
 LOG('* AI DEBUG: BaseMilitaryZone= '..math.floor( BaseMilitaryZone * 0.01953125 )..' Km - ('..BaseMilitaryZone..' units)' )
 
@@ -45,10 +46,9 @@ BuilderGroup {
     --    TECH 1   ECO FULL     --
     -- ======================== --
     Builder {
-        BuilderName = 'U1 ECO FULL Arty',
+        BuilderName = 'U1 ECOFULL Arty',
         PlatoonTemplate = 'T1LandArtillery',
         Priority = 150,
-        InstanceCount = 4,
         BuilderConditions = {
             -- When do we want to build this ?
             { EBC, 'GreaterThanEconTrend', { 1.0, 10.0 } }, -- relative income 10,60
@@ -120,7 +120,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 PanicPanicExpansion AA',
         PlatoonTemplate = 'T1LandAA',
-        Priority = 160,
+        Priority = 155,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  50, 'LocationType', 1, categories.MOBILE * categories.AIR - categories.SCOUT}}, -- radius, LocationType, unitCount, categoryEnemy
@@ -555,9 +555,10 @@ BuilderGroup {
         InstanceCount = 2,                                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                                    -- Searchradius for new target.
+            GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
-            AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            AttackEnemyStrength = 200,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.MOBILE * categories.LAND - categories.SCOUT + categories.STRUCTURE - categories.NAVAL, -- Only find targets matching these categories.
             PrioritizedCategories = {                                           -- Attack these targets.
                 'EXPERIMENTAL',
@@ -581,11 +582,12 @@ BuilderGroup {
         BuilderName = 'U123 AntiMass Enemy 10 10',                              -- Random Builder Name.
         PlatoonTemplate = 'LandAttackHuntUveso 10 10',                          -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
         Priority = 60,                                                          -- Priority. 1000 is normal.
-        InstanceCount = 10,                                                     -- Number of plattons that will be formed.
+        InstanceCount = 3,                                                     -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = 10000,                                               -- Searchradius for new target.
+            GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
-            AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
+            AggressiveMove = false,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.MASSEXTRACTION + categories.STRUCTURE - categories.NAVAL, -- Only find targets matching these categories.
             PrioritizedCategories = {                                           -- Attack these targets.
@@ -606,13 +608,14 @@ BuilderGroup {
     Builder {
         BuilderName = 'U123 Enemy 10 10',                                       -- Random Builder Name.
         PlatoonTemplate = 'LandAttackHuntUveso 10 10',                          -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
-        Priority = 60,                                                          -- Priority. 1000 is normal.
+        Priority = 50,                                                          -- Priority. 1000 is normal.
         InstanceCount = 10,                                                     -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = 10000,                                               -- Searchradius for new target.
+            GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
-            AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            AttackEnemyStrength = 50,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.MOBILE * categories.LAND - categories.SCOUT + categories.STRUCTURE - categories.NAVAL, -- Only find targets matching these categories.
             PrioritizedCategories = {                                           -- Attack these targets.
                 'EXPERIMENTAL',
@@ -634,7 +637,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U123 Kill Them All!!! STR 10 10',
         PlatoonTemplate = 'LandAttackHuntUveso 10 10',                          -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
-        Priority = 50,                                                          -- Priority. 1000 is normal.
+        Priority = 40,                                                          -- Priority. 1000 is normal.
         InstanceCount = 20,                                                     -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = 10000,                                               -- Searchradius for new target.
@@ -668,7 +671,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U123 BigIntercept 30 60',
         PlatoonTemplate = 'LandAttackInterceptUveso 30 60',                     -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
-        Priority = 40,                                                          -- Priority. 1000 is normal.
+        Priority = 30,                                                          -- Priority. 1000 is normal.
         InstanceCount = 10,                                                     -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = 10000,                                               -- Searchradius for new target.

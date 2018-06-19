@@ -9,6 +9,7 @@ local BaseMilitaryZone = math.max( mapSizeX-50, mapSizeZ-50 ) / 2 -- Half the ma
 local BasePanicZone = BaseMilitaryZone / 2
 BasePanicZone = math.max( 60, BasePanicZone )
 BasePanicZone = math.min( 120, BasePanicZone )
+BaseMilitaryZone = math.max( 250, BaseMilitaryZone )
 
 -- ===================================================-======================================================== --
 -- ==                                        Build T1 T2 T3 Land                                             == --

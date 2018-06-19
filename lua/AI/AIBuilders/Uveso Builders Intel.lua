@@ -15,6 +15,7 @@ BuilderGroup {
         BuilderName = 'U1 Land Scout Always',
         PlatoonTemplate = 'T1LandScout',
         Priority = 1000,
+        DelayEqualBuildPlattons = {'Scouts', 3},
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER}},
@@ -22,7 +23,9 @@ BuilderGroup {
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, categories.SCOUT * categories.LAND } },
             -- Have we the eco to build it ?
             -- Don't build it if...
+            { UCBC, 'CheckBuildPlattonDelay', { 'Scouts' }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 4, categories.LAND * categories.SCOUT }},
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.AIR * categories.SCOUT }},
             -- Respect UnitCap
         },
         BuilderType = 'Land',
@@ -34,13 +37,15 @@ BuilderGroup {
         BuilderName = 'U1 Air Scout',
         PlatoonTemplate = 'T1AirScout',
         Priority = 1000,
+        DelayEqualBuildPlattons = {'Scouts', 3},
         BuilderConditions = {
             -- When do we want to build this ?
             -- Do we need additional conditions to build it ?
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, categories.AIR * categories.SCOUT } },
             -- Have we the eco to build it ?
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.AIR * categories.SCOUT }},
+            { UCBC, 'CheckBuildPlattonDelay', { 'Scouts' }},
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.AIR * categories.SCOUT }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.FACTORY * categories.AIR * categories.TECH3 } },
             -- Respect UnitCap
         },
@@ -50,13 +55,15 @@ BuilderGroup {
         BuilderName = 'U3 Air Scout',
         PlatoonTemplate = 'T3AirScout',
         Priority = 1000,
+        DelayEqualBuildPlattons = {'Scouts', 3},
         BuilderConditions = {
             -- When do we want to build this ?
             -- Do we need additional conditions to build it ?
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, categories.AIR * categories.SCOUT } },
             -- Have we the eco to build it ?
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.INTELLIGENCE * categories.AIR * categories.TECH3 }},
+            { UCBC, 'CheckBuildPlattonDelay', { 'Scouts' }},
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.INTELLIGENCE * categories.AIR * categories.TECH3 }},
             -- Respect UnitCap
         },
         BuilderType = 'Air',
@@ -131,7 +138,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Radar',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 16600,
+        Priority = 17500,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 1, (categories.RADAR + categories.OMNI) * categories.STRUCTURE}},
@@ -235,4 +242,63 @@ BuilderGroup {
         },
         BuilderType = 'Any',
     },
+}
+-- =============================================-==================================================== --
+-- ==                                    Special Optics                                            == --
+-- =============================================-==================================================== --
+
+BuilderGroup {
+    BuilderGroupName = 'AeonOptics',
+    BuildersType = 'EngineerBuilder',
+    Builder {
+        BuilderName = 'U3 Optics Construction Aeon',
+        PlatoonTemplate = 'AeonT3EngineerBuilder',
+        Priority = 750,
+        BuilderConditions = {
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.OPTICS * categories.AEON}},
+            { EBC, 'GreaterThanEconIncome', { 12, 1500}},
+            { EBC, 'GreaterThanEconEfficiencyOverTime', { 0.9, 1.2 }},
+            { EBC, 'GreaterThanEconStorageRatio', { 0.95, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Construction = {
+                AdjacencyCategory = 'ENERGYPRODUCTION',
+                AdjacencyDistance = 100,
+                BuildClose = false,
+                BuildStructures = {
+                    'T3Optics',
+                },
+                Location = 'LocationType',
+            }
+        }
+    }
+}
+
+BuilderGroup {
+    BuilderGroupName = 'CybranOptics',
+    BuildersType = 'EngineerBuilder',
+    Builder {
+        BuilderName = 'U3 Optics Construction Cybran',
+        PlatoonTemplate = 'CybranT3EngineerBuilder',
+        Priority = 750,
+        BuilderConditions = {
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.OPTICS * categories.CYBRAN}},
+            { EBC, 'GreaterThanEconIncome', { 12, 1500}},
+            { EBC, 'GreaterThanEconStorageRatio', { 0.95, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconEfficiencyOverTime', { 0.9, 1.2 }},
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Construction = {
+                AdjacencyCategory = 'ENERGYPRODUCTION',
+                AdjacencyDistance = 100,
+                BuildClose = false,
+                BuildStructures = {
+                    'T3Optics',
+                },
+                Location = 'LocationType',
+            }
+        }
+    }
 }

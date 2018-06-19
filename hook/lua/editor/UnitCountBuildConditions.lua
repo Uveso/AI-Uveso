@@ -347,7 +347,7 @@ function HaveUnitRatio(aiBrain, ratio, categoryOne, compareType, categoryTwo, DE
     end
     local numTwo = aiBrain:GetCurrentUnits(testCatTwo)
     if DEBUG then
-        LOG(aiBrain:GetArmyIndex()..' CompareBody {World} ( '..numOne..' '..compareType..' '..numTwo..' ) -- ['..ratio..'] -- '..categoryOne..' '..compareType..' '..categoryTwo..' return '..repr(CompareBody(numOne / numTwo, ratio, compareType)))
+        LOG(aiBrain:GetArmyIndex()..' CompareBody {World} ( '..numOne..' '..compareType..' '..numTwo..' ) -- ['..ratio..'] -- '..categoryOne..' '..compareType..' '..categoryTwo..' ('..(numOne / numTwo)..' '..compareType..' '..ratio..' ?) return '..repr(CompareBody(numOne / numTwo, ratio, compareType)))
     end
 
     return CompareBody(numOne / numTwo, ratio, compareType)

@@ -154,8 +154,8 @@ BaseBuilderTemplate {
         
         'CounterIntelBuilders',
         
-        'AeonOpticsEngineerBuilders',
-        'CybranOpticsEngineerBuilders',
+        'AeonOptics',
+        'CybranOptics',
 
         -----------------------------------------------------------------------------
         -- ==== Mod Builder ==== --

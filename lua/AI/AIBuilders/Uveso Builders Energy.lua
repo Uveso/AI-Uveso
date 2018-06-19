@@ -21,7 +21,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Power low trend',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 16700,
+        Priority = 17850,
         InstanceCount = 2,                                                      -- Number of plattons that will be formed with this template.
         DelayEqualBuildPlattons = {'Energy', 3},
         BuilderConditions = {
@@ -30,7 +30,7 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 }},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH1' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}}, -- Absolut Base income
             -- Don't build it if...
@@ -55,7 +55,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Power low storage',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 16600,
+        Priority = 17650,
         DelayEqualBuildPlattons = {'Energy', 3},
         BuilderConditions = {
             -- When do we want to build this ?
@@ -64,7 +64,7 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 }},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH1' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}}, -- Absolut Base income
             -- Don't build it if...
@@ -90,7 +90,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Power Push 150',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 16400,
+        Priority = 17440,
         DelayEqualBuildPlattons = {'Energy', 3},
         BuilderConditions = {
             -- When do we want to build this ?
@@ -98,7 +98,7 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 }},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH1' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 0.6, 6.0}}, -- Absolut Base income
             { EBC, 'GreaterThanEconStorageRatio', { 0.10, -0.00}}, -- Ratio from 0 to 1. (1=100%)
@@ -125,7 +125,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'UC Power low trend',
         PlatoonTemplate = 'CommanderBuilder',
-        Priority = 16700,
+        Priority = 17800,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'LessThanEnergyTrend', { 1.0 } },
@@ -155,7 +155,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'UC Power low storage',
         PlatoonTemplate = 'CommanderBuilder',
-        Priority = 16600,
+        Priority = 17600,
         BuilderConditions = {
             -- When do we want to build this ?
             { EBC, 'LessThanEconStorageRatio', { 2.00, 1.00}}, -- Ratio from 0 to 1. (1=100%)
@@ -186,7 +186,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'UC Power Push 200',
         PlatoonTemplate = 'CommanderBuilder',
-        Priority = 16400,
+        Priority = 17430,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'LessThanEnergyTrend', { 20.0 } },
@@ -217,7 +217,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Power Hydrocarbon',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 16400,
+        Priority = 17450,
         DelayEqualBuildPlattons = {'Energy', 1},
         InstanceCount = 1,
         BuilderConditions = {
@@ -226,7 +226,7 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 }},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH1' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 0.4, 2.0}}, -- Absolut Base income 4 60
             -- Don't build it if...
@@ -275,7 +275,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 Power minimum',
         PlatoonTemplate = 'T2EngineerBuilder',
-        Priority = 16500,
+        Priority = 17000,
         DelayEqualBuildPlattons = {'Energy', 3},
         InstanceCount = 1,
         BuilderConditions = {
@@ -307,9 +307,9 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'U2 Power Trend < 1000',
+        BuilderName = 'U2 Power Push 1000',
         PlatoonTemplate = 'T2EngineerBuilder',
-        Priority = 16500,
+        Priority = 16900,
         DelayEqualBuildPlattons = {'Energy', 3},
         InstanceCount = 1,
         BuilderConditions = {
@@ -352,7 +352,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Power minimum',
         PlatoonTemplate = 'T3EngineerBuilder',
-        Priority = 16500,
+        Priority = 17300,
         DelayEqualBuildPlattons = {'Energy', 10},
         InstanceCount = 1,
         BuilderConditions = {
@@ -387,7 +387,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Power Emergency',
         PlatoonTemplate = 'T3EngineerBuilder',
-        Priority = 16500,
+        Priority = 17200,
         DelayEqualBuildPlattons = {'Energy', 10},
         InstanceCount = 2,
         BuilderConditions = {
@@ -422,7 +422,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Power Push 6000',
         PlatoonTemplate = 'T3EngineerBuilder',
-        Priority = 16500,
+        Priority = 17100,
         DelayEqualBuildPlattons = {'Energy', 10},
         InstanceCount = 2,
         BuilderConditions = {
@@ -460,7 +460,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Power MassFull',
         PlatoonTemplate = 'T3EngineerBuilder',
-        Priority = 16500,
+        Priority = 16700,
         DelayEqualBuildPlattons = {'Energy', 10},
         InstanceCount = 2,
         BuilderConditions = {
@@ -505,7 +505,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYSTORAGE }},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH1' }},
             { UCBC, 'GreaterThanGameTimeSeconds', { 180 } },
             -- Have we the eco to build it ?
             -- Don't build it if...
@@ -532,7 +532,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 10, categories.STRUCTURE * categories.ENERGYSTORAGE }},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH1' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.75, 1.00}}, -- Ratio from 0 to 1. (1=100%)
@@ -566,7 +566,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.00, 1.00}}, -- Ratio from 0 to 1. (1=100%)
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3 }},
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 0, categories.TECH1 * categories.ENERGYPRODUCTION }},
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH1' }},
         },
         BuilderData = {
             Location = 'LocationType',
@@ -583,7 +583,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.00, 1.00}}, -- Ratio from 0 to 1. (1=100%)
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3 }},
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 0, categories.TECH1 * categories.ENERGYPRODUCTION }},
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH1' }},
         },
         BuilderData = {
             Location = 'LocationType',
@@ -601,7 +601,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.00, 1.00}}, -- Ratio from 0 to 1. (1=100%)
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 3, categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3 }},
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 0, categories.TECH2 * categories.ENERGYPRODUCTION - categories.HYDROCARBON }},
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH1' }},
         },
         BuilderData = {
             Location = 'LocationType',
