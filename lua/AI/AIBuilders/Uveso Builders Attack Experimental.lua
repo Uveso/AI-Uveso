@@ -18,7 +18,7 @@ BuilderGroup {
     BuilderGroupName = 'Mobile Experimental Builder Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
-        BuilderName = 'Uveso T4AirExperimental1',
+        BuilderName = 'U4 AirExperimental1',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 150,
         DelayEqualBuildPlattons = {'Experimental', 30},
@@ -29,7 +29,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 10.0, 300.0 } }, -- relative income
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
-            { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.95 } }, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
@@ -50,7 +50,7 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'Uveso T4LandExperimental3',
+        BuilderName = 'U4 LandExperimental3',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 150,
         DelayEqualBuildPlattons = {'Experimental', 30},
@@ -61,7 +61,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 40.0, 300.0 } }, -- relative income
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
-            { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.95 } }, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
@@ -82,7 +82,7 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'Uveso T4SeaExperimental1',
+        BuilderName = 'U4 SeaExperimental1',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 150,
         DelayEqualBuildPlattons = {'Experimental', 30},
@@ -93,7 +93,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 10.0, 300.0 } }, -- relative income
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
-            { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.95 } }, -- Ratio from 0 to 1. (1=100%)
             { EBC, 'GreaterThanEconEfficiencyOverTime', { 1.0, 1.0 }}, -- relative baseincome 0=bad, 1=ok, 2=full
@@ -116,7 +116,7 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'Uveso T4LandExperimental2',
+        BuilderName = 'U4 LandExperimental2',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 150,
         DelayEqualBuildPlattons = {'Experimental', 30},
@@ -128,7 +128,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 30.0, 300.0 } }, -- relative income
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
-            { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.95 } }, -- Ratio from 0 to 1. (1=100%)
             { EBC, 'GreaterThanEconEfficiencyOverTime', { 1.0, 1.0 }}, -- relative baseincome 0=bad, 1=ok, 2=full
@@ -151,7 +151,7 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'Uveso T4LandExperimental1',
+        BuilderName = 'U4 LandExperimental1',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 150,
         DelayEqualBuildPlattons = {'Experimental', 30},
@@ -162,7 +162,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 10.0, 300.0 } }, -- relative income
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
-            { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.95, 0.95 }}, -- Ratio from 0 to 1. (1=100%)
             { EBC, 'GreaterThanEconEfficiencyOverTime', { 1.0, 1.0 }}, -- relative baseincome 0=bad, 1=ok, 2=full
@@ -185,7 +185,7 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'U-T4 LandExp1 Minimum',
+        BuilderName = 'U4  LandExp1 Minimum',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 160,
         DelayEqualBuildPlattons = {'Experimental', 30},
@@ -217,7 +217,7 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'U-T4 LandExp1 1st',
+        BuilderName = 'U4 LandExp1 1st',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 160,
         DelayEqualBuildPlattons = {'Experimental', 30},
@@ -253,7 +253,7 @@ BuilderGroup {
     --    ECO Full    --
     -- ============== --
     Builder {
-        BuilderName = 'U-T4 LandExp1 ECOFULL',
+        BuilderName = 'U4 LandExp1 ECOFULL',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 160,
         DelayEqualBuildPlattons = {'Experimental', 30},

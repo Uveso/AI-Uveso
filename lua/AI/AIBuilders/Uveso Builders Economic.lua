@@ -257,7 +257,7 @@ BuilderGroup {
 -- ===================================================-======================================================== --
 BuilderGroup {
     BuilderGroupName = 'Engineer Transfer To MainBase',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
-    BuildersType = 'EngineerBuilder',
+    BuildersType = 'PlatoonFormBuilder',
     -- ============================================ --
     --    Transfer from LocationType to MainBase    --
     -- ============================================ --

@@ -33,6 +33,8 @@ BaseBuilderTemplate {
         'EngineerFactoryBuilders Uveso',            -- Priority = 900
         -- Assistees
         'Assistees Uveso',
+        -- Reclaim mass
+        'Engineer Reclaim Uveso',
 
         -----------------------------------------------------------------------------
         -- ==== Mass ==== --

@@ -42,3 +42,10 @@ PlatoonTemplate {
         { categories.MOBILE * categories.ENGINEER * categories.TECH3, 1, 1, 'support', 'none' },
     },
 }
+PlatoonTemplate {
+    Name = 'U1Reclaim',
+    Plan = 'ReclaimAIUveso',
+    GlobalSquads = {
+        { categories.ENGINEER * categories.TECH1, 1, 1, "support", "None" }
+    },
+}

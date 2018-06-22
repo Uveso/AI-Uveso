@@ -33,6 +33,8 @@ BaseBuilderTemplate {
         'EngineerFactoryBuilders Uveso',            -- Priority = 900
         -- Assistees
         'Assistees Uveso',
+        -- Reclaim mass
+        'Engineer Reclaim Uveso',
 
         -----------------------------------------------------------------------------
         -- ==== Mass ==== --
@@ -54,6 +56,7 @@ BaseBuilderTemplate {
         -- ==== Factory ==== --
         -----------------------------------------------------------------------------
         -- Build Land/Air/Naval Factories
+        'FactoryBuildersRush Uveso',
         'FactoryBuilders Uveso',
         'GateConstruction Uveso',
         -- Upgrade Factories TECH1->TECH2 and TECH2->TECH3
