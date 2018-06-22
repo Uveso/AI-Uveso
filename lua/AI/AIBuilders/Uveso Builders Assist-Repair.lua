@@ -93,7 +93,7 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.ENERGYPRODUCTION * (categories.TECH2 + categories.TECH3) , categories.ENGINEER * categories.MOBILE }},
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.60, 0.05}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'LessThanEconStorageRatio', { 0.35, 0.05}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
         },
         BuilderType = 'Any',
@@ -506,37 +506,32 @@ BuilderGroup {
     --    Reclaim     --
     -- ============== --
     Builder {
-        BuilderName = 'U1 Reclaim Resource',
+        BuilderName = 'U1 Reclaim Resource 1',
         PlatoonTemplate = 'EngineerBuilder',
         PlatoonAIPlan = 'ReclaimAIUveso',
         Priority = 17700,
         InstanceCount = 1,
         BuilderConditions = {
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
-            { EBC, 'LessThanEconStorageRatio', { 0.70, 2.00}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'LessThanEconStorageRatio', { 0.90, 2.00}}, -- Ratio from 0 to 1. (1=100%)
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
         },
         BuilderData = {
             LocationType = 'LocationType',
-            ReclaimTime = 30,
         },
         BuilderType = 'Any',
     },
     Builder {
-        BuilderName = 'U1 Reclaim Resource II',
+        BuilderName = 'U1 Reclaim Resource 10',
         PlatoonTemplate = 'EngineerBuilder',
         PlatoonAIPlan = 'ReclaimAIUveso',
-        Priority = 10,
-        InstanceCount = 2,
+        Priority = 16000,
+        InstanceCount = 10,
         BuilderConditions = {
-            { EBC, 'LessThanEconStorageRatio', { 0.80, 2.00}}, -- Ratio from 0 to 1. (1=100%)
-            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
-            { UCBC, 'EngineerManagerUnitsAtLocation', { 'MAIN', '>', 8,  'ENGINEER TECH1' } },
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
+            { EBC, 'LessThanEconStorageRatio', { 0.90, 2.00}}, -- Ratio from 0 to 1. (1=100%)
         },
         BuilderData = {
             LocationType = 'LocationType',
-            ReclaimTime = 30,
         },
         BuilderType = 'Any',
     },

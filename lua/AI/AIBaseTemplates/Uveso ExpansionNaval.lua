@@ -74,22 +74,6 @@ BaseBuilderTemplate {
         if not aiBrain.Uveso then
             return 0
         end
-        local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
-        --LOG('*** E-ExpansionFunction: personality: [ '..personality..' ] - markerType: [ '..markerType..' ] - Uveso ExpansionNaval.lua')
-        if personality == 'UvesoAdaptiveBalanced' then
-            if markerType == 'Naval Area' then
-                --LOG('### E-ExpansionFunction: personality: [ '..personality..' ] - markerType: [ '..markerType..' ] - Uveso ExpansionNaval.lua')
-                return 1000, 'UvesoExpansionNaval'
-            end
-        else
-            if markerType ~= 'Start Location'
-            and markerType ~= 'Expansion Area'
-            and markerType ~= 'Large Expansion Area'
-            and markerType ~= 'Naval Area'
-            then
-                LOG('---- E-ExpansionFunction: UNKNOWN EXPANSION TYPE! personality: [ '..personality..' ] - markerType: [ '..markerType..' ] - Uveso ExpansionNaval.lua')
-            end
-        end
-        return -1
+        return 1000, 'UvesoExpansionNaval'
     end,
 }

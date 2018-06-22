@@ -1,6 +1,6 @@
 #***************************************************************************
 #*
-#**  File     :  /lua/ai/AIBaseTemplates/TurtleExpansion.lua
+#**  File     :  /lua/ai/AIBaseTemplates/NormalMain.lua
 #**
 #**  Summary  : Manage engineers for a location
 #**
@@ -8,8 +8,24 @@
 #****************************************************************************
 
 BaseBuilderTemplate {
-    BaseTemplateName = 'UvesoExpansionArea',
+    BaseTemplateName = 'Uveso Rush',
     Builders = {
+        -----------------------------------------------------------------------------
+        -- ==== ACU ==== --
+        -----------------------------------------------------------------------------
+        -- Build Main Base (only once). Land/Air factory and basic Energy
+        'Initial ACU Builders Uveso',               -- Priority = 1000
+
+        -----------------------------------------------------------------------------
+        -- ==== Expansion Builders ==== --
+        -----------------------------------------------------------------------------
+        -- Build an Expansion
+        'U1 Expansion Builder Uveso',
+
+        -----------------------------------------------------------------------------
+        -- ==== SCU ==== --
+        -----------------------------------------------------------------------------
+
         -----------------------------------------------------------------------------
         -- ==== Engineer ==== --
         -----------------------------------------------------------------------------
@@ -17,8 +33,16 @@ BaseBuilderTemplate {
         'EngineerFactoryBuilders Uveso',            -- Priority = 900
         -- Assistees
         'Assistees Uveso',
-        -- Transfers Engineers from LocatonType (Expansions, Firebase etc.) to mainbase
-        'Engineer Transfer To MainBase', -- Need to be in Expansion Template
+
+        -----------------------------------------------------------------------------
+        -- ==== Mass ==== --
+        -----------------------------------------------------------------------------
+        -- Build MassExtractors / Creators
+        'MassBuilders Uveso',                           -- Priority = 1100
+        -- Upgrade MassExtractors from Tech 1 to 2 AND from Tech 2 to 3
+        'ExtractorUpgrades Uveso',                      -- Priority = 1100
+        -- Build Mass Storage (Adjacency)
+        'MassStorageBuilder Uveso',                     -- Priority = 1100
 
         -----------------------------------------------------------------------------
         -- ==== Energy ==== --
@@ -34,13 +58,15 @@ BaseBuilderTemplate {
         'GateConstruction Uveso',
         -- Upgrade Factories TECH1->TECH2 and TECH2->TECH3
         'FactoryUpgradeBuilders Uveso',
-
+        -- Build Air Staging Platform to refill and repair air units.
+        'Air Staging Platform Uveso',
+        
         -----------------------------------------------------------------------------
         -- ==== Land Units BUILDER ==== --
         -----------------------------------------------------------------------------
         -- Build Land Units
-        'LandAttackBuildersPanicEXP Uveso',
-        'LandAttackBuilders Uveso',
+        'LandAttackBuildersPanic Uveso',
+        'LandAttackBuildersRush Uveso',
         'LandAttackBuildersRatio Uveso',
 
         -----------------------------------------------------------------------------
@@ -51,7 +77,7 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== Air Units BUILDER ==== --
         -----------------------------------------------------------------------------
-        -- Build as much antiair as the enemy has
+        -- Build Air Units
         'AntiAirBuilders Uveso',
         -- Build Air Transporter
         'Air Transport Builder Uveso',
@@ -60,14 +86,29 @@ BaseBuilderTemplate {
         -- ==== Air Units FORMER==== --
         -----------------------------------------------------------------------------
         'Air FormBuilders',
+        
+        -----------------------------------------------------------------------------
+        -- ==== Sea Units BUILDER ==== --
+        -----------------------------------------------------------------------------
+        -- Build Naval Units
+        'SeaFactoryBuilders Uveso',
+
+        -----------------------------------------------------------------------------
+        -- ==== Sea Units FORMER ==== --
+        -----------------------------------------------------------------------------
+        'SeaAttack FormBuilders Uveso',
 
         -----------------------------------------------------------------------------
         -- ==== EXPERIMENTALS BUILDER ==== --
         -----------------------------------------------------------------------------
-        --'Mobile Experimental Builder Uveso',
+        'Mobile Experimental Builder Uveso',
         'Economic Experimental Builder Uveso',
-        'ExperimentalAttackFormBuilders Uveso',
         'Paragon Turbo Builder',
+        
+        -----------------------------------------------------------------------------
+        -- ==== EXPERIMENTALS FORMER ==== --
+        -----------------------------------------------------------------------------
+        'ExperimentalAttackFormBuilders Uveso',
 
         -----------------------------------------------------------------------------
         -- ==== Structure Shield BUILDER ==== --
@@ -79,13 +120,21 @@ BaseBuilderTemplate {
         -- ==== Defenses BUILDER ==== --
         -----------------------------------------------------------------------------
         'Tactical Missile Launcher minimum Uveso',
+        'Tactical Missile Launcher Maximum Uveso',
         'Tactical Missile Launcher TacticalAISorian Uveso',
         'Tactical Missile Defenses Uveso',
---        'Strategic Missile Launcher Uveso',
+        'Strategic Missile Launcher Uveso',
+        'Strategic Missile Launcher NukeAI Uveso',
         'Strategic Missile Defense Uveso',
+        'Strategic Missile Defense Anti-NukeAI Uveso',
+        'Artillery Builder Uveso',
         -- Build Anti Air near AirFactories
         'Base Anti Air Defense Uveso',
 
+        -----------------------------------------------------------------------------
+        -- ==== FireBase BUILDER ==== --
+        -----------------------------------------------------------------------------
+        'U1 FirebaseBuilders',
 
         -- We need this even if we have Omni View to get target informations for experimentals attack.
         -----------------------------------------------------------------------------
@@ -101,28 +150,37 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== Intel/CounterIntel BUILDER ==== --
         -----------------------------------------------------------------------------
+        'RadarBuilders Uveso',
         'RadarUpgrade Uveso',
         
         'CounterIntelBuilders',
+        
+        'AeonOptics',
+        'CybranOptics',
 
+        -----------------------------------------------------------------------------
+        -- ==== Mod Builder ==== --
+        -----------------------------------------------------------------------------
+        'HydrocarbonUpgrade BlackOps',
+        
     },
-    -- We need intel in case the commander is dead.
+    -- Not used by Uveso's AI. We always need intel in case the commander is dead.
     NonCheatBuilders = {
 
     },
 
     BaseSettings = {
         FactoryCount = {
-            Land = 2,
-            Air = 2,
-            Sea = 1,
-            Gate = 0,
+            Land = 5,
+            Air = 5,
+            Sea = 3,
+            Gate = 1,
         },
         EngineerCount = {
-            Tech1 = 2,
-            Tech2 = 2,
-            Tech3 = 1,
-            SCU = 0,
+            Tech1 = 6,
+            Tech2 = 3,
+            Tech3 = 3,
+            SCU = 1,
         },
         MassToFactoryValues = {
             T1Value = 6,
@@ -131,9 +189,14 @@ BaseBuilderTemplate {
         },
     },
     ExpansionFunction = function(aiBrain, location, markerType)
-        if not aiBrain.Uveso then
-            return 0
+        return -1
+    end,
+    FirstBaseFunction = function(aiBrain)
+        local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
+        if personality == 'uvesorush' or personality == 'uvesorushcheat' then
+            --LOG('### M-FirstBaseFunction '..personality)
+            return 1000, 'Uveso Rush'
         end
-        return 1000, 'UvesoExpansionArea'
+        return -1
     end,
 }

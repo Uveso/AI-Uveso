@@ -1,4 +1,4 @@
-local DebugNames = false -- Display next building Platoonn inside LOG
+local DebugNames = true -- Display next building Platoon inside LOG
 -- AI DEBUG
 local AntiSpamList = {}
 local AntiSpamCounter = 0
@@ -64,9 +64,12 @@ BuilderManager = Class(OLDBuilderManager) {
                 for i = count, 20 do
                     percentbar = percentbar..'~'
                 end
---                if not string.find(self.BuilderData[bType].Builders[ possibleBuilders[whichBuilder] ].BuilderName,'U1 ') then
-                LOG('* GetHighestBuilder: Mass:['..percentbar..'] Priority = '..found..' - SelectedBuilder = '..self.BuilderData[bType].Builders[ possibleBuilders[whichBuilder] ].BuilderName)
---                end
+                local PrioText = ''
+                local Priolen = string.len(found)
+                if 6 > Priolen then
+                    PrioText = string.rep('  ', 6 - Priolen) .. found
+                end
+                LOG('* GetHighestBuilder: Mass:['..percentbar..'] Priority = '..PrioText..' - SelectedBuilder = '..self.BuilderData[bType].Builders[ possibleBuilders[whichBuilder] ].BuilderName)
             end
             return self.BuilderData[bType].Builders[ possibleBuilders[whichBuilder] ]
         end

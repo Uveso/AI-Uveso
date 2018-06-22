@@ -40,8 +40,10 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== Land Units BUILDER ==== --
         -----------------------------------------------------------------------------
-        -- Build T1 Land Arty
+        -- Build Land Units
+        'LandAttackBuildersPanic Uveso',
         'LandAttackBuilders Uveso',
+        'LandAttackBuildersRatio Uveso',
 
         -----------------------------------------------------------------------------
         -- ==== Land Units FORMER==== --
@@ -144,22 +146,6 @@ BaseBuilderTemplate {
         if not aiBrain.Uveso then
             return 0
         end
-        local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
-        --LOG('*** E-ExpansionFunction: personality: [ '..personality..' ] - markerType: [ '..markerType..' ] - Uveso StartArea.lua')
-        if personality == 'UvesoAdaptiveBalanced' then
-            if markerType == 'Start Location' then
-                --LOG('### E-ExpansionFunction: personality: [ '..personality..' ] - markerType: [ '..markerType..' ] - Uveso StartArea.lua')
-                return 1000, 'UvesoStartArea'
-            end
-        else
-            if markerType ~= 'Start Location'
-            and markerType ~= 'Expansion Area'
-            and markerType ~= 'Large Expansion Area'
-            and markerType ~= 'Naval Area'
-            then
-                LOG('---- E-ExpansionFunction: UNKNOWN EXPANSION TYPE! personality: [ '..personality..' ] - markerType: [ '..markerType..' ] - Uveso StartArea.lua')
-            end
-        end
-        return -1
+        return 1000, 'UvesoStartArea'
     end,
 }

@@ -52,7 +52,7 @@ function ExtractorPause(self, aiBrain, MassExtractorUnitList, ratio, techLevel)
     end
     --LOG('* ExtractorPause: Idle= '..UpgradingBuildingNum..'   Upgrading= '..UpgradingBuildingNum..'   Paused= '..PausedUpgradingBuildingNum..'   Disabled= '..DisabledBuildingNum..'   techLevel= '..techLevel)
     --Check for energy stall
-    if (aiBrain:GetEconomyStoredRatio('ENERGY') < 0.10 and aiBrain:GetEconomyTrend('ENERGY') < 0) or (aiBrain:GetEconomyStoredRatio('MASS') > aiBrain:GetEconomyStoredRatio('ENERGY')) then
+    if aiBrain:GetEconomyStoredRatio('ENERGY') < 0.50 and aiBrain:GetEconomyStoredRatio('MASS') > aiBrain:GetEconomyStoredRatio('ENERGY') then
         -- All buildings that are doing nothing
         if IdleBuilding then
             IdleBuilding:SetScriptBit('RULEUTC_ProductionToggle', true)
@@ -286,7 +286,7 @@ function ReclaimAIThread(platoon,self,aiBrain)
         SelfPos = self:GetPosition()
         MassStorageRatio = aiBrain:GetEconomyStoredRatio('MASS')
         EnergyStorageRatio = aiBrain:GetEconomyStoredRatio('ENERGY')
-        if (MassStorageRatio < 0.8 or EnergyStorageRatio < 0.1) then
+        if (MassStorageRatio < 0.95 or EnergyStorageRatio < 0.95) then
             --LOG('Searching for reclaimables')
             local x1 = SelfPos[1]-scanrange
             local y1 = SelfPos[3]-scanrange

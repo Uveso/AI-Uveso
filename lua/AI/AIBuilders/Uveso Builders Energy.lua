@@ -28,7 +28,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'LessThanEnergyTrend', { 1.0 } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 }},
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 3, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 }},
             -- Do we need additional conditions to build it ?
             { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH1' }},
             -- Have we the eco to build it ?
@@ -42,10 +42,10 @@ BuilderGroup {
         BuilderData = {
             NumAssistees = 1,
             Construction = {
-                AdjacencyCategory = categories.FACTORY * categories.STRUCTURE * (categories.AIR + categories.LAND),
-                AdjacencyDistance = 50,
-                BuildClose = false,
-                LocationType = 'LocationType',
+--                AdjacencyCategory = categories.FACTORY * categories.STRUCTURE * (categories.AIR + categories.LAND),
+--                AdjacencyDistance = 50,
+                BuildClose = true,
+--                LocationType = 'LocationType',
                 BuildStructures = {
                     'T1EnergyProduction',
                 },
@@ -56,13 +56,14 @@ BuilderGroup {
         BuilderName = 'U1 Power low storage',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17650,
+        InstanceCount = 2,                                                      -- Number of plattons that will be formed with this template.
         DelayEqualBuildPlattons = {'Energy', 3},
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'GreaterThanGameTimeSeconds', { 180 } },
             { EBC, 'LessThanEconStorageRatio', { 2.00, 1.00}}, -- Ratio from 0 to 1. (1=100%)
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 }},
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 3, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 }},
             -- Do we need additional conditions to build it ?
             { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH1' }},
             -- Have we the eco to build it ?
@@ -77,10 +78,10 @@ BuilderGroup {
         BuilderData = {
             NumAssistees = 1,
             Construction = {
-                AdjacencyCategory = categories.FACTORY * categories.STRUCTURE * (categories.AIR + categories.LAND),
-                AdjacencyDistance = 50,
-                BuildClose = false,
-                LocationType = 'LocationType',
+--                AdjacencyCategory = categories.FACTORY * categories.STRUCTURE * (categories.AIR + categories.LAND),
+--                AdjacencyDistance = 50,
+                BuildClose = true,
+--                LocationType = 'LocationType',
                 BuildStructures = {
                     'T1EnergyProduction',
                 },
@@ -91,12 +92,13 @@ BuilderGroup {
         BuilderName = 'U1 Power Push 150',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17440,
+        InstanceCount = 2,                                                      -- Number of plattons that will be formed with this template.
         DelayEqualBuildPlattons = {'Energy', 3},
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'LessThanEnergyTrend', { 15.0 } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 }},
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 3, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 }},
             -- Do we need additional conditions to build it ?
             { UCBC, 'EngineerGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH1' }},
             -- Have we the eco to build it ?
@@ -112,10 +114,10 @@ BuilderGroup {
         BuilderData = {
             NumAssistees = 1,
             Construction = {
-                AdjacencyCategory = 'FACTORY STRUCTURE AIR, FACTORY STRUCTURE LAND',
-                AdjacencyDistance = 50,
-                BuildClose = false,
-                LocationType = 'LocationType',
+--                AdjacencyCategory = 'FACTORY STRUCTURE AIR, FACTORY STRUCTURE LAND',
+--                AdjacencyDistance = 50,
+                BuildClose = true,
+--                LocationType = 'LocationType',
                 BuildStructures = {
                     'T1EnergyProduction',
                 },
@@ -130,7 +132,6 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'LessThanEnergyTrend', { 1.0 } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 }},
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 0.9, 0.01}}, -- Absolut Base income
@@ -160,7 +161,6 @@ BuilderGroup {
             -- When do we want to build this ?
             { EBC, 'LessThanEconStorageRatio', { 2.00, 1.00}}, -- Ratio from 0 to 1. (1=100%)
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 }},
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 0.9, 0.01}}, -- Absolut Base income
@@ -294,7 +294,7 @@ BuilderGroup {
             Construction = {
                 DesiresAssist = true,
                 NumAssistees = 10,
-                BuildClose = true,
+                BuildClose = false,
                 AdjacencyCategory = 'SHIELD STRUCTURE, FACTORY TECH3, FACTORY TECH2, FACTORY TECH1',
                 AvoidCategory = categories.ENERGYPRODUCTION * categories.TECH2,
                 maxUnits = 1,
@@ -334,7 +334,7 @@ BuilderGroup {
             Construction = {
                 DesiresAssist = true,
                 NumAssistees = 10,
-                BuildClose = true,
+                BuildClose = false,
                 AdjacencyCategory = 'SHIELD STRUCTURE, FACTORY TECH3, FACTORY TECH2, FACTORY TECH1',
                 AvoidCategory = categories.ENERGYPRODUCTION * categories.TECH2,
                 maxUnits = 1,
@@ -372,7 +372,7 @@ BuilderGroup {
             Construction = {
                 DesiresAssist = true,
                 NumAssistees = 10,
-                BuildClose = true,
+                BuildClose = false,
                 AdjacencyCategory = 'SHIELD STRUCTURE, FACTORY TECH3, FACTORY TECH2, FACTORY TECH1',
                 AvoidCategory = categories.ENERGYPRODUCTION * categories.TECH3,
                 maxUnits = 1,
@@ -407,7 +407,7 @@ BuilderGroup {
             Construction = {
                 DesiresAssist = true,
                 NumAssistees = 10,
-                BuildClose = true,
+                BuildClose = false,
                 AdjacencyCategory = 'SHIELD STRUCTURE, FACTORY TECH3, FACTORY TECH2, FACTORY TECH1',
                 AvoidCategory = categories.ENERGYPRODUCTION * categories.TECH3,
                 maxUnits = 1,
@@ -445,7 +445,7 @@ BuilderGroup {
             Construction = {
                 DesiresAssist = true,
                 NumAssistees = 10,
-                BuildClose = true,
+                BuildClose = false,
                 AdjacencyCategory = 'SHIELD STRUCTURE, FACTORY TECH3, FACTORY TECH2, FACTORY TECH1',
                 AvoidCategory = categories.ENERGYPRODUCTION * categories.TECH3,
                 maxUnits = 1,
@@ -482,7 +482,7 @@ BuilderGroup {
             Construction = {
                 DesiresAssist = true,
                 NumAssistees = 10,
-                BuildClose = true,
+                BuildClose = false,
                 AdjacencyCategory = 'SHIELD STRUCTURE, FACTORY TECH3, FACTORY TECH2, FACTORY TECH1',
                 AvoidCategory = categories.ENERGYPRODUCTION * categories.TECH3,
                 maxUnits = 1,

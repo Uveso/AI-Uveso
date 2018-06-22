@@ -17,128 +17,88 @@ LOG('* AI DEBUG: BaseMilitaryZone= '..math.floor( BaseMilitaryZone * 0.01953125 
 -- ===================================================-======================================================== --
 -- ==                                        Build T1 T2 T3 Land                                             == --
 -- ===================================================-======================================================== --
+-- ============= --
+--    AI-RUSH    --
+-- ============= --
+BuilderGroup {
+    BuilderGroupName = 'LandAttackBuildersRush Uveso',                           -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuildersType = 'FactoryBuilder',
+    -- ============ --
+    --    TECH 1    --
+    -- ============ --
+    Builder {
+        BuilderName = 'U1R Arty',
+        PlatoonTemplate = 'T1LandArtillery',
+        Priority = 150,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            -- Don't build it if...
+            { UCBC, 'HasNotParagon', {} },
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
+            { UCBC, 'UnitCapCheckLess', { 0.92 } },
+        },
+        BuilderType = 'Land',
+    },
+    -- ============ --
+    --    TECH 2    --
+    -- ============ --
+    Builder {
+        BuilderName = 'U2R Arty',
+        PlatoonTemplate = 'T2LandArtillery',
+        Priority = 250,
+        BuilderType = 'Land',
+        BuilderConditions = {
+            -- When do we want to build this ?
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.60, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
+            -- Don't build it if...
+            { UCBC, 'HasNotParagon', {} },
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
+            { UCBC, 'UnitCapCheckLess', { 0.93 } },
+        },
+    },
+
+    -- ============ --
+    --    TECH 3    --
+    -- ============ --
+    Builder {
+        BuilderName = 'U3R Arty',
+        PlatoonTemplate = 'T3LandArtillery',
+        Priority = 350,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.80, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
+            -- Don't build it if...
+            { UCBC, 'HasNotParagon', {} },
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
+            { UCBC, 'UnitCapCheckLess', { 0.94 } },
+        },
+        BuilderType = 'Land',
+    },
+}
+-- ================= --
+--    AI-ADAPTIVE    --
+-- ================= --
 BuilderGroup {
     BuilderGroupName = 'LandAttackBuilders Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'FactoryBuilder',
-    -- ======================== --
-    --    TECH 1   ALWAYS       --
-    -- ======================== --
-    Builder {
-        BuilderName = 'U1 Always Arty',
-        PlatoonTemplate = 'T1LandArtillery',
-        Priority = 150,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.LAND * categories.FACTORY * categories.TECH1 }},
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
-            { UCBC, 'HasNotParagon', {} },
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.MOBILE * categories.LAND * ( categories.DIRECTFIRE + categories.INDIRECTFIRE ) }},
-            -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
-            { UCBC, 'UnitCapCheckLess', { 0.92 } },
-        },
-        BuilderType = 'Land',
-    },
-    -- ======================== --
-    --    TECH 1   ECO FULL     --
-    -- ======================== --
-    Builder {
-        BuilderName = 'U1 ECOFULL Arty',
-        PlatoonTemplate = 'T1LandArtillery',
-        Priority = 150,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { EBC, 'GreaterThanEconTrend', { 1.0, 10.0 } }, -- relative income 10,60
-            { EBC, 'GreaterThanEconStorageRatio', { 0.80, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-            { UCBC, 'HasNotParagon', {} },
-            -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
-            { UCBC, 'UnitCapCheckLess', { 0.92 } },
-        },
-        BuilderType = 'Land',
-    },
-    -- ======================== --
-    --    TECH 1   PanicZone    --
-    -- ======================== --
-    Builder {
-        BuilderName = 'U1 PanicZone Arty',
-        PlatoonTemplate = 'T1LandArtillery',
-        Priority = 18600,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 1, categories.MOBILE * categories.LAND - categories.SCOUT}}, -- radius, LocationType, unitCount, categoryEnemy
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-            -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
-        },
-        BuilderType = 'Land',
-    },
-    Builder {
-        BuilderName = 'U1 PanicZone/2 AA',
-        PlatoonTemplate = 'T1LandAA',
-        Priority = 18600,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 1, categories.MOBILE * categories.AIR - categories.SCOUT}}, -- radius, LocationType, unitCount, categoryEnemy
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 10, categories.ANTIAIR}},
-            -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
-        },
-        BuilderType = 'Land',
-    },
--- expansions
-    Builder {
-        BuilderName = 'U1 PanicExpansion Arty',
-        PlatoonTemplate = 'T1LandArtillery',
-        Priority = 160,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  50, 'LocationType', 1, categories.MOBILE * categories.LAND - categories.SCOUT}}, -- radius, LocationType, unitCount, categoryEnemy
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'BuildNotOnLocation', { 'LocationType', 'MAIN' } },
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-            -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
-        },
-        BuilderType = 'Land',
-    },
-    Builder {
-        BuilderName = 'U1 PanicPanicExpansion AA',
-        PlatoonTemplate = 'T1LandAA',
-        Priority = 155,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  50, 'LocationType', 1, categories.MOBILE * categories.AIR - categories.SCOUT}}, -- radius, LocationType, unitCount, categoryEnemy
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'BuildNotOnLocation', { 'LocationType', 'MAIN' } },
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 10, categories.ANTIAIR}},
-            -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
-        },
-        BuilderType = 'Land',
-    },
     -- =========================== --
     --    TECH 1   MilitaryZone    --
     -- =========================== --
     Builder {
-        BuilderName = 'U1 MilitaryZone Arty',
+        BuilderName = 'U1A MilitaryZone Arty',
         PlatoonTemplate = 'T1LandArtillery',
         Priority = 150,
         BuilderConditions = {
@@ -160,7 +120,7 @@ BuilderGroup {
     --    TECH 1   EnemyZone    --
     -- ======================== --
     Builder {
-        BuilderName = 'U1 EnemyZone Arty',
+        BuilderName = 'U1A EnemyZone Arty',
         PlatoonTemplate = 'T1LandArtillery',
         Priority = 140,
         BuilderConditions = {
@@ -182,7 +142,7 @@ BuilderGroup {
     --    TECH 1   Island   --
     -- ==================== --
     Builder {
-        BuilderName = 'U1 Island Tank',
+        BuilderName = 'U1A Island Tank',
         PlatoonTemplate = 'T1LandDFTank',
         Priority = 150,
         BuilderConditions = {
@@ -203,9 +163,136 @@ BuilderGroup {
         },
         BuilderType = 'Land',
     },
-    -- ============================================= --
-    --    TECH 1   Unit Ratio ->ArtyTank->Bot->AA    --
-    -- ============================================= --
+    -- ============ --
+    --    TECH 2    --
+    -- ============ --
+    Builder {
+        BuilderName = 'U2A Artillery',
+        PlatoonTemplate = 'T2LandArtillery',
+        Priority = 250,
+        BuilderType = 'Land',
+        BuilderConditions = {
+            -- When do we want to build this ?
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
+            -- Don't build it if...
+            { UCBC, 'HasNotParagon', {} },
+            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE', '<=', 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE' } },
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
+            { UCBC, 'UnitCapCheckLess', { 0.93 } },
+        },
+    },
+
+    -- ============ --
+    --    TECH 3    --
+    -- ============ --
+    Builder {
+        BuilderName = 'U3A Mobile Artillery',
+        PlatoonTemplate = 'T3LandArtillery',
+        Priority = 350,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
+            -- Don't build it if...
+            { UCBC, 'HasNotParagon', {} },
+            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE', '<=', 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE' } },
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
+            { UCBC, 'UnitCapCheckLess', { 0.94 } },
+        },
+        BuilderType = 'Land',
+    },
+}
+-- ===================================================-======================================================== --
+-- ==                                         Land panic builder                                             == --
+-- ===================================================-======================================================== --
+BuilderGroup {
+    BuilderGroupName = 'LandAttackBuildersPanic Uveso',                         -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuildersType = 'FactoryBuilder',
+    -- ================================== --
+    --    TECH 1   PanicZone Main Base    --
+    -- ================================== --
+    Builder {
+        BuilderName = 'U1 PanicZone Arty',
+        PlatoonTemplate = 'T1LandArtillery',
+        Priority = 18600,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 1, categories.MOBILE * categories.LAND - categories.SCOUT}}, -- radius, LocationType, unitCount, categoryEnemy
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
+        },
+        BuilderType = 'Land',
+    },
+    Builder {
+        BuilderName = 'U1 PanicZone/2 AA',
+        PlatoonTemplate = 'T1LandAA',
+        Priority = 18550,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 1, categories.MOBILE * categories.AIR - categories.SCOUT}}, -- radius, LocationType, unitCount, categoryEnemy
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
+        },
+        BuilderType = 'Land',
+    },
+}
+BuilderGroup {
+    BuilderGroupName = 'LandAttackBuildersPanicEXP Uveso',                         -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuildersType = 'FactoryBuilder',
+    -- ================================== --
+    --    TECH 1   PanicZone Expansion    --
+    -- ================================== --
+    Builder {
+        BuilderName = 'U1E PanicExpansion Arty',
+        PlatoonTemplate = 'T1LandArtillery',
+        Priority = 160,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  50, 'LocationType', 1, categories.MOBILE * categories.LAND - categories.SCOUT}}, -- radius, LocationType, unitCount, categoryEnemy
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
+        },
+        BuilderType = 'Land',
+    },
+    Builder {
+        BuilderName = 'U1E PanicPanicExpansion AA',
+        PlatoonTemplate = 'T1LandAA',
+        Priority = 155,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  50, 'LocationType', 1, categories.MOBILE * categories.AIR - categories.SCOUT}}, -- radius, LocationType, unitCount, categoryEnemy
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
+        },
+        BuilderType = 'Land',
+    },
+}
+-- ===================================================-======================================================== --
+-- ==                                         Land ratio builder                                             == --
+-- ===================================================-======================================================== --
+BuilderGroup {
+    BuilderGroupName = 'LandAttackBuildersRatio Uveso',                         -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuildersType = 'FactoryBuilder',
+    -- ============ --
+    --    TECH 1    --
+    -- ============ --
     Builder {
         BuilderName = 'U1 Ratio Tank',
         PlatoonTemplate = 'T1LandDFTank',
@@ -261,27 +348,6 @@ BuilderGroup {
     -- ============ --
     --    TECH 2    --
     -- ============ --
-    Builder {
-        BuilderName = 'U2 Artillery',
-        PlatoonTemplate = 'T2LandArtillery',
-        Priority = 250,
-        BuilderType = 'Land',
-        BuilderConditions = {
-            -- When do we want to build this ?
-            -- Do we need additional conditions to build it ?
-            -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
-            { UCBC, 'HasNotParagon', {} },
-            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE', '<=', 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE' } },
-            -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
-            { UCBC, 'UnitCapCheckLess', { 0.93 } },
-        },
-    },
-    -- ============================================= --
-    --    TECH 2   Unit Ratio ->ArtyTank->Bot->AA    --
-    -- ============================================= --
     Builder {
         BuilderName = 'U2 DFTank',
         PlatoonTemplate = 'T2LandDFTank',
@@ -353,27 +419,6 @@ BuilderGroup {
     -- ============ --
     --    TECH 3    --
     -- ============ --
-    Builder {
-        BuilderName = 'U3 Mobile Artillery',
-        PlatoonTemplate = 'T3LandArtillery',
-        Priority = 350,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            -- Do we need additional conditions to build it ?
-            -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
-            { UCBC, 'HasNotParagon', {} },
-            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE', '<=', 'LAND MOBILE DIRECTFIRE, LAND MOBILE INDIRECTFIRE' } },
-            -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
-            { UCBC, 'UnitCapCheckLess', { 0.94 } },
-        },
-        BuilderType = 'Land',
-    },
-    -- ============================================= --
-    --    TECH 3   Unit Ratio ->ArtyTank->Bot->AA    --
-    -- ============================================= --
     Builder {
         BuilderName = 'U3 Siege Assault Bot',
         PlatoonTemplate = 'T3LandBot',
@@ -479,7 +524,7 @@ BuilderGroup {
             GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
-            AttackEnemyStrength = 100000,                                        -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            AttackEnemyStrength = 100000,                                       -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.COMMAND,                          -- Only find targets matching these categories.
             PrioritizedCategories = {                                           -- Attack these targets.
                 'COMMAND',
@@ -494,7 +539,7 @@ BuilderGroup {
         BuilderName = 'U123 PANIC 2 5',                                         -- Random Builder Name.
         PlatoonTemplate = 'LandAttackInterceptUveso 2 5',                       -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
         Priority = 90,                                                          -- Priority. 1000 is normal.
-        InstanceCount = 2,                                                      -- Number of plattons that will be formed.
+        InstanceCount = 20,                                                     -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BasePanicZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)

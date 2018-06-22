@@ -55,7 +55,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'UC AIR Factory 1st',
         PlatoonTemplate = 'CommanderBuilder',
-        Priority = 15500,
+        Priority = 16600,
         DelayEqualBuildPlattons = {'Factories', 3},
         BuilderConditions = {
             -- When do we want to build this ?
@@ -86,7 +86,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Sea Factory 1st',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 15500,
+        Priority = 16600,
         DelayEqualBuildPlattons = {'Factories', 3},
         BuilderConditions = {
             -- When do we want to build this ?
@@ -95,6 +95,7 @@ BuilderGroup {
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'Naval Area' } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.NAVAL * categories.TECH1 } },
             -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.90}}, -- Ratio from 0 to 1. (1=100%)
             { EBC, 'GreaterThanEconIncome',  { 0.8, 0.1}}, -- Absolut Base income
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
@@ -114,16 +115,15 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'UC Land Factory Mass > 40%',
+        BuilderName = 'UC Land Factory Mass > 30%',
         PlatoonTemplate = 'CommanderBuilder',
-        Priority = 16530,
+        Priority = 17500,
         DelayEqualBuildPlattons = {'Factories', 3},
         BuilderConditions = {
             -- When do we want to build this ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.40, -0.00 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.30, -0.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
---            { UCBC, 'LessThanGameTimeSeconds', { 600 } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- Don't build it if...
@@ -145,14 +145,14 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'U1 Land Factory Mass > 40%',
+        BuilderName = 'U1 Land Factory Mass > 30%',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 16520,
+        Priority = 17500,
         InstanceCount = 1,                                                      -- Number of plattons that will be formed with this template.
         DelayEqualBuildPlattons = {'Factories', 3},
         BuilderConditions = {
             -- When do we want to build this ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.40, -0.00 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.30, -0.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             { UCBC, 'LessThanGameTimeSeconds', { 600 } },
@@ -167,8 +167,8 @@ BuilderGroup {
         BuilderType = 'Any',
         BuilderData = {
             Construction = {
-                AdjacencyCategory = 'MASSEXTRACTION',
-                Location = 'LocationType',
+--                AdjacencyCategory = 'MASSEXTRACTION',
+--                Location = 'LocationType',
                 BuildClose = true,
                 BuildStructures = {
                     'T1LandFactory',
@@ -177,14 +177,14 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'U2 Land Factory Mass > 40%',
+        BuilderName = 'U2 Land Factory Mass > 30%',
         PlatoonTemplate = 'T2EngineerBuilder',
         Priority = 16510,
         InstanceCount = 1,                                                      -- Number of plattons that will be formed with this template.
         DelayEqualBuildPlattons = {'Factories', 3},
         BuilderConditions = {
             -- When do we want to build this ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.40, -0.00 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.30, -0.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             { UCBC, 'LessThanGameTimeSeconds', { 600 } },
@@ -211,7 +211,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'UC Air Factory Ratio',
         PlatoonTemplate = 'CommanderBuilder',
-        Priority = 16400,
+        Priority = 16500,
         DelayEqualBuildPlattons = {'Factories', 10},
         BuilderConditions = {
             -- When do we want to build this ?
@@ -223,7 +223,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.FACTORY * categories.TECH1 }},
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.FACTORY * categories.AIR * categories.TECH1 }},
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapFactory , '<=', categories.STRUCTURE * categories.FACTORY } }, -- Maximal 3 factories at 125 unitcap, 12 factories at 500 unitcap...
             { UCBC, 'UnitCapCheckLess', { 0.90 } },

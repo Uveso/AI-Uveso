@@ -8,7 +8,7 @@
 #****************************************************************************
 
 BaseBuilderTemplate {
-    BaseTemplateName = 'UvesoMainAdaptive',
+    BaseTemplateName = 'UvesoAdaptiveBalanced',
     Builders = {
         -----------------------------------------------------------------------------
         -- ==== ACU ==== --
@@ -55,7 +55,6 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- Build Land/Air/Naval Factories
         'FactoryBuilders Uveso',
-        'FactoryBuilders Uveso',
         'GateConstruction Uveso',
         -- Upgrade Factories TECH1->TECH2 and TECH2->TECH3
         'FactoryUpgradeBuilders Uveso',
@@ -65,8 +64,10 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== Land Units BUILDER ==== --
         -----------------------------------------------------------------------------
-        -- Build T1 Land Arty
+        -- Build T1 Land Units
+        'LandAttackBuildersPanic Uveso',
         'LandAttackBuilders Uveso',
+        'LandAttackBuildersRatio Uveso',
 
         -----------------------------------------------------------------------------
         -- ==== Land Units FORMER==== --
