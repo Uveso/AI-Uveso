@@ -537,7 +537,34 @@ BuilderGroup {
         BuilderName = 'U123 PANIC 2 5',                                         -- Random Builder Name.
         PlatoonTemplate = 'LandAttackInterceptUveso 2 5',                       -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
         Priority = 90,                                                          -- Priority. 1000 is normal.
-        InstanceCount = 20,                                                     -- Number of plattons that will be formed.
+        InstanceCount = 10,                                                     -- Number of plattons that will be formed.
+        BuilderData = {
+            SearchRadius = BasePanicZone,                                       -- Searchradius for new target.
+            GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
+            RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
+            AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
+            AttackEnemyStrength = 100000,                                        -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            TargetSearchCategory = categories.MOBILE * categories.LAND - categories.SCOUT - categories.ENGINEER, -- Only find targets matching these categories.
+            PrioritizedCategories = {                                           -- Attack these targets.
+                'EXPERIMENTAL',
+                'MOBILE LAND INDIRECTFIRE',
+                'MOBILE LAND DIRECTFIRE',
+                'STRUCTURE DEFENSE',
+                'MOBILE LAND ANTIAIR',
+                'STRUCTURE ANTIAIR',
+                'ALLUNITS',
+            },
+        },
+        BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.MOBILE * categories.LAND - categories.SCOUT}}, -- radius, LocationType, unitCount, categoryEnemy
+        },
+        BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
+    },
+    Builder {
+        BuilderName = 'U123 PANIC 2 20',                                        -- Random Builder Name.
+        PlatoonTemplate = 'LandAttackInterceptUveso 2 20',                      -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
+        Priority = 90,                                                          -- Priority. 1000 is normal.
+        InstanceCount = 10,                                                     -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BasePanicZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
