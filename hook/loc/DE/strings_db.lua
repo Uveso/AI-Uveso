@@ -1,15 +1,23 @@
 
 Uveso_0001="KI: Uveso Adaptiv"
-Uveso_0002="Eine ausbalancierte KI. Gut for 20x20+ Karten"
+Uveso_0002="Eine ausbalancierte KI. Gut für 5x5, 10x10 und 20x20 Karten."
 Uveso_0003="KIx: Uveso Adaptiv"
-Uveso_0004="Eine Sturm KI. Gut für 10x10 oder kleinere Karten."
+Uveso_0004="Eine ausbalancierte Cheat KI. Gut für 5x5, 10x10 und 20x20 Karten."
 
 Uveso_0005="KI: Uveso Sturm"
-Uveso_0006="Eine Sturm KI. Gut für 5x5 Karten."
+Uveso_0006="Eine Sturm KI. Gut für 5x5 und 10x10 Karten."
 Uveso_0007="KIx: Uveso Sturm"
-Uveso_0008="Eine Sturm KI. Gut für 5x5 Karten."
+Uveso_0008="Eine Sturm Cheat KI. Gut für 5x5 und 10x10 Karten."
 
+Uveso_0009="KI: Uveso Experimentals"
+Uveso_0010="Eine KI die auf Experimentals fokussiert ist. Gut für 10x10 und 20x20 Karten."
+Uveso_0011="KIx: Uveso Experimentals"
+Uveso_0012="Eine Cheat KI die auf Experimentals fokussiert ist. Gut für 10x10 und 20x20 Karten."
 
+Uveso_0013="KI: Uveso Einfach"
+Uveso_0014="Eine einfache KI. Gut für 5x5, 10x10 und 20x20 Karten"
+Uveso_0015="KIx: Uveso Einfach"
+Uveso_0016="Eine einfache Cheat KI. Gut für 5x5, 10x10 und 20x20 Karten"
 
 
 

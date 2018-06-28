@@ -123,10 +123,10 @@ end
 
 
 function HaveUnitRatioVersusEnemy(aiBrain, ratio, categoryOwn, compareType, categoryEnemy, DEBUG)
-    -- in case we don't have omni view, expect the enemy has twice the amount of units then we have.
-    if GetGameTimeSeconds() > 120 and  (not aiBrain.CheatEnabled or ScenarioInfo.Options.OmniCheat ~= "on") then
+    -- in case we don't have omni view, return always true. We cant count units without omni
+    if not aiBrain.CheatEnabled or ScenarioInfo.Options.OmniCheat ~= "on" then
         --LOG('* HaveUnitRatioVersusEnemy: AI is not Cheating or Omni is Off')
-        return CompareBody( 1 / 2 , ratio, compareType)
+        return true
     end
 
     local testCatOwn = categoryOwn

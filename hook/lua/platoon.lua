@@ -177,7 +177,11 @@ Platoon = Class(oldPlatoon) {
                         self:Stop()
                         target = UnitWithPath
                         --LOG('* InterceptorAIUveso: UnitWithPath.')
-                        if path and not self.PlatoonData.IgnorePathing then
+                        if self.PlatoonData.IgnorePathing then
+                            --LOG('* InterceptorAIUveso: AttackTarget.')
+                            self:Stop()
+                            self:AttackTarget(UnitWithPath)
+                        elseif path then
                             --LOG('* InterceptorAIUveso: MovePath.')
                             self:MovePath(aiBrain, path, bAggroMove, UnitWithPath)
                         -- if we dont have a path, but UnitWithPath is true, then we have no map markers but PathCanTo() found a direct path
@@ -277,7 +281,11 @@ Platoon = Class(oldPlatoon) {
                         if DistanceToTarget > 30 then
                             --LOG('* AttackPrioritizedLandTargetsAIUveso: AttackTarget! DistanceToTarget:'..DistanceToTarget)
                             -- if we have a path then use the waypoints
-                            if path then
+                            if self.PlatoonData.IgnorePathing then
+                                --LOG('* InterceptorAIUveso: AttackTarget.')
+                                self:Stop()
+                                self:AttackTarget(UnitWithPath)
+                            elseif path then
                                 --LOG('* AttackPrioritizedLandTargetsAIUveso: MovePath.')
                                 self:MovePath(aiBrain, path, bAggroMove, target)
                             -- if we dont have a path, but UnitWithPath is true, then we have no map markers but PathCanTo() found a direct path
@@ -287,6 +295,7 @@ Platoon = Class(oldPlatoon) {
                             end
                             -- We moved to the target, attack it now if its still exists
                             if aiBrain:PlatoonExists(self) and UnitWithPath and not UnitWithPath.Dead then
+                                self:Stop()
                                 self:AttackTarget(UnitWithPath)
                             end
                         end
@@ -485,7 +494,11 @@ Platoon = Class(oldPlatoon) {
                             local path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, self.MovementLayer or 'Water' , self:GetPlatoonPosition(), LastTargetPos, 1000, 512)
                             -- clear commands, so we don't get stuck if we have an unreachable destination
                             IssueClearCommands(self:GetPlatoonUnits())
-                            if path then
+                            if self.PlatoonData.IgnorePathing then
+                                --LOG('* InterceptorAIUveso: AttackTarget.')
+                                self:Stop()
+                                self:AttackTarget(target)
+                            elseif path then
                                 if table.getn(path) > 1 then
                                     --LOG('* AttackPrioritizedSeaTargetsAIUveso: table.getn(path): '..table.getn(path))
                                 end

@@ -8,7 +8,7 @@
 #****************************************************************************
 
 BaseBuilderTemplate {
-    BaseTemplateName = 'UvesoAdaptiveBalanced',
+    BaseTemplateName = 'Uveso Experimentals',
     Builders = {
         -----------------------------------------------------------------------------
         -- ==== ACU ==== --
@@ -20,7 +20,7 @@ BaseBuilderTemplate {
         -- ==== Expansion Builders ==== --
         -----------------------------------------------------------------------------
         -- Build an Expansion
-        'U1 Expansion Builder Uveso',
+--        'U1 Expansion Builder Uveso',
 
         -----------------------------------------------------------------------------
         -- ==== SCU ==== --
@@ -66,9 +66,8 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== Land Units BUILDER ==== --
         -----------------------------------------------------------------------------
-        -- Build T1 Land Units
+        -- Build Land Units
         'LandAttackBuildersPanic Uveso',
-        'LandAttackBuilders Uveso',
         'LandAttackBuildersRatio Uveso',
 
         -----------------------------------------------------------------------------
@@ -76,15 +75,14 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         'Land FormBuilders Panic',
         'Land FormBuilders MilitaryZone',
-        'Land FormBuilders EnemyZone',
         
         -----------------------------------------------------------------------------
         -- ==== Air Units BUILDER ==== --
         -----------------------------------------------------------------------------
-        -- Build as much antiair as the enemy has
-        'AntiAirBuilders Uveso',
+        -- Build Air Units
+--        'AntiAirBuilders Uveso',
         -- Build Air Transporter
-        'Air Transport Builder Uveso',
+--        'Air Transport Builder Uveso',
 
         -----------------------------------------------------------------------------
         -- ==== Air Units FORMER==== --
@@ -95,7 +93,7 @@ BaseBuilderTemplate {
         -- ==== Sea Units BUILDER ==== --
         -----------------------------------------------------------------------------
         -- Build Naval Units
-        'SeaFactoryBuilders Uveso',
+--        'SeaFactoryBuilders Uveso',
 
         -----------------------------------------------------------------------------
         -- ==== Sea Units FORMER ==== --
@@ -107,7 +105,7 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         'Mobile Experimental Builder Uveso',
         'Economic Experimental Builder Uveso',
-        'Paragon Turbo Builder',
+--        'Paragon Turbo Builder',
         
         -----------------------------------------------------------------------------
         -- ==== EXPERIMENTALS FORMER ==== --
@@ -127,11 +125,11 @@ BaseBuilderTemplate {
         'Tactical Missile Launcher Maximum Uveso',
         'Tactical Missile Launcher TacticalAISorian Uveso',
         'Tactical Missile Defenses Uveso',
-        'Strategic Missile Launcher Uveso',
-        'Strategic Missile Launcher NukeAI Uveso',
+--        'Strategic Missile Launcher Uveso',
+--        'Strategic Missile Launcher NukeAI Uveso',
         'Strategic Missile Defense Uveso',
         'Strategic Missile Defense Anti-NukeAI Uveso',
-        'Artillery Builder Uveso',
+--        'Artillery Builder Uveso',
         -- Build Anti Air near AirFactories
         'Base Anti Air Defense Uveso',
 
@@ -193,30 +191,13 @@ BaseBuilderTemplate {
         },
     },
     ExpansionFunction = function(aiBrain, location, markerType)
-        if not aiBrain.Uveso then
-            return 0
-        end
-        local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
-        --LOG('*** E-ExpansionFunction: personality: [ '..personality..' ] - markerType: [ '..markerType..' ] - Uveso MainBase.lua')
-        if personality == 'UvesoAdaptiveBalanced' then
-            --LOG('### E-ExpansionFunction: personality: [ '..personality..' ] - markerType: [ '..markerType..' ] - Uveso MainBase.lua')
-            return -1
-        else
-            if markerType ~= 'Start Location'
-            and markerType ~= 'Expansion Area'
-            and markerType ~= 'Large Expansion Area'
-            and markerType ~= 'Naval Area'
-            then
-                LOG('---- E-ExpansionFunction: UNKNOWN EXPANSION TYPE! personality: [ '..personality..' ] - markerType: [ '..markerType..' ] - Uveso MainBase.lua')
-            end
-        end
         return -1
     end,
     FirstBaseFunction = function(aiBrain)
         local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
-        if personality == 'uveso' or personality == 'uvesocheat' then
+        if personality == 'uvesoexp' or personality == 'uvesoexpcheat' then
             --LOG('### M-FirstBaseFunction '..personality)
-            return 1000, 'UvesoAdaptiveBalanced'
+            return 1000, 'Uveso Experimentals'
         end
         return -1
     end,

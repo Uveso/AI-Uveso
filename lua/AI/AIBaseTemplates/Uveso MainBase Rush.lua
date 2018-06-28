@@ -75,7 +75,9 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== Land Units FORMER==== --
         -----------------------------------------------------------------------------
-        'Land FormBuilders',
+        'Land FormBuilders Panic',
+        'Land FormBuilders MilitaryZone',
+        'Land FormBuilders EnemyZone',
         
         -----------------------------------------------------------------------------
         -- ==== Air Units BUILDER ==== --

@@ -511,17 +511,27 @@ BuilderGroup {
 -- ============== --
 BuilderGroup {
     BuilderGroupName = 'Engineer Reclaim Uveso',                                -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
-    BuildersType = 'PlatoonFormBuilder',
+    BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'U1 Reclaim Resource 1',
         PlatoonTemplate = 'U1Reclaim',
-        Priority = 17800,
+        Priority = 17400,
+        InstanceCount = 1,
+        BuilderConditions = {
+            { EBC, 'LessThanEconStorageRatio', { 0.80, 2.00}}, -- Ratio from 0 to 1. (1=100%)
+        },
+        BuilderData = {
+            LocationType = 'LocationType',
+        },
+        BuilderType = 'Any',
+    },
+    Builder {
+        BuilderName = 'U1 Reclaim Resource 2',
+        PlatoonTemplate = 'U1Reclaim',
+        Priority = 17400,
         InstanceCount = 2,
         BuilderConditions = {
-            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             { EBC, 'LessThanEconStorageRatio', { 0.80, 2.00}}, -- Ratio from 0 to 1. (1=100%)
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 6, categories.ENGINEER }},
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
         },
         BuilderData = {
             LocationType = 'LocationType',
@@ -529,29 +539,12 @@ BuilderGroup {
         BuilderType = 'Any',
     },
     Builder {
-        BuilderName = 'U1 Reclaim Resource 3',
+        BuilderName = 'U1 Reclaim Resource 4',
         PlatoonTemplate = 'U1Reclaim',
-        Priority = 17475,
+        Priority = 17400,
         InstanceCount = 4,
         BuilderConditions = {
             { EBC, 'LessThanEconStorageRatio', { 0.80, 2.00}}, -- Ratio from 0 to 1. (1=100%)
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.ENGINEER * categories.TECH2 }},
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
-        },
-        BuilderData = {
-            LocationType = 'LocationType',
-        },
-        BuilderType = 'Any',
-    },
-    Builder {
-        BuilderName = 'U1 Reclaim Resource 6',
-        PlatoonTemplate = 'U1Reclaim',
-        Priority = 17465,
-        InstanceCount = 4,
-        BuilderConditions = {
-            { EBC, 'LessThanEconStorageRatio', { 0.80, 2.00}}, -- Ratio from 0 to 1. (1=100%)
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.ENGINEER * categories.TECH3 }},
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
         },
         BuilderData = {
             LocationType = 'LocationType',
