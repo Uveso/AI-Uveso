@@ -56,10 +56,10 @@ BaseBuilderTemplate {
         -- ==== Factory ==== --
         -----------------------------------------------------------------------------
         -- Build Land/Air/Naval Factories
-        'FactoryBuilders Uveso',
+        'FactoryBuildersExp Uveso',
         'GateConstruction Uveso',
         -- Upgrade Factories TECH1->TECH2 and TECH2->TECH3
-        'FactoryUpgradeBuilders Uveso',
+        'FactoryUpgradeBuildersExp Uveso',
         -- Build Air Staging Platform to refill and repair air units.
         'Air Staging Platform Uveso',
         
@@ -74,7 +74,7 @@ BaseBuilderTemplate {
         -- ==== Land Units FORMER==== --
         -----------------------------------------------------------------------------
         'Land FormBuilders Panic',
-        'Land FormBuilders MilitaryZone',
+--        'Land FormBuilders MilitaryZone',
         
         -----------------------------------------------------------------------------
         -- ==== Air Units BUILDER ==== --

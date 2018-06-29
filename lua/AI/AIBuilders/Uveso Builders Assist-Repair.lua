@@ -206,7 +206,6 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.EXPERIMENTAL, categories.ENGINEER * categories.MOBILE }},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 1.0, 10.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 1.00}}, -- Ratio from 0 to 1. (1=100%)
@@ -220,7 +219,8 @@ BuilderGroup {
                 AssisteeType = 'Engineer',
                 AssistRange = 80,
                 BeingBuiltCategories = {'EXPERIMENTAL'},
-                Time = 60,
+                PermanentAssist = true,
+                Time = 1,
             },
         }
     },
@@ -234,7 +234,6 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.EXPERIMENTAL, categories.ENGINEER * categories.MOBILE }},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH2 } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.95}}, -- Ratio from 0 to 1. (1=100%)
@@ -248,7 +247,8 @@ BuilderGroup {
                 AssisteeType = 'Engineer',
                 AssistRange = 80,
                 BeingBuiltCategories = {'EXPERIMENTAL'},
-                Time = 60,
+                PermanentAssist = true,
+                Time = 1,
             },
         }
     },
@@ -262,7 +262,6 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.EXPERIMENTAL, categories.ENGINEER * categories.MOBILE }},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH3 } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 1.0, 10.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.75, 0.95}}, -- Ratio from 0 to 1. (1=100%)
@@ -276,7 +275,8 @@ BuilderGroup {
                 AssisteeType = 'Engineer',
                 AssistRange = 80,
                 BeingBuiltCategories = {'EXPERIMENTAL'},
-                Time = 60,
+                PermanentAssist = true,
+                Time = 1,
             },
         }
     },
