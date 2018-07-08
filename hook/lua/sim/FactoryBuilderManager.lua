@@ -31,5 +31,23 @@ FactoryBuilderManager = Class(OLDFactoryBuilderManager) {
             self:ForkThread(self.DelayBuildOrder, factory, bType, 2)
         end
     end,
-    
+
+    RallyPointMonitor = function(self)
+        -- Only use this with AI-Uveso
+        if not self.Brain.Uveso then
+            return OLDFactoryBuilderManager.RallyPointMonitor(self)
+        end
+        -- End the ForkThread RallyPointMonitor
+        LOG('*UVESO Ending forked thread RallyPointMonitor')
+    end,
+
+    SetRallyPoint = function(self, factory)
+        -- Only use this with AI-Uveso
+        if not self.Brain.Uveso then
+            return OLDFactoryBuilderManager.SetRallyPoint(self, factory)
+        end
+        -- don't set any rally point, we use units on the fly.
+        return true
+    end,
+
 }

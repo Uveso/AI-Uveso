@@ -21,7 +21,7 @@ BuilderGroup {
         BuilderName = 'U4 AirExperimental1',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 150,
-        DelayEqualBuildPlattons = {'Experimental', 30},
+        DelayEqualBuildPlattons = {'Experimental', 5},
         InstanceCount = 3,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -29,7 +29,6 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 10.0, 300.0 } }, -- relative income
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.95 } }, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
@@ -53,7 +52,7 @@ BuilderGroup {
         BuilderName = 'U4 LandExperimental3',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 150,
-        DelayEqualBuildPlattons = {'Experimental', 30},
+        DelayEqualBuildPlattons = {'Experimental', 5},
         InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -61,7 +60,6 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 40.0, 300.0 } }, -- relative income
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.95 } }, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
@@ -85,7 +83,7 @@ BuilderGroup {
         BuilderName = 'U4 SeaExperimental1',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 150,
-        DelayEqualBuildPlattons = {'Experimental', 30},
+        DelayEqualBuildPlattons = {'Experimental', 5},
         InstanceCount = 2,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -93,7 +91,6 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 10.0, 300.0 } }, -- relative income
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.95 } }, -- Ratio from 0 to 1. (1=100%)
             { EBC, 'GreaterThanEconEfficiencyOverTime', { 1.0, 1.0 }}, -- relative baseincome 0=bad, 1=ok, 2=full
@@ -119,8 +116,7 @@ BuilderGroup {
         BuilderName = 'U4 LandExperimental2',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 150,
-        DelayEqualBuildPlattons = {'Experimental', 30},
-        InstanceCount = 1,
+        DelayEqualBuildPlattons = {'Experimental', 5},
         InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -128,7 +124,6 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 30.0, 300.0 } }, -- relative income
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.95 } }, -- Ratio from 0 to 1. (1=100%)
             { EBC, 'GreaterThanEconEfficiencyOverTime', { 1.0, 1.0 }}, -- relative baseincome 0=bad, 1=ok, 2=full
@@ -154,7 +149,7 @@ BuilderGroup {
         BuilderName = 'U4 LandExperimental1',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 150,
-        DelayEqualBuildPlattons = {'Experimental', 30},
+        DelayEqualBuildPlattons = {'Experimental', 5},
         InstanceCount = 3,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -162,7 +157,6 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 10.0, 300.0 } }, -- relative income
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.95, 0.95 }}, -- Ratio from 0 to 1. (1=100%)
             { EBC, 'GreaterThanEconEfficiencyOverTime', { 1.0, 1.0 }}, -- relative baseincome 0=bad, 1=ok, 2=full
@@ -185,10 +179,10 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'U4  LandExp1 Minimum',
+        BuilderName = 'U4 LandExp1 Minimum',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 160,
-        DelayEqualBuildPlattons = {'Experimental', 30},
+        DelayEqualBuildPlattons = {'Experimental', 5},
         InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -220,7 +214,7 @@ BuilderGroup {
         BuilderName = 'U4 LandExp1 1st',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 160,
-        DelayEqualBuildPlattons = {'Experimental', 30},
+        DelayEqualBuildPlattons = {'Experimental', 5},
         InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -255,8 +249,8 @@ BuilderGroup {
     Builder {
         BuilderName = 'U4 LandExp1 ECOFULL',
         PlatoonTemplate = 'T3EngineerBuilder',
-        Priority = 160,
-        DelayEqualBuildPlattons = {'Experimental', 30},
+        Priority = 140,
+        DelayEqualBuildPlattons = {'Experimental', 5},
         InstanceCount = 10,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -544,7 +538,7 @@ BuilderGroup {
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 1000,                                         -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            TargetSearchCategory = 'STRUCTURE',                 -- Only find targets matching these categories.
+            TargetSearchCategory = 'STRUCTURE, MOBILE LAND',    -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'EXPERIMENTAL',
                 'MOBILE LAND INDIRECTFIRE',
@@ -577,7 +571,7 @@ BuilderGroup {
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 1000,                                         -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            TargetSearchCategory = 'STRUCTURE',                 -- Only find targets matching these categories.
+            TargetSearchCategory = 'STRUCTURE, MOBILE',    -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'ANTIAIR',
                 'ENERGYPRODUCTION',

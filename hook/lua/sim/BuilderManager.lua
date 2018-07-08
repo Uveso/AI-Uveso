@@ -4,6 +4,7 @@ local AntiSpamList = {}
 local AntiSpamCounter = 0
 local LastBuilder = ''
 
+local DEBUGBUILDER = false
 -- Hook for debugging
 OLDBuilderManager = BuilderManager
 BuilderManager = Class(OLDBuilderManager) {
@@ -22,16 +23,24 @@ BuilderManager = Class(OLDBuilderManager) {
         self.NumGet = self.NumGet + 1
         local found = false
         local possibleBuilders = {}
+        if DebugNames then
+            if not DEBUGBUILDER then
+                DEBUGBUILDER = true
+                for k,v in self.BuilderData[bType].Builders do
+                    LOG('* AI DEBUG: Builder ['..bType..']: Priority = '..v.Priority..' - possibleBuilders = '..repr(v.BuilderName))
+                end
+            end
+        end
         for k,v in self.BuilderData[bType].Builders do
-            if v:GetPriority() >= 1 and self:BuilderParamCheck(v,factory) and (not found or v:GetPriority() == found) and v:GetBuilderStatus() then
+            if v.Priority >= 1 and self:BuilderParamCheck(v,factory) and (not found or v.Priority == found) and v:GetBuilderStatus() then
                 if not self:IsPlattonBuildDelayed(v.DelayEqualBuildPlattons) then
-                    found = v:GetPriority()
+                    found = v.Priority
                     table.insert(possibleBuilders, k)
                     if DebugNames then
                         --LOG('* AI DEBUG: GetHighestBuilder: Priority = '..found..' - possibleBuilders = '..repr(v.BuilderName))
                     end
                 end
-            elseif found and v:GetPriority() < found then
+            elseif found and v.Priority < found then
                 break
             end
         end

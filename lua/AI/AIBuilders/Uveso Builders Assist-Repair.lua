@@ -30,7 +30,7 @@ BuilderGroup {
                 AssisteeType = 'Structure',
                 AssistRange = 50,
                 BeingBuiltCategories = {'STRUCTURE LAND FACTORY TECH2'},
-                PermanentAssist = false,
+                AssistUntilFinished = false,
                 Time = 30,
             },
         }
@@ -53,7 +53,7 @@ BuilderGroup {
                 AssisteeType = 'Structure',
                 AssistRange = 50,
                 BeingBuiltCategories = {'STRUCTURE LAND FACTORY TECH3'},
-                PermanentAssist = false,
+                AssistUntilFinished = false,
                 Time = 30,
             },
         }
@@ -76,7 +76,7 @@ BuilderGroup {
                 AssisteeType = 'Structure',
                 AssistRange = 50,
                 BeingBuiltCategories = {'STRUCTURE LAND FACTORY TECH3'},
-                PermanentAssist = false,
+                AssistUntilFinished = false,
                 Time = 30,
             },
         }
@@ -103,7 +103,7 @@ BuilderGroup {
                 AssisteeType = 'Structure',
                 AssistRange = 40,
                 BeingBuiltCategories = {'STRUCTURE ENERGYPRODUCTION TECH2', 'STRUCTURE ENERGYPRODUCTION TECH3'},
-                PermanentAssist = false,
+                AssistUntilFinished = false,
                 Time = 30,
             },
         }
@@ -132,7 +132,7 @@ BuilderGroup {
                 AssisteeType = 'Structure',
                 AssistRange = 30,
                 BeingBuiltCategories = {'STRUCTURE ENERGYPRODUCTION TECH2', 'STRUCTURE ENERGYPRODUCTION TECH3'},
-                PermanentAssist = false,
+                AssistUntilFinished = false,
                 Time = 30,
             },
         }
@@ -160,7 +160,7 @@ BuilderGroup {
                 AssisteeType = 'Structure',
                 AssistRange = 30,
                 BeingBuiltCategories = {'STRUCTURE ENERGYPRODUCTION TECH2', 'STRUCTURE ENERGYPRODUCTION TECH3'},
-                PermanentAssist = false,
+                AssistUntilFinished = false,
                 Time = 30,
             },
         }
@@ -188,7 +188,7 @@ BuilderGroup {
                 AssisteeType = 'Structure',
                 AssistRange = 30,
                 BeingBuiltCategories = {'STRUCTURE ENERGYPRODUCTION TECH2', 'STRUCTURE ENERGYPRODUCTION TECH3'},
-                PermanentAssist = false,
+                AssistUntilFinished = false,
                 Time = 30,
             },
         }
@@ -199,18 +199,19 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Assist Experimental',
         PlatoonTemplate = 'EngineerAssist',
-        Priority = 200,
-        DelayEqualBuildPlattons = {'Assist Experimental', 1},
-        InstanceCount = 5,
+        Priority = 1,
+        DelayEqualBuildPlattons = {'Assist Experimental TECH1', 1},
+        InstanceCount = 30,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.EXPERIMENTAL, categories.ENGINEER * categories.MOBILE }},
             -- Do we need additional conditions to build it ?
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 1.0, 10.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 1.00}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 1.00, 1.00}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'CheckBuildPlattonDelay', { 'Assist Experimental' }},
+            { UCBC, 'CheckBuildPlattonDelay', { 'Assist Experimental TECH1' }},
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -219,8 +220,8 @@ BuilderGroup {
                 AssisteeType = 'Engineer',
                 AssistRange = 80,
                 BeingBuiltCategories = {'EXPERIMENTAL'},
-                PermanentAssist = true,
-                Time = 1,
+                AssistUntilFinished = true,
+                Time = 0,
             },
         }
     },
@@ -228,17 +229,18 @@ BuilderGroup {
         BuilderName = 'U-T2 Assist Experimental',
         PlatoonTemplate = 'T2EngineerAssist',
         Priority = 200,
-        DelayEqualBuildPlattons = {'Assist Experimental', 1},
-        InstanceCount = 10,
+        DelayEqualBuildPlattons = {'Assist Experimental TECH2', 1},
+        InstanceCount = 30,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.EXPERIMENTAL, categories.ENGINEER * categories.MOBILE }},
             -- Do we need additional conditions to build it ?
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH2 } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.95}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.75, 0.95}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'CheckBuildPlattonDelay', { 'Assist Experimental' }},
+            { UCBC, 'CheckBuildPlattonDelay', { 'Assist Experimental TECH2' }},
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -247,26 +249,27 @@ BuilderGroup {
                 AssisteeType = 'Engineer',
                 AssistRange = 80,
                 BeingBuiltCategories = {'EXPERIMENTAL'},
-                PermanentAssist = true,
-                Time = 1,
+                AssistUntilFinished = true,
+                Time = 0,
             },
         }
     },
     Builder {
         BuilderName = 'U-T3 Assist Experimental',
         PlatoonTemplate = 'T3EngineerAssist',
-        Priority = 200,
-        DelayEqualBuildPlattons = {'Assist Experimental', 1},
-        InstanceCount = 10,
+        Priority = 100,
+        DelayEqualBuildPlattons = {'Assist Experimental TECH3', 1},
+        InstanceCount = 30,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.EXPERIMENTAL, categories.ENGINEER * categories.MOBILE }},
             -- Do we need additional conditions to build it ?
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH3 } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 1.0, 10.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.75, 0.95}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.80, 0.95}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'CheckBuildPlattonDelay', { 'Assist Experimental' }},
+            { UCBC, 'CheckBuildPlattonDelay', { 'Assist Experimental TECH3' }},
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -275,8 +278,8 @@ BuilderGroup {
                 AssisteeType = 'Engineer',
                 AssistRange = 80,
                 BeingBuiltCategories = {'EXPERIMENTAL'},
-                PermanentAssist = true,
-                Time = 1,
+                AssistUntilFinished = true,
+                Time = 0,
             },
         }
     },
@@ -389,7 +392,7 @@ BuilderGroup {
         BuilderData = {
             Assist = {
                 AssistLocation = 'LocationType',
-                PermanentAssist = true,
+                AssistUntilFinished = true,
                 BeingBuiltCategories = {'STRUCTURE SHIELD'},
                 AssisteeType = 'Structure',
                 Time = 360,
@@ -417,6 +420,7 @@ BuilderGroup {
         BuilderData = {
             Assist = {
                 AssistLocation = 'LocationType',
+                AssisteeType = 'Engineer',
                 BeingBuiltCategories = {'STRUCTURE'},
             },
         },
@@ -441,6 +445,7 @@ BuilderGroup {
         BuilderData = {
             Assist = {
                 AssistLocation = 'LocationType',
+                AssisteeType = 'Engineer',
                 BeingBuiltCategories = {'STRUCTURE'},
             },
         },
@@ -465,6 +470,7 @@ BuilderGroup {
         BuilderData = {
             Assist = {
                 AssistLocation = 'LocationType',
+                AssisteeType = 'Engineer',
                 BeingBuiltCategories = {'STRUCTURE'},
             },
         },

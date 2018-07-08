@@ -55,6 +55,18 @@ end
 function LocationRangeManagerThread(aiBrain)
     local unitcounterdelayer = 0
     while true do
+    
+        local Factories = aiBrain.BuilderManagers.MAIN.FactoryManager.FactoryList
+        for k,factory in Factories do
+            if not factory:IsDead() then
+                LOG('*LocationRangeManagerThread. - IsUnitState(Building) '..repr(factory:IsUnitState('Building')))
+                if factory.DelayThread then
+                    LOG('factory.DelayThread found '..k)
+                end
+            end
+        end
+
+    
         -- Check and set the location radius of our main base and expansions
         local BasePositions = BaseRanger(aiBrain)
         -- Check if we have units outside the range of any BaseManager
@@ -119,12 +131,6 @@ function LocationRangeManagerThread(aiBrain)
                 -- if we are not in range of an base, then move to a base.
                 if WeAreInRange == false and not unit.Dead then
                     if nearestbase then
---                        if unit.PlatoonHandle and aiBrain:PlatoonExists(unit.PlatoonHandle) then
---                            LOG('* AIDEBUG: LocationRangeManagerThread: Found idle Unit outside Basemanager range! Removing platoonhandle: ('..(unit.PlatoonHandle.PlanName or 'Unknown')..')')
---                            unit.PlatoonHandle:Stop()
---                            unit.PlatoonHandle:PlatoonDisband()
---                        end
-                        --LOG('* AIDEBUG: LocationRangeManagerThread: Moving idle unit inside next basemanager range: '..unit:GetBlueprint().BlueprintId..'  ')
                         if aiBrain[ScenarioInfo.Options.AIPLatoonNameDebug] then
                             unit:SetCustomName('Outside LocationManager')
                         end
