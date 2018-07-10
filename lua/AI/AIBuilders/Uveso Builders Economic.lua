@@ -105,7 +105,7 @@ BuilderGroup {
         Priority = 18400,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanIdleEngineers', { 1, 1 }}, -- count, tech (1=TECH1, 2=Tech2, 3=FieldTech, 4=TECH3, 5=SubCommander)
+            { UCBC, 'HaveLessThanIdleEngineers', { 2, 1 }}, -- count, tech (1=TECH1, 2=Tech2, 3=FieldTech, 4=TECH3, 5=SubCommander)
             -- Do we need additional conditions to build it ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.AIR } },
             -- Have we the eco to build it ?
@@ -125,7 +125,7 @@ BuilderGroup {
         Priority = 18400,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanIdleEngineers', { 2, 1 }}, -- count, tech (1=TECH1, 2=Tech2, 3=FieldTech, 4=TECH3, 5=SubCommander)
+            { UCBC, 'HaveLessThanIdleEngineers', { 5, 1 }}, -- count, tech (1=TECH1, 2=Tech2, 3=FieldTech, 4=TECH3, 5=SubCommander)
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income

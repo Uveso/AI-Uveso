@@ -521,9 +521,10 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Reclaim Resource 1',
         PlatoonTemplate = 'U1Reclaim',
-        Priority = 17400,
+        Priority = 18000,
         InstanceCount = 1,
         BuilderConditions = {
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 4, categories.MOBILE * categories.ENGINEER}},
             { EBC, 'LessThanEconStorageRatio', { 0.80, 2.00}}, -- Ratio from 0 to 1. (1=100%)
         },
         BuilderData = {
@@ -537,6 +538,7 @@ BuilderGroup {
         Priority = 17400,
         InstanceCount = 2,
         BuilderConditions = {
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 6, categories.MOBILE * categories.ENGINEER}},
             { EBC, 'LessThanEconStorageRatio', { 0.80, 2.00}}, -- Ratio from 0 to 1. (1=100%)
         },
         BuilderData = {
@@ -550,6 +552,7 @@ BuilderGroup {
         Priority = 17400,
         InstanceCount = 4,
         BuilderConditions = {
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 8, categories.MOBILE * categories.ENGINEER}},
             { EBC, 'LessThanEconStorageRatio', { 0.80, 2.00}}, -- Ratio from 0 to 1. (1=100%)
         },
         BuilderData = {

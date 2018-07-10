@@ -158,6 +158,7 @@ BuilderGroup {
         Priority = 17600,
         BuilderConditions = {
             -- When do we want to build this ?
+            { UCBC, 'LessThanEnergyTrend', { 2.0 } },
             { EBC, 'LessThanEconStorageRatio', { 2.00, 1.00}}, -- Ratio from 0 to 1. (1=100%)
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 }},
@@ -183,18 +184,18 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'UC Power Push 200',
+        BuilderName = 'UC Power Push 50',
         PlatoonTemplate = 'CommanderBuilder',
         Priority = 17430,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'LessThanEnergyTrend', { 20.0 } },
+            { UCBC, 'LessThanEnergyTrend', { 5.0 } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 }},
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 0.6, 6.0}}, -- Absolut Base income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.35, 0.05}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.05}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<=', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },

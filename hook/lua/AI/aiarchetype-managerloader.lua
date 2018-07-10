@@ -58,10 +58,12 @@ function LocationRangeManagerThread(aiBrain)
     
         local Factories = aiBrain.BuilderManagers.MAIN.FactoryManager.FactoryList
         for k,factory in Factories do
-            if not factory:IsDead() then
-                LOG('*LocationRangeManagerThread. - IsUnitState(Building) '..repr(factory:IsUnitState('Building')))
-                if factory.DelayThread then
-                    LOG('factory.DelayThread found '..k)
+            if not factory.Dead then
+                if factory:IsUnitState('Building') == false and factory:IsUnitState('Upgrading') == false then
+                    if factory.LastActive and GetGameTimeSeconds() - factory.LastActive > 30 then
+                        --WARN('Factory '..k..' is not working for '.. math.floor(GetGameTimeSeconds() - factory.LastActive) ..' seconds. Restarting factory... ')
+                        aiBrain.BuilderManagers.MAIN.FactoryManager:ForkThread(aiBrain.BuilderManagers.MAIN.FactoryManager.DelayBuildOrder, factory, factory.BuilderManagerData.BuilderType, 1)
+                    end
                 end
             end
         end

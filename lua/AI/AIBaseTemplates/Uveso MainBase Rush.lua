@@ -124,9 +124,9 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== Defenses BUILDER ==== --
         -----------------------------------------------------------------------------
-        'Tactical Missile Launcher minimum Uveso',
-        'Tactical Missile Launcher Maximum Uveso',
-        'Tactical Missile Launcher TacticalAISorian Uveso',
+--        'Tactical Missile Launcher minimum Uveso',
+--        'Tactical Missile Launcher Maximum Uveso',
+--        'Tactical Missile Launcher TacticalAISorian Uveso',
         'Tactical Missile Defenses Uveso',
         'Strategic Missile Launcher Uveso',
         'Strategic Missile Launcher NukeAI Uveso',
@@ -134,12 +134,12 @@ BaseBuilderTemplate {
         'Strategic Missile Defense Anti-NukeAI Uveso',
         'Artillery Builder Uveso',
         -- Build Anti Air near AirFactories
-        'Base Anti Air Defense Uveso',
+--        'Base Anti Air Defense Uveso',
 
         -----------------------------------------------------------------------------
         -- ==== FireBase BUILDER ==== --
         -----------------------------------------------------------------------------
-        'U1 FirebaseBuilders',
+--        'U1 FirebaseBuilders',
 
         -- We need this even if we have Omni View to get target informations for experimentals attack.
         -----------------------------------------------------------------------------
@@ -182,7 +182,7 @@ BaseBuilderTemplate {
             Gate = 1,
         },
         EngineerCount = {
-            Tech1 = 6,
+            Tech1 = 4,
             Tech2 = 3,
             Tech3 = 3,
             SCU = 1,

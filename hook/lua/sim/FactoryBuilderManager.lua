@@ -32,6 +32,27 @@ FactoryBuilderManager = Class(OLDFactoryBuilderManager) {
         end
     end,
 
+    DelayBuildOrder = function(self,factory,bType,time)
+        factory.LastActive = GetGameTimeSeconds()
+        local guards = factory:GetGuards()
+        for k,v in guards do
+            if not v.Dead and v.AssistPlatoon then
+                if self.Brain:PlatoonExists(v.AssistPlatoon) then
+                    v.AssistPlatoon:ForkThread(v.AssistPlatoon.EconAssistBody)
+                else
+                    v.AssistPlatoon = nil
+                end
+            end
+        end
+        if factory.DelayThread then
+            return
+        end
+        factory.DelayThread = true
+        WaitSeconds(time)
+        factory.DelayThread = false
+        self:AssignBuildOrder(factory,bType)
+    end,
+
     RallyPointMonitor = function(self)
         -- Only use this with AI-Uveso
         if not self.Brain.Uveso then

@@ -15,16 +15,16 @@ BuilderGroup {
         BuilderName = 'U1 Land Scout Always',
         PlatoonTemplate = 'T1LandScout',
         Priority = 1000,
-        DelayEqualBuildPlattons = {'Scouts', 3},
+        DelayEqualBuildPlattons = {'Scouts', 10},
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER}},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 3, categories.MOBILE * categories.ENGINEER}},
             -- Do we need additional conditions to build it ?
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, categories.SCOUT * categories.LAND } },
             -- Have we the eco to build it ?
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'Scouts' }},
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 4, categories.LAND * categories.SCOUT }},
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.LAND * categories.SCOUT }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.AIR * categories.SCOUT }},
             -- Respect UnitCap
         },
@@ -37,7 +37,7 @@ BuilderGroup {
         BuilderName = 'U1 Air Scout',
         PlatoonTemplate = 'T1AirScout',
         Priority = 1000,
-        DelayEqualBuildPlattons = {'Scouts', 3},
+        DelayEqualBuildPlattons = {'Scouts', 10},
         BuilderConditions = {
             -- When do we want to build this ?
             -- Do we need additional conditions to build it ?
@@ -55,7 +55,7 @@ BuilderGroup {
         BuilderName = 'U3 Air Scout',
         PlatoonTemplate = 'T3AirScout',
         Priority = 1000,
-        DelayEqualBuildPlattons = {'Scouts', 3},
+        DelayEqualBuildPlattons = {'Scouts', 10},
         BuilderConditions = {
             -- When do we want to build this ?
             -- Do we need additional conditions to build it ?
