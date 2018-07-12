@@ -1,6 +1,6 @@
 name = "AI-Uveso"
-uid = "62e2j64a-AIUV-0360-89465-146as555a8u3"
-version = 36
+uid = "62e2j64a-AIUV-0380-89465-146as555a8u3"
+version = 38
 copyright = "Uveso 2017-2018"
 description = "(For FAF only)"
 author = "Uveso"

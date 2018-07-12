@@ -75,6 +75,7 @@ Platoon = Class(oldPlatoon) {
     end,
 
     -- For AI Patch V2. We need a better error message if we can't upgrade a building.
+    -- For AI Patch V2. Patch for OverideUpgradeBlueprint
     UnitUpgradeAI = function(self)
         local aiBrain = self:GetBrain()
         -- Only use this with AI-Uveso
@@ -91,7 +92,9 @@ Platoon = Class(oldPlatoon) {
             local upgradeID
             -- Get the factionindex from the unit to get the right update (in case we have captured this unit from another faction)
             UnitBeingUpgradeFactionIndex = FactionToIndex[v.factionCategory] or factionIndex
-            if EntityCategoryContains(categories.MOBILE, v) then
+            if self.PlatoonData.OverideUpgradeBlueprint then
+                upgradeID = self.PlatoonData.OverideUpgradeBlueprint[UnitBeingUpgradeFactionIndex]
+            elseif EntityCategoryContains(categories.MOBILE, v) then
                 upgradeID = aiBrain:FindUpgradeBP(v:GetUnitId(), UnitUpgradeTemplates[UnitBeingUpgradeFactionIndex])
                 -- if we can't find a UnitUpgradeTemplate for this unit, warn the programmer
                 if not upgradeID then
