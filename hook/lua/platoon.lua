@@ -4,6 +4,27 @@ local UUtils = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua')
 oldPlatoon = Platoon
 Platoon = Class(oldPlatoon) {
 
+    -- TESTING
+    EngineerAssistAI = function(self)
+        local aiBrain = self:GetBrain()
+        -- Only use this with AI-Uveso
+        if not aiBrain.Uveso then
+            return oldPlatoon.EngineerAssistAI(self)
+        end
+        LOG('* EngineerAssistAI: START')
+        self:ForkThread(self.AssistBody)
+        local aiBrain = self:GetBrain()
+        WaitSeconds(self.PlatoonData.Assist.Time or 60)
+        if not aiBrain:PlatoonExists(self) then
+            return
+        end
+        LOG('* EngineerAssistAI: END')
+        WaitTicks(1)
+        -- stop the platoon from endless assisting
+        self:Stop()
+        self:PlatoonDisband()
+    end,
+
     -- For AI Patch V2. Unpause engineers and set AssistPlatoon to nil
     PlatoonDisband = function(self)
         local aiBrain = self:GetBrain()
@@ -11,11 +32,13 @@ Platoon = Class(oldPlatoon) {
         if not aiBrain.Uveso then
             return oldPlatoon.PlatoonDisband(self)
         end
+
         if self.BuilderHandle then
             self.BuilderHandle:RemoveHandle(self)
         end
         for k,v in self:GetPlatoonUnits() do
             v.PlatoonHandle = nil
+            v.AssistSet = nil
             v.AssistPlatoon = nil
             if v:IsPaused() then
                 v:SetPaused( false )
@@ -37,6 +60,10 @@ Platoon = Class(oldPlatoon) {
                 IssueStop({v})
                 IssueClearCommands({v})
             end
+        end
+        if self.AIThread then
+            LOG('* PlatoonDisband: AIThread:Destroy()')
+            self.AIThread:Destroy()
         end
         aiBrain:DisbandPlatoon(self)
     end,
@@ -141,6 +168,53 @@ Platoon = Class(oldPlatoon) {
         self:PlatoonDisband()
     end,
 
+   -- For AI Patch V2. Bugfix eng.UnitBeingBuilt = assistee
+    EconUnfinishedBody = function(self)
+        local aiBrain = self:GetBrain()
+        -- Only use this with AI-Uveso
+        if not aiBrain.Uveso then
+            return oldPlatoon.EconUnfinishedBody(self)
+        end
+        local eng = self:GetPlatoonUnits()[1]
+        if not eng then
+            self:PlatoonDisband()
+            return
+        end
+        local assistData = self.PlatoonData.Assist
+        local assistee = false
+
+        eng.AssistPlatoon = self
+
+        if not assistData.AssistLocation then
+            WARN('*AI WARNING: Disbanding EconUnfinishedBody platoon that does not have either AssistLocation')
+            self:PlatoonDisband()
+        end
+
+        local beingBuilt = assistData.BeingBuiltCategories or { 'ALLUNITS' }
+
+        -- loop through different categories we are looking for
+        for _,catString in beingBuilt do
+            -- Track all valid units in the assist list so we can load balance for factories
+
+            local category = ParseEntityCategory(catString)
+
+            local assistList = SUtils.FindUnfinishedUnits(aiBrain, assistData.AssistLocation, category)
+
+            if assistList then
+                assistee = assistList
+                break
+            end
+        end
+        -- assist unit
+        if assistee then
+            self:Stop()
+            eng.AssistSet = true
+            eng.UnitBeingBuilt = assistee
+            --LOG('* EconUnfinishedBody: Assisting now: ['..eng.UnitBeingBuilt:GetBlueprint().BlueprintId..'] ('..eng.UnitBeingBuilt:GetBlueprint().Description..')')
+            IssueGuard({eng}, assistee)
+        end
+    end,
+
     -- For AI Patch V2. Bugfix GetGuards count
     EconAssistBody = function(self)
         local aiBrain = self:GetBrain()
@@ -150,13 +224,12 @@ Platoon = Class(oldPlatoon) {
         end
         local eng = self:GetPlatoonUnits()[1]
         if not eng then
-            self:PlatoonDisband()
+            LOG('* EconAssistBody Platoon disband')
             return
         end
 
         --DUNCAN - added
         if eng:IsUnitState('Building') or eng:IsUnitState('Upgrading') or  eng:IsUnitState("Enhancing") then
-           self:PlatoonDisband()
            return
         end
 
@@ -176,7 +249,6 @@ Platoon = Class(oldPlatoon) {
             if not assistData.AssisteeType then
                 WARN('*AI WARNING: Builder '..repr(self.BuilderName)..' is missing AssisteeType')
             end
-            self:PlatoonDisband()
             return
         end
 
@@ -194,6 +266,7 @@ Platoon = Class(oldPlatoon) {
             local category = ParseEntityCategory(catString)
 
             local assistList = AIUtils.GetAssistees(aiBrain, assistData.AssistLocation, assistData.AssisteeType, category, assisteeCat)
+            --LOG('* EconAssistBody: GetAssistees for ['..assistData.AssisteeType..'] '..catString)
 
             if table.getn(assistList) > 0 then
                 -- only have one unit in the list; assist it
@@ -223,17 +296,13 @@ Platoon = Class(oldPlatoon) {
         if assistee  then
             self:Stop()
             eng.AssistSet = true
+            eng.UnitBeingBuilt = assistee.UnitBeingBuilt
+            --LOG('* EconAssistBody: Assisting now: ['..eng.UnitBeingBuilt:GetBlueprint().BlueprintId..'] ('..eng.UnitBeingBuilt:GetBlueprint().Description..')')
             IssueGuard({eng}, assistee)
-        else
-            -- stop the platoon from endless assisting
-            self:Stop()
-            self:PlatoonDisband()
         end
     end,
 
-
-
-    -- Uveso AI permanent hook for eco management while assisting
+    -- For AI Patch V2. Enhancement, new flag for assis: AssistUntilFinished
     ManagerEngineerAssistAI = function(self)
         local aiBrain = self:GetBrain()
         -- Only use this with AI-Uveso
@@ -242,30 +311,28 @@ Platoon = Class(oldPlatoon) {
         end
         local eng = self:GetPlatoonUnits()[1]
         self:EconAssistBody()
+        WaitTicks(10)
+        local guardedUnit
         -- do we assist until the building is finished ?
         if self.PlatoonData.Assist.AssistUntilFinished then
+            if eng.UnitBeingBuilt then
+                guardedUnit = eng.UnitBeingBuilt
+            else 
+                guardedUnit = eng:GetGuardedUnit()
+            end
             -- loop as long as we are not dead and not idle
             while eng and not eng.Dead and aiBrain:PlatoonExists(self) and not eng:IsIdleState() do
-                -- Only assist if we have more then 75% mass and more then 95% energy storage
-                if aiBrain:GetEconomyStoredRatio('MASS') < 0.50 or aiBrain:GetEconomyStoredRatio('ENERGY') < 0.90 then
-                    -- if we have a negative trend, stop the unit from assisting
-                    if aiBrain:GetEconomyTrend('MASS') < 0.00 or aiBrain:GetEconomyTrend('ENERGY') < 0.00 then
-                        self:Stop()
-                        self:PlatoonDisband()
-                        return
-                    -- if we have positive trend, pause the unit.
-                    elseif aiBrain:GetEconomyStoredRatio('MASS') > 0.75 or aiBrain:GetEconomyStoredRatio('ENERGY') > 0.99 then
-                        if not eng:IsPaused() then
-                            -- .. pause it.
-                            eng:SetPaused( true )
-                        end
-                    end
-                else
-                    -- We have good eco, check if the engineer is paused
-                    if eng:IsPaused() then
-                        -- resume assisting
-                        eng:SetPaused( false )
-                    end
+                if not guardedUnit or guardedUnit.Dead or guardedUnit:BeenDestroyed() then
+                    break
+                end
+                -- stop if our target is finished
+                if guardedUnit:GetFractionComplete() == 1 and not guardedUnit:IsUnitState('Upgrading') then
+--                    LOG('* ManagerEngineerAssistAI: Engineer Builder ['..self.BuilderName..'] - ['..self.PlatoonData.Assist.AssisteeType..']')
+--                    LOG('* ManagerEngineerAssistAI: Engineer UnitBeingBuilt ['..repr(type(eng.UnitBeingBuilt))..']')
+--                    LOG('* ManagerEngineerAssistAI: Target unit ['..guardedUnit:GetBlueprint().BlueprintId..'] ('..guardedUnit:GetBlueprint().Description..') is finished')
+--                    LOG('* ManagerEngineerAssistAI: Target GetFractionComplete = '..repr(guardedUnit:GetFractionComplete()))
+--                    LOG('* ManagerEngineerAssistAI: Target Upgrading = '..repr(guardedUnit:IsUnitState('Upgrading')))
+                    break
                 end
                 -- wait 1.5 seconds until we loop again
                 WaitTicks(15)
@@ -279,6 +346,243 @@ Platoon = Class(oldPlatoon) {
         -- stop the platoon from endless assisting
         self:Stop()
         self:PlatoonDisband()
+    end,
+
+    -- For AI Patch V2. Bugfix endless assisting
+    ManagerEngineerFindUnfinished = function(self)
+        local aiBrain = self:GetBrain()
+        -- Only use this with AI-Uveso
+        if not aiBrain.Uveso then
+            return oldPlatoon.ManagerEngineerFindUnfinished(self)
+        end
+        local eng = self:GetPlatoonUnits()[1]
+        local guardedUnit
+        self:EconUnfinishedBody()
+        WaitTicks(10)
+        -- loop as long as we are not dead and not idle
+            while eng and not eng.Dead and aiBrain:PlatoonExists(self) and not eng:IsIdleState() do
+                guardedUnit = eng:GetGuardedUnit()
+                if not guardedUnit or guardedUnit.Dead or guardedUnit:BeenDestroyed() then
+                    --LOG('* ManagerEngineerFindUnfinished: no guardedUnit')
+                    break
+                end
+                -- stop if our target is finished
+                if guardedUnit:GetFractionComplete() == 1 and not guardedUnit:IsUnitState('Upgrading') then
+                    --LOG('* ManagerEngineerFindUnfinished: Target unit ['..guardedUnit:GetBlueprint().BlueprintId..'] is finished')
+                    --LOG('* ManagerEngineerFindUnfinished: Target GetFractionComplete = '..repr(guardedUnit:GetFractionComplete()))
+                    --LOG('* ManagerEngineerFindUnfinished: Target Upgrading = '..repr(guardedUnit:IsUnitState('Upgrading')))
+                    break
+                end
+                -- wait 1.5 seconds until we loop again
+                WaitTicks(15)
+            end
+        if not aiBrain:PlatoonExists(self) then
+            return
+        end
+        -- stop the platoon from endless assisting
+        self:Stop()
+        self:PlatoonDisband()
+    end,
+
+    -- For AI Patch V2. Bugfix endless assisting
+    AssistBody = function(self)
+        local aiBrain = self:GetBrain()
+        -- Only use this with AI-Uveso
+        if not aiBrain.Uveso then
+            return oldPlatoon.AssistBody(self)
+        end
+        local platoonUnits = self:GetPlatoonUnits()
+        local eng = platoonUnits[1]
+        eng.AssistPlatoon = self
+        local assistData = self.PlatoonData.Assist
+        local platoonPos = self:GetPlatoonPosition()
+        local assistee = false
+        local assistingBool = false
+        WaitTicks(5)
+        if not aiBrain:PlatoonExists(self) then
+            return
+        end
+        if not eng.Dead then
+            local guardedUnit = eng:GetGuardedUnit()
+            if guardedUnit and not guardedUnit.Dead then
+                if eng.AssistSet and assistData.PermanentAssist then
+                    return
+                end
+                eng.AssistSet = false
+                if guardedUnit:IsUnitState('Building') or guardedUnit:IsUnitState('Upgrading') then
+                    return
+                end
+            end
+        end
+        self:Stop()
+        if assistData then
+            local assistRange = assistData.AssistRange or 80
+            -- Check for units being built
+            if assistData.BeingBuiltCategories then
+                local unitsBuilding = aiBrain:GetListOfUnits(categories.CONSTRUCTION, false)
+                for catNum, buildeeCat in assistData.BeingBuiltCategories do
+                    local buildCat = ParseEntityCategory(buildeeCat)
+                    for unitNum, unit in unitsBuilding do
+                        if not unit.Dead and (unit:IsUnitState('Building') or unit:IsUnitState('Upgrading')) then
+                            local buildingUnit = unit.UnitBeingBuilt
+                            if buildingUnit and not buildingUnit.Dead and EntityCategoryContains(buildCat, buildingUnit) then
+                                local unitPos = unit:GetPosition()
+                                if unitPos and platoonPos and VDist2(platoonPos[1], platoonPos[3], unitPos[1], unitPos[3]) < assistRange then
+                                    assistee = unit
+                                    break
+                                end
+                            end
+                        end
+                    end
+                    if assistee then
+                        break
+                    end
+                end
+            end
+            -- Check for builders
+            if not assistee and assistData.BuilderCategories then
+                for catNum, buildCat in assistData.BuilderCategories do
+                    local unitsBuilding = aiBrain:GetListOfUnits(ParseEntityCategory(buildCat), false)
+                    for unitNum, unit in unitsBuilding do
+                        if not unit.Dead and unit:IsUnitState('Building') then
+                            local unitPos = unit:GetPosition()
+                            if unitPos and platoonPos and VDist2(platoonPos[1], platoonPos[3], unitPos[1], unitPos[3]) < assistRange then
+                                assistee = unit
+                                break
+                            end
+                        end
+                    end
+                end
+            end
+            -- If the unit to be assisted is a factory, assist whatever it is assisting or is assisting it
+            -- Makes sure all factories have someone helping out to load balance better
+            if assistee and not assistee.Dead and EntityCategoryContains(categories.FACTORY, assistee) then
+                local guardee = assistee:GetGuardedUnit()
+                if guardee and not guardee.Dead and EntityCategoryContains(categories.FACTORY, guardee) then
+                    local factories = AIUtils.AIReturnAssistingFactories(guardee)
+                    table.insert(factories, assistee)
+                    AIUtils.AIEngineersAssistFactories(aiBrain, platoonUnits, factories)
+                    assistingBool = true
+                elseif table.getn(assistee:GetGuards()) > 0 then
+                    local factories = AIUtils.AIReturnAssistingFactories(assistee)
+                    table.insert(factories, assistee)
+                    AIUtils.AIEngineersAssistFactories(aiBrain, platoonUnits, factories)
+                    assistingBool = true
+                end
+            end
+        end
+        if assistee and not assistee.Dead then
+            if not assistingBool then
+                eng.AssistSet = true
+                IssueGuard(platoonUnits, assistee)
+            end
+        elseif not assistee then
+            if eng.BuilderManagerData then
+                local emLoc = eng.BuilderManagerData.EngineerManager:GetLocationCoords()
+                local dist = assistData.AssistRange or 80
+                if VDist3(eng:GetPosition(), emLoc) > dist then
+                    self:MoveToLocation(emLoc, false)
+                    WaitSeconds(9)
+                end
+            end
+            WaitSeconds(1)
+        end
+    end,
+
+    -- For AI Patch V2. Bugfix if not eng.AssistSet and not eng.AssistPlatoon then
+    ProcessBuildCommand = function(eng, removeLastBuild)
+        --DUNCAN - Trying to stop commander leaving projects
+        if not eng or eng.Dead or not eng.PlatoonHandle or eng.GoingHome or eng.UnitBeingBuiltBehavior or eng:IsUnitState("Upgrading") or eng:IsUnitState("Enhancing") or eng:IsUnitState("Guarding") then
+            if eng then eng.ProcessBuild = nil end
+            --LOG('*AI DEBUG: Commander skipping process build.')
+            return
+        end
+
+        if eng.CDRHome then
+            --LOG('*AI DEBUG: Commander starting process build...')
+        end
+
+        local aiBrain = eng.PlatoonHandle:GetBrain()
+        -- Only use this with AI-Uveso
+        if not aiBrain.Uveso then
+            return oldPlatoon.ProcessBuildCommand(eng, removeLastBuild)
+        end
+        if not aiBrain or eng.Dead or not eng.EngineerBuildQueue or table.getn(eng.EngineerBuildQueue) == 0 then
+            if aiBrain:PlatoonExists(eng.PlatoonHandle) then
+                --LOG("*AI DEBUG: Disbanding Engineer Platoon in ProcessBuildCommand top " .. eng.Sync.id)
+                --if eng.CDRHome then LOG('*AI DEBUG: Commander process build platoon disband...') end
+                if not eng.AssistSet and not eng.AssistPlatoon then
+                    eng.PlatoonHandle:PlatoonDisband()
+                end
+            end
+            if eng then eng.ProcessBuild = nil end
+            return
+        end
+
+        -- it wasn't a failed build, so we just finished something
+        if removeLastBuild then
+            table.remove(eng.EngineerBuildQueue, 1)
+        end
+
+        function BuildToNormalLocation(location)
+            return {location[1], 0, location[2]}
+        end
+
+        function NormalToBuildLocation(location)
+            return {location[1], location[3], 0}
+        end
+
+        eng.ProcessBuildDone = false
+        IssueClearCommands({eng})
+        local commandDone = false
+        while not eng.Dead and not commandDone and table.getn(eng.EngineerBuildQueue) > 0  do
+            local whatToBuild = eng.EngineerBuildQueue[1][1]
+            local buildLocation = BuildToNormalLocation(eng.EngineerBuildQueue[1][2])
+            local buildRelative = eng.EngineerBuildQueue[1][3]
+            -- see if we can move there first
+            if AIUtils.EngineerMoveWithSafePath(aiBrain, eng, buildLocation) then
+                if not eng or eng.Dead or not eng.PlatoonHandle or not aiBrain:PlatoonExists(eng.PlatoonHandle) then
+                    if eng then eng.ProcessBuild = nil end
+                    return
+                end
+
+                if not eng.NotBuildingThread then
+                    eng.NotBuildingThread = eng:ForkThread(eng.PlatoonHandle.WatchForNotBuilding)
+                end
+
+                local engpos = eng:GetPosition()
+                while not eng.Dead and eng:IsUnitState("Moving") and VDist2(engpos[1], engpos[3], buildLocation[1], buildLocation[3]) > 15 do
+                    WaitSeconds(2)
+                end
+
+                -- check to see if we need to reclaim or capture...
+                if not AIUtils.EngineerTryReclaimCaptureArea(aiBrain, eng, buildLocation) then
+                    -- check to see if we can repair
+                    if not AIUtils.EngineerTryRepair(aiBrain, eng, whatToBuild, buildLocation) then
+                        -- otherwise, go ahead and build the next structure there
+                        aiBrain:BuildStructure(eng, whatToBuild, NormalToBuildLocation(buildLocation), buildRelative)
+                        if not eng.NotBuildingThread then
+                            eng.NotBuildingThread = eng:ForkThread(eng.PlatoonHandle.WatchForNotBuilding)
+                        end
+                    end
+                end
+                commandDone = true
+            else
+                -- we can't move there, so remove it from our build queue
+                table.remove(eng.EngineerBuildQueue, 1)
+            end
+        end
+
+        -- final check for if we should disband
+        if not eng or eng.Dead or table.getn(eng.EngineerBuildQueue) <= 0 then
+            if eng.PlatoonHandle and aiBrain:PlatoonExists(eng.PlatoonHandle) then
+                --LOG("*AI DEBUG: Disbanding Engineer Platoon in ProcessBuildCommand bottom " .. eng.Sync.id)
+                eng.PlatoonHandle:PlatoonDisband()
+            end
+            if eng then eng.ProcessBuild = nil end
+            return
+        end
+        if eng then eng.ProcessBuild = nil end
     end,
 
 -- UVESO's Stuff: ------------------------------------------------------------------------------------
@@ -1034,6 +1338,7 @@ Platoon = Class(oldPlatoon) {
                 if not v or v.Dead or v:BeenDestroyed() then
                     -- We found a dead unit inside this platoon. Disband the platton; It will be reformed
                     --LOG('+++ ExtractorUpgradeAI: Found Dead unit, self:PlatoonDisbandNoAssign()')
+                    -- needs PlatoonDisbandNoAssign, or extractors will stop upgrading if the platton is disbanded
                     self:PlatoonDisbandNoAssign()
                     return
                 end
@@ -1208,7 +1513,8 @@ Platoon = Class(oldPlatoon) {
             for _, Launcher in platoonUnits do
                 if not Launcher or Launcher.Dead or Launcher:BeenDestroyed() then
                     -- We found a dead unit inside this platoon. Disband the platton; It will be reformed
-                    self:PlatoonDisband()
+                    -- needs PlatoonDisbandNoAssign, or launcher will stop building nukes if the platton is disbanded
+                    self:PlatoonDisbandNoAssign()
                     return
                 end
                 local NukeSiloAmmoCount = Launcher:GetNukeSiloAmmoCount() or 0
@@ -1231,7 +1537,8 @@ Platoon = Class(oldPlatoon) {
                 for k,Launcher in platoonUnits do
                     if not Launcher or Launcher.Dead or Launcher:BeenDestroyed() then
                         -- We found a dead unit inside this platoon. Disband the platton; It will be reformed
-                        self:PlatoonDisband()
+                        -- needs PlatoonDisbandNoAssign, or launcher will stop building nukes if the platton is disbanded
+                        self:PlatoonDisbandNoAssign()
                         return
                     end
                     -- Check if the launcher is active
@@ -1248,7 +1555,8 @@ Platoon = Class(oldPlatoon) {
                 for k,Launcher in platoonUnits do
                     if not Launcher or Launcher.Dead or Launcher:BeenDestroyed() then
                         -- We found a dead unit inside this platoon. Disband the platton; It will be reformed
-                        self:PlatoonDisband()
+                        -- needs PlatoonDisbandNoAssign, or launcher will stop building nukes if the platton is disbanded
+                        self:PlatoonDisbandNoAssign()
                         return
                     end
                     -- Check if the launcher is deactivated
@@ -1328,7 +1636,8 @@ Platoon = Class(oldPlatoon) {
                         for _, Launcher in platoonUnits do
                             if not Launcher or Launcher.Dead or Launcher:BeenDestroyed() then
                                 -- We found a dead unit inside this platoon. Disband the platton; It will be reformed
-                                self:PlatoonDisband()
+                                -- needs PlatoonDisbandNoAssign, or launcher will stop building nukes if the platton is disbanded
+                                self:PlatoonDisbandNoAssign()
                                 return
                             end
                             -- check if the launcher has already launched a nuke
@@ -1423,7 +1732,8 @@ Platoon = Class(oldPlatoon) {
                         for Index, Launcher in platoonUnits do
                             if not Launcher or Launcher.Dead or Launcher:BeenDestroyed() then
                                 -- We found a dead unit inside this platoon. Disband the platton; It will be reformed
-                                self:PlatoonDisband()
+                                -- needs PlatoonDisbandNoAssign, or launcher will stop building nukes if the platton is disbanded
+                                self:PlatoonDisbandNoAssign()
                                 return
                             end
                             --LOG('* NukePlatoonAI: (Overwhelm) Fireing Nuke: '..repr(Index))
@@ -1485,7 +1795,8 @@ Platoon = Class(oldPlatoon) {
                     for _, Launcher in platoonUnits do
                         if not Launcher or Launcher.Dead or Launcher:BeenDestroyed() then
                             -- We found a dead unit inside this platoon. Disband the platton; It will be reformed
-                            self:PlatoonDisband()
+                            -- needs PlatoonDisbandNoAssign, or launcher will stop building nukes if the platton is disbanded
+                            self:PlatoonDisbandNoAssign()
                             return
                         end
                         -- check if the launcher has already launched a nuke
@@ -1570,7 +1881,8 @@ Platoon = Class(oldPlatoon) {
                     for _, Launcher in platoonUnits do
                         if not Launcher or Launcher.Dead or Launcher:BeenDestroyed() then
                             -- We found a dead unit inside this platoon. Disband the platton; It will be reformed
-                            self:PlatoonDisband()
+                            -- needs PlatoonDisbandNoAssign, or launcher will stop building nukes if the platton is disbanded
+                            self:PlatoonDisbandNoAssign()
                             return
                         end
                         -- check if the launcher has already launched a nuke
@@ -1614,7 +1926,8 @@ Platoon = Class(oldPlatoon) {
             for k,Launcher in platoonUnits do
                 if not Launcher or Launcher.Dead or Launcher:BeenDestroyed() then
                     -- We found a dead unit inside this platoon. Disband the platton; It will be reformed
-                    self:PlatoonDisband()
+                    -- needs PlatoonDisbandNoAssign, or launcher will stop building nukes if the platton is disbanded
+                    self:PlatoonDisbandNoAssign()
                     --LOG('* NukePlatoonAI: PlatoonDisband')
                     return
                 end
@@ -1636,7 +1949,8 @@ Platoon = Class(oldPlatoon) {
             for k,unit in platoonUnits do
                 if not unit or unit.Dead or unit:BeenDestroyed() then
                     -- We found a dead unit inside this platoon. Disband the platton; It will be reformed
-                    self:PlatoonDisband()
+                    -- needs PlatoonDisbandNoAssign, or launcher will stop building nukes if the platton is disbanded
+                    self:PlatoonDisbandNoAssign()
                     --LOG('* AntiNukePlatoonAI: PlatoonDisband')
                     return
                 end

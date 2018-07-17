@@ -49,3 +49,25 @@ PlatoonTemplate {
         { categories.ENGINEER * categories.TECH1, 1, 1, "support", "None" }
     },
 }
+
+PlatoonTemplate {
+    Name = 'EngineerFinisher',
+    Plan = 'ManagerEngineerFindUnfinished',
+    GlobalSquads = {
+        { categories.ENGINEER * categories.TECH1, 1, 1, "support", "None" }
+    },
+}
+PlatoonTemplate {
+    Name = 'T2EngineerFinisher',
+    Plan = 'ManagerEngineerFindUnfinished',
+    GlobalSquads = {
+        { categories.ENGINEER * categories.TECH2, 1, 1, "support", "None" }
+    },
+}
+PlatoonTemplate {
+    Name = 'T3EngineerFinisher',
+    Plan = 'ManagerEngineerFindUnfinished',
+    GlobalSquads = {
+        { categories.ENGINEER * categories.TECH3, 1, 1, "support", "None" }
+    },
+}

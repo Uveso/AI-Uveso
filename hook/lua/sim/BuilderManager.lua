@@ -1,4 +1,4 @@
-local DebugNames = false -- Display next building Platoon inside LOG
+local DebugNames = true -- Display next building Platoon inside LOG
 -- AI DEBUG
 local AntiSpamList = {}
 local AntiSpamCounter = 0

@@ -26,7 +26,7 @@ BaseBuilderTemplate {
         -- Build Land/Air/Naval Factories
         'FactoryBuilders Uveso',
         -- Upgrade Factories TECH1->TECH2 and TECH2->TECH3
-        'FactoryUpgradeBuilders Uveso',
+        'FactoryUpgradeBuildersRush Uveso',
 
         -----------------------------------------------------------------------------
         -- ==== Sea Units BUILDER ==== --

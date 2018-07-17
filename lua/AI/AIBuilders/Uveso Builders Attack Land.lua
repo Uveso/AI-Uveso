@@ -630,7 +630,7 @@ BuilderGroup {
         BuilderName = 'U123 Military 10 10',                                    -- Random Builder Name.
         PlatoonTemplate = 'LandAttackHuntUveso 10 10',                          -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
         Priority = 70,                                                          -- Priority. 1000 is normal.
-        InstanceCount = 2,                                                      -- Number of plattons that will be formed.
+        InstanceCount = 4,                                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                                    -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
@@ -691,7 +691,7 @@ BuilderGroup {
         BuilderName = 'U123 Enemy 10 10',                                       -- Random Builder Name.
         PlatoonTemplate = 'LandAttackHuntUveso 10 10',                          -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
         Priority = 50,                                                          -- Priority. 1000 is normal.
-        InstanceCount = 10,                                                     -- Number of plattons that will be formed.
+        InstanceCount = 20,                                                     -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = 10000,                                               -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
@@ -754,7 +754,7 @@ BuilderGroup {
         BuilderName = 'U123 BigIntercept 30 60',
         PlatoonTemplate = 'LandAttackInterceptUveso 30 60',                     -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
         Priority = 30,                                                          -- Priority. 1000 is normal.
-        InstanceCount = 10,                                                     -- Number of plattons that will be formed.
+        InstanceCount = 20,                                                     -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = 10000,                                               -- Searchradius for new target.
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.

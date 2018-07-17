@@ -32,7 +32,7 @@ BaseBuilderTemplate {
         -- Build Engineers Tech 1,2,3 and SACU
         'EngineerFactoryBuilders Uveso',            -- Priority = 900
         -- Assistees
-        'Assistees Uveso',
+--        'Assistees Uveso',
         -- Reclaim mass
         'Engineer Reclaim Uveso',
 
@@ -57,7 +57,6 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- Build Land/Air/Naval Factories
         'FactoryBuildersRush Uveso',
-        'FactoryBuilders Uveso',
         'GateConstruction Uveso',
         -- Upgrade Factories TECH1->TECH2 and TECH2->TECH3
         'FactoryUpgradeBuildersRush Uveso',

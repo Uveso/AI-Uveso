@@ -39,6 +39,7 @@ function ExecutePlan(aiBrain)
             end
         elseif aiBrain.Uveso then
             ForkThread(LocationRangeManagerThread, aiBrain)
+            ForkThread(EcoManager, aiBrain)
         -- Debug for Platoon names
         elseif aiBrain[ScenarioInfo.Options.AIPLatoonNameDebug] then
             ForkThread(LocationRangeManagerThread, aiBrain)
@@ -51,9 +52,40 @@ function ExecutePlan(aiBrain)
     end
 end
 
+function EcoManager(aiBrain)
+    local ArmyUnits = {}
+    while true do
+        WaitTicks(5)
+        ArmyUnits = aiBrain:GetListOfUnits(categories.ENGINEER - categories.COMMAND, false) -- also gets unbuilded units (planed to build)
+        for _, unit in ArmyUnits do
+            if unit.Dead or unit:IsIdleState() or not unit.PlatoonHandle.PlatoonData.Assist.AssisteeType then continue end
+            -- pause engioneers if we have less then 35% mass or less then 50% energy storage
+            if aiBrain:GetEconomyStoredRatio('MASS') < 0.15 or aiBrain:GetEconomyStoredRatio('ENERGY') < 0.15 then
+                if not unit:IsPaused() then
+                    unit.PlatoonHandle:Stop()
+                    unit.PlatoonHandle:PlatoonDisband()
+                end
+            elseif aiBrain:GetEconomyStoredRatio('MASS') < 0.50 or aiBrain:GetEconomyStoredRatio('ENERGY') < 0.50 then
+                if aiBrain:GetEconomyTrend('MASS') < 1.0 or aiBrain:GetEconomyTrend('ENERGY') < 1.0 then
+                    if not unit:IsPaused() then
+                        unit:SetPaused( true )
+                        break
+                    end
+                end
+            elseif aiBrain:GetEconomyStoredRatio('MASS') > 0.50 or aiBrain:GetEconomyStoredRatio('ENERGY') > 0.50 then
+                if unit:IsPaused() then
+                    unit:SetPaused( false )
+                    break
+                end
+            end
+        end
+    end
+end
+
 -- Check the distance between locations and set location radius half the distance.
 function LocationRangeManagerThread(aiBrain)
     local unitcounterdelayer = 0
+    local ArmyUnits = {}
     while true do
     
         local Factories = aiBrain.BuilderManagers.MAIN.FactoryManager.FactoryList
@@ -61,7 +93,7 @@ function LocationRangeManagerThread(aiBrain)
             if not factory.Dead then
                 if factory:IsUnitState('Building') == false and factory:IsUnitState('Upgrading') == false then
                     if factory.LastActive and GetGameTimeSeconds() - factory.LastActive > 30 then
-                        --WARN('Factory '..k..' is not working for '.. math.floor(GetGameTimeSeconds() - factory.LastActive) ..' seconds. Restarting factory... ')
+                        WARN('Factory '..k..' is not working for '.. math.floor(GetGameTimeSeconds() - factory.LastActive) ..' seconds. Restarting factory... ')
                         aiBrain.BuilderManagers.MAIN.FactoryManager:ForkThread(aiBrain.BuilderManagers.MAIN.FactoryManager.DelayBuildOrder, factory, factory.BuilderManagerData.BuilderType, 1)
                     end
                 end
@@ -73,7 +105,7 @@ function LocationRangeManagerThread(aiBrain)
         local BasePositions = BaseRanger(aiBrain)
         -- Check if we have units outside the range of any BaseManager
         -- Get all units from our ArmyPool. These are units without a special platoon or task. They have nothing to do.
-        local ArmyUnits = aiBrain:GetListOfUnits(categories.MOBILE, false) -- also gets unbuilded units (planed to build)
+        ArmyUnits = aiBrain:GetListOfUnits(categories.MOBILE, false) -- also gets unbuilded units (planed to build)
         -- Loop over every unit that has no platton and is idle
         local LoopDelay = 0
         for _, unit in ArmyUnits do

@@ -59,7 +59,7 @@ BaseBuilderTemplate {
         'FactoryBuildersExp Uveso',
         'GateConstruction Uveso',
         -- Upgrade Factories TECH1->TECH2 and TECH2->TECH3
-        'FactoryUpgradeBuildersExp Uveso',
+        'FactoryUpgradeBuildersRush Uveso',
         -- Build Air Staging Platform to refill and repair air units.
         'Air Staging Platform Uveso',
         

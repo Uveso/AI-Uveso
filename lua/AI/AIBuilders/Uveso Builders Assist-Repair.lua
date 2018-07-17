@@ -27,11 +27,11 @@ BuilderGroup {
         BuilderData = {
             Assist = {
                 AssistLocation = 'LocationType',
-                AssisteeType = 'Structure',
+                AssisteeType = 'Factory',
                 AssistRange = 50,
                 BeingBuiltCategories = {'STRUCTURE LAND FACTORY TECH2'},
-                AssistUntilFinished = false,
-                Time = 30,
+                AssistUntilFinished = true,
+                Time = 0,
             },
         }
     },
@@ -50,11 +50,11 @@ BuilderGroup {
         BuilderData = {
             Assist = {
                 AssistLocation = 'LocationType',
-                AssisteeType = 'Structure',
+                AssisteeType = 'Factory',
                 AssistRange = 50,
                 BeingBuiltCategories = {'STRUCTURE LAND FACTORY TECH3'},
-                AssistUntilFinished = false,
-                Time = 30,
+                AssistUntilFinished = true,
+                Time = 0,
             },
         }
     },
@@ -73,11 +73,11 @@ BuilderGroup {
         BuilderData = {
             Assist = {
                 AssistLocation = 'LocationType',
-                AssisteeType = 'Structure',
+                AssisteeType = 'Factory',
                 AssistRange = 50,
                 BeingBuiltCategories = {'STRUCTURE LAND FACTORY TECH3'},
-                AssistUntilFinished = false,
-                Time = 30,
+                AssistUntilFinished = true,
+                Time = 0,
             },
         }
     },
@@ -103,8 +103,8 @@ BuilderGroup {
                 AssisteeType = 'Structure',
                 AssistRange = 40,
                 BeingBuiltCategories = {'STRUCTURE ENERGYPRODUCTION TECH2', 'STRUCTURE ENERGYPRODUCTION TECH3'},
-                AssistUntilFinished = false,
-                Time = 30,
+                AssistUntilFinished = true,
+                Time = 0,
             },
         }
     },
@@ -132,8 +132,8 @@ BuilderGroup {
                 AssisteeType = 'Structure',
                 AssistRange = 30,
                 BeingBuiltCategories = {'STRUCTURE ENERGYPRODUCTION TECH2', 'STRUCTURE ENERGYPRODUCTION TECH3'},
-                AssistUntilFinished = false,
-                Time = 30,
+                AssistUntilFinished = true,
+                Time = 0,
             },
         }
     },
@@ -160,8 +160,8 @@ BuilderGroup {
                 AssisteeType = 'Structure',
                 AssistRange = 30,
                 BeingBuiltCategories = {'STRUCTURE ENERGYPRODUCTION TECH2', 'STRUCTURE ENERGYPRODUCTION TECH3'},
-                AssistUntilFinished = false,
-                Time = 30,
+                AssistUntilFinished = true,
+                Time = 0,
             },
         }
     },
@@ -188,8 +188,8 @@ BuilderGroup {
                 AssisteeType = 'Structure',
                 AssistRange = 30,
                 BeingBuiltCategories = {'STRUCTURE ENERGYPRODUCTION TECH2', 'STRUCTURE ENERGYPRODUCTION TECH3'},
-                AssistUntilFinished = false,
-                Time = 30,
+                AssistUntilFinished = true,
+                Time = 0,
             },
         }
     },
@@ -230,7 +230,7 @@ BuilderGroup {
         PlatoonTemplate = 'T2EngineerAssist',
         Priority = 200,
         DelayEqualBuildPlattons = {'Assist Experimental TECH2', 1},
-        InstanceCount = 30,
+        InstanceCount = 50,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.EXPERIMENTAL, categories.ENGINEER * categories.MOBILE }},
@@ -259,7 +259,7 @@ BuilderGroup {
         PlatoonTemplate = 'T3EngineerAssist',
         Priority = 100,
         DelayEqualBuildPlattons = {'Assist Experimental TECH3', 1},
-        InstanceCount = 30,
+        InstanceCount = 50,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.EXPERIMENTAL, categories.ENGINEER * categories.MOBILE }},
@@ -310,7 +310,8 @@ BuilderGroup {
                 AssisteeType = 'Engineer',
                 AssistRange = 80,
                 BeingBuiltCategories = {'EXPERIMENTAL ECONOMIC'},
-                Time = 60,
+                AssistUntilFinished = true,
+                Time = 0,
             },
         }
     },
@@ -338,7 +339,8 @@ BuilderGroup {
                 AssisteeType = 'Engineer',
                 AssistRange = 80,
                 BeingBuiltCategories = {'EXPERIMENTAL ECONOMIC'},
-                Time = 60,
+                AssistUntilFinished = true,
+                Time = 0,
             },
         }
     },
@@ -366,7 +368,8 @@ BuilderGroup {
                 AssisteeType = 'Engineer',
                 AssistRange = 80,
                 BeingBuiltCategories = {'EXPERIMENTAL ECONOMIC'},
-                Time = 60,
+                AssistUntilFinished = true,
+                Time = 0,
             },
         }
     },
@@ -392,10 +395,10 @@ BuilderGroup {
         BuilderData = {
             Assist = {
                 AssistLocation = 'LocationType',
-                AssistUntilFinished = true,
                 BeingBuiltCategories = {'STRUCTURE SHIELD'},
                 AssisteeType = 'Structure',
-                Time = 360,
+                AssistUntilFinished = true,
+                Time = 0,
             },
         }
     },
@@ -404,8 +407,7 @@ BuilderGroup {
     -- =============== --
     Builder {
         BuilderName = 'U1 Finisher',
-        PlatoonTemplate = 'EngineerBuilder',
-        PlatoonAIPlan = 'ManagerEngineerFindUnfinished',
+        PlatoonTemplate = 'EngineerFinisher',
         Priority = 50,
         InstanceCount = 4,
         BuilderConditions = {
@@ -420,16 +422,17 @@ BuilderGroup {
         BuilderData = {
             Assist = {
                 AssistLocation = 'LocationType',
-                AssisteeType = 'Engineer',
+                AssisteeType = 'Structure',
                 BeingBuiltCategories = {'STRUCTURE'},
+                AssistUntilFinished = true,
+                Time = 0,
             },
         },
         BuilderType = 'Any',
     },
     Builder {
         BuilderName = 'U2 Finisher',
-        PlatoonTemplate = 'T2EngineerBuilder',
-        PlatoonAIPlan = 'ManagerEngineerFindUnfinished',
+        PlatoonTemplate = 'T2EngineerFinisher',
         Priority = 50,
         InstanceCount = 1,
         BuilderConditions = {
@@ -445,16 +448,17 @@ BuilderGroup {
         BuilderData = {
             Assist = {
                 AssistLocation = 'LocationType',
-                AssisteeType = 'Engineer',
+                AssisteeType = 'Structure',
                 BeingBuiltCategories = {'STRUCTURE'},
+                AssistUntilFinished = true,
+                Time = 0,
             },
         },
         BuilderType = 'Any',
     },
     Builder {
         BuilderName = 'U3 Finisher',
-        PlatoonTemplate = 'T3EngineerBuilder',
-        PlatoonAIPlan = 'ManagerEngineerFindUnfinished',
+        PlatoonTemplate = 'T3EngineerFinisher',
         Priority = 50,
         InstanceCount = 1,
         BuilderConditions = {
@@ -470,8 +474,10 @@ BuilderGroup {
         BuilderData = {
             Assist = {
                 AssistLocation = 'LocationType',
-                AssisteeType = 'Engineer',
+                AssisteeType = 'Structure',
                 BeingBuiltCategories = {'STRUCTURE'},
+                AssistUntilFinished = true,
+                Time = 0,
             },
         },
         BuilderType = 'Any',
