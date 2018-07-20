@@ -34,14 +34,14 @@ function ExecutePlan(aiBrain)
             ForkThread(UnitCapWatchThreadSorian, aiBrain)
             ForkThread(behaviors.NukeCheck, aiBrain)
             -- Debug for Platoon names
-            if aiBrain[ScenarioInfo.Options.AIPLatoonNameDebug] then
+            if aiBrain[ScenarioInfo.Options.AIPLatoonNameDebug] or ScenarioInfo.Options.AIPLatoonNameDebug == 'all' then
                 ForkThread(LocationRangeManagerThread, aiBrain)
             end
         elseif aiBrain.Uveso then
             ForkThread(LocationRangeManagerThread, aiBrain)
             ForkThread(EcoManager, aiBrain)
         -- Debug for Platoon names
-        elseif aiBrain[ScenarioInfo.Options.AIPLatoonNameDebug] then
+        elseif aiBrain[ScenarioInfo.Options.AIPLatoonNameDebug] or ScenarioInfo.Options.AIPLatoonNameDebug == 'all' then
             ForkThread(LocationRangeManagerThread, aiBrain)
         else
             ForkThread(UnitCapWatchThread, aiBrain)
@@ -113,7 +113,7 @@ function LocationRangeManagerThread(aiBrain)
                 continue
             end
             -- check if we have name debugging enabled (ScenarioInfo.Options.AIPLatoonNameDebug = Uveso or Sorian or Dilli)
-            if aiBrain[ScenarioInfo.Options.AIPLatoonNameDebug] and not EntityCategoryContains(categories.STRUCTURE * categories.FACTORY, unit) then
+            if (aiBrain[ScenarioInfo.Options.AIPLatoonNameDebug] or ScenarioInfo.Options.AIPLatoonNameDebug == 'all') and not EntityCategoryContains(categories.STRUCTURE * categories.FACTORY, unit) then
                 if unit.PlatoonHandle then
                     local Plan = unit.PlatoonHandle.PlanName
                     local Builder = unit.PlatoonHandle.BuilderName
@@ -165,7 +165,7 @@ function LocationRangeManagerThread(aiBrain)
                 -- if we are not in range of an base, then move to a base.
                 if WeAreInRange == false and not unit.Dead then
                     if nearestbase then
-                        if aiBrain[ScenarioInfo.Options.AIPLatoonNameDebug] then
+                        if aiBrain[ScenarioInfo.Options.AIPLatoonNameDebug] or ScenarioInfo.Options.AIPLatoonNameDebug == 'all' then
                             unit:SetCustomName('Outside LocationManager')
                         end
                         IssueClearCommands({unit})

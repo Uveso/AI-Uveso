@@ -1,19 +1,14 @@
-local DebugNames = false -- Display next building Platoon inside LOG
--- AI DEBUG
+-- AI DEBUG Platoon builder names. (prints to the game.log)
 local AntiSpamList = {}
 local AntiSpamCounter = 0
 local LastBuilder = ''
+local DEBUGBUILDER = {}
 
-local DEBUGBUILDER = false
 -- Hook for debugging
 OLDBuilderManager = BuilderManager
 BuilderManager = Class(OLDBuilderManager) {
 
     GetHighestBuilder = function(self,bType,factory)
-        -- Only use this with AI-Uveso
-        if not self.Brain.Uveso then
-            return OLDBuilderManager.GetHighestBuilder(self,bType,factory)
-        end
         if not self.BuilderData[bType] then
             error('*BUILDERMANAGER ERROR: Invalid builder type - ' .. bType)
         end
@@ -23,11 +18,12 @@ BuilderManager = Class(OLDBuilderManager) {
         self.NumGet = self.NumGet + 1
         local found = false
         local possibleBuilders = {}
-        if DebugNames then
-            if not DEBUGBUILDER then
-                DEBUGBUILDER = true
+        -- Print the whole builder table into the game.log. 
+        if self.Brain[ScenarioInfo.Options.AIBuilderNameDebug] then
+            if not DEBUGBUILDER[ScenarioInfo.Options.AIBuilderNameDebug] then
+                DEBUGBUILDER[ScenarioInfo.Options.AIBuilderNameDebug] = true
                 for k,v in self.BuilderData[bType].Builders do
-                    LOG('* AI DEBUG: Builder ['..bType..']: Priority = '..v.Priority..' - possibleBuilders = '..repr(v.BuilderName))
+                    LOG('* AI ('..ScenarioInfo.Options.AIBuilderNameDebug..') DEBUG: Builder ['..bType..']: Priority = '..v.Priority..' - possibleBuilders = '..repr(v.BuilderName))
                 end
             end
         end
@@ -36,9 +32,7 @@ BuilderManager = Class(OLDBuilderManager) {
                 if not self:IsPlattonBuildDelayed(v.DelayEqualBuildPlattons) then
                     found = v.Priority
                     table.insert(possibleBuilders, k)
-                    if DebugNames then
-                        --LOG('* AI DEBUG: GetHighestBuilder: Priority = '..found..' - possibleBuilders = '..repr(v.BuilderName))
-                    end
+                    --LOG('* AI DEBUG: GetHighestBuilder(): Priority = '..found..' - possibleBuilders = '..repr(v.BuilderName))
                 end
             elseif found and v.Priority < found then
                 break
@@ -46,23 +40,23 @@ BuilderManager = Class(OLDBuilderManager) {
         end
         if found and found > 0 then
             local whichBuilder = Random(1,table.getn(possibleBuilders))
-            -- DEBUG - Start
-            -- If we have a builder that is repeating (Happens when buildconditions are true, but the builder can't find anything to build/assist nor a build location)
+            -- DEBUG SPAM - Start
+            -- If we have a builder that is repeating (Happens when buildconditions are true, but the builder can't find anything to build/assist or a build location)
             local BuilderName = self.BuilderData[bType].Builders[ possibleBuilders[whichBuilder] ].BuilderName
             if BuilderName ~= LastBuilder then
                 LastBuilder = BuilderName
                 AntiSpamCounter = 0
             elseif not AntiSpamList[BuilderName] then
                 AntiSpamCounter = AntiSpamCounter + 1
-                if AntiSpamCounter > 10 then
+                if AntiSpamCounter > 20 then
                     -- Warn the programmer that something is going wrong.
-                    WARN('* AI DEBUG: GetHighestBuilder: Builder is spaming. Maybe wrong Buildconditions for Builder = '..self.BuilderData[bType].Builders[ possibleBuilders[whichBuilder] ].BuilderName..' ???')
+                    WARN('* AI DEBUG: GetHighestBuilder(): PlatoonBuilder is spaming. Maybe wrong Buildconditions for Builder = '..self.BuilderData[bType].Builders[ possibleBuilders[whichBuilder] ].BuilderName..' ?!?')
                     AntiSpamCounter = 0
                     AntiSpamList[BuilderName] = true
                 end                
             end
-            -- DEBUG - End
-            if DebugNames then
+            -- DEBUG SPAM - End
+            if self.Brain[ScenarioInfo.Options.AIBuilderNameDebug] or ScenarioInfo.Options.AIBuilderNameDebug == 'all' then
                 local percent = self.Brain:GetEconomyStoredRatio('MASS')
                 local percentbar = ''
                 local count = 1
@@ -78,7 +72,7 @@ BuilderManager = Class(OLDBuilderManager) {
                 if 6 > Priolen then
                     PrioText = string.rep('  ', 6 - Priolen) .. found
                 end
-                LOG('* GetHighestBuilder: Mass:['..percentbar..'] Priority = '..PrioText..' - SelectedBuilder = '..self.BuilderData[bType].Builders[ possibleBuilders[whichBuilder] ].BuilderName)
+                LOG('# Mass: {['..percentbar..']}  BuilderPriority = '..PrioText..' - SelectedBuilder = '..self.BuilderData[bType].Builders[ possibleBuilders[whichBuilder] ].BuilderName)
             end
             return self.BuilderData[bType].Builders[ possibleBuilders[whichBuilder] ]
         end

@@ -11,7 +11,7 @@ FactoryBuilderManager = Class(OLDFactoryBuilderManager) {
             local personality = self.Brain:GetPersonality()
             local template = self:GetFactoryTemplate(builder:GetPlatoonTemplate(), factory)
             -- rename factory to actual build-platoon name
-            if self.Brain[ScenarioInfo.Options.AIPLatoonNameDebug] then
+            if self.Brain[ScenarioInfo.Options.AIPLatoonNameDebug] or ScenarioInfo.Options.AIPLatoonNameDebug == 'all' then
                 factory:SetCustomName(builder.BuilderName)
             end
             -- LOG('*AI DEBUG: ARMY ', repr(self.Brain:GetArmyIndex()),': Factory Builder Manager Building - ',repr(builder.BuilderName))
@@ -24,7 +24,7 @@ FactoryBuilderManager = Class(OLDFactoryBuilderManager) {
             self.Brain:BuildPlatoon(template, {factory}, 1)
         else
             -- rename factory
-            if self.Brain[ScenarioInfo.Options.AIPLatoonNameDebug] then
+            if self.Brain[ScenarioInfo.Options.AIPLatoonNameDebug] or ScenarioInfo.Options.AIPLatoonNameDebug == 'all' then
                 factory:SetCustomName('')
             end
             -- No builder found setup way to check again
@@ -59,7 +59,7 @@ FactoryBuilderManager = Class(OLDFactoryBuilderManager) {
             return OLDFactoryBuilderManager.RallyPointMonitor(self)
         end
         -- End the ForkThread RallyPointMonitor
-        LOG('*UVESO Ending forked thread RallyPointMonitor')
+        --LOG('*UVESO Ending forked thread RallyPointMonitor')
     end,
 
     SetRallyPoint = function(self, factory)

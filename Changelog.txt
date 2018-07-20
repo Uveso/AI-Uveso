@@ -1,0 +1,33 @@
+*************************************************************************************************************************************
+39 (20.Jul.2018)
+
+- Added Ecomanager for engineers (engineers will now set to pause if eco is too low while assisting)
+- Added builder for air and naval supportfactoryies
+- Fixed assisting / finisher
+- Add function to remove mass marker if they are to close to the map border (under 8 mapunits)
+- Fixed experimental attack platoon was formed without targets in range
+- Added option for Buildplatoon priority debugging
+- Added option to display all platoon names
+- Added translation strings
+
+*************************************************************************************************************************************
+v38 (not public released, only on Git-Hub)
+
+- balanced Sub AI Rush (more T2 and T3 units)
+- Added Builders for land supportfactoryies
+
+*************************************************************************************************************************************
+v37 (not public released, only on Git-Hub)
+
+- Added a failsave for stucked factories (lost their forked thread for building)
+- Fixed assist functions
+- Disabled rallypoint monitor for AI-Uveso. (Setting factory roll off points to main base)
+- Updated assister build plattons
+- Updated experimental builders
+
+*************************************************************************************************************************************
+v36 (29.Jun.2018)
+
+- Added sub AI's: AI: Experimentals and AI: Rush
+
+*************************************************************************************************************************************

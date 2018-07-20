@@ -2,7 +2,7 @@
 AIOpts = {
     {
         default = 1,
-        label = "<LOC aisettings_0153>Show AI pathfinding",
+        label = "<LOC aisettings_0153>AI pathfinding",
         help = "<LOC aisettings_0154>Displays pathfinding, waypoints and location radii (only AI-Uveso)",
         key = 'AIPathingDebug',
         values = {
@@ -37,34 +37,71 @@ AIOpts = {
                 key = 'air',
             },
         },
-   },
+    },
     {
         default = 1,
-        label = "<LOC aisettings_0167>Show AI Platoon names",
+        label = "<LOC aisettings_0167>AI Platoon names",
         help = "<LOC aisettings_0168>Displays Platoon and AI plan name",
         key = 'AIPLatoonNameDebug',
         values = {
             {
-                text = "<LOC aisettings_0169>Off",
-                help = "<LOC aisettings_0170>Display is off",
+                text = "<LOC aisettings_0155>Off",
+                help = "<LOC aisettings_0169>Display is off",
                 key = 'off',
             },
             {
-                text = "<LOC aisettings_0171>AI Uveso names",
-                help = "<LOC aisettings_0172>Show platoon and AI plan name for AI Uveso",
+                text = "<LOC aisettings_0170>AI Uveso names",
+                help = "<LOC aisettings_0171>Show platoon and AI plan name for AI Uveso",
                 key = 'Uveso',
             },
             {
-                text = "<LOC aisettings_0171>AI Dilli names",
-                help = "<LOC aisettings_0172>Show platoon and AI plan name for AI Dilli",
+                text = "<LOC aisettings_0172>AI Dilli names",
+                help = "<LOC aisettings_0173>Show platoon and AI plan name for AI Dilli",
                 key = 'Dilli',
             },
             {
-                text = "<LOC aisettings_0171>AI Sorian names",
-                help = "<LOC aisettings_0172>Show platoon and AI plan name for AI Sorian",
+                text = "<LOC aisettings_0174>AI Sorian names",
+                help = "<LOC aisettings_0175>Show platoon and AI plan name for AI Sorian",
                 key = 'Sorian',
+            },
+            {
+                text = "<LOC aisettings_0176>All AI's",
+                help = "<LOC aisettings_0177>Show platoon and AI plan name for all AI's",
+                key = 'all',
+            },
+        },
+    },
+    {
+        default = 1,
+        label = "<LOC aisettings_0178>AI BuilderManager",
+        help = "<LOC aisettings_0179>Print platoon builder names into the game.log",
+        key = 'AIBuilderNameDebug',
+        values = {
+            {
+                text = "<LOC aisettings_0155>Off",
+                help = "<LOC aisettings_0180>Logging is off",
+                key = 'off',
+            },
+            {
+                text = "<LOC aisettings_0170>AI Uveso names",
+                help = "<LOC aisettings_0181>Log builder for AI Uveso",
+                key = 'Uveso',
+            },
+            {
+                text = "<LOC aisettings_0172>AI Dilli names",
+                help = "<LOC aisettings_0182>Log builder for AI Dilli",
+                key = 'Dilli',
+            },
+            {
+                text = "<LOC aisettings_0174>AI Sorian names",
+                help = "<LOC aisettings_0183>Log builder for AI Sorian",
+                key = 'Sorian',
+            },
+            {
+                text = "<LOC aisettings_0176>All AI's",
+                help = "<LOC aisettings_0184>Log builder for all AI's",
+                key = 'all',
             },
         },
    },
-
 }
