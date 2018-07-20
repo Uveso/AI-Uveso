@@ -8,7 +8,7 @@ local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 -- ===================================================-======================================================== --
 BuilderGroup {
     BuilderGroupName = 'Assistees Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
-    BuildersType = 'EngineerBuilder',
+    BuildersType = 'PlatoonFormBuilder',
     -- =============== --
     --    Factories    --
     -- =============== --
@@ -28,7 +28,7 @@ BuilderGroup {
             Assist = {
                 AssistLocation = 'LocationType',
                 AssisteeType = 'Factory',
-                AssistRange = 50,
+                AssistRange = 80,
                 BeingBuiltCategories = {'STRUCTURE LAND FACTORY TECH2'},
                 AssistUntilFinished = true,
                 Time = 0,
@@ -51,7 +51,7 @@ BuilderGroup {
             Assist = {
                 AssistLocation = 'LocationType',
                 AssisteeType = 'Factory',
-                AssistRange = 50,
+                AssistRange = 80,
                 BeingBuiltCategories = {'STRUCTURE LAND FACTORY TECH3'},
                 AssistUntilFinished = true,
                 Time = 0,
@@ -74,7 +74,7 @@ BuilderGroup {
             Assist = {
                 AssistLocation = 'LocationType',
                 AssisteeType = 'Factory',
-                AssistRange = 50,
+                AssistRange = 80,
                 BeingBuiltCategories = {'STRUCTURE LAND FACTORY TECH3'},
                 AssistUntilFinished = true,
                 Time = 0,
@@ -101,7 +101,7 @@ BuilderGroup {
             Assist = {
                 AssistLocation = 'LocationType',
                 AssisteeType = 'Structure',
-                AssistRange = 40,
+                AssistRange = 80,
                 BeingBuiltCategories = {'STRUCTURE ENERGYPRODUCTION TECH2', 'STRUCTURE ENERGYPRODUCTION TECH3'},
                 AssistUntilFinished = true,
                 Time = 0,
@@ -130,7 +130,7 @@ BuilderGroup {
             Assist = {
                 AssistLocation = 'LocationType',
                 AssisteeType = 'Structure',
-                AssistRange = 30,
+                AssistRange = 80,
                 BeingBuiltCategories = {'STRUCTURE ENERGYPRODUCTION TECH2', 'STRUCTURE ENERGYPRODUCTION TECH3'},
                 AssistUntilFinished = true,
                 Time = 0,
@@ -158,7 +158,7 @@ BuilderGroup {
             Assist = {
                 AssistLocation = 'LocationType',
                 AssisteeType = 'Structure',
-                AssistRange = 30,
+                AssistRange = 80,
                 BeingBuiltCategories = {'STRUCTURE ENERGYPRODUCTION TECH2', 'STRUCTURE ENERGYPRODUCTION TECH3'},
                 AssistUntilFinished = true,
                 Time = 0,
@@ -186,7 +186,7 @@ BuilderGroup {
             Assist = {
                 AssistLocation = 'LocationType',
                 AssisteeType = 'Structure',
-                AssistRange = 30,
+                AssistRange = 80,
                 BeingBuiltCategories = {'STRUCTURE ENERGYPRODUCTION TECH2', 'STRUCTURE ENERGYPRODUCTION TECH3'},
                 AssistUntilFinished = true,
                 Time = 0,
@@ -217,8 +217,8 @@ BuilderGroup {
         BuilderData = {
             Assist = {
                 AssistLocation = 'LocationType',
-                AssisteeType = 'Engineer',
-                AssistRange = 80,
+                AssisteeType = 'Structure',
+                AssistRange = 100,
                 BeingBuiltCategories = {'EXPERIMENTAL'},
                 AssistUntilFinished = true,
                 Time = 0,
@@ -246,8 +246,8 @@ BuilderGroup {
         BuilderData = {
             Assist = {
                 AssistLocation = 'LocationType',
-                AssisteeType = 'Engineer',
-                AssistRange = 80,
+                AssisteeType = 'Structure',
+                AssistRange = 100,
                 BeingBuiltCategories = {'EXPERIMENTAL'},
                 AssistUntilFinished = true,
                 Time = 0,
@@ -275,8 +275,8 @@ BuilderGroup {
         BuilderData = {
             Assist = {
                 AssistLocation = 'LocationType',
-                AssisteeType = 'Engineer',
-                AssistRange = 80,
+                AssisteeType = 'Structure',
+                AssistRange = 100,
                 BeingBuiltCategories = {'EXPERIMENTAL'},
                 AssistUntilFinished = true,
                 Time = 0,
@@ -307,8 +307,8 @@ BuilderGroup {
         BuilderData = {
             Assist = {
                 AssistLocation = 'LocationType',
-                AssisteeType = 'Engineer',
-                AssistRange = 80,
+                AssisteeType = 'Structure',
+                AssistRange = 100,
                 BeingBuiltCategories = {'EXPERIMENTAL ECONOMIC'},
                 AssistUntilFinished = true,
                 Time = 0,
@@ -336,8 +336,8 @@ BuilderGroup {
         BuilderData = {
             Assist = {
                 AssistLocation = 'LocationType',
-                AssisteeType = 'Engineer',
-                AssistRange = 80,
+                AssisteeType = 'Structure',
+                AssistRange = 100,
                 BeingBuiltCategories = {'EXPERIMENTAL ECONOMIC'},
                 AssistUntilFinished = true,
                 Time = 0,
@@ -365,8 +365,8 @@ BuilderGroup {
         BuilderData = {
             Assist = {
                 AssistLocation = 'LocationType',
-                AssisteeType = 'Engineer',
-                AssistRange = 80,
+                AssisteeType = 'Structure',
+                AssistRange = 100,
                 BeingBuiltCategories = {'EXPERIMENTAL ECONOMIC'},
                 AssistUntilFinished = true,
                 Time = 0,
@@ -397,6 +397,7 @@ BuilderGroup {
                 AssistLocation = 'LocationType',
                 BeingBuiltCategories = {'STRUCTURE SHIELD'},
                 AssisteeType = 'Structure',
+                AssistRange = 100,
                 AssistUntilFinished = true,
                 Time = 0,
             },
@@ -423,6 +424,7 @@ BuilderGroup {
             Assist = {
                 AssistLocation = 'LocationType',
                 AssisteeType = 'Structure',
+                AssistRange = 100,
                 BeingBuiltCategories = {'STRUCTURE'},
                 AssistUntilFinished = true,
                 Time = 0,
@@ -449,6 +451,7 @@ BuilderGroup {
             Assist = {
                 AssistLocation = 'LocationType',
                 AssisteeType = 'Structure',
+                AssistRange = 100,
                 BeingBuiltCategories = {'STRUCTURE'},
                 AssistUntilFinished = true,
                 Time = 0,
@@ -475,6 +478,7 @@ BuilderGroup {
             Assist = {
                 AssistLocation = 'LocationType',
                 AssisteeType = 'Structure',
+                AssistRange = 100,
                 BeingBuiltCategories = {'STRUCTURE'},
                 AssistUntilFinished = true,
                 Time = 0,
@@ -523,7 +527,7 @@ BuilderGroup {
 -- ============== --
 BuilderGroup {
     BuilderGroupName = 'Engineer Reclaim Uveso',                                -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
-    BuildersType = 'EngineerBuilder',
+    BuildersType = 'PlatoonFormBuilder',
     Builder {
         BuilderName = 'U1 Reclaim Resource 1',
         PlatoonTemplate = 'U1Reclaim',

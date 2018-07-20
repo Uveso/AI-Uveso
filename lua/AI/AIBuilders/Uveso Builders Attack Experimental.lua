@@ -377,6 +377,7 @@ BuilderGroup {
             },
         },
         BuilderConditions = {                                   -- platoon will be formed if all conditions are true
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.MOBILE + categories.STRUCTURE }}, -- radius, LocationType, unitCount, categoryEnemy
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.EXPERIMENTAL * categories.MOBILE * categories.LAND } },
         },
         BuilderType = 'Any',                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
@@ -405,6 +406,7 @@ BuilderGroup {
             },
         },
         BuilderConditions = {                                   -- platoon will be formed if all conditions are true
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.MOBILE + categories.STRUCTURE }}, -- radius, LocationType, unitCount, categoryEnemy
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.EXPERIMENTAL * categories.MOBILE * categories.AIR } },
         },
         BuilderType = 'Any',                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
@@ -436,6 +438,7 @@ BuilderGroup {
             },
         },
         BuilderConditions = {                                   -- platoon will be formed if all conditions are true
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 0, categories.MOBILE * categories.LAND - categories.SCOUT + categories.STRUCTURE - categories.NAVAL}}, -- radius, LocationType, unitCount, categoryEnemy
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, categories.EXPERIMENTAL * categories.MOBILE * categories.LAND } },
         },
         BuilderType = 'Any',                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
@@ -464,6 +467,7 @@ BuilderGroup {
             },
         },
         BuilderConditions = {                                   -- platoon will be formed if all conditions are true
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 0, categories.MASSEXTRACTION}}, -- radius, LocationType, unitCount, categoryEnemy
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.EXPERIMENTAL * categories.MOBILE * categories.AIR } },
         },
         BuilderType = 'Any',                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.

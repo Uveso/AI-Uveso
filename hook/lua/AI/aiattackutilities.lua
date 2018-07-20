@@ -71,7 +71,6 @@ function PlatoonGenerateSafePathTo(aiBrain, platoonLayer, startPos, endPos, optT
     else
         for i,node in path.path do
             if i > 1 and i < table.getn(path.path) then
-                #platoon:MoveToLocation(node.position, false)
                 table.insert(finalPath, node.position)
             end
         end
@@ -134,7 +133,7 @@ function GeneratePathUveso(aiBrain, startNode, endNode, threatType, threatWeight
     -- First get all the waypoints that are from the same movementlayer then the start point.
     local graph = GetPathGraphs()[startNode.layer][startNode.graphName]
     --Create path cache table. Paths are stored in this table and saved for 1 minute, so
-    --any other platoons needing to travel the same route can get the path without the extra work.
+    --any other platoons needing to travel the same route can get the path without any extra work.
     aiBrain.PathCache = aiBrain.PathCache or {}
     aiBrain.PathCache[startNode.name] = aiBrain.PathCache[startNode.name] or {}
     aiBrain.PathCache[startNode.name][endNode.name] = aiBrain.PathCache[startNode.name][endNode.name] or {}
