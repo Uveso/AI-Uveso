@@ -25,7 +25,11 @@ FactoryBuilderManager = Class(OLDFactoryBuilderManager) {
         else
             -- rename factory
             if self.Brain[ScenarioInfo.Options.AIPLatoonNameDebug] or ScenarioInfo.Options.AIPLatoonNameDebug == 'all' then
-                factory:SetCustomName('')
+                if factory:IsUnitState('Upgrading') and factory.PlatoonHandle.BuilderName then
+                    factory:SetCustomName(factory.PlatoonHandle.BuilderName)
+                else
+                    factory:SetCustomName('')
+                end
             end
             -- No builder found setup way to check again
             self:ForkThread(self.DelayBuildOrder, factory, bType, 2)

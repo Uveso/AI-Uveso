@@ -251,7 +251,7 @@ BuilderGroup {
         InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'CanBuildOnHydroLessThanDistance', { 'LocationType', 250, -1000, 100, 1, 'AntiSurface', 1 }},            -- Do we need additional conditions to build it ?
+            { UCBC, 'CanBuildOnHydroLessThanDistance', { 'LocationType', 90, -1000, 100, 1, 'AntiSurface', 1 }},            -- Do we need additional conditions to build it ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 }},
             -- Do we need additional conditions to build it ?

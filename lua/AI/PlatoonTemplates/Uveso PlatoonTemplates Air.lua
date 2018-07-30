@@ -131,4 +131,11 @@ PlatoonTemplate {
         { categories.EXPERIMENTAL * categories.AIR * categories.MOBILE - categories.INSIGNIFICANTUNIT - categories.TRANSPORTFOCUS, 1, 1, 'attack', 'none' }
     },
 }
+PlatoonTemplate {
+    Name = 'U4-ExperimentalInterceptor 3 8',
+    Plan = 'InterceptorAIUveso',
+    GlobalSquads = {
+        { categories.EXPERIMENTAL * categories.AIR * categories.MOBILE - categories.INSIGNIFICANTUNIT - categories.TRANSPORTFOCUS, 3, 8, 'attack', 'none' }
+    },
+}
 

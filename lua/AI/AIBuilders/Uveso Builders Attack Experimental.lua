@@ -22,12 +22,13 @@ BuilderGroup {
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 150,
         DelayEqualBuildPlattons = {'Experimental', 5},
-        InstanceCount = 3,
+        InstanceCount = 6,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
             { EBC, 'GreaterThanEconTrend', { 10.0, 300.0 } }, -- relative income
             -- Do we need additional conditions to build it ?
+            { UCBC, 'CanBuildCategory', { categories.MOBILE * categories.AIR * categories.EXPERIMENTAL } },
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.95 } }, -- Ratio from 0 to 1. (1=100%)
@@ -53,7 +54,7 @@ BuilderGroup {
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 150,
         DelayEqualBuildPlattons = {'Experimental', 5},
-        InstanceCount = 1,
+        InstanceCount = 3,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
@@ -84,12 +85,13 @@ BuilderGroup {
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 150,
         DelayEqualBuildPlattons = {'Experimental', 5},
-        InstanceCount = 2,
+        InstanceCount = 3,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
             { EBC, 'GreaterThanEconTrend', { 10.0, 300.0 } }, -- relative income
             -- Do we need additional conditions to build it ?
+            { UCBC, 'CanBuildCategory', { categories.MOBILE * categories.NAVAL * categories.EXPERIMENTAL } },
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.95 } }, -- Ratio from 0 to 1. (1=100%)
@@ -117,7 +119,7 @@ BuilderGroup {
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 150,
         DelayEqualBuildPlattons = {'Experimental', 5},
-        InstanceCount = 1,
+        InstanceCount = 3,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
@@ -150,7 +152,7 @@ BuilderGroup {
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 150,
         DelayEqualBuildPlattons = {'Experimental', 5},
-        InstanceCount = 3,
+        InstanceCount = 6,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
@@ -291,13 +293,19 @@ BuilderGroup {
         Priority = 190,
         DelayEqualBuildPlattons = {'Paragon', 30},
         BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC}},
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'CanBuildCategory', { categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC } },
             { UCBC, 'CheckParagonPresent', { } },
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
-            { UCBC, 'CheckBuildPlattonDelay', { 'Paragon' }},
-            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 1.00}}, -- Ratio from 0 to 1. (1=100%)
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.EXPERIMENTAL}},
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.95}}, -- Ratio from 0 to 1. (1=100%)
+            -- Don't build it if...
+            { UCBC, 'CheckBuildPlattonDelay', { 'Paragon' }},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC }},
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC}},
+            -- Respect UnitCap
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -320,11 +328,17 @@ BuilderGroup {
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 190,
         BuilderConditions = {
+            -- When do we want to build this ?
             { UCBC, 'HasParagon', {} },
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC}},
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'CanBuildCategory', { categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC } },
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 2, categories.EXPERIMENTAL}},
+            -- Have we the eco to build it ?
+            -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC }},
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC}},
+            -- Respect UnitCap
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -357,7 +371,7 @@ BuilderGroup {
         --PlatoonAddPlans = {'NameUnitsSorian'},
         PlatoonTemplate = 'T4ExperimentalLandUveso 1 1',
         Priority = 90,                                        -- Priority. 1000 is normal.
-        InstanceCount = 2,                                      -- Number of plattons that will be formed.
+        InstanceCount = 5,                                      -- Number of plattons that will be formed.
         FormRadius = 10000,
         BuilderData = {
             SearchRadius = BasePanicZone,                       -- Searchradius for new target.
@@ -387,7 +401,7 @@ BuilderGroup {
         PlatoonTemplate = 'U4-ExperimentalInterceptor 1 1',
         --PlatoonAddPlans = {'NameUnitsSorian'},
         Priority = 90,                                        -- Priority. 1000 is normal.
-        InstanceCount = 2,                                      -- Number of plattons that will be formed.
+        InstanceCount = 5,                                      -- Number of plattons that will be formed.
         FormRadius = 10000,
         BuilderData = {
             SearchRadius = BasePanicZone,                       -- Searchradius for new target.
@@ -533,9 +547,9 @@ BuilderGroup {
     Builder {
         BuilderName = 'U-T4 Land. Kill Them All!!!',
         --PlatoonAddPlans = {'NameUnitsSorian'},
-        PlatoonTemplate = 'T4ExperimentalLandGroupUveso 2 2',
+        PlatoonTemplate = 'T4ExperimentalLandGroupUveso 3 8',
         Priority = 50,                                        -- Priority. 1000 is normal.
-        InstanceCount = 4,                                     -- Number of plattons that will be formed.
+        InstanceCount = 5,                                     -- Number of plattons that will be formed.
         FormRadius = 10000,
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
@@ -565,10 +579,10 @@ BuilderGroup {
     },
     Builder {
         BuilderName = 'U-T4 Air. Kill Them All!!!',
-        PlatoonTemplate = 'U4-ExperimentalInterceptor 1 1',
+        PlatoonTemplate = 'U4-ExperimentalInterceptor 3 8',
         --PlatoonAddPlans = {'NameUnitsSorian'},
         Priority = 50,                                        -- Priority. 1000 is normal.
-        InstanceCount = 15,                                      -- Number of plattons that will be formed.
+        InstanceCount = 5,                                      -- Number of plattons that will be formed.
         FormRadius = 10000,
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.

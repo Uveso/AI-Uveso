@@ -25,6 +25,18 @@ function ReturnFalse(aiBrain)
     return false
 end
 
+--{ UCBC, 'CanBuildCategory', { categories.RADAR * categories.TECH1 } },
+local FactionIndexToName = {[1] = categories.UEF, [2] = categories.AEON, [3] = categories.CYBRAN, [4] = categories.SERAPHIM, [5] = categories.NOMADS }
+function CanBuildCategory(aiBrain,category)
+    -- convert text categories like 'MOBILE AIR' to 'categories.MOBILE * categories.AIR'
+    local FactionCat = FactionIndexToName[aiBrain:GetFactionIndex()] or categories.ALLUNITS
+    if type(category) == 'string' then
+        category = ParseEntityCategory(category)
+    end
+    --LOG('* CanBuildCategory: '..repr( EntityCategoryGetUnitList(category * FactionCat) ))
+    return EntityCategoryGetUnitList(category * FactionCat)
+end
+
 --            { UCBC, 'HaveLessThanUnitsInCategoryBeingUpgrade', { 1, categories.RADAR * categories.TECH1 }},
 function HaveUnitsInCategoryBeingUpgrade(aiBrain, numunits, category, compareType, DEBUG)
     -- convert text categories like 'MOBILE AIR' to 'categories.MOBILE * categories.AIR'

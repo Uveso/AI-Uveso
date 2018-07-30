@@ -74,15 +74,15 @@ BaseBuilderTemplate {
         -- ==== Land Units FORMER==== --
         -----------------------------------------------------------------------------
         'Land FormBuilders Panic',
---        'Land FormBuilders MilitaryZone',
+        'Land FormBuilders MilitaryZone',
         
         -----------------------------------------------------------------------------
         -- ==== Air Units BUILDER ==== --
         -----------------------------------------------------------------------------
         -- Build Air Units
---        'AntiAirBuilders Uveso',
+        'AntiAirBuilders Uveso',
         -- Build Air Transporter
---        'Air Transport Builder Uveso',
+        'Air Transport Builder Uveso',
 
         -----------------------------------------------------------------------------
         -- ==== Air Units FORMER==== --
@@ -93,7 +93,7 @@ BaseBuilderTemplate {
         -- ==== Sea Units BUILDER ==== --
         -----------------------------------------------------------------------------
         -- Build Naval Units
---        'SeaFactoryBuilders Uveso',
+        'SeaFactoryBuilders Uveso',
 
         -----------------------------------------------------------------------------
         -- ==== Sea Units FORMER ==== --

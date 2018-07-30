@@ -79,10 +79,10 @@ PlatoonTemplate {
     }
 }
 PlatoonTemplate {
-    Name = 'LandAttackInterceptUveso 30 60',
+    Name = 'LandAttackInterceptUveso 30 500',
     Plan = 'AttackPrioritizedLandTargetsAIUveso',
     GlobalSquads = {
-        { categories.MOBILE * categories.LAND - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND, 30, 60, 'Attack', 'none' },
+        { categories.MOBILE * categories.LAND - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND, 30, 500, 'Attack', 'none' },
     }
 }
 
@@ -102,3 +102,10 @@ PlatoonTemplate {
     },
 }
 
+PlatoonTemplate {
+    Name = 'T4ExperimentalLandGroupUveso 3 8',
+    Plan = 'AttackPrioritizedLandTargetsAIUveso', -- is targetting in order from Platoondata.PrioritizedCategories.
+    GlobalSquads = {
+        { categories.EXPERIMENTAL * categories.LAND * categories.MOBILE - categories.INSIGNIFICANTUNIT, 3, 8, 'attack', 'AttackFormation' }
+    },
+}

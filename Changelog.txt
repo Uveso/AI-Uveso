@@ -1,10 +1,10 @@
 *************************************************************************************************************************************
 39 (20.Jul.2018)
 
-- Added Ecomanager for engineers (engineers will now set to pause if eco is too low while assisting)
-- Added builder for air and naval supportfactoryies
+- Added ecomanager for engineers (engineers will now set to pause if eco is too low while assisting)
+- Added builder for air and naval supportfactories
 - Fixed assisting / finisher
-- Add function to remove mass marker if they are to close to the map border (under 8 mapunits)
+- Added function to remove mass marker if they are to close to the map border (under 8 mapunits)
 - Fixed experimental attack platoon was formed without targets in range
 - Added option for Buildplatoon priority debugging
 - Added option to display all platoon names
@@ -13,8 +13,8 @@
 *************************************************************************************************************************************
 v38 (not public released, only on Git-Hub)
 
-- balanced Sub AI Rush (more T2 and T3 units)
-- Added Builders for land supportfactoryies
+- Balanced Sub AI Rush (more T2 and T3 units)
+- Added builders for land supportfactoryies
 
 *************************************************************************************************************************************
 v37 (not public released, only on Git-Hub)

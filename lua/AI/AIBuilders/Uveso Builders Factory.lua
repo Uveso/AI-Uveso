@@ -33,6 +33,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.35, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 2, categories.STRUCTURE * categories.FACTORY * categories.TECH1 }},
@@ -1140,6 +1141,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'FactoryUpgrade' }},
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingUpgrade', { 1, categories.STRUCTURE * categories.SUPPORTFACTORY * categories.LAND * categories.TECH1 }},
         },
         BuilderType = 'Any',
     },
@@ -1222,6 +1224,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'FactoryUpgrade' }},
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingUpgrade', { 1, categories.STRUCTURE * categories.SUPPORTFACTORY * categories.AIR * categories.TECH1 }},
         },
         BuilderType = 'Any',
     },
@@ -1304,6 +1307,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'FactoryUpgrade' }},
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingUpgrade', { 1, categories.STRUCTURE * categories.SUPPORTFACTORY * categories.NAVAL * categories.TECH1 }},
         },
         BuilderType = 'Any',
     },
@@ -1326,50 +1330,6 @@ BuilderGroup {
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'FactoryUpgrade' }},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingUpgrade', { 1, categories.STRUCTURE * categories.SUPPORTFACTORY * categories.NAVAL * categories.TECH2 }},
-        },
-        BuilderType = 'Any',
-    },
-}
--- ====================== --
---    AI-EXPERIMENTALS    --
--- ====================== --
-BuilderGroup {
-    BuilderGroupName = 'FactoryUpgradeBuildersExp Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
-    BuildersType = 'PlatoonFormBuilder',
-    Builder {
-        BuilderName = 'U1 Land Factory UP Exp',
-        PlatoonTemplate = 'T1LandFactoryUpgrade',
-        Priority = 15400,
-        DelayEqualBuildPlattons = {'FactoryUpgrade', 3},
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND - categories.TECH1} },
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH1 } },
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingUpgrade', { 1, categories.STRUCTURE * categories.FACTORY * categories.TECH1 }},
-            -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.50, -0.00 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
-            { UCBC, 'CheckBuildPlattonDelay', { 'FactoryUpgrade' }},
-        },
-        BuilderType = 'Any',
-    },
-    Builder {
-        BuilderName = 'U2 Land Factory UP Exp',
-        PlatoonTemplate = 'T2LandFactoryUpgrade',
-        Priority = 15500,
-        DelayEqualBuildPlattons = {'FactoryUpgrade', 3},
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH3} },
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 2, categories.MOBILE * categories.ENGINEER * categories.TECH2 } },
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH2 } },
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingUpgrade', { 1, categories.STRUCTURE * categories.FACTORY * categories.TECH2 }},
-            -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.40, -0.00 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
-            { UCBC, 'CheckBuildPlattonDelay', { 'FactoryUpgrade' }},
         },
         BuilderType = 'Any',
     },

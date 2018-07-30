@@ -232,7 +232,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 PanicZone/2 AA',
         PlatoonTemplate = 'T1LandAA',
-        Priority = 18550,
+        Priority = 18600,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 1, categories.MOBILE * categories.AIR - categories.SCOUT}}, -- radius, LocationType, unitCount, categoryEnemy
@@ -751,8 +751,8 @@ BuilderGroup {
     --    Big LandInterceptor groups   --
     -- =============================== --
     Builder {
-        BuilderName = 'U123 BigIntercept 30 60',
-        PlatoonTemplate = 'LandAttackInterceptUveso 30 60',                     -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
+        BuilderName = 'U123 BigIntercept 30 500',
+        PlatoonTemplate = 'LandAttackInterceptUveso 30 500',                     -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
         Priority = 30,                                                          -- Priority. 1000 is normal.
         InstanceCount = 20,                                                     -- Number of plattons that will be formed.
         BuilderData = {
