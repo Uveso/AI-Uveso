@@ -98,7 +98,7 @@ PlatoonTemplate {
     Name = 'T4ExperimentalLandGroupUveso 2 2',
     Plan = 'AttackPrioritizedLandTargetsAIUveso', -- is targetting in order from Platoondata.PrioritizedCategories.
     GlobalSquads = {
-        { categories.EXPERIMENTAL * categories.LAND * categories.MOBILE - categories.INSIGNIFICANTUNIT, 2, 2, 'attack', 'AttackFormation' }
+        { categories.EXPERIMENTAL * categories.LAND * categories.MOBILE - categories.INSIGNIFICANTUNIT, 2, 2, 'attack', 'none' }
     },
 }
 
@@ -106,6 +106,6 @@ PlatoonTemplate {
     Name = 'T4ExperimentalLandGroupUveso 3 8',
     Plan = 'AttackPrioritizedLandTargetsAIUveso', -- is targetting in order from Platoondata.PrioritizedCategories.
     GlobalSquads = {
-        { categories.EXPERIMENTAL * categories.LAND * categories.MOBILE - categories.INSIGNIFICANTUNIT, 3, 8, 'attack', 'AttackFormation' }
+        { categories.EXPERIMENTAL * categories.LAND * categories.MOBILE - categories.INSIGNIFICANTUNIT, 3, 8, 'attack', 'none' }
     },
 }

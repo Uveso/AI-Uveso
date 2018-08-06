@@ -1105,6 +1105,26 @@ BuilderGroup {
         BuilderType = 'Any',
     },
     Builder {
+        BuilderName = 'U1 Land Factory Upgrade Rush factionmissmatch',
+        PlatoonTemplate = 'T1LandFactoryUpgrade',
+        Priority = 15000,
+        DelayEqualBuildPlattons = {'FactoryUpgrade', 3},
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH2 } },
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH3 } },
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 4, categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH1 } },
+            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            -- Don't build it if...
+            { UCBC, 'CheckBuildPlattonDelay', { 'FactoryUpgrade' }},
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingUpgrade', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND }},
+        },
+        BuilderType = 'Any',
+    },
+    Builder {
         BuilderName = 'U2 Land Factory Upgrade Rush Force 1st',
         PlatoonTemplate = 'T2LandFactoryUpgrade',
         Priority = 15400,

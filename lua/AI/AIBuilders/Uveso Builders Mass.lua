@@ -103,6 +103,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { MABC, 'CanBuildOnMassLessThanDistance', { 'LocationType', 120, -500, 200, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Do we need additional conditions to build it ?
+            { UCBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
@@ -127,6 +128,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { MABC, 'CanBuildOnMassLessThanDistance', { 'LocationType', 240, -500, 200, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Do we need additional conditions to build it ?
+            { UCBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
@@ -151,6 +153,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { MABC, 'CanBuildOnMassLessThanDistance', { 'LocationType', 480, -500, 200, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Do we need additional conditions to build it ?
+            { UCBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
@@ -175,6 +178,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { MABC, 'CanBuildOnMassLessThanDistance', { 'LocationType', 2000, -500, 200, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Do we need additional conditions to build it ?
+            { UCBC, 'HasNotParagon', {} },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 9, categories.ENGINEER }},
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, 'ENGINEER TECH1' }},
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
@@ -256,6 +260,7 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 6, 'ENERGYPRODUCTION TECH3' } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 10, categories.STRUCTURE * categories.MASSEXTRACTION }},
             -- Do we need additional conditions to build it ?
+            { UCBC, 'HasNotParagon', {} },
             { UCBC, 'HaveUnitRatio', { 0.3, 'MASSFABRICATION', '<=','ENERGYPRODUCTION TECH3' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income

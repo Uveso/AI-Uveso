@@ -189,11 +189,16 @@ BuilderGroup {
         BuilderType = 'Any',
         BuilderData = {
             Construction = {
-                BuildClose = true,
+                DesiresAssist = true,
+                BuildClose = false,
+                AdjacencyCategory = categories.STRUCTURE * categories.SHIELD,
+                AvoidCategory = categories.STRUCTURE * categories.NUKE,
+                maxUnits = 1,
+                maxRadius = 10,
+                LocationType = 'LocationType',
                 BuildStructures = {
                     'T3StrategicMissile',
                 },
-                Location = 'LocationType',
             }
         }
     },
@@ -423,6 +428,7 @@ BuilderGroup {
                 AssistLocation = 'LocationType',
                 AssisteeType = 'Engineer',
                 AssistRange = 80,
+                AssistClosestUnit = true,                                       -- Assist the closest unit instead unit with the least number of assisters
                 BeingBuiltCategories = {'STRUCTURE', 'EXPERIMENTAL'},
                 Time = 60,
             },
@@ -447,6 +453,7 @@ BuilderGroup {
                 AssistLocation = 'LocationType',
                 AssisteeType = 'Engineer',
                 AssistRange = 80,
+                AssistClosestUnit = true,                                       -- Assist the closest unit instead unit with the least number of assisters
                 BeingBuiltCategories = {'STRUCTURE', 'EXPERIMENTAL'},
                 Time = 60,
             },

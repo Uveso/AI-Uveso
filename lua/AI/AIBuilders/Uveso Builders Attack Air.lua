@@ -263,7 +263,7 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, 'MOBILE AIR HIGHALTAIR ANTIAIR', '<=', 'MOBILE AIR HIGHALTAIR ANTIAIR' } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.45, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.40, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'UnitCapCheckLess', { 0.97 } },

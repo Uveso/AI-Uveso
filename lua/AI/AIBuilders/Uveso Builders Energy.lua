@@ -30,6 +30,7 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 3, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 }},
             -- Do we need additional conditions to build it ?
+            { UCBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}}, -- Absolut Base income
             { EBC, 'GreaterThanEconStorageRatio', { 0.20, -0.00}}, -- Ratio from 0 to 1. (1=100%)
@@ -65,6 +66,7 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 3, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 }},
             -- Do we need additional conditions to build it ?
+            { UCBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}}, -- Absolut Base income
             { EBC, 'GreaterThanEconStorageRatio', { 0.20, -0.00}}, -- Ratio from 0 to 1. (1=100%)
@@ -100,6 +102,7 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 3, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 }},
             -- Do we need additional conditions to build it ?
+            { UCBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}}, -- Absolut Base income
             { EBC, 'GreaterThanEconStorageRatio', { 0.20, -0.00}}, -- Ratio from 0 to 1. (1=100%)
@@ -132,6 +135,7 @@ BuilderGroup {
             { UCBC, 'LessThanEnergyTrend', { 1.0 } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
             -- Do we need additional conditions to build it ?
+            { UCBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 0.8, 0.0}}, -- Absolut Base income
             -- Don't build it if...
@@ -162,6 +166,7 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 }},
             -- Do we need additional conditions to build it ?
+            { UCBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 0.8, 0.0}}, -- Absolut Base income
             { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.00 } },
@@ -193,6 +198,7 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 }},
             -- Do we need additional conditions to build it ?
+            { UCBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.35, 0.00 } },
             -- Don't build it if...
@@ -223,6 +229,7 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 }},
             -- Do we need additional conditions to build it ?
+            { UCBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.00 } },
             -- Don't build it if...
@@ -255,6 +262,7 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 }},
             -- Do we need additional conditions to build it ?
+            { UCBC, 'HasNotParagon', {} },
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH1' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 0.4, 2.0}}, -- Absolut Base income 4 60
@@ -309,7 +317,7 @@ BuilderGroup {
         InstanceCount = 2,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.ENERGYPRODUCTION * ( categories.TECH2 + categories.TECH3 + categories.EXPERIMENTAL ) } },
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 4, categories.ENERGYPRODUCTION * ( categories.TECH2 + categories.TECH3 + categories.EXPERIMENTAL ) } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, -0.00 } },             -- Ratio from 0 to 1. (1=100%)
@@ -348,6 +356,7 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 2, categories.ENERGYPRODUCTION * ( categories.TECH2 + categories.TECH3 + categories.EXPERIMENTAL ) } },
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH2' }},
             -- Have we the eco to build it ?
+            { UCBC, 'HasNotParagon', {} },
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, -0.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'Energy' }},
@@ -421,6 +430,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { EBC, 'LessThanEconStorageRatio', { 2.00, 0.95}}, -- Ratio from 0 to 1. (1=100%)
             -- Do we need additional conditions to build it ?
+            { UCBC, 'HasNotParagon', {} },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 2, categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3 }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome', { 0.5, 100.0 }},
@@ -456,6 +466,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'LessThanEnergyTrend', { 600.0 } },
             -- Do we need additional conditions to build it ?
+            { UCBC, 'HasNotParagon', {} },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 2, categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3 }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome', { 0.5, 100.0 }},
@@ -494,6 +505,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'LessThanEnergyTrend', { 1000.0 } },
             -- Do we need additional conditions to build it ?
+            { UCBC, 'HasNotParagon', {} },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 2, categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3 }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome', { 0.5, 100.0 }},

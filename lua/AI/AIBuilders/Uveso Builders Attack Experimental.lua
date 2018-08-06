@@ -21,7 +21,7 @@ BuilderGroup {
         BuilderName = 'U4 AirExperimental1',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 150,
-        DelayEqualBuildPlattons = {'Experimental', 5},
+        DelayEqualBuildPlattons = {'Experimental', 2},
         InstanceCount = 6,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -53,7 +53,7 @@ BuilderGroup {
         BuilderName = 'U4 LandExperimental3',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 150,
-        DelayEqualBuildPlattons = {'Experimental', 5},
+        DelayEqualBuildPlattons = {'Experimental', 2},
         InstanceCount = 3,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -84,7 +84,7 @@ BuilderGroup {
         BuilderName = 'U4 SeaExperimental1',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 150,
-        DelayEqualBuildPlattons = {'Experimental', 5},
+        DelayEqualBuildPlattons = {'Experimental', 2},
         InstanceCount = 3,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -118,7 +118,7 @@ BuilderGroup {
         BuilderName = 'U4 LandExperimental2',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 150,
-        DelayEqualBuildPlattons = {'Experimental', 5},
+        DelayEqualBuildPlattons = {'Experimental', 2},
         InstanceCount = 3,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -151,7 +151,7 @@ BuilderGroup {
         BuilderName = 'U4 LandExperimental1',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 150,
-        DelayEqualBuildPlattons = {'Experimental', 5},
+        DelayEqualBuildPlattons = {'Experimental', 2},
         InstanceCount = 6,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -184,7 +184,7 @@ BuilderGroup {
         BuilderName = 'U4 LandExp1 Minimum',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 160,
-        DelayEqualBuildPlattons = {'Experimental', 5},
+        DelayEqualBuildPlattons = {'Experimental', 2},
         InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -216,7 +216,7 @@ BuilderGroup {
         BuilderName = 'U4 LandExp1 1st',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 160,
-        DelayEqualBuildPlattons = {'Experimental', 5},
+        DelayEqualBuildPlattons = {'Experimental', 2},
         InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -252,14 +252,13 @@ BuilderGroup {
         BuilderName = 'U4 LandExp1 ECOFULL',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 140,
-        DelayEqualBuildPlattons = {'Experimental', 5},
+        DelayEqualBuildPlattons = {'Experimental', 2},
         InstanceCount = 10,
         BuilderConditions = {
             -- When do we want to build this ?
             { EBC, 'GreaterThanEconIncome', { 7.0, 100.0 }},
             { EBC, 'GreaterThanEconStorageRatio', { 0.99, 0.99 } }, -- Ratio from 0 to 1. (1=100%)
             -- Do we need additional conditions to build it ?
-            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'Experimental' }},
@@ -294,10 +293,9 @@ BuilderGroup {
         DelayEqualBuildPlattons = {'Paragon', 30},
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC}},
+            { UCBC, 'HasNotParagon', {} },
             -- Do we need additional conditions to build it ?
             { UCBC, 'CanBuildCategory', { categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC } },
-            { UCBC, 'CheckParagonPresent', { } },
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.EXPERIMENTAL}},
             -- Have we the eco to build it ?

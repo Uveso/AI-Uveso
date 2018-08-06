@@ -11,7 +11,7 @@ function ExecutePlan(aiBrain)
         if aiBrain.Sorian then
             aiBrain:SetupUnderEnergyStatTriggerSorian(0.1)
             aiBrain:SetupUnderMassStatTriggerSorian(0.1)
-        else
+        elseif not aiBrain.Uveso then
             aiBrain:SetupUnderEnergyStatTrigger(0.1)
             aiBrain:SetupUnderMassStatTrigger(0.1)
         end
@@ -43,6 +43,7 @@ function ExecutePlan(aiBrain)
         -- Debug for Platoon names
         elseif aiBrain[ScenarioInfo.Options.AIPLatoonNameDebug] or ScenarioInfo.Options.AIPLatoonNameDebug == 'all' then
             ForkThread(LocationRangeManagerThread, aiBrain)
+            ForkThread(UnitCapWatchThread, aiBrain)
         else
             ForkThread(UnitCapWatchThread, aiBrain)
         end
@@ -54,20 +55,39 @@ end
 
 function EcoManager(aiBrain)
     local ArmyUnits = {}
+    local paragons = {}
+    local count = 0
     while true do
         WaitTicks(5)
         ArmyUnits = aiBrain:GetListOfUnits(categories.ENGINEER - categories.COMMAND, false) -- also gets unbuilded units (planed to build)
+        paragons = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC, false)
+        count = 0
+        for unitNum, unit in paragons do
+            if unit:GetFractionComplete() >= 1 then
+                count = count + 1
+            end
+        end
+        if count >= 1 then
+            aiBrain.HasParagon = true
+        else
+            aiBrain.HasParagon = false
+        end
+
         for _, unit in ArmyUnits do
-            if unit.Dead or unit:IsIdleState() or not unit.PlatoonHandle.PlatoonData.Assist.AssisteeType then continue end
+            if unit.Dead or not unit.PlatoonHandle.PlatoonData.Assist.AssisteeType then continue end
             -- pause engioneers if we have less then 35% mass or less then 50% energy storage
-            if aiBrain:GetEconomyStoredRatio('MASS') < 0.15 or aiBrain:GetEconomyStoredRatio('ENERGY') < 0.15 then
+            if aiBrain.HasParagon then
+                if unit:IsPaused() then
+                    unit:SetPaused( false )
+                end
+            elseif aiBrain:GetEconomyStoredRatio('MASS') < 0.15 or aiBrain:GetEconomyStoredRatio('ENERGY') < 0.15 then
                 if not unit:IsPaused() then
                     unit.PlatoonHandle:Stop()
                     unit.PlatoonHandle:PlatoonDisband()
                 end
             elseif aiBrain:GetEconomyStoredRatio('MASS') < 0.50 or aiBrain:GetEconomyStoredRatio('ENERGY') < 0.50 then
                 if aiBrain:GetEconomyTrend('MASS') < 1.0 or aiBrain:GetEconomyTrend('ENERGY') < 1.0 then
-                    if not unit:IsPaused() then
+                    if not unit:IsPaused() and not unit:IsIdleState() then
                         unit:SetPaused( true )
                         break
                     end
@@ -75,7 +95,9 @@ function EcoManager(aiBrain)
             elseif aiBrain:GetEconomyStoredRatio('MASS') > 0.50 or aiBrain:GetEconomyStoredRatio('ENERGY') > 0.50 then
                 if unit:IsPaused() then
                     unit:SetPaused( false )
-                    break
+                    if not unit:IsIdleState() then
+                        break
+                    end
                 end
             end
         end
@@ -90,17 +112,14 @@ function LocationRangeManagerThread(aiBrain)
     
         local Factories = aiBrain.BuilderManagers.MAIN.FactoryManager.FactoryList
         for k,factory in Factories do
-            if not factory.Dead then
-                if factory:IsUnitState('Building') == false and factory:IsUnitState('Upgrading') == false then
-                    if factory.LastActive and GetGameTimeSeconds() - factory.LastActive > 30 then
-                        WARN('Factory '..k..' is not working for '.. math.floor(GetGameTimeSeconds() - factory.LastActive) ..' seconds. Restarting factory... ')
-                        aiBrain.BuilderManagers.MAIN.FactoryManager:ForkThread(aiBrain.BuilderManagers.MAIN.FactoryManager.DelayBuildOrder, factory, factory.BuilderManagerData.BuilderType, 1)
-                    end
+            if not factory.Dead and factory:IsUnitState('Building') == false and factory:IsUnitState('Upgrading') == false then
+                if factory.LastActive and GetGameTimeSeconds() - factory.LastActive > 30 then
+                    --LOG('Factory '..k..' is not working for '.. math.floor(GetGameTimeSeconds() - factory.LastActive) ..' seconds. Restarting factory... ')
+                    aiBrain.BuilderManagers.MAIN.FactoryManager:ForkThread(aiBrain.BuilderManagers.MAIN.FactoryManager.DelayBuildOrder, factory, factory.BuilderManagerData.BuilderType, 1)
                 end
             end
         end
 
-    
         -- Check and set the location radius of our main base and expansions
         local BasePositions = BaseRanger(aiBrain)
         -- Check if we have units outside the range of any BaseManager
@@ -286,8 +305,10 @@ function BaseRanger(aiBrain)
                 BaseRanger[k] = {Pos = StartPos, Rad = math.floor(NewMax), Type = BaseType}
             end
         end
-        Scenario.MasterChain._MASTERCHAIN_.BaseRanger = Scenario.MasterChain._MASTERCHAIN_.BaseRanger or {}
-        Scenario.MasterChain._MASTERCHAIN_.BaseRanger[aiBrain:GetArmyIndex()] = BaseRanger
+        if aiBrain.Uveso then
+            Scenario.MasterChain._MASTERCHAIN_.BaseRanger = Scenario.MasterChain._MASTERCHAIN_.BaseRanger or {}
+            Scenario.MasterChain._MASTERCHAIN_.BaseRanger[aiBrain:GetArmyIndex()] = BaseRanger
+        end
     end
     return BaseRanger
 end

@@ -1,3 +1,55 @@
+    -- For AI Patch V2. Exclude masspoints near the map boder
+OLDAIGetSortedMassLocations = AIGetSortedMassLocations
+function AIGetSortedMassLocations(aiBrain, maxNum, tMin, tMax, tRings, tType, position)
+    -- Only use this with AI-Uveso
+    if not aiBrain.Uveso then
+        return OLDAIGetSortedMassLocations(aiBrain, maxNum, tMin, tMax, tRings, tType, position)
+    end
+    local markerList = AIGetMarkerLocations(aiBrain, 'Mass')
+    local newList = {}
+    for _, v in markerList do
+        -- check distance to map border. (game engine can't build mass closer then 8 mapunits to the map border.) 
+        if v.Position[1] <= 8 or v.Position[1] >= ScenarioInfo.size[1] - 8 or v.Position[3] <= 8 or v.Position[3] >= ScenarioInfo.size[2] - 8 then
+            -- mass marker is too close to border, skip it.
+            continue
+        end
+        if aiBrain:CanBuildStructureAt('ueb1103', v.Position) then
+            table.insert(newList, v)
+        end
+    end
+    return AISortMarkersFromLastPos(aiBrain, newList, maxNum, tMin, tMax, tRings, tType, position)
+end
+
+    -- For AI Patch V2. Exclude masspoints near the map boder
+OLDAIGetSortedMassWithEnemy = AIGetSortedMassWithEnemy
+function AIGetSortedMassWithEnemy(aiBrain, maxNum, tMin, tMax, tRings, tType, position, category)
+    -- Only use this with AI-Uveso
+    if not aiBrain.Uveso then
+        return OLDAIGetSortedMassWithEnemy(aiBrain, maxNum, tMin, tMax, tRings, tType, position, category)
+    end
+    local markerList = AIGetMarkerLocations(aiBrain, 'Mass')
+    local newList = {}
+    local num = 0
+    for _, v in markerList do
+        -- check distance to map border. (game engine can't build mass closer then 8 mapunits to the map border.) 
+        if v.Position[1] <= 8 or v.Position[1] >= ScenarioInfo.size[1] - 8 or v.Position[3] <= 8 or v.Position[3] >= ScenarioInfo.size[2] - 8 then
+            -- mass marker is too close to border, skip it.
+            continue
+        end
+        if aiBrain:GetNumUnitsAroundPoint(categories.MASSEXTRACTION, v.Position, 5, 'Enemy') > 0 then
+            table.insert(newList, v)
+            num = num + 1
+            if num >= maxNum then
+                break
+            end
+        end
+    end
+
+    return AISortMarkersFromLastPos(aiBrain, newList, maxNum, tMin, tMax, tRings, tType, position)
+end
+
+
+
 
 -- Hook for own engineer pathing
 OLDEngineerMoveWithSafePath = EngineerMoveWithSafePath

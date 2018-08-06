@@ -33,8 +33,9 @@ function CanBuildCategory(aiBrain,category)
     if type(category) == 'string' then
         category = ParseEntityCategory(category)
     end
-    --LOG('* CanBuildCategory: '..repr( EntityCategoryGetUnitList(category * FactionCat) ))
-    return EntityCategoryGetUnitList(category * FactionCat)
+    local numBuildableUnits = table.getn(EntityCategoryGetUnitList(category * FactionCat)) or 0
+    --LOG('* CanBuildCategory: numUnits:'..numUnits..' - '..repr( EntityCategoryGetUnitList(category * FactionCat) ))
+    return numBuildableUnits > 0
 end
 
 --            { UCBC, 'HaveLessThanUnitsInCategoryBeingUpgrade', { 1, categories.RADAR * categories.TECH1 }},
@@ -534,23 +535,6 @@ function HaveLessThanIdleEngineers(aiBrain, count, tech)
     end
     --LOG('tech '..tech..' - Eng='..table.getn(engineers[tech])..' - idle='..c..' == '..repr(c < count))
     return c < count
-end
-
--- { UCBC, 'CheckParagonPresent', {} },
-function CheckParagonPresent(aiBrain)
-    local paragons = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC, false)
-    local count = 0
-    for unitNum, unit in paragons do
-        if unit:GetFractionComplete() >= 1 then
-            count = count + 1
-        end
-    end
-    if count >= 1 then
-        aiBrain.HasParagon = true
-        return false
-    end
-    aiBrain.HasParagon = false
-    return true
 end
 
 -- { UCBC, 'HasParagon', {} },

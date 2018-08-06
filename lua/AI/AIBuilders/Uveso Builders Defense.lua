@@ -406,11 +406,16 @@ BuilderGroup {
         BuilderType = 'Any',
         BuilderData = {
             Construction = {
-                BuildClose = true,
+                DesiresAssist = true,
+                BuildClose = false,
+                AdjacencyCategory = categories.STRUCTURE * categories.SHIELD,
+                AvoidCategory = categories.STRUCTURE * categories.NUKE,
+                maxUnits = 1,
+                maxRadius = 10,
+                LocationType = 'LocationType',
                 BuildStructures = {
                     'T3StrategicMissile',
                 },
-                Location = 'LocationType',
             }
         }
     },
