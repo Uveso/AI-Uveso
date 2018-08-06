@@ -1,4 +1,24 @@
 *************************************************************************************************************************************
+v41 (06.Aug.2018)
+
+- AI ecomanager now detects paragon like buildings
+- If a paragon is present the AI will no longer build mass or energy
+- Increased Assister for building more experimentals
+- Added new factory upgrade platoon to upgrade captured factories
+- Nuke buildings will no longer build near another nuke building
+- Land experimental platoons are no longer using a formation while moving
+
+- All patches from the unreleased "AI Patch V2" included
+
+*************************************************************************************************************************************
+v40 (not public released, only on Git-Hub)
+
+- Added buildcondition "CanBuildCategory(aiBrain,category)" to handle mod units
+- Platoon debug function now dispays the platoon name on upgrading factories
+- Added builder for antiair and attackplatoons to sub AI "Experimental"
+
+
+*************************************************************************************************************************************
 39 (20.Jul.2018)
 
 - Added ecomanager for engineers (engineers will now set to pause if eco is too low while assisting)
