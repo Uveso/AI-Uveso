@@ -338,10 +338,10 @@ function DrawAIPatchCache(DrawOnly)
                                     -- If we draw a horizontal line, then draw the next line "under" the last line
                                     if math.abs(LastNode.position[1] - PathNode.position[1]) > math.abs(LastNode.position[3] - PathNode.position[3]) then
                                         DirectionOffsetX = 0
-                                        DirectionOffsetY = 0.7
+                                        DirectionOffsetY = 0.1
                                     -- else we are drawing vertical, then draw the next line "Right" near the last line
                                     else
-                                        DirectionOffsetX = 0.7
+                                        DirectionOffsetX = 0.1
                                         DirectionOffsetY = 0
                                     end
                                     DrawLinePop({LastNode.position[1] + LineCountOffset + DirectionOffsetX,     LastNode.position[2], LastNode.position[3] + LineCountOffset + DirectionOffsetY},     {PathNode.position[1] + LineCountOffset + DirectionOffsetX,     PathNode.position[2],PathNode.position[3] + LineCountOffset + DirectionOffsetY},     'ff000000' )                   
@@ -352,7 +352,7 @@ function DrawAIPatchCache(DrawOnly)
                                 end
                                 LastNode = PathNode
                             end
-                            LineCountOffset = LineCountOffset + 2.5
+                            LineCountOffset = LineCountOffset + 0.2
                         end
                     end
                 end

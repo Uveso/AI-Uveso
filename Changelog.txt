@@ -1,4 +1,32 @@
 *************************************************************************************************************************************
+v42 (20.Sep.2018)
+
+- Factories will now recover from any location not only MAIN
+- New unit count buildcondition "NavalBaseWithLeastUnits" for two lake situations
+- Land T1 spam will drain 10% more eco then before
+- Less energy overbuild at game start.
+- Naval areas will now captured earlier
+- New unit categorie: 'Amphibious'
+- Fixed bug in "Air Fighter" platoon builder
+- Eco manager can handle a paragon to 100% now
+- Added new buildcondition "CanBuildCategory" to check if we can build a (modded) unit.
+- Attack platoons now return inside their max radius if they are "lured" outside range.
+- Fixed display of debug pathing lines.
+- Added new builder to expansions in case a paragon is build.
+- Assister now assist on 40% mass storage instead of 50%
+- Added new builder for airfighters to counter experimentals.
+- Added attack platoons for near base fights
+- Changed target focus for groundattack to AntiAir units.
+- Changed platoon size from 30 to 12 for mid range attacks.
+- Land attack builders can build now down to mass storage of 15% (20% before)
+- Fixed naval platoon builder to handle naval bases in 2 or more lakes.
+- Changed ACU initial builder to do nothing. Eco manager is now deciding what to build at start.
+- Added naval expansion builder for more naval bases in long range
+- Patched buildmanager to handle multi faction builders.
+- Patched udatemanger to handle multi faction ugrades.
+- Support for All faction mod. All spawned ACU's now gets it's own CommanderBehaviorThread and build manager.
+
+*************************************************************************************************************************************
 v41 (06.Aug.2018)
 
 - AI ecomanager now detects paragon like buildings

@@ -1,4 +1,50 @@
---PanicZone
+-- Air Fighter
+PlatoonTemplate {
+    Name = 'U123-Fighter-Intercept 3 5', 
+    Plan = 'InterceptorAIUveso',
+    GlobalSquads = {
+        { categories.MOBILE * categories.AIR * categories.ANTIAIR * categories.HIGHALTAIR - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL - categories.ANTINAVY, 3, 5, 'Attack', 'none' },
+    }
+}
+-- Gunship
+PlatoonTemplate {
+    Name = 'U123-Gunship-Intercept 3 5',
+    Plan = 'InterceptorAIUveso',
+    GlobalSquads = {
+        { categories.MOBILE * categories.AIR * categories.GROUNDATTACK - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL - categories.ANTINAVY , 3, 5, 'Attack', 'none' }
+    }
+}
+-- Bomber
+PlatoonTemplate {
+    Name = 'U123-Bomber-Intercept 3 5', 
+    Plan = 'InterceptorAIUveso',
+    GlobalSquads = {
+        { categories.MOBILE * categories.AIR * categories.BOMBER - categories.EXPERIMENTAL, 3, 5, 'Attack', 'none' },
+    }
+}
+-- Torpedo Bomber
+PlatoonTemplate {
+    Name = 'U123-Torpedo-Intercept 3 5',
+    Plan = 'InterceptorAIUveso',
+    GlobalSquads = {
+        { categories.MOBILE * categories.AIR * categories.ANTINAVY - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL, 3, 5, 'Attack', 'GrowthFormation' },
+    }
+}
+-- Gunship + Bomber
+PlatoonTemplate {
+    Name = 'U123-Gunship+Bomber-Intercept 3 5',
+    Plan = 'InterceptorAIUveso',
+    GlobalSquads = {
+        { categories.MOBILE * categories.AIR * ( categories.GROUNDATTACK + categories.BOMBER ) - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL - categories.ANTINAVY , 3, 5, 'Attack', 'none' }
+    }
+}
+
+
+-- Unsorted
+-- Unsorted
+-- Unsorted
+
+
 PlatoonTemplate {
     Name = 'U123-PanicGround 1 500', 
     Plan = 'InterceptorAIUveso',
@@ -13,7 +59,6 @@ PlatoonTemplate {
         { categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.EXPERIMENTAL - categories.GROUNDATTACK - categories.BOMBER, 1, 500, 'Attack', 'none' },
     }
 }
---MilitaryZone
 PlatoonTemplate {
     Name = 'U123-MilitaryAntiTransport 1 12', 
     Plan = 'InterceptorAIUveso',
@@ -42,7 +87,6 @@ PlatoonTemplate {
         { categories.MOBILE * categories.AIR * categories.GROUNDATTACK - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL - categories.ANTINAVY , 2, 500, 'Attack', 'none' }
     }
 }
---EnemyZone
 PlatoonTemplate {
     Name = 'U123-EnemyAntiAir 10 10', 
     Plan = 'InterceptorAIUveso',
@@ -50,7 +94,6 @@ PlatoonTemplate {
         { categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL - categories.GROUNDATTACK - categories.BOMBER, 10, 10, 'Attack', 'none' },
     }
 }
-
 
 
 
@@ -87,7 +130,6 @@ PlatoonTemplate {
         { categories.MOBILE * categories.AIR * categories.BOMBER - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL - categories.ANTINAVY, 3, 100, 'Attack', 'GrowthFormation' },
     }
 }
---
 PlatoonTemplate {
     Name = 'U123-TorpedoBomber 1 100',
     Plan = 'InterceptorAIUveso',

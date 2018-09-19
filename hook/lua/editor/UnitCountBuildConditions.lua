@@ -26,15 +26,17 @@ function ReturnFalse(aiBrain)
 end
 
 --{ UCBC, 'CanBuildCategory', { categories.RADAR * categories.TECH1 } },
-local FactionIndexToName = {[1] = categories.UEF, [2] = categories.AEON, [3] = categories.CYBRAN, [4] = categories.SERAPHIM, [5] = categories.NOMADS }
-function CanBuildCategory(aiBrain,category)
+local FactionIndexToCategory = {[1] = categories.UEF, [2] = categories.AEON, [3] = categories.CYBRAN, [4] = categories.SERAPHIM, [5] = categories.NOMADS }
+function CanBuildCategory(aiBrain,category, DEBUG)
     -- convert text categories like 'MOBILE AIR' to 'categories.MOBILE * categories.AIR'
-    local FactionCat = FactionIndexToName[aiBrain:GetFactionIndex()] or categories.ALLUNITS
+    local FactionCat = FactionIndexToCategory[aiBrain:GetFactionIndex()] or categories.ALLUNITS
     if type(category) == 'string' then
         category = ParseEntityCategory(category)
     end
-    local numBuildableUnits = table.getn(EntityCategoryGetUnitList(category * FactionCat)) or 0
-    --LOG('* CanBuildCategory: numUnits:'..numUnits..' - '..repr( EntityCategoryGetUnitList(category * FactionCat) ))
+    local numBuildableUnits = table.getn(EntityCategoryGetUnitList(category * FactionCat)) or -1
+    if DEBUG then
+        LOG('* CanBuildCategory: FactionIndex: ('..repr(aiBrain:GetFactionIndex())..') numBuildableUnits:'..numBuildableUnits..' - '..repr( EntityCategoryGetUnitList(category * FactionCat) ))
+    end
     return numBuildableUnits > 0
 end
 
@@ -154,7 +156,7 @@ function HaveUnitRatioVersusEnemy(aiBrain, ratio, categoryOwn, compareType, cate
     local mapSizeX, mapSizeZ = GetMapSize()
     local numEnemyUnits = aiBrain:GetNumUnitsAroundPoint(testCatEnemy, Vector(mapSizeX/2,0,mapSizeZ/2), mapSizeX+mapSizeZ , 'Enemy')
     if DEBUG then
-        LOG(aiBrain:GetArmyIndex()..' CompareBody {World} ( '..numOwnUnits..' '..compareType..' '..numEnemyUnits..' ) -- ['..ratio..'] -- '..categoryOwn..' '..compareType..' '..categoryEnemy..' return '..repr(CompareBody(numOwnUnits / numEnemyUnits, ratio, compareType)))
+        LOG(aiBrain:GetArmyIndex()..' CompareBody {World} ( '..numOwnUnits..' '..compareType..' '..numEnemyUnits..' ) -- ['..ratio..'] -- return '..repr(CompareBody(numOwnUnits / numEnemyUnits, ratio, compareType)))
     end
     return CompareBody(numOwnUnits / numEnemyUnits, ratio, compareType)
 end
@@ -569,6 +571,25 @@ function CanBuildOnHydroLessThanDistance(aiBrain, locationType, distance, threat
     return false
 end
 
+function NavalBaseWithLeastUnits(aiBrain, radius, locationType, unitCategory)
+    local navalMarkers = AIUtils.AIGetMarkerLocations(aiBrain, 'Naval Area')
+    local lowloc
+    local lownum
+    for baseLocation, managers in aiBrain.BuilderManagers do
+        for index, marker in navalMarkers do
+            if marker.Name == baseLocation then
+                local pos = aiBrain.BuilderManagers[baseLocation].EngineerManager.Location
+                local numUnits = aiBrain:GetNumUnitsAroundPoint(unitCategory, pos, radius , 'Ally')
+                if not lownum or lownum > numUnits then
+                    lowloc = baseLocation
+                    lownum = numUnits
+                end
+            end
+        end
+    end
+    return locationType == lowloc
+end
+
 -----------------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------------
@@ -626,3 +647,4 @@ end
 function PoolGreaterAtLocationII(aiBrain, locationType, unitCount, unitCategory)
     return HavePoolUnitComparisonAtLocationII(aiBrain, locationType, unitCount, unitCategory, '>')
 end
+

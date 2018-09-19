@@ -57,12 +57,12 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- Build Land/Air/Naval Factories
         'FactoryBuildersRush Uveso',
-        'GateConstruction Uveso',
+--        'GateConstruction Uveso',
         -- Upgrade Factories TECH1->TECH2 and TECH2->TECH3
         'FactoryUpgradeBuildersRush Uveso',
         -- Build Air Staging Platform to refill and repair air units.
         'Air Staging Platform Uveso',
-        
+
         -----------------------------------------------------------------------------
         -- ==== Land Units BUILDER ==== --
         -----------------------------------------------------------------------------
@@ -77,12 +77,13 @@ BaseBuilderTemplate {
         'Land FormBuilders Panic',
         'Land FormBuilders MilitaryZone',
         'Land FormBuilders EnemyZone',
-        
+
         -----------------------------------------------------------------------------
         -- ==== Air Units BUILDER ==== --
         -----------------------------------------------------------------------------
         -- Build Air Units
         'AntiAirBuilders Uveso',
+--        'AntiExperimentalAirBuilders Uveso',
         -- Build Air Transporter
         'Air Transport Builder Uveso',
 
@@ -90,7 +91,7 @@ BaseBuilderTemplate {
         -- ==== Air Units FORMER==== --
         -----------------------------------------------------------------------------
         'Air FormBuilders',
-        
+
         -----------------------------------------------------------------------------
         -- ==== Sea Units BUILDER ==== --
         -----------------------------------------------------------------------------
@@ -108,7 +109,8 @@ BaseBuilderTemplate {
         'Mobile Experimental Builder Uveso',
         'Economic Experimental Builder Uveso',
         'Paragon Turbo Builder',
-        
+        'Paragon Turbo Factory',
+
         -----------------------------------------------------------------------------
         -- ==== EXPERIMENTALS FORMER ==== --
         -----------------------------------------------------------------------------
@@ -156,9 +158,9 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         'RadarBuilders Uveso',
         'RadarUpgrade Uveso',
-        
+
         'CounterIntelBuilders',
-        
+
         'AeonOptics',
         'CybranOptics',
 
@@ -166,7 +168,7 @@ BaseBuilderTemplate {
         -- ==== Mod Builder ==== --
         -----------------------------------------------------------------------------
         'HydrocarbonUpgrade BlackOps',
-        
+
     },
     -- Not used by Uveso's AI. We always need intel in case the commander is dead.
     NonCheatBuilders = {

@@ -16,12 +16,6 @@ Platoon = Class(oldPlatoon) {
         local cons = self.PlatoonData.Construction
         local buildingTmpl, buildingTmplFile, baseTmpl, baseTmplFile
 
-        local factionIndex = cons.FactionIndex or self:GetFactionIndex()
-
-        buildingTmplFile = import(cons.BuildingTemplateFile or '/lua/BuildingTemplates.lua')
-        baseTmplFile = import(cons.BaseTemplateFile or '/lua/BaseTemplates.lua')
-        buildingTmpl = buildingTmplFile[(cons.BuildingTemplate or 'BuildingTemplates')][factionIndex]
-        baseTmpl = baseTmplFile[(cons.BaseTemplate or 'BaseTemplates')][factionIndex]
 
         -- Old version of delaying the build of an experimental.
         -- This was implemended but a depricated function from sorian AI. 
@@ -63,6 +57,14 @@ Platoon = Class(oldPlatoon) {
         if eng:IsUnitState('Building') or eng:IsUnitState('Upgrading') or  eng:IsUnitState("Enhancing") then
            return
         end
+
+        local FactionToIndex  = { UEF = 1, AEON = 2, CYBRAN = 3, SERAPHIM = 4, NOMADS = 5}
+        local factionIndex = cons.FactionIndex or FactionToIndex[eng.factionCategory]
+
+        buildingTmplFile = import(cons.BuildingTemplateFile or '/lua/BuildingTemplates.lua')
+        baseTmplFile = import(cons.BaseTemplateFile or '/lua/BaseTemplates.lua')
+        buildingTmpl = buildingTmplFile[(cons.BuildingTemplate or 'BuildingTemplates')][factionIndex]
+        baseTmpl = baseTmplFile[(cons.BaseTemplate or 'BaseTemplates')][factionIndex]
 
         --LOG('*AI DEBUG: EngineerBuild AI ' .. eng.Sync.id)
 
@@ -671,10 +673,13 @@ Platoon = Class(oldPlatoon) {
         local UnitBeingUpgradeFactionIndex = nil
         local upgradeIssued = false
         self:Stop()
+        --LOG('* UnitUpgradeAI: PlatoonName:'..repr(self.BuilderName))
         for k, v in platoonUnits do
+            --LOG('* UnitUpgradeAI: Upgrading unit '..v:GetUnitId()..' ('..v.factionCategory..')')
             local upgradeID
             -- Get the factionindex from the unit to get the right update (in case we have captured this unit from another faction)
             UnitBeingUpgradeFactionIndex = FactionToIndex[v.factionCategory] or factionIndex
+            --LOG('* UnitUpgradeAI: UnitBeingUpgradeFactionIndex '..UnitBeingUpgradeFactionIndex)
             if self.PlatoonData.OverideUpgradeBlueprint then
                 local tempUpgradeID = self.PlatoonData.OverideUpgradeBlueprint[UnitBeingUpgradeFactionIndex]
                 if v:CanBuild(tempUpgradeID) then
@@ -683,8 +688,8 @@ Platoon = Class(oldPlatoon) {
                     -- in case the unit can't upgrade with OverideUpgradeBlueprint, warn the programmer
                     -- this can happen if the AI relcaimed a factory and tries to upgrade to a support factory without having a HQ factory from the reclaimed factory faction.
                     -- in this case we fall back to HQ upgrade template and upgrade to a HQ factory instead of support.
-                    -- Output: WARNING: [platoon.lua, line:xxx] *UnitUpgradeAI ERROR: OverideUpgradeBlueprint UnitId:CanBuild(tempUpgradeID) failed!
-                    WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI ERROR: OverideUpgradeBlueprint ' .. repr(v:GetUnitId()) .. ':CanBuild( '..tempUpgradeID..' ) failed.' )
+                    -- Output: WARNING: [platoon.lua, line:xxx] *UnitUpgradeAI WARNING: OverideUpgradeBlueprint UnitId:CanBuild(tempUpgradeID) failed!
+                    WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI WARNING: OverideUpgradeBlueprint ' .. repr(v:GetUnitId()) .. ':CanBuild( '..tempUpgradeID..' ) failed. (Override tree not available, upgrading to default instead.)' )
                 end
             end
             if not upgradeID and EntityCategoryContains(categories.MOBILE, v) then
@@ -711,6 +716,7 @@ Platoon = Class(oldPlatoon) {
             if upgradeID then
                 upgradeIssued = true
                 IssueUpgrade({v}, upgradeID)
+                --LOG('-- Upgrading unit '..v:GetUnitId()..' ('..v.factionCategory..') with '..upgradeID)
             end
         end
         if not upgradeIssued then
@@ -838,7 +844,8 @@ Platoon = Class(oldPlatoon) {
         local aiBrain = self:GetBrain()
         -- Search all platoon units and activate Stealth and Cloak (mostly Modded units)
         local platoonUnits = self:GetPlatoonUnits()
-        if platoonUnits and table.getn(platoonUnits) > 0 then
+        local PlatoonStrength = table.getn(platoonUnits)
+        if platoonUnits and PlatoonStrength > 0 then
             for k, v in platoonUnits do
                 if not v.Dead then
                     if v:TestToggleCaps('RULEUTC_StealthToggle') then
@@ -866,7 +873,6 @@ Platoon = Class(oldPlatoon) {
         local bAggroMove = self.PlatoonData.AggressiveMove or false
         local path
         local reason
-        local DistanceToTarget = 0
         local maxRadius = self.PlatoonData.SearchRadius or 100
         local PlatoonPos = self:GetPlatoonPosition()
         local lastPlatoonPos = table.copy(PlatoonPos)
@@ -889,6 +895,12 @@ Platoon = Class(oldPlatoon) {
                 PlatoonPos = self:GetPlatoonPosition()
                 if not GetTargetsFromBase then
                     GetTargetsFrom = PlatoonPos
+                else
+                    local DistanceToBase = VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, basePosition[1] or 0, basePosition[3] or 0)
+                    if DistanceToBase > maxRadius then
+                        --LOG('* InterceptorAIUveso: Out of maxRadius.')
+                        target = nil
+                    end
                 end
                 -- only get a new target and make a move command if the target is dead
                 if not target or target.Dead then
@@ -917,7 +929,6 @@ Platoon = Class(oldPlatoon) {
                     elseif UnitNoPath then
                         self:Stop()
                         target = UnitNoPath
-                        --LOG('* InterceptorAIUveso: MoveWithTransport() DistanceToTarget:'..DistanceToTarget)
                         if self.MovementLayer == 'Air' then
                             self:Stop()
                             self:AttackTarget(target)
@@ -931,10 +942,11 @@ Platoon = Class(oldPlatoon) {
                         self:Stop()
                         self:SimpleReturnToBase(basePosition)
                     end
+                -- targed exists and is not dead
                 else
-                    DistanceToTarget = VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, LastTargetPos[1] or 0, LastTargetPos[3] or 0)
-                    --LOG('* InterceptorAIUveso: Target Valid. range to target:'..DistanceToTarget)
-                    self:AttackTarget(target)
+                    if aiBrain:PlatoonExists(self) and target and not target.Dead then
+                        self:AttackTarget(target)
+                    end
                 end
             end
             --LOG('* InterceptorAIUveso: WaitSeconds(3)')
@@ -946,8 +958,9 @@ Platoon = Class(oldPlatoon) {
         AIAttackUtils.GetMostRestrictiveLayer(self) -- this will set self.MovementLayer to the platoon
         -- Search all platoon units and activate Stealth and Cloak (mostly Modded units)
         local platoonUnits = self:GetPlatoonUnits()
+        local PlatoonStrength = table.getn(platoonUnits)
         local ExperimentalInPlatoon = false
-        if platoonUnits and table.getn(platoonUnits) > 0 then
+        if platoonUnits and PlatoonStrength > 0 then
             for k, v in platoonUnits do
                 if not v.Dead then
                     if v:TestToggleCaps('RULEUTC_StealthToggle') then

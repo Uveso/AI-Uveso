@@ -62,7 +62,7 @@ BaseBuilderTemplate {
         'FactoryUpgradeBuildersRush Uveso',
         -- Build Air Staging Platform to refill and repair air units.
         'Air Staging Platform Uveso',
-        
+
         -----------------------------------------------------------------------------
         -- ==== Land Units BUILDER ==== --
         -----------------------------------------------------------------------------
@@ -77,12 +77,13 @@ BaseBuilderTemplate {
         'Land FormBuilders Panic',
         'Land FormBuilders MilitaryZone',
         'Land FormBuilders EnemyZone',
-        
+
         -----------------------------------------------------------------------------
         -- ==== Air Units BUILDER ==== --
         -----------------------------------------------------------------------------
         -- Build as much antiair as the enemy has
         'AntiAirBuilders Uveso',
+        'AntiExperimentalAirBuilders Uveso',
         -- Build Air Transporter
         'Air Transport Builder Uveso',
 
@@ -108,7 +109,8 @@ BaseBuilderTemplate {
         'Mobile Experimental Builder Uveso',
         'Economic Experimental Builder Uveso',
         'Paragon Turbo Builder',
-        
+        'Paragon Turbo Factory',
+
         -----------------------------------------------------------------------------
         -- ==== EXPERIMENTALS FORMER ==== --
         -----------------------------------------------------------------------------
@@ -156,9 +158,9 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         'RadarBuilders Uveso',
         'RadarUpgrade Uveso',
-        
+
         'CounterIntelBuilders',
-        
+
         'AeonOptics',
         'CybranOptics',
 
@@ -166,7 +168,7 @@ BaseBuilderTemplate {
         -- ==== Mod Builder ==== --
         -----------------------------------------------------------------------------
         'HydrocarbonUpgrade BlackOps',
-        
+
     },
     -- Not used by Uveso's AI. We always need intel in case the commander is dead.
     NonCheatBuilders = {
@@ -177,7 +179,7 @@ BaseBuilderTemplate {
         FactoryCount = {
             Land = 5,
             Air = 5,
-            Sea = 3,
+            Sea = 4,
             Gate = 1,
         },
         EngineerCount = {
@@ -193,23 +195,6 @@ BaseBuilderTemplate {
         },
     },
     ExpansionFunction = function(aiBrain, location, markerType)
-        if not aiBrain.Uveso then
-            return 0
-        end
-        local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
-        --LOG('*** E-ExpansionFunction: personality: [ '..personality..' ] - markerType: [ '..markerType..' ] - Uveso MainBase.lua')
-        if personality == 'UvesoAdaptiveBalanced' then
-            --LOG('### E-ExpansionFunction: personality: [ '..personality..' ] - markerType: [ '..markerType..' ] - Uveso MainBase.lua')
-            return -1
-        else
-            if markerType ~= 'Start Location'
-            and markerType ~= 'Expansion Area'
-            and markerType ~= 'Large Expansion Area'
-            and markerType ~= 'Naval Area'
-            then
-                LOG('---- E-ExpansionFunction: UNKNOWN EXPANSION TYPE! personality: [ '..personality..' ] - markerType: [ '..markerType..' ] - Uveso MainBase.lua')
-            end
-        end
         return -1
     end,
     FirstBaseFunction = function(aiBrain)

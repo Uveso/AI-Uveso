@@ -56,18 +56,21 @@ end
 function EcoManager(aiBrain)
     local ArmyUnits = {}
     local paragons = {}
-    local count = 0
+    local ParaCount = 0
+    local ParaComplete = 0
     while true do
         WaitTicks(5)
         ArmyUnits = aiBrain:GetListOfUnits(categories.ENGINEER - categories.COMMAND, false) -- also gets unbuilded units (planed to build)
         paragons = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC, false)
-        count = 0
+        ParaCount = 0
+        ParaComplete = 0
         for unitNum, unit in paragons do
             if unit:GetFractionComplete() >= 1 then
-                count = count + 1
+                ParaComplete = ParaComplete + 1
             end
+            ParaCount = ParaCount + 1
         end
-        if count >= 1 then
+        if ParaComplete >= 1 then
             aiBrain.HasParagon = true
         else
             aiBrain.HasParagon = false
@@ -80,19 +83,19 @@ function EcoManager(aiBrain)
                 if unit:IsPaused() then
                     unit:SetPaused( false )
                 end
-            elseif aiBrain:GetEconomyStoredRatio('MASS') < 0.15 or aiBrain:GetEconomyStoredRatio('ENERGY') < 0.15 then
+            elseif ParaCount <= 0 and (aiBrain:GetEconomyStoredRatio('MASS') < 0.15 or aiBrain:GetEconomyStoredRatio('ENERGY') < 0.15) then
                 if not unit:IsPaused() then
                     unit.PlatoonHandle:Stop()
                     unit.PlatoonHandle:PlatoonDisband()
                 end
-            elseif aiBrain:GetEconomyStoredRatio('MASS') < 0.50 or aiBrain:GetEconomyStoredRatio('ENERGY') < 0.50 then
+            elseif aiBrain:GetEconomyStoredRatio('MASS') < 0.30 or aiBrain:GetEconomyStoredRatio('ENERGY') < 0.50 then
                 if aiBrain:GetEconomyTrend('MASS') < 1.0 or aiBrain:GetEconomyTrend('ENERGY') < 1.0 then
                     if not unit:IsPaused() and not unit:IsIdleState() then
                         unit:SetPaused( true )
                         break
                     end
                 end
-            elseif aiBrain:GetEconomyStoredRatio('MASS') > 0.50 or aiBrain:GetEconomyStoredRatio('ENERGY') > 0.50 then
+            elseif aiBrain:GetEconomyStoredRatio('MASS') > 0.40 or aiBrain:GetEconomyStoredRatio('ENERGY') > 0.50 then
                 if unit:IsPaused() then
                     unit:SetPaused( false )
                     if not unit:IsIdleState() then
@@ -109,13 +112,21 @@ function LocationRangeManagerThread(aiBrain)
     local unitcounterdelayer = 0
     local ArmyUnits = {}
     while true do
-    
-        local Factories = aiBrain.BuilderManagers.MAIN.FactoryManager.FactoryList
-        for k,factory in Factories do
-            if not factory.Dead and factory:IsUnitState('Building') == false and factory:IsUnitState('Upgrading') == false then
-                if factory.LastActive and GetGameTimeSeconds() - factory.LastActive > 30 then
-                    --LOG('Factory '..k..' is not working for '.. math.floor(GetGameTimeSeconds() - factory.LastActive) ..' seconds. Restarting factory... ')
-                    aiBrain.BuilderManagers.MAIN.FactoryManager:ForkThread(aiBrain.BuilderManagers.MAIN.FactoryManager.DelayBuildOrder, factory, factory.BuilderManagerData.BuilderType, 1)
+
+        -- loop over all location managers
+        for baseLocation, managers in aiBrain.BuilderManagers do
+            -- get all factories from this location
+            local Factories = managers.FactoryManager.FactoryList
+            -- loop over all factories
+            for k,factory in Factories do
+                -- is our factory not building or upgrading ?
+                if not factory.Dead and factory:IsUnitState('Building') == false and factory:IsUnitState('Upgrading') == false then
+                    -- check if our factory is more then 30 seconds inactice
+                    if factory.LastActive and GetGameTimeSeconds() - factory.LastActive > 30 then
+                        SPEW('Factory '..k..' at location ('..baseLocation..') is not working for '.. math.floor(GetGameTimeSeconds() - factory.LastActive) ..' seconds. Restarting factory... ')
+                        -- fork a new build thread for our factory
+                        managers.FactoryManager:ForkThread(managers.FactoryManager.DelayBuildOrder, factory, factory.BuilderManagerData.BuilderType, 1)
+                    end
                 end
             end
         end

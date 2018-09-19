@@ -66,7 +66,6 @@ BuilderGroup {
         BuilderConditions = {
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH3 , categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH2 }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH3 } },
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH2 } },
             { EBC, 'GreaterThanEconStorageRatio', { 0.75, 1.00}}, -- Ratio from 0 to 1. (1=100%)
         },
         BuilderType = 'Any',
@@ -93,7 +92,7 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.ENERGYPRODUCTION * (categories.TECH2 + categories.TECH3) , categories.ENGINEER * categories.MOBILE }},
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
-            { EBC, 'LessThanEconStorageRatio', { 0.35, 0.05}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'LessThanEconStorageRatio', { 0.35, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
         },
         BuilderType = 'Any',
@@ -218,7 +217,7 @@ BuilderGroup {
                 AssisteeType = 'Structure',
                 AssistRange = 100,
                 AssistClosestUnit = true,                                       -- Assist the closest unit instead unit with the least number of assisters
-                BeingBuiltCategories = {'EXPERIMENTAL'},
+                BeingBuiltCategories = {'EXPERIMENTAL ECONOMIC, EXPERIMENTAL MOBILE'},
                 AssistUntilFinished = true,
                 Time = 0,
             },
@@ -245,7 +244,7 @@ BuilderGroup {
                 AssisteeType = 'Structure',
                 AssistRange = 100,
                 AssistClosestUnit = true,                                       -- Assist the closest unit instead unit with the least number of assisters
-                BeingBuiltCategories = {'EXPERIMENTAL'},
+                BeingBuiltCategories = {'EXPERIMENTAL ECONOMIC, EXPERIMENTAL MOBILE'},
                 AssistUntilFinished = true,
                 Time = 0,
             },
@@ -272,7 +271,7 @@ BuilderGroup {
                 AssisteeType = 'Structure',
                 AssistRange = 100,
                 AssistClosestUnit = true,                                       -- Assist the closest unit instead unit with the least number of assisters
-                BeingBuiltCategories = {'EXPERIMENTAL'},
+                BeingBuiltCategories = {'EXPERIMENTAL ECONOMIC, EXPERIMENTAL MOBILE'},
                 AssistUntilFinished = true,
                 Time = 0,
             },
@@ -285,14 +284,13 @@ BuilderGroup {
         BuilderName = 'U1 Assist PARA',
         PlatoonTemplate = 'EngineerAssist',
         Priority = 300,
-        InstanceCount = 10,
+        InstanceCount = 20,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuilt', { 0, categories.STRUCTURE * categories.ECONOMIC * categories.EXPERIMENTAL }},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 1.00}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.40, 1.00}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
         },
         BuilderType = 'Any',
@@ -311,14 +309,13 @@ BuilderGroup {
         BuilderName = 'U2 Assist PARA',
         PlatoonTemplate = 'T2EngineerAssist',
         Priority = 300,
-        InstanceCount = 10,
+        InstanceCount = 20,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuilt', { 0, categories.STRUCTURE * categories.ECONOMIC * categories.EXPERIMENTAL }},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH2 } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 1.00}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.40, 1.00}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
         },
         BuilderType = 'Any',
@@ -337,15 +334,14 @@ BuilderGroup {
         BuilderName = 'U3 Assist PARA',
         PlatoonTemplate = 'T3EngineerAssist',
         Priority = 300,
-        InstanceCount = 10,
+        InstanceCount = 20,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuilt', { 0, categories.STRUCTURE * categories.ECONOMIC * categories.EXPERIMENTAL }},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH3 } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 1.00, 1.00}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 1.00}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
         },
         BuilderType = 'Any',

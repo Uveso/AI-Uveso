@@ -53,6 +53,7 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- Build as much antiair as the enemy has
         'AntiAirBuilders Uveso',
+        'AntiExperimentalAirBuilders Uveso',
         -- Build Air Transporter
         'Air Transport Builder Uveso',
 
@@ -68,6 +69,7 @@ BaseBuilderTemplate {
         'Economic Experimental Builder Uveso',
         'ExperimentalAttackFormBuilders Uveso',
         'Paragon Turbo Builder',
+        'Paragon Turbo Factory',
 
         -----------------------------------------------------------------------------
         -- ==== Structure Shield BUILDER ==== --
@@ -132,6 +134,9 @@ BaseBuilderTemplate {
     },
     ExpansionFunction = function(aiBrain, location, markerType)
         if not aiBrain.Uveso then
+            return 0
+        end
+        if markerType ~= 'Large Expansion Area' then
             return 0
         end
         return 1000, 'UvesoExpansionArea'

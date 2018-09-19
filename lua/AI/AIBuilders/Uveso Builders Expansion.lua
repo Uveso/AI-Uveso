@@ -176,10 +176,10 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'U1 Naval Builder',                                       -- Random Builder Name.
+        BuilderName = 'U1 Naval Builder 250',                                       -- Random Builder Name.
         PlatoonTemplate = 'EngineerBuilder',                                    -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
-        Priority = 15500,                                                        -- Priority. Higher priotity will be build more often then lower priotity.
-        InstanceCount = 4,                                                      -- Number of plattons that will be formed with this template.
+        Priority = 17490,                                                        -- Priority. Higher priotity will be build more often then lower priotity.
+        InstanceCount = 2,                                                      -- Number of plattons that will be formed with this template.
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'NavalBaseCheck', { } },
@@ -209,12 +209,44 @@ BuilderGroup {
                 ExpansionRadius = 120,
                 BuildStructures = {
                     'T1SeaFactory',
-                    'T1Sonar',
-                    'T1NavalDefense',
-                    'T1AADefense',
+                }
+            }
+        }
+    },
+    Builder {
+        BuilderName = 'U1 Naval Builder far',                                       -- Random Builder Name.
+        PlatoonTemplate = 'EngineerBuilder',                                    -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
+        Priority = 17400,                                                        -- Priority. Higher priotity will be build more often then lower priotity.
+        InstanceCount = 2,                                                      -- Number of plattons that will be formed with this template.
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'NavalBaseCheck', { } },
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'NavalAreaNeedsEngineer', { 'LocationType', 1000, -1000, 100, 1, 'AntiSurface' } },
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}},
+            -- Don't build it if...
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapFactory, '<=', categories.STRUCTURE * categories.FACTORY * categories.NAVAL } }, -- Maximal 3 factories at 125 unitcap, 12 factories at 500 unitcap...
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<=', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            RequireTransport = false,
+            Construction = {
+                BuildClose = false,
+                BaseTemplate = 'ExpansionBaseTemplates',
+                ExpansionBase = true,
+                NearMarkerType = 'Naval Area',
+                LocationRadius = 1000,
+                LocationType = 'LocationType',
+                ThreatMin = -1000,
+                ThreatMax = 100,
+                ThreatRings = 1,
+                ThreatType = 'AntiSurface',
+                ExpansionRadius = 120,
+                BuildStructures = {
                     'T1SeaFactory',
-                    'T1NavalDefense',
-                    'T1NavalDefense',
                 }
             }
         }
@@ -222,13 +254,13 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Naval Builder trans',                                       -- Random Builder Name.
         PlatoonTemplate = 'EngineerBuilder',                                    -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
-        Priority = 15500,                                                        -- Priority. Higher priotity will be build more often then lower priotity.
-        InstanceCount = 1,                                                      -- Number of plattons that will be formed with this template.
+        Priority = 17400,                                                        -- Priority. Higher priotity will be build more often then lower priotity.
+        InstanceCount = 2,                                                      -- Number of plattons that will be formed with this template.
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'NavalBaseCheck', { } },
             -- Do we need additional conditions to build it ?
-            { UCBC, 'NavalAreaNeedsEngineer', { 'LocationType', 250, -1000, 100, 1, 'AntiSurface' } },
+            { UCBC, 'NavalAreaNeedsEngineer', { 'LocationType', 1000, -1000, 100, 1, 'AntiSurface' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}},
             -- Don't build it if...
@@ -244,7 +276,7 @@ BuilderGroup {
                 BaseTemplate = 'ExpansionBaseTemplates',
                 ExpansionBase = true,
                 NearMarkerType = 'Naval Area',
-                LocationRadius = 250,
+                LocationRadius = 1000,
                 LocationType = 'LocationType',
                 ThreatMin = -1000,
                 ThreatMax = 100,
@@ -253,12 +285,6 @@ BuilderGroup {
                 ExpansionRadius = 120,
                 BuildStructures = {
                     'T1SeaFactory',
-                    'T1Sonar',
-                    'T1NavalDefense',
-                    'T1AADefense',
-                    'T1SeaFactory',
-                    'T1NavalDefense',
-                    'T1NavalDefense',
                 }
             }
         }

@@ -52,7 +52,8 @@ function ExtractorPause(self, aiBrain, MassExtractorUnitList, ratio, techLevel)
     end
     --LOG('* ExtractorPause: Idle= '..UpgradingBuildingNum..'   Upgrading= '..UpgradingBuildingNum..'   Paused= '..PausedUpgradingBuildingNum..'   Disabled= '..DisabledBuildingNum..'   techLevel= '..techLevel)
     --Check for energy stall
-    if aiBrain:GetEconomyStoredRatio('ENERGY') < 0.50 and aiBrain:GetEconomyStoredRatio('MASS') > aiBrain:GetEconomyStoredRatio('ENERGY') then
+    --if aiBrain:GetEconomyStoredRatio('ENERGY') < 0.50 and aiBrain:GetEconomyStoredRatio('MASS') > aiBrain:GetEconomyStoredRatio('ENERGY') then
+    if aiBrain:GetEconomyStoredRatio('ENERGY') < 0.50 or aiBrain:GetEconomyStoredRatio('MASS') > aiBrain:GetEconomyStoredRatio('ENERGY') then
         -- All buildings that are doing nothing
         if IdleBuilding then
             IdleBuilding:SetScriptBit('RULEUTC_ProductionToggle', true)
@@ -287,7 +288,7 @@ function ReclaimAIThread(platoon,self,aiBrain)
         MassStorageRatio = aiBrain:GetEconomyStoredRatio('MASS')
         EnergyStorageRatio = aiBrain:GetEconomyStoredRatio('ENERGY')
         -- 1==1 is always true, i use this to clean up the base from wreckages even if we have full eco.
-        if (MassStorageRatio < 1.00 or EnergyStorageRatio < 1.00 or 1==1) then
+        if (MassStorageRatio < 1.00 or EnergyStorageRatio < 1.00) then
             --LOG('Searching for reclaimables')
             local x1 = SelfPos[1]-scanrange
             local y1 = SelfPos[3]-scanrange

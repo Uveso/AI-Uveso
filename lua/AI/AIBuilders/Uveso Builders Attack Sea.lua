@@ -3,7 +3,7 @@ local EBC = '/lua/editor/EconomyBuildConditions.lua'
 local IBC = '/lua/editor/InstantBuildConditions.lua'
 local MIBC = '/lua/editor/MiscBuildConditions.lua'
 
-local ExperimentalCount = 3
+local MaxAttackForce = 0.45                                                     -- 45% of all units can be attacking units (categories.MOBILE - categories.ENGINEER)
 local mapSizeX, mapSizeZ = GetMapSize()
 local BaseMilitaryZone = math.max( mapSizeX-50, mapSizeZ-50 ) / 2 -- Half the map
 local BasePanicZone = BaseMilitaryZone / 2
@@ -27,9 +27,31 @@ BuilderGroup {
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.MOBILE * categories.NAVAL }}, -- radius, LocationType, unitCount, categoryEnemy
+            { UCBC, 'NavalBaseWithLeastUnits', {  60, 'LocationType', categories.MOBILE * categories.NAVAL }}, -- radius, LocationType, categoryUnits
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.35, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 10, categories.MOBILE * categories.NAVAL  * categories.SUBMERSIBLE }},
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
+        },
+        BuilderType = 'Sea',
+    },
+    Builder {
+        BuilderName = 'U1 Sea AntiAir PANIC',
+        PlatoonTemplate = 'T1SeaAntiAir',
+        Priority = 190,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.MOBILE * categories.AIR }}, -- radius, LocationType, unitCount, categoryEnemy
+            { UCBC, 'NavalBaseWithLeastUnits', {  60, 'LocationType', categories.MOBILE * categories.NAVAL }}, -- radius, LocationType, categoryUnits
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.35, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            -- Don't build it if...
+            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 10, categories.ANTIAIR }},
             { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Sea',
@@ -40,62 +62,60 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Sub',
         PlatoonTemplate = 'T1SeaSub',
-        Priority = 180,
+        Priority = 150,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 10, categories.MOBILE * categories.NAVAL * categories.SUBMERSIBLE } },
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 50, categories.MOBILE * categories.NAVAL }},
+            { UCBC, 'NavalBaseWithLeastUnits', {  60, 'LocationType', categories.MOBILE * categories.NAVAL }}, -- radius, LocationType, categoryUnits
+            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL', '<=', 'NAVAL' } },
             -- Do we need additional conditions to build it ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.NAVAL * categories.FACTORY * categories.TECH1 }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.35, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HasNotParagon', {} },
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
+            { UCBC, 'UnitCapCheckLess', { 0.92 } },
         },
         BuilderType = 'Sea',
     },
     Builder {
-        BuilderName = 'U1 Sea Frigate ratio Sub',
+        BuilderName = 'U1 Sea Frigate ratio',
         PlatoonTemplate = 'T1SeaFrigate',
-        Priority = 180,
+        Priority = 170,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 10, categories.MOBILE * categories.NAVAL - categories.SUBMERSIBLE } },
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 50, categories.MOBILE * categories.NAVAL }},
-            { UCBC, 'HaveUnitRatio', { 1.0, 'NAVAL MOBILE ANTIAIR', '<','NAVAL MOBILE SUBMERSIBLE' } },
+            { UCBC, 'NavalBaseWithLeastUnits', {  60, 'LocationType', categories.MOBILE * categories.NAVAL }}, -- radius, LocationType, categoryUnits
+            { UCBC, 'HaveUnitRatio', { 0.30, 'MOBILE NAVAL DIRECTFIRE TECH1', '<','MOBILE NAVAL SUBMERSIBLE' } },
             -- Do we need additional conditions to build it ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.NAVAL * categories.FACTORY * categories.TECH1 }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.35, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HasNotParagon', {} },
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
+            { UCBC, 'UnitCapCheckLess', { 0.92 } },
         },
         BuilderType = 'Sea',
     },
 
     Builder {
-        BuilderName = 'U1 Sea AntiAir',
+        BuilderName = 'U1 Sea AntiAir ratio',
         PlatoonTemplate = 'T1SeaAntiAir',
-        Priority = 180,
+        Priority = 170,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.4, 'MOBILE NAVAL ANTIAIR', '<=', 'MOBILE AIR' } },
+            { UCBC, 'NavalBaseWithLeastUnits', {  60, 'LocationType', categories.MOBILE * categories.NAVAL }}, -- radius, LocationType, categoryUnits
+            { UCBC, 'HaveUnitRatio', { 0.30, 'MOBILE NAVAL ANTIAIR TECH1', '<','MOBILE NAVAL SUBMERSIBLE' } },
             -- Do we need additional conditions to build it ?
-            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 30, 'MOBILE NAVAL SUBMERSIBLE' } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.35, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HasNotParagon', {} },
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL', '<=', 'NAVAL' } },
             { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
-            { UCBC, 'HaveLessThanUnitsWithCategory', { ExperimentalCount, categories.MOBILE * categories.NAVAL * categories.EXPERIMENTAL }},
             { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Sea',
@@ -110,15 +130,15 @@ BuilderGroup {
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL', '<=', 'NAVAL' } },
+            { UCBC, 'NavalBaseWithLeastUnits', {  60, 'LocationType', categories.MOBILE * categories.NAVAL }}, -- radius, LocationType, categoryUnits
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.25}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.35, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL', '<=', 'MOBILE NAVAL' } },
             { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
-            { UCBC, 'HaveLessThanUnitsWithCategory', { ExperimentalCount, categories.MOBILE * categories.NAVAL * categories.EXPERIMENTAL }},
             { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Sea',
@@ -130,15 +150,15 @@ BuilderGroup {
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL', '<=', 'NAVAL' } },
+            { UCBC, 'NavalBaseWithLeastUnits', {  60, 'LocationType', categories.MOBILE * categories.NAVAL }}, -- radius, LocationType, categoryUnits
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.25}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.35, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL', '<=', 'MOBILE NAVAL' } },
             { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
-            { UCBC, 'HaveLessThanUnitsWithCategory', { ExperimentalCount, categories.MOBILE * categories.NAVAL * categories.EXPERIMENTAL }},
             { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Sea',
@@ -150,15 +170,15 @@ BuilderGroup {
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL SUBMERSIBLE', '<=', 'NAVAL' } },
+            { UCBC, 'NavalBaseWithLeastUnits', {  60, 'LocationType', categories.MOBILE * categories.NAVAL }}, -- radius, LocationType, categoryUnits
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.25}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.35, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL', '<=', 'MOBILE NAVAL' } },
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
-            { UCBC, 'HaveLessThanUnitsWithCategory', { ExperimentalCount, categories.MOBILE * categories.NAVAL * categories.EXPERIMENTAL }},
             { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Sea',
@@ -170,15 +190,15 @@ BuilderGroup {
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL', '<=', 'NAVAL' } },
+            { UCBC, 'NavalBaseWithLeastUnits', {  60, 'LocationType', categories.MOBILE * categories.NAVAL }}, -- radius, LocationType, categoryUnits
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.25}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.35, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL', '<=', 'MOBILE NAVAL' } },
             { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
-            { UCBC, 'HaveLessThanUnitsWithCategory', { ExperimentalCount, categories.MOBILE * categories.NAVAL * categories.EXPERIMENTAL }},
             { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Sea',
@@ -190,15 +210,15 @@ BuilderGroup {
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL', '<=', 'NAVAL' } },
+            { UCBC, 'NavalBaseWithLeastUnits', {  60, 'LocationType', categories.MOBILE * categories.NAVAL }}, -- radius, LocationType, categoryUnits
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.25}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.35, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL', '<=', 'MOBILE NAVAL' } },
             { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
-            { UCBC, 'HaveLessThanUnitsWithCategory', { ExperimentalCount, categories.MOBILE * categories.NAVAL * categories.EXPERIMENTAL }},
             { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Sea',
@@ -216,7 +236,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.25}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.35, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL', '<=', 'MOBILE NAVAL' } },
             { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
@@ -234,7 +254,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.25}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.35, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL', '<=', 'MOBILE NAVAL' } },
             { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
@@ -252,7 +272,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.25}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.35, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL', '<=', 'MOBILE NAVAL' } },
             { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
@@ -270,7 +290,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.25}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.35, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL', '<=', 'MOBILE NAVAL' } },
             { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },
@@ -288,7 +308,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.25}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.35, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.1, 'MOBILE NAVAL', '<=', 'MOBILE NAVAL' } },
             { UCBC, 'HaveUnitRatioVersusCap', { 0.50, '<=', categories.MOBILE -categories.ENGINEER -categories.SCOUT } },

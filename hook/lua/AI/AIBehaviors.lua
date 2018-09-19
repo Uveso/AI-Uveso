@@ -1,10 +1,15 @@
 
 function CommanderBehaviorUveso(platoon)
-    for _, v in platoon:GetPlatoonUnits() do
+    local aiBrain = platoon:GetPlatoonUnits()[1]:GetAIBrain()
+    local Commanders = aiBrain:GetListOfUnits(categories.COMMAND, false, false)
+    --LOG(' Commander no. '..table.getn(Commanders))
+    for _, v in Commanders do
         if not v.Dead and not v.CommanderThread then
             v.CommanderThread = v:ForkThread(CommanderThreadUveso, platoon)
+            --LOG('Forking Commander Behavior Thread')
         end
     end
+
 end
 
 function CommanderThreadUveso(cdr, platoon)

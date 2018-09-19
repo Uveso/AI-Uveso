@@ -411,7 +411,7 @@ BuilderGroup {
                 AdjacencyCategory = categories.STRUCTURE * categories.SHIELD,
                 AvoidCategory = categories.STRUCTURE * categories.NUKE,
                 maxUnits = 1,
-                maxRadius = 10,
+                maxRadius = 20,
                 LocationType = 'LocationType',
                 BuildStructures = {
                     'T3StrategicMissile',
@@ -452,7 +452,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 SMD 1st Main',
         PlatoonTemplate = 'T3EngineerBuilder',
-        Priority = 2100,
+        Priority = 18000,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * categories.TECH3 } },
@@ -482,7 +482,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 SMD Enemy Main',
         PlatoonTemplate = 'T3EngineerBuilder',
-        Priority = 2100,
+        Priority = 18000,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioAtLocationRadiusVersusEnemy', { 1.50, 'LocationType', 90, 'STRUCTURE DEFENSE ANTIMISSILE TECH3', '<','SILO NUKE TECH3, SILO NUKE EXPERIMENTAL' } },
@@ -511,7 +511,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 SMD Enemy Expansion',
         PlatoonTemplate = 'T3EngineerBuilder',
-        Priority = 2090,
+        Priority = 18000,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioAtLocationRadiusVersusEnemy', { 1.50, 'LocationType', 90, 'STRUCTURE DEFENSE ANTIMISSILE TECH3', '<','SILO NUKE TECH3, SILO NUKE EXPERIMENTAL' } },

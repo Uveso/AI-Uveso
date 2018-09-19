@@ -23,12 +23,11 @@ BuilderGroup {
     BuilderGroupName = 'Initial ACU Builders Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
-        BuilderName = 'UC CDR Initial Default',
+        BuilderName = 'UC CDR Initial',
         PlatoonAddBehaviors = { 'CommanderBehaviorUveso', },
-        PlatoonTemplate = 'CommanderBuilder',
+        PlatoonTemplate = 'CommanderBuilderInitial',
         Priority = 19500,
         BuilderConditions = {
-            { IBC, 'NotPreBuilt', {}},
         },
         InstantCheck = true,
         BuilderType = 'Any',
@@ -39,34 +38,6 @@ BuilderGroup {
                 AdjacencyDistance = 50,
                 BuildStructures = {
                     'T1LANDFactory',
-                    'T1EnergyProduction',
-                    'T1EnergyProduction',
-                    'T1EnergyProduction',
-                }
-            }
-        }
-    },
-    Builder {
-        BuilderName = 'UC Initial ACU PreBuilt Default',
-        PlatoonAddBehaviors = { 'CommanderBehaviorUveso', },
-        PlatoonTemplate = 'CommanderBuilder',
-        Priority = 19500,
-        BuilderConditions = {
-            { IBC, 'PreBuiltBase', {}},
-        },
-        InstantCheck = true,
-        BuilderType = 'Any',
-        PlatoonAddFunctions = { {SAI, 'BuildOnce'}, },
-        BuilderData = {
-            Construction = {
-                BuildStructures = {
-                    'T1EnergyProduction',
-                    'T1EnergyProduction',
-                    'T1EnergyProduction',
-                    'T1EnergyProduction',
-                    'T1EnergyProduction',
-                    'T1AirFactory',
-                    'T1EnergyProduction',
                 }
             }
         }

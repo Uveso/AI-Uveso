@@ -82,7 +82,6 @@ FactoryBuilderManager = Class(OLDFactoryBuilderManager) {
         return retTemplate
     end,
 
-    
     -- Hook for Builder names
     AssignBuildOrder = function(self,factory,bType)
         if factory.Dead then

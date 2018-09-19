@@ -74,6 +74,9 @@ BaseBuilderTemplate {
         if not aiBrain.Uveso then
             return 0
         end
+        if markerType ~= 'Naval Area' then
+            return 0
+        end
         return 1000, 'UvesoExpansionNaval'
     end,
 }
