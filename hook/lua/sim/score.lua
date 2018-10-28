@@ -1,4 +1,4 @@
-HistoryScoreInterval = 10 -- make an option with this
+HistoryScoreInterval = 60 -- make an option with this
 
 function ScoreHistoryThread()
     while true do

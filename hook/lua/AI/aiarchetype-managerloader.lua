@@ -40,6 +40,7 @@ function ExecutePlan(aiBrain)
         elseif aiBrain.Uveso then
             ForkThread(LocationRangeManagerThread, aiBrain)
             ForkThread(EcoManager, aiBrain)
+            ForkThread(BaseAlertManager, aiBrain)
         -- Debug for Platoon names
         elseif aiBrain[ScenarioInfo.Options.AIPLatoonNameDebug] or ScenarioInfo.Options.AIPLatoonNameDebug == 'all' then
             ForkThread(LocationRangeManagerThread, aiBrain)
@@ -61,7 +62,7 @@ function EcoManager(aiBrain)
     while true do
         WaitTicks(5)
         ArmyUnits = aiBrain:GetListOfUnits(categories.ENGINEER - categories.COMMAND, false) -- also gets unbuilded units (planed to build)
-        paragons = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC, false)
+        paragons = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC  * categories.ENERGYPRODUCTION  * categories.MASSPRODUCTION, false)
         ParaCount = 0
         ParaComplete = 0
         for unitNum, unit in paragons do
@@ -83,23 +84,27 @@ function EcoManager(aiBrain)
                 if unit:IsPaused() then
                     unit:SetPaused( false )
                 end
-            elseif ParaCount <= 0 and (aiBrain:GetEconomyStoredRatio('MASS') < 0.15 or aiBrain:GetEconomyStoredRatio('ENERGY') < 0.15) then
+            elseif aiBrain:GetEconomyStoredRatio('MASS') < 0.15 or aiBrain:GetEconomyStoredRatio('ENERGY') < 0.15 then
                 if not unit:IsPaused() then
                     unit.PlatoonHandle:Stop()
                     unit.PlatoonHandle:PlatoonDisband()
                 end
-            elseif aiBrain:GetEconomyStoredRatio('MASS') < 0.30 or aiBrain:GetEconomyStoredRatio('ENERGY') < 0.50 then
+            elseif aiBrain:GetEconomyStoredRatio('MASS') < 0.30 or aiBrain:GetEconomyStoredRatio('ENERGY') < 0.80 then
                 if aiBrain:GetEconomyTrend('MASS') < 1.0 or aiBrain:GetEconomyTrend('ENERGY') < 1.0 then
                     if not unit:IsPaused() and not unit:IsIdleState() then
                         unit:SetPaused( true )
+                        -- break, so we only set 1 unit per 5 tick
                         break
                     end
                 end
-            elseif aiBrain:GetEconomyStoredRatio('MASS') > 0.40 or aiBrain:GetEconomyStoredRatio('ENERGY') > 0.50 then
-                if unit:IsPaused() then
-                    unit:SetPaused( false )
-                    if not unit:IsIdleState() then
-                        break
+            elseif aiBrain:GetEconomyStoredRatio('MASS') > 0.30 or aiBrain:GetEconomyStoredRatio('ENERGY') > 0.80 then
+                if aiBrain:GetEconomyTrend('MASS') >= 1.0 and aiBrain:GetEconomyTrend('ENERGY') >= 1.0 then
+                    if unit:IsPaused() then
+                        unit:SetPaused( false )
+                        if not unit:IsIdleState() then
+                            -- break, so we only set 1 unit per 5 tick
+                            break
+                        end
                     end
                 end
             end
@@ -322,4 +327,61 @@ function BaseRanger(aiBrain)
         end
     end
     return BaseRanger
+end
+
+function BaseAlertManager(aiBrain)
+    local mapSizeX, mapSizeZ = GetMapSize()
+    local BaseMilitaryZone = math.max( mapSizeX-50, mapSizeZ-50 ) / 2               -- Half the map
+    BaseMilitaryZone = math.max( 250, BaseMilitaryZone )
+    local GetEnemyUnitsInSphereOnRadar = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua').GetEnemyUnitsInSphereOnRadar
+    local targets = {}
+    local baseposition, radius
+    while true do
+        WaitTicks(50)
+        if not baseposition then
+            if aiBrain:PBMHasPlatoonList() then
+                for k,v in aiBrain.PBM.Locations do
+                    if v.LocationType == 'MAIN' then
+                        baseposition = v.Location
+                        radius = v.Radius
+                        break
+                    end
+                end
+            elseif aiBrain.BuilderManagers['MAIN'] then
+                baseposition = aiBrain.BuilderManagers['MAIN'].FactoryManager:GetLocationCoords()
+                radius = aiBrain.BuilderManagers['MAIN'].FactoryManager:GetLocationRadius()
+            end
+            if not baseposition then
+                continue
+            end 
+        end
+        targets = GetEnemyUnitsInSphereOnRadar(aiBrain, baseposition, 60, BaseMilitaryZone) or {}
+        local ClosestTarget = nil
+        local distance = BaseMilitaryZone
+        for _, unit in targets do
+            if not unit.Dead and EntityCategoryContains(categories.EXPERIMENTAL - categories.AIR, unit) then
+                local TargetPosition = unit:GetPosition()
+                local targetRange = VDist2(baseposition[1], baseposition[3], TargetPosition[1], TargetPosition[3])
+                if targetRange < distance then
+                    distance = targetRange
+                    ClosestTarget = unit
+                end
+            end
+        end
+        if not ClosestTarget then
+            targets = aiBrain:GetUnitsAroundPoint((categories.EXPERIMENTAL + categories.TECH3) - categories.AIR, baseposition, 1024, 'Enemy')
+            for _, unit in targets do
+                if not unit.Dead then
+                    if not IsEnemy( aiBrain:GetArmyIndex(), unit:GetAIBrain():GetArmyIndex() ) then continue end
+                    local TargetPosition = unit:GetPosition()
+                    local targetRange = VDist2(baseposition[1], baseposition[3], TargetPosition[1], TargetPosition[3])
+                    if targetRange < distance then
+                        distance = targetRange
+                        ClosestTarget = unit
+                    end
+                end
+            end
+        end
+        aiBrain.PrimaryTarget = ClosestTarget
+    end
 end

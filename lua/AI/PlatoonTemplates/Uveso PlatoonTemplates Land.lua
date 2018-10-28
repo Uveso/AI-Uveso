@@ -79,10 +79,25 @@ PlatoonTemplate {
     }
 }
 PlatoonTemplate {
-    Name = 'LandAttackInterceptUveso 30 500',
+    Name = 'LandAttackInterceptUveso 1 500',
     Plan = 'AttackPrioritizedLandTargetsAIUveso',
     GlobalSquads = {
-        { categories.MOBILE * categories.LAND - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND, 30, 500, 'Attack', 'none' },
+        { categories.MOBILE * categories.LAND - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND, 1, 500, 'Attack', 'none' },
+    }
+}
+
+PlatoonTemplate {
+    Name = 'U1-ArtyAttack 1 500', 
+    Plan = 'AttackPrioritizedLandTargetsAIUveso',
+    GlobalSquads = {
+        { categories.MOBILE * categories.LAND * categories.INDIRECTFIRE - categories.EXPERIMENTAL - categories.COMMAND, 1, 500, 'Attack', 'none' },
+    }
+}
+PlatoonTemplate {
+    Name = 'U1-AntiAirAttack 1 500', 
+    Plan = 'AttackPrioritizedLandTargetsAIUveso',
+    GlobalSquads = {
+        { categories.MOBILE * categories.LAND * categories.ANTIAIR - categories.EXPERIMENTAL - categories.COMMAND, 1, 500, 'Attack', 'none' },
     }
 }
 

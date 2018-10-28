@@ -20,19 +20,19 @@ BuilderGroup {
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'U4 AirExperimental1',
-        PlatoonTemplate = 'T3EngineerBuilder',
+        PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 150,
         InstanceCount = 6,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
-            { EBC, 'GreaterThanEconTrend', { 10.0, 300.0 } }, -- relative income
             -- Do we need additional conditions to build it ?
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
             { UCBC, 'CanBuildCategory', { categories.MOBILE * categories.AIR * categories.EXPERIMENTAL - categories.SATELLITE } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.75, 0.95 } }, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 1.00, 1.00 }}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC }},
+            { UCBC, 'UnitCapCheckLess', { 0.99 } },
        },
         BuilderType = 'Any',
         BuilderData = {
@@ -50,18 +50,18 @@ BuilderGroup {
     },
     Builder {
         BuilderName = 'U4 LandExperimental3',
-        PlatoonTemplate = 'T3EngineerBuilder',
+        PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 150,
         InstanceCount = 3,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 2, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
-            { EBC, 'GreaterThanEconTrend', { 40.0, 300.0 } }, -- relative income
             -- Do we need additional conditions to build it ?
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.95, 0.95 } }, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 1.00, 1.00 }}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC }},
+            { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -79,21 +79,20 @@ BuilderGroup {
     },
     Builder {
         BuilderName = 'U4 SeaExperimental1',
-        PlatoonTemplate = 'T3EngineerBuilder',
+        PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 150,
         InstanceCount = 3,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
-            { EBC, 'GreaterThanEconTrend', { 10.0, 300.0 } }, -- relative income
             -- Do we need additional conditions to build it ?
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
             { SBC, 'IsWaterMap', { true } },
             { UCBC, 'CanBuildCategory', { categories.MOBILE * categories.NAVAL * categories.EXPERIMENTAL } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.75, 0.95 } }, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 1.00, 1.00 }}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC }},
-            { UCBC, 'UnitCapCheckLess', { 0.98 } },
+            { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -111,19 +110,18 @@ BuilderGroup {
     },
     Builder {
         BuilderName = 'U4 LandExperimental2',
-        PlatoonTemplate = 'T3EngineerBuilder',
+        PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 150,
         InstanceCount = 3,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 2, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
-            { EBC, 'GreaterThanEconTrend', { 30.0, 300.0 } }, -- relative income
             -- Do we need additional conditions to build it ?
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.75, 0.95 } }, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 1.00, 1.00 }}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC }},
-            { UCBC, 'UnitCapCheckLess', { 0.98 } },
+            { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -141,19 +139,18 @@ BuilderGroup {
     },
     Builder {
         BuilderName = 'U4 LandExperimental1',
-        PlatoonTemplate = 'T3EngineerBuilder',
+        PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 150,
         InstanceCount = 6,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
-            { EBC, 'GreaterThanEconTrend', { 10.0, 300.0 } }, -- relative income
             -- Do we need additional conditions to build it ?
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.95, 0.95 }}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 1.00, 1.00 }}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC }},
-            { UCBC, 'UnitCapCheckLess', { 0.98 } },
+            { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -171,7 +168,7 @@ BuilderGroup {
     },
     Builder {
         BuilderName = 'U4 LandExp1 Minimum',
-        PlatoonTemplate = 'T3EngineerBuilder',
+        PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 160,
         InstanceCount = 1,
         BuilderConditions = {
@@ -182,9 +179,7 @@ BuilderGroup {
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC }},
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.EXPERIMENTAL * categories.LAND }},
-            { UCBC, 'UnitCapCheckLess', { 0.98 } },
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.MOBILE * categories.EXPERIMENTAL }},
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -202,7 +197,7 @@ BuilderGroup {
     },
     Builder {
         BuilderName = 'U4 LandExp1 1st',
-        PlatoonTemplate = 'T3EngineerBuilder',
+        PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 160,
         InstanceCount = 1,
         BuilderConditions = {
@@ -214,7 +209,7 @@ BuilderGroup {
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.EXPERIMENTAL * categories.LAND }},
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.MOBILE * categories.EXPERIMENTAL }},
             { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
         BuilderType = 'Any',
@@ -240,8 +235,8 @@ BuilderGroup {
     BuilderGroupName = 'Economic Experimental Builder Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
-        BuilderName = 'U3 Paragon 1st',
-        PlatoonTemplate = 'T3EngineerBuilder',
+        BuilderName = 'U3 Paragon 1st mass40',
+        PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 190,
         DelayEqualBuildPlattons = {'Paragon', 30},
         BuilderConditions = {
@@ -261,8 +256,43 @@ BuilderGroup {
         BuilderType = 'Any',
         BuilderData = {
             Construction = {
-                AdjacencyCategory = 'SHIELD STRUCTURE',
-                AdjacencyDistance = 80,
+                AdjacencyCategory = categories.STRUCTURE * categories.SHIELD,
+                AdjacencyDistance = 120,
+                AvoidCategory = categories.ENERGYPRODUCTION * categories.EXPERIMENTAL,
+                maxUnits = 1,
+                maxRadius = 40,
+                BuildClose = false,
+                BuildStructures = {
+                    'T4EconExperimental',
+                },
+                Location = 'LocationType',
+            }
+        }
+    },
+    Builder {
+        BuilderName = 'U3 Paragon 1st 30min',
+        PlatoonTemplate = 'T3EngineerBuilderNoSUB',
+        Priority = 190,
+        DelayEqualBuildPlattons = {'Paragon', 30},
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HasNotParagon', {} },
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60*30 } },
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'CanBuildCategory', { categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC } },
+            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.EXPERIMENTAL}},
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+            { UCBC, 'CheckBuildPlattonDelay', { 'Paragon' }},
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC }},
+            -- Respect UnitCap
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Construction = {
+                AdjacencyCategory = categories.STRUCTURE * categories.SHIELD,
+                AdjacencyDistance = 120,
                 AvoidCategory = categories.ENERGYPRODUCTION * categories.EXPERIMENTAL,
                 maxUnits = 1,
                 maxRadius = 40,
@@ -285,7 +315,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'CanBuildCategory', { categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC } },
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 2, categories.EXPERIMENTAL}},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC}},
             -- Have we the eco to build it ?
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC }},
@@ -294,8 +324,40 @@ BuilderGroup {
         BuilderType = 'Any',
         BuilderData = {
             Construction = {
-                AdjacencyCategory = 'SHIELD STRUCTURE, STRUCTURE',
-                AdjacencyDistance = 80,
+                AdjacencyCategory = categories.STRUCTURE * categories.SHIELD,
+                AdjacencyDistance = 120,
+                AvoidCategory = categories.ENERGYPRODUCTION * categories.EXPERIMENTAL,
+                maxUnits = 1,
+                maxRadius = 40,
+                BuildClose = false,
+                BuildStructures = {
+                    'T4EconExperimental',
+                },
+                Location = 'LocationType',
+            }
+        }
+    },
+    Builder {
+        BuilderName = 'U3 Paragon 3nd',
+        PlatoonTemplate = 'T3EngineerBuilder',
+        Priority = 190,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HasParagon', {} },
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC}},
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'CanBuildCategory', { categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC } },
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC}},
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC }},
+            -- Respect UnitCap
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Construction = {
+                AdjacencyCategory = categories.STRUCTURE * categories.SHIELD,
+                AdjacencyDistance = 120,
                 AvoidCategory = categories.ENERGYPRODUCTION * categories.EXPERIMENTAL,
                 maxUnits = 1,
                 maxRadius = 40,
@@ -380,35 +442,6 @@ BuilderGroup {
     --    BaseMilitaryZone    --
     -- ======================= --
     Builder {
-        BuilderName = 'U4 BaseMilitaryZone LAND',
-        --PlatoonAddPlans = {'NameUnitsSorian'},
-        PlatoonTemplate = 'T4ExperimentalLandUveso 1 1',
-        Priority = 80,                                        -- Priority. 1000 is normal.
-        InstanceCount = 1,                                      -- Number of plattons that will be formed.
-        FormRadius = 10000,
-        BuilderData = {
-            SearchRadius = BaseMilitaryZone,                    -- Searchradius for new target.
-            GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
-            AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
-            AttackEnemyStrength = 1000,                                         -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            TargetSearchCategory = 'MOBILE LAND, STRUCTURE',    -- Only find targets matching these categories.
-            PrioritizedCategories = {
-                'EXPERIMENTAL',
-                'MOBILE LAND INDIRECTFIRE',
-                'MOBILE LAND DIRECTFIRE',
-                'STRUCTURE DEFENSE',
-                'MOBILE LAND ANTIAIR',
-                'STRUCTURE ANTIAIR',
-                'ALLUNITS',
-            },
-        },
-        BuilderConditions = {                                   -- platoon will be formed if all conditions are true
-            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 0, categories.MOBILE * categories.LAND - categories.SCOUT + categories.STRUCTURE - categories.NAVAL}}, -- radius, LocationType, unitCount, categoryEnemy
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, categories.EXPERIMENTAL * categories.MOBILE * categories.LAND } },
-        },
-        BuilderType = 'Any',                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
-    },
-    Builder {
         BuilderName = 'U4 BaseMilitaryZone AIR',
         PlatoonTemplate = 'U4-ExperimentalInterceptor 1 1',
         --PlatoonAddPlans = {'NameUnitsSorian'},
@@ -464,6 +497,7 @@ BuilderGroup {
             },
         },
         BuilderConditions = {                                   -- platoon will be formed if all conditions are true
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60*30 } },
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 3, categories.EXPERIMENTAL * categories.MOBILE * categories.LAND } },
         },
         BuilderType = 'Any',                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
@@ -479,15 +513,16 @@ BuilderGroup {
             SearchRadius = 10000,                               -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
-            AttackEnemyStrength = 1000,                                         -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            TargetSearchCategory = 'STRUCTURE',                 -- Only find targets matching these categories.
+            AttackEnemyStrength = 10000,                                         -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            TargetSearchCategory = 'EXPERIMENTAL',                 -- Only find targets matching these categories.
             PrioritizedCategories = {
-                'ANTIAIR',
-                'ENERGYPRODUCTION',
-                'ALLUNITS',
+                'STRUCTURE ENERGYPRODUCTION',
+                'STRUCTURE SHIELD',
+                'STRUCTURE',
             },
         },
         BuilderConditions = {                                   -- platoon will be formed if all conditions are true
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60*30 } },
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 3, categories.EXPERIMENTAL * categories.MOBILE * categories.AIR } },
         },
         BuilderType = 'Any',                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
@@ -496,7 +531,7 @@ BuilderGroup {
     --    Finish him!    --
     -- ================= --
     Builder {
-        BuilderName = 'U-T4 Land. Kill Them All!!!',
+        BuilderName = 'U4 Land. Kill STRUCTURE',
         --PlatoonAddPlans = {'NameUnitsSorian'},
         PlatoonTemplate = 'T4ExperimentalLandGroupUveso 3 8',
         Priority = 50,                                        -- Priority. 1000 is normal.
@@ -506,19 +541,17 @@ BuilderGroup {
             SearchRadius = 10000,                               -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
-            AttackEnemyStrength = 1000,                                         -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            AttackEnemyStrength = 10000,                                         -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = 'STRUCTURE, MOBILE LAND',    -- Only find targets matching these categories.
             PrioritizedCategories = {
-                'EXPERIMENTAL',
-                'MOBILE LAND INDIRECTFIRE',
-                'MOBILE LAND DIRECTFIRE',
+                'MOBILE EXPERIMENTAL LAND',
+                'STRUCTURE EXPERIMENTAL',
                 'STRUCTURE DEFENSE',
-                'MOBILE LAND ANTIAIR',
-                'STRUCTURE ANTIAIR',
                 'ALLUNITS',
             },
         },
         BuilderConditions = {                                   -- platoon will be formed if all conditions are true
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60*30 } },
             -- When do we want to build this ?
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 3, categories.EXPERIMENTAL * categories.MOBILE * categories.LAND } },
             -- Do we need additional conditions to build it ?
@@ -539,19 +572,22 @@ BuilderGroup {
             SearchRadius = 10000,                               -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
-            AttackEnemyStrength = 1000,                                         -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            AttackEnemyStrength = 10000,                                         -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = 'STRUCTURE, MOBILE',    -- Only find targets matching these categories.
             PrioritizedCategories = {
-                'ANTIAIR',
-                'ENERGYPRODUCTION',
+                'MOBILE EXPERIMENTAL AIR',
+                'MOBILE EXPERIMENTAL LAND',
+                'STRUCTURE EXPERIMENTAL',
+                'STRUCTURE DEFENSE',
                 'ALLUNITS',
             },
         },
         BuilderConditions = {                                   -- platoon will be formed if all conditions are true
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60*30 } },
             -- When do we want to build this ?
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, categories.EXPERIMENTAL * categories.MOBILE * categories.AIR } },
             -- Do we need additional conditions to build it ?
-            { UCBC, 'UnitsGreaterAtEnemy', { 0 , 'STRUCTURE' } },
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , 'STRUCTURE, MOBILE LAND' } },
             -- Have we the eco to build it ?
             -- Don't build it if...
         },

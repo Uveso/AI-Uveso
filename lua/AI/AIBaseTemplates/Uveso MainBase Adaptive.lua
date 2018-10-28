@@ -70,6 +70,8 @@ BaseBuilderTemplate {
         'LandAttackBuildersPanic Uveso',
         'LandAttackBuilders Uveso',
         'LandAttackBuildersRatio Uveso',
+        'LandAttackBuildersAntiExperimental',
+        'GateFactoryBuilders Uveso',
 
         -----------------------------------------------------------------------------
         -- ==== Land Units FORMER==== --
@@ -83,7 +85,6 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- Build as much antiair as the enemy has
         'AntiAirBuilders Uveso',
-        'AntiExperimentalAirBuilders Uveso',
         -- Build Air Transporter
         'Air Transport Builder Uveso',
 
@@ -110,7 +111,8 @@ BaseBuilderTemplate {
         'Economic Experimental Builder Uveso',
         'Paragon Turbo Builder',
         'Paragon Turbo Factory',
-
+        'Paragon Turbo Air',
+        
         -----------------------------------------------------------------------------
         -- ==== EXPERIMENTALS FORMER ==== --
         -----------------------------------------------------------------------------
@@ -121,21 +123,25 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         'Shields Uveso',
         'ShieldUpgrades Uveso',
+        'RepairLowShields',
 
         -----------------------------------------------------------------------------
         -- ==== Defenses BUILDER ==== --
         -----------------------------------------------------------------------------
         'Tactical Missile Launcher minimum Uveso',
         'Tactical Missile Launcher Maximum Uveso',
-        'Tactical Missile Launcher TacticalAISorian Uveso',
+        'Tactical Missile Launcher Uveso',
         'Tactical Missile Defenses Uveso',
         'Strategic Missile Launcher Uveso',
         'Strategic Missile Launcher NukeAI Uveso',
         'Strategic Missile Defense Uveso',
         'Strategic Missile Defense Anti-NukeAI Uveso',
         'Artillery Builder Uveso',
+        'Artillery Platoon Former',
         -- Build Anti Air near AirFactories
         'Base Anti Air Defense Uveso',
+        -- Ground Defence Builder
+        'Base Anti Ground Defense Uveso',
 
         -----------------------------------------------------------------------------
         -- ==== FireBase BUILDER ==== --
@@ -180,13 +186,13 @@ BaseBuilderTemplate {
             Land = 5,
             Air = 5,
             Sea = 4,
-            Gate = 1,
+            Gate = 2,
         },
         EngineerCount = {
             Tech1 = 6,
             Tech2 = 3,
             Tech3 = 3,
-            SCU = 1,
+            SCU = 3,
         },
         MassToFactoryValues = {
             T1Value = 6,

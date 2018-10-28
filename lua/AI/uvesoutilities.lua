@@ -53,11 +53,14 @@ function ExtractorPause(self, aiBrain, MassExtractorUnitList, ratio, techLevel)
     --LOG('* ExtractorPause: Idle= '..UpgradingBuildingNum..'   Upgrading= '..UpgradingBuildingNum..'   Paused= '..PausedUpgradingBuildingNum..'   Disabled= '..DisabledBuildingNum..'   techLevel= '..techLevel)
     --Check for energy stall
     --if aiBrain:GetEconomyStoredRatio('ENERGY') < 0.50 and aiBrain:GetEconomyStoredRatio('MASS') > aiBrain:GetEconomyStoredRatio('ENERGY') then
-    if aiBrain:GetEconomyStoredRatio('ENERGY') < 0.50 or aiBrain:GetEconomyStoredRatio('MASS') > aiBrain:GetEconomyStoredRatio('ENERGY') then
+    if aiBrain:GetEconomyStoredRatio('ENERGY') < 0.25 or aiBrain:GetEconomyStoredRatio('MASS') > aiBrain:GetEconomyStoredRatio('ENERGY') then
         -- All buildings that are doing nothing
         if IdleBuilding then
-            IdleBuilding:SetScriptBit('RULEUTC_ProductionToggle', true)
-            return true
+            if IdleBuildingNum <= 1 then
+            else
+                IdleBuilding:SetScriptBit('RULEUTC_ProductionToggle', true)
+                return true
+            end
         -- Have we a building that is actual upgrading
         elseif UpgradingBuilding then
             -- Its upgrading, now check fist if we only have 1 building that is upgrading
@@ -440,6 +443,301 @@ function StartMoveDestination(self,destination)
         IssueMove( {self}, destination )
         WaitTicks(10)
     end
+end
+
+---------------------------------------------
+--   Tactical Missile Launcher AI Thread   --
+---------------------------------------------
+local MissileTimer = 0
+local HotTarget = nil
+function TMLAIThread(platoon,self,aiBrain)
+    local bp = self:GetBlueprint()
+    local weapon = bp.Weapon[1]
+    local maxRadius = weapon.MaxRadius or 256
+    local minRadius = weapon.MinRadius or 15
+    local MaxLoad = weapon.MaxProjectileStorage or 4
+    self:SetAutoMode(true)
+    while aiBrain:PlatoonExists(platoon) and self and not self.Dead do
+        local target = false
+        while self and not self.Dead and self:GetTacticalSiloAmmoCount() < 2 do
+            WaitSeconds(1)
+        end
+        while self and not self.Dead and self:IsPaused() do
+            WaitSeconds(1)
+        end
+        while self and not self.Dead and self:GetTacticalSiloAmmoCount() > 1 and (not target) and (not self:IsPaused()) do
+            target = false
+            while self and not self.Dead and not target do
+                WaitSeconds(1)
+                while self and not self.Dead and self:IsIdleState() == false do
+                    WaitSeconds(1)
+                end
+                if self.Dead then return end
+                target = FindTargetUnit(self, minRadius, maxRadius, MaxLoad)
+            end
+        end
+        if target and (not target.Dead) and MissileTimer < GetGameTimeSeconds() then
+            MissileTimer = GetGameTimeSeconds() + 0.5
+            if EntityCategoryContains(categories.STRUCTURE, target) then
+                if self:GetTacticalSiloAmmoCount() >= MaxLoad then
+                    IssueTactical({self}, target)
+                end
+            else
+                targPos = LeadTarget(self, target)
+                if targPos and targPos[1] > 0 and targPos[3] > 0 then
+                    if EntityCategoryContains(categories.EXPERIMENTAL - categories.AIR, target) or self:GetTacticalSiloAmmoCount() >= MaxLoad then
+                        IssueTactical({self}, targPos)
+                    end
+                else
+                    target = false
+                end
+            end
+        end
+        WaitSeconds(1)
+    end
+end
+function FindTargetUnit(self, minRadius, maxRadius, MaxLoad)
+    local position = self:GetPosition()
+    local aiBrain = self:GetAIBrain()
+    local targets = GetEnemyUnitsInSphereOnRadar(aiBrain, position, minRadius, maxRadius)
+    if not targets or not self or self.Dead then return false end
+    local MissileCount = self:GetTacticalSiloAmmoCount()
+    local AllTargets = {}
+    local MaxHealthpoints = 0
+    local UnitHealth
+    local uBP
+    for k, v in targets do
+        -- Only check if Unit is 100% builded and not AIR
+        if (not v.Dead) and v:GetFractionComplete() == 1 and EntityCategoryContains(categories.SELECTABLE - categories.AIR, v) then
+            -- Get Target Data
+            uBP = v:GetBlueprint()
+            UnitHealth = uBP.Defense.Health or 1
+            -- Check Targets
+            if EntityCategoryContains(categories.COMMAND, v) and (not IsProtected(self,v:GetPosition())) then
+                AllTargets[1] = v
+            elseif (UnitHealth > MaxHealthpoints or (UnitHealth == MaxHealthpoints and v.distance < AllTargets[2].distance)) and EntityCategoryContains(categories.EXPERIMENTAL * categories.MOBILE, v) and (not IsProtected(self,v:GetPosition())) then
+                AllTargets[2] = v
+                MaxHealthpoints = UnitHealth
+            elseif UnitHealth > MaxHealthpoints and EntityCategoryContains(categories.MOBILE, v) and uBP.StrategicIconName == 'icon_experimental_generic' and (not IsProtected(self,v:GetPosition())) then
+                AllTargets[3] = v
+                MaxHealthpoints = UnitHealth
+            elseif (not AllTargets[5] or v.distance < AllTargets[5].distance) and EntityCategoryContains(categories.STRUCTURE - categories.WALL, v) and (not IsProtected(self,v:GetPosition())) then
+                AllTargets[5] = v
+                break
+            elseif v:IsMoving() == false then
+                if (not AllTargets[4] or v.distance < AllTargets[4].distance) and EntityCategoryContains(categories.TECH3 * categories.MOBILE * categories.INDIRECTFIRE, v) and (not IsProtected(self,v:GetPosition())) then
+                    AllTargets[4] = v
+                elseif (not AllTargets[6] or v.distance < AllTargets[6].distance) and EntityCategoryContains(categories.ENGINEER, v) and (not IsProtected(self,v:GetPosition())) then
+                    AllTargets[6] = v
+                elseif (not AllTargets[7] or v.distance < AllTargets[7].distance) and EntityCategoryContains(categories.MOBILE, v) and (not IsProtected(self,v:GetPosition())) then
+                    AllTargets[7] = v
+                end
+            end
+        end
+    end
+    local TargetType = {
+        "Com", -- 1 Commander
+        "Exp", -- 2 Experimental. Attack order: highes maxunithealth. (not actual healthbar!)
+        "Hea", -- 3 Heavy Assault. (small experimentals from Total Mayhem, Experimental Wars etc.)
+        "Art", -- 4 Mobile T3 Unit with indirect Fire and only if the unit don't move. (Artillery / Missilelauncher)
+        "Bui", -- 5 T1,T2,T3 Structures. Attack order: nearest completed building.
+        "Eng", -- 6 Engineer (fire only on not moving units)
+        "Mob", -- 7 Mobile (fire only on not moving units)
+    }
+    for k, v in sortedpairs(AllTargets) do
+        -- Don't shoot at protected targets
+        if MissileCount >= 2 then
+            if k <= 3 then
+                return v
+            end
+        end
+        if MissileCount >= MaxLoad - 2 then
+            if k <= 4 then
+                return v
+            end
+        end
+        if MissileCount >= MaxLoad then
+            return v
+        end
+    end
+    return false
+end
+function LeadTarget(launcher, target)
+    -- Get launcher and target position
+    local LauncherPos = launcher:GetPosition()
+    local TargetPos = target:GetPosition()
+    -- Get target position in 1 second intervals.
+    -- This allows us to get speed and direction from the target
+    local TargetStartPosition=0
+    local Target1SecPos=0
+    local Target2SecPos=0
+    local XmovePerSec=0
+    local YmovePerSec=0
+    local XmovePerSecCheck=-1
+    local YmovePerSecCheck=-1
+    -- Check if the target is runing straight or circling
+    -- If x/y and xcheck/ycheck are equal, we can be sure the target is moving straight
+    -- in one direction. At least for the last 2 seconds.
+    local LoopSaveGuard = 0
+    while (XmovePerSec ~= XmovePerSecCheck or YmovePerSec ~= YmovePerSecCheck) and LoopSaveGuard < 10 do
+        -- 1st position of target
+        TargetPos = target:GetPosition()
+        TargetStartPosition = {TargetPos[1], 0, TargetPos[3]}
+        WaitTicks(10)
+        -- 2nd position of target after 1 second
+        TargetPos = target:GetPosition()
+        Target1SecPos = {TargetPos[1], 0, TargetPos[3]}
+        XmovePerSec = (TargetStartPosition[1] - Target1SecPos[1])
+        YmovePerSec = (TargetStartPosition[3] - Target1SecPos[3])
+        WaitTicks(10)
+        -- 3rd position of target after 2 seconds to verify straight movement
+        TargetPos = target:GetPosition()
+        Target2SecPos = {TargetPos[1], TargetPos[2], TargetPos[3]}
+        XmovePerSecCheck = (Target1SecPos[1] - Target2SecPos[1])
+        YmovePerSecCheck = (Target1SecPos[3] - Target2SecPos[3])
+        --We leave the while-do check after 10 loops (20 seconds) and try collateral damage
+        --This can happen if a player try to fool the targetingsystem by circling a unit.
+        LoopSaveGuard = LoopSaveGuard + 1
+    end
+    -- Get launcher position height
+    local fromheight = GetTerrainHeight(LauncherPos[1], LauncherPos[3])
+    if GetSurfaceHeight(LauncherPos[1], LauncherPos[3]) > fromheight then
+        fromheight = GetSurfaceHeight(LauncherPos[1], LauncherPos[3])
+    end
+    -- Get target position height
+    local toheight = GetTerrainHeight(Target2SecPos[1], Target2SecPos[3])
+    if GetSurfaceHeight(Target2SecPos[1], Target2SecPos[3]) > toheight then
+        toheight = GetSurfaceHeight(Target2SecPos[1], Target2SecPos[3])
+    end
+    -- Get height difference between launcher position and target position
+    -- Adjust for height difference by dividing the height difference by the missiles max speed
+    local HeightDifference = math.abs(fromheight - toheight) / 12
+    -- Speed up time is distance the missile will travel while reaching max speed (~22.47 MapUnits)
+    -- divided by the missiles max speed (12) which is equal to 1.8725 seconds flight time
+    local SpeedUpTime = 22.47 / 12
+    --  Missile needs 3 seconds to launch
+    local LaunchTime = 3
+    -- Get distance from launcher position to targets starting position and position it moved to after 1 second
+    local dist1 = VDist2(LauncherPos[1], LauncherPos[3], Target1SecPos[1], Target1SecPos[3])
+    local dist2 = VDist2(LauncherPos[1], LauncherPos[3], Target2SecPos[1], Target2SecPos[3])
+    -- Missile has a faster turn rate when targeting targets < 50 MU away, so it will level off faster
+    local LevelOffTime = 0.25
+    local CollisionRangeAdjust = 0
+    if dist2 < 50 then
+        LevelOffTime = 0.02
+        CollisionRangeAdjust = 2
+    end
+    -- Divide both distances by missiles max speed to get time to impact
+    local time1 = (dist1 / 12) + LaunchTime + SpeedUpTime + LevelOffTime + HeightDifference
+    local time2 = (dist2 / 12) + LaunchTime + SpeedUpTime + LevelOffTime + HeightDifference
+    -- Get the missile travel time by extrapolating speed and time from dist1 and dist2
+    local MissileTravelTime = (time2 + (time2 - time1)) + ((time2 - time1) * time2)
+    -- Now adding all times to get final missile flight time to the position where the target will be
+    local MissileImpactTime = MissileTravelTime + LaunchTime + SpeedUpTime + LevelOffTime + HeightDifference
+    -- Create missile impact corrdinates based on movePerSec * MissileImpactTime
+    local MissileImpactX = Target2SecPos[1] - (XmovePerSec * MissileImpactTime)
+    local MissileImpactY = Target2SecPos[3] - (YmovePerSec * MissileImpactTime)
+    -- Adjust for targets CollisionOffsetY. If the hitbox of the unit is above the ground
+    -- we nedd to fire "behind" the target, so we hit the unit in midair.
+    local TargetCollisionBoxAdjust = 0
+    local TargetBluePrint = target:GetBlueprint()
+    if TargetBluePrint.CollisionOffsetY and TargetBluePrint.CollisionOffsetY > 0 then
+        -- if the unit is far away we need to target farther behind the target because of the projectile flight angel
+        local DistanceOffset = (100 / 256 * dist2) * 0.06
+        TargetCollisionBoxAdjust = TargetBluePrint.CollisionOffsetY * CollisionRangeAdjust + DistanceOffset
+    end
+    -- To calculate the Adjustment behind the target we use a variation of the Pythagorean theorem. (Percent scale technique)
+    -- (a²+b²=c²) If we add x% to c² then also a² and b² are x% larger. (a²)*x% + (b²)*x% = (c²)*x%
+    local Hypotenuse = VDist2(LauncherPos[1], LauncherPos[3], MissileImpactX, MissileImpactY)
+    local HypotenuseScale = 100 / Hypotenuse * TargetCollisionBoxAdjust
+    local aLegScale = (MissileImpactX - LauncherPos[1]) / 100 * HypotenuseScale
+    local bLegScale = (MissileImpactY - LauncherPos[3]) / 100 * HypotenuseScale
+    -- Add x percent (behind) the target coordinates to get our final missile impact coordinates
+    MissileImpactX = MissileImpactX + aLegScale
+    MissileImpactY = MissileImpactY + bLegScale
+    -- Cancel firing if target is outside map boundries
+    if MissileImpactX < 0 or MissileImpactY < 0 or MissileImpactX > ScenarioInfo.size[1] or MissileImpactY > ScenarioInfo.size[2] then
+        return false
+    end
+    -- Also cancel if target would be out of weaponrange or inside minimum range.
+    local LauncherBluePrint = launcher:GetBlueprint()
+    local maxRadius = LauncherBluePrint.Weapon[1].MaxRadius or 256
+    local minRadius = LauncherBluePrint.Weapon[1].MinRadius or 15
+    local dist3 = VDist2(LauncherPos[1], LauncherPos[3], MissileImpactX, MissileImpactY)
+    if dist3 < minRadius or dist3 > maxRadius then
+        return false
+    end
+    -- return extrapolated target position / missile impact coordinates
+    return {MissileImpactX, Target2SecPos[2], MissileImpactY}
+end
+function GetEnemyUnitsInSphereOnRadar(aiBrain, position, minRadius, maxRadius)
+    local x1 = (position.x or position[1]) - maxRadius
+    local z1 = (position.z or position[3]) - maxRadius
+    local x2 = (position.x or position[1]) + maxRadius
+    local z2 = (position.z or position[3]) + maxRadius
+    local UnitsinRec = GetUnitsInRect( Rect(x1, z1, x2, z2) )
+    if not UnitsinRec then
+        return UnitsinRec
+    end
+    local SelfArmyIndex = aiBrain:GetArmyIndex()
+    local RadEntities = {}
+    WaitSeconds(0.1)
+    local lagstopper = 0
+    for Index, EnemyUnit in UnitsinRec do
+        lagstopper = lagstopper + 1
+        if lagstopper > 20 then
+            WaitTicks(1)
+            lagstopper = 0
+        end
+        if (not EnemyUnit.Dead) and IsEnemy( SelfArmyIndex, EnemyUnit:GetArmy() ) then
+            local EnemyPosition = EnemyUnit:GetPosition()
+            local dist = VDist2(position[1], position[3], EnemyPosition[1], EnemyPosition[3])
+            if (dist <= maxRadius) and (dist > minRadius) then
+                local blip = EnemyUnit:GetBlip(SelfArmyIndex)
+                if blip then
+                    if blip:IsOnRadar(SelfArmyIndex) or blip:IsSeenEver(SelfArmyIndex) then
+                        if not blip:BeenDestroyed() and not blip:IsKnownFake(SelfArmyIndex) and not blip:IsMaybeDead(SelfArmyIndex) then
+                            EnemyUnit.distance = dist
+                            table.insert(RadEntities, EnemyUnit)
+                        end
+                    end
+                end
+            end
+        end
+    end
+    return RadEntities
+end
+function IsProtected(self,position)
+    local maxRadius = 14
+    local x1 = position.x - maxRadius
+    local z1 = position.z - maxRadius
+    local x2 = position.x + maxRadius
+    local z2 = position.z + maxRadius
+    local UnitsinRec = GetUnitsInRect( Rect(x1, z1, x2, z2) )
+    if not UnitsinRec then
+        return false
+    end
+    WaitSeconds(0.1)
+    local lagstopper = 0
+    local counter = 0
+    for _, EnemyUnit in UnitsinRec do
+        counter = counter + 1
+        lagstopper = lagstopper + 1
+        if lagstopper > 20 then
+            WaitTicks(1)
+            lagstopper = 0
+        end
+        if (not EnemyUnit.Dead) and IsEnemy( self:GetArmy(), EnemyUnit:GetArmy() ) then
+            if EntityCategoryContains(categories.ANTIMISSILE * categories.TECH2 * categories.STRUCTURE, EnemyUnit) then
+                local EnemyPosition = EnemyUnit:GetPosition()
+                local dist = VDist2(position[1], position[3], EnemyPosition[1], EnemyPosition[3])
+                if dist <= maxRadius then
+                    return true
+                end
+            end
+        end
+    end
+    return false
 end
 
 function DebugArray(Table)

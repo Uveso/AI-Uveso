@@ -70,6 +70,7 @@ BaseBuilderTemplate {
         'LandAttackBuildersPanic Uveso',
         'LandAttackBuildersRush Uveso',
         'LandAttackBuildersRatio Uveso',
+        'LandAttackBuildersAntiExperimental',
 
         -----------------------------------------------------------------------------
         -- ==== Land Units FORMER==== --
@@ -83,7 +84,6 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- Build Air Units
         'AntiAirBuilders Uveso',
---        'AntiExperimentalAirBuilders Uveso',
         -- Build Air Transporter
         'Air Transport Builder Uveso',
 
@@ -106,7 +106,7 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== EXPERIMENTALS BUILDER ==== --
         -----------------------------------------------------------------------------
-        'Mobile Experimental Builder Uveso',
+--        'Mobile Experimental Builder Uveso',
         'Economic Experimental Builder Uveso',
         'Paragon Turbo Builder',
         'Paragon Turbo Factory',
@@ -119,21 +119,22 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== Structure Shield BUILDER ==== --
         -----------------------------------------------------------------------------
-        'Shields Uveso',
-        'ShieldUpgrades Uveso',
+--        'Shields Uveso',
+--        'ShieldUpgrades Uveso',
 
         -----------------------------------------------------------------------------
         -- ==== Defenses BUILDER ==== --
         -----------------------------------------------------------------------------
 --        'Tactical Missile Launcher minimum Uveso',
 --        'Tactical Missile Launcher Maximum Uveso',
---        'Tactical Missile Launcher TacticalAISorian Uveso',
+--        'Tactical Missile Launcher Uveso',
         'Tactical Missile Defenses Uveso',
-        'Strategic Missile Launcher Uveso',
-        'Strategic Missile Launcher NukeAI Uveso',
+--        'Strategic Missile Launcher Uveso',
+--        'Strategic Missile Launcher NukeAI Uveso',
         'Strategic Missile Defense Uveso',
         'Strategic Missile Defense Anti-NukeAI Uveso',
-        'Artillery Builder Uveso',
+--        'Artillery Builder Uveso',
+--        'Artillery Platoon Former',
         -- Build Anti Air near AirFactories
 --        'Base Anti Air Defense Uveso',
 

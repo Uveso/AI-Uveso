@@ -26,9 +26,9 @@ BuilderGroup {
         Priority = 19600,
         BuilderConditions = {
             -- When do we want to build this ?
-            { MABC, 'CanBuildOnMassLessThanDistance', { 'LocationType', 12, -500, 200, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
+            { MABC, 'CanBuildOnMassLessThanDistance', { 'LocationType', 12, -500, 0, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Do we need additional conditions to build it ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.STRUCTURE * categories.MASSEXTRACTION }},
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.MASSEXTRACTION }},
             -- Have we the eco to build it ?
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
@@ -51,18 +51,20 @@ BuilderGroup {
         BuilderName = 'U1 Mass 30',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17900,
-        InstanceCount = 2,
+        InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
-            { MABC, 'CanBuildOnMassLessThanDistance', { 'LocationType', 30, -500, 200, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
+            { MABC, 'CanBuildOnMassLessThanDistance', { 'LocationType', 30, -500, 0, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Do we need additional conditions to build it ?
+            { UCBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
+--            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
         },
         BuilderType = 'Any',
         BuilderData = {
-            NeedGuard = false,
+            RequireTransport = false,                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
+            NeedGuard = true,
             DesiresAssist = false,
             Construction = {
                 BuildStructures = {
@@ -74,18 +76,20 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Mass 60',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 17750,
-        InstanceCount = 2,
+        Priority = 17890,
+        InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
-            { MABC, 'CanBuildOnMassLessThanDistance', { 'LocationType', 60, -500, 200, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
+            { MABC, 'CanBuildOnMassLessThanDistance', { 'LocationType', 60, -500, 0, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Do we need additional conditions to build it ?
+            { UCBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
+--            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
         },
         BuilderType = 'Any',
         BuilderData = {
+            RequireTransport = false,                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             NeedGuard = true,
             DesiresAssist = false,
             Construction = {
@@ -96,71 +100,74 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'U1 Mass 120',
+        BuilderName = 'U1 Mass 128',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 17490,
+        Priority = 17880,
+        InstanceCount = 1,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { MABC, 'CanBuildOnMassLessThanDistance', { 'LocationType', 128, -500, 0, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'HasNotParagon', {} },
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+--            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            RequireTransport = true,                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
+            NeedGuard = true,
+            DesiresAssist = false,
+            Construction = {
+                BuildStructures = {
+                    'T1Resource',
+                }
+            }
+        }
+    },
+    Builder {
+        BuilderName = 'U1 Mass 256',
+        PlatoonTemplate = 'EngineerBuilder',
+        Priority = 17870,
+        InstanceCount = 1,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { MABC, 'CanBuildOnMassLessThanDistance', { 'LocationType', 256, -500, 0, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'HasNotParagon', {} },
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+--            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            RequireTransport = false,                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
+            NeedGuard = true,
+            DesiresAssist = false,
+            Construction = {
+                BuildStructures = {
+                    'T1Resource',
+                }
+            }
+        }
+    },
+    Builder {
+        BuilderName = 'U1 Mass 512',
+        PlatoonTemplate = 'EngineerBuilder',
+        Priority = 17860,
         InstanceCount = 4,
         BuilderConditions = {
             -- When do we want to build this ?
-            { MABC, 'CanBuildOnMassLessThanDistance', { 'LocationType', 120, -500, 200, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
+            { MABC, 'CanBuildOnMassLessThanDistance', { 'LocationType', 512, -500, 0, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Do we need additional conditions to build it ?
             { UCBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
+--            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
         },
         BuilderType = 'Any',
         BuilderData = {
-            NeedGuard = true,
-            DesiresAssist = false,
-            Construction = {
-                BuildStructures = {
-                    'T1Resource',
-                }
-            }
-        }
-    },
-    Builder {
-        BuilderName = 'U1 Mass 240',
-        PlatoonTemplate = 'EngineerBuilder',
-        Priority = 17480,
-        InstanceCount = 6,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { MABC, 'CanBuildOnMassLessThanDistance', { 'LocationType', 240, -500, 200, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'HasNotParagon', {} },
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
-        },
-        BuilderType = 'Any',
-        BuilderData = {
-            NeedGuard = true,
-            DesiresAssist = false,
-            Construction = {
-                BuildStructures = {
-                    'T1Resource',
-                }
-            }
-        }
-    },
-    Builder {
-        BuilderName = 'U1 Mass 480',
-        PlatoonTemplate = 'EngineerBuilder',
-        Priority = 17470,
-        InstanceCount = 8,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { MABC, 'CanBuildOnMassLessThanDistance', { 'LocationType', 480, -500, 200, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'HasNotParagon', {} },
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
-        },
-        BuilderType = 'Any',
-        BuilderData = {
+            RequireTransport = true,                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             NeedGuard = true,
             DesiresAssist = false,
             Construction = {
@@ -173,73 +180,20 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Mass 1000',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 17460,
-        InstanceCount = 10,
+        Priority = 17850,
+        InstanceCount = 4,
         BuilderConditions = {
             -- When do we want to build this ?
-            { MABC, 'CanBuildOnMassLessThanDistance', { 'LocationType', 1000, -500, 200, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
+            { MABC, 'CanBuildOnMassLessThanDistance', { 'LocationType', 1000, -500, 0, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Do we need additional conditions to build it ?
             { UCBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
-        },
-        BuilderType = 'Any',
-        BuilderData = {
-            NeedGuard = false,
-            DesiresAssist = false,
-            Construction = {
-                BuildStructures = {
-                    'T1Resource',
-                }
-            }
-        }
-    },
-    Builder {
-        BuilderName = 'U1 Mass 10-12 Trans',
-        PlatoonTemplate = 'EngineerBuilder',
-        Priority = 17450,
-        InstanceCount = 12,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { MABC, 'CanBuildOnMassLessThanDistance', { 'LocationType', 2000, -500, 200, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'HasNotParagon', {} },
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 9, categories.ENGINEER }},
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, 'ENGINEER TECH1' }},
-            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
-            -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { -0.00, 0.50}}, -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
+--            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
         },
         BuilderType = 'Any',
         BuilderData = {
             RequireTransport = true,                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
-            NeedGuard = false,
-            DesiresAssist = false,
-            Construction = {
-                BuildStructures = {
-                    'T1Resource',
-                }
-            }
-        }
-    },
-    Builder {
-        BuilderName = 'U1 Mass 512 Kamikaze',
-        PlatoonTemplate = 'EngineerBuilder',
-        Priority = 10,
-        InstanceCount = 2,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { MABC, 'CanBuildOnMassLessThanDistance', { 'LocationType', 512, -500, 2000, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
-            -- Do we need additional conditions to build it ?
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
-        },
-        BuilderType = 'Any',
-        BuilderData = {
             NeedGuard = true,
             DesiresAssist = false,
             Construction = {
@@ -255,7 +209,7 @@ BuilderGroup {
         Priority = 19200,
         BuilderConditions = {
             -- When do we want to build this ?
-            { MABC, 'CanBuildOnMassLessThanDistance', { 'LocationType', 450, -5000, 5000, 1, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRings, threatType, maxNum
+            { MABC, 'CanBuildOnMassLessThanDistance', { 'LocationType', 450, -5000, 0, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRings, threatType, maxNum
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.MASSEXTRACTION } },
             -- Do we need additional conditions to build it ?
             { UCBC, 'GreaterThanGameTimeSeconds', { 180 } },
@@ -350,7 +304,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 0, categories.MASSEXTRACTION} },
             -- Do we need additional conditions to build it ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 4, categories.STRUCTURE * categories.FACTORY } },
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 4, categories.STRUCTURE * categories.FACTORY} },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 0.1, -0.0}}, -- Absolut Base income
             -- Don't build it if...
@@ -414,26 +368,25 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'U2 Mass Adjacency Engineer',
-        PlatoonTemplate = 'T2EngineerBuilder',
+        BuilderName = 'U1 Mass Adjacency Engineer',
+        PlatoonTemplate = 'EngineerBuilder',
         Priority = 17440,
+        InstanceCount = 2,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'AdjacencyCheck', { 'LocationType', 'MASSEXTRACTION TECH2, MASSEXTRACTION TECH3', 100, 'ueb1106' } },
-            { UCBC, 'HaveUnitRatio', { 1.0, 'STRUCTURE MASSSTORAGE', '<','STRUCTURE MASSEXTRACTION TECH3' } },
+            { UCBC, 'AdjacencyCheck', { 'LocationType', 'MASSEXTRACTION TECH2, MASSEXTRACTION TECH3', 200, 'ueb1106' } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.60, 0.95}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.95}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 8, categories.STRUCTURE * categories.MASSSTORAGE }},
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1,  'MASSSTORAGE' }},
+            { UCBC, 'HasNotParagon', {} },
         },
         InstanceCount = 1,
         BuilderType = 'Any',
         BuilderData = {
             Construction = {
                 AdjacencyCategory = 'MASSEXTRACTION TECH3, MASSEXTRACTION TECH2',
-                AdjacencyDistance = 100,
+                AdjacencyDistance = 200,
                 BuildClose = false,
                 BuildStructures = {
                     'MassStorage',
@@ -442,30 +395,24 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'U2 Mass Storage ratio',
-        PlatoonTemplate = 'T2EngineerBuilder',
-        Priority = 17440,
+        BuilderName = 'U1 Reclaim MassStorage',
+        PlatoonTemplate = 'EngineerBuilder',
+        PlatoonAIPlan = 'ReclaimStructuresAI',
+        Priority = 790,
+        InstanceCount = 2,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatio', { 1.0, 'STRUCTURE MASSSTORAGE', '<','STRUCTURE MASSEXTRACTION TECH3' } },
+            { UCBC, 'HasParagon', {} },
             -- Do we need additional conditions to build it ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 2, categories.STRUCTURE * categories.MASSSTORAGE }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH1' }},
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.60, 0.95}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 8, categories.STRUCTURE * categories.MASSSTORAGE }},
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1,  'MASSSTORAGE' }},
         },
-        BuilderType = 'Any',
         BuilderData = {
             Location = 'LocationType',
-            Construction = {
-                AdjacencyCategory = 'MASSEXTRACTION TECH3, MASSEXTRACTION TECH2',
-                AdjacencyDistance = 100,
-                BuildClose = false,
-                BuildStructures = {
-                    'MassStorage',
-                },
-            }
-        }
+            Reclaim = {'STRUCTURE MASSSTORAGE'},
+        },
+        BuilderType = 'Any',
     },
 }

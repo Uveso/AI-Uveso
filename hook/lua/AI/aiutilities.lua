@@ -204,15 +204,20 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
     if maxRange > 512 then
         RangeList = {
             [1] = 30,
-            [2] = 100,
+            [1] = 64,
+            [2] = 128,
+            [2] = 192,
             [3] = 256,
+            [3] = 384,
             [4] = 512,
             [5] = maxRange,
         }
     elseif maxRange > 256 then
         RangeList = {
             [1] = 30,
-            [2] = 100,
+            [1] = 64,
+            [2] = 128,
+            [2] = 192,
             [3] = 256,
             [4] = maxRange,
         }
@@ -227,6 +232,7 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
     local reason = false
     local UnitWithPath = false
     local UnitNoPath = false
+    local count = 0
 
     for _, range in RangeList do
         TargetsInBaseRange = aiBrain:GetUnitsAroundPoint(TargetSearchCategory, position, range, 'Enemy')
@@ -247,7 +253,9 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
                 if enemyBrain and enemyIndex and enemyBrain ~= enemyIndex then continue end
                 -- check if the Target is still alive, matches our target priority and can be attacked from our platoon
                 if not Target.Dead and EntityCategoryContains(category, Target) and platoon:CanAttackTarget(squad, Target) then
-                    local targetRange = Utils.XZDistanceTwoVectors(position, TargetPosition)
+                    -- yes... we need to check if we got friendly units with GetUnitsAroundPoint(_, _, _, 'Enemy')
+                    if not IsEnemy( aiBrain:GetArmyIndex(), Target:GetAIBrain():GetArmyIndex() ) then continue end
+                    local targetRange = VDist2(position[1],position[3],TargetPosition[1],TargetPosition[3])
                     if targetRange < distance then
                         if platoon.MovementLayer == 'Land' then
                             EnemyStrength = aiBrain:GetNumUnitsAroundPoint( (categories.STRUCTURE + categories.MOBILE) * (categories.DIRECTFIRE + categories.INDIRECTFIRE + categories.GROUNDATTACK) , TargetPosition, 40, 'Enemy' )
@@ -294,10 +302,24 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
                         end
                     end
                 end
+                count = count + 1
+                if count > 200 then
+                    WaitTicks(1)
+                    count = 0
+                end
             end
+
+            if UnitWithPath and not IsEnemy( aiBrain:GetArmyIndex(), UnitWithPath:GetAIBrain():GetArmyIndex() ) then
+                WARN('UnitWithPath is Friendly!!!')
+            end
+            if UnitNoPath and not IsEnemy( aiBrain:GetArmyIndex(), UnitWithPath:GetAIBrain():GetArmyIndex() ) then
+                WARN('UnitNoPath is Friendly!!!')
+            end
+
             if UnitWithPath then
                 return UnitWithPath, UnitNoPath, path, reason
             end
+           WaitTicks(1)
         end
     end
     return UnitWithPath, UnitNoPath, path, reason

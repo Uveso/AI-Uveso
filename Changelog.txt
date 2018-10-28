@@ -1,4 +1,25 @@
 *************************************************************************************************************************************
+v43 (27.Oct.2018)
+
+- New: Base alert manager get's targets for artillery and satellites
+- Opt: Engineers now assist down to a mass storage of 30% (was 40%)
+- Fix: Platoon attack function will now ignore own units (game bug)
+- Fix: Removed original BaseMonitorThread, ParseIntelThread, EconomyMonitor. Those are not used by AI-Uveso.
+- Fix: Hooked functions to respect paragon buildings. (GreaterThanEconStorageRatio, GreaterThanEconTrend, GreaterThanEconIncome)
+- New: Added function to find damaged shields (for repair)
+- Fix: Air units will no longer follow targets back to their base if they are out of attack range.
+- New: Tactical missile launchers now have an AI for geting targets and "lead target" shoots.
+- Opt: Ecomanager now uses up to 40% of global income for eco (up from 30%)
+- Opt: Nuke AI has some more functions to get targets.
+- New: Added attack platoons for T3 and T4 artillery and satellites.
+- New: Added platoon for SubCommander to permanent assist shilds inside base.
+- Opt: Reduced the history poll for the endgame history from every 10 to every 60 ticks. (reduce game lag after 1hour+)
+- New: AI-Uveso no longer allowes players to reclaim AI owned units/buildings.
+- New: Added new category 'AMPHIBIOUS' to blueprint.lua for all units.
+- Opt: Base builder now can build all units and all structures.
+- New: New platoons for building and assisting in case a paragon is found.
+
+*************************************************************************************************************************************
 v42 (20.Sep.2018)
 
 - Factories will now recover from any location not only MAIN
@@ -6,7 +27,7 @@ v42 (20.Sep.2018)
 - Land T1 spam will drain 10% more eco then before
 - Less energy overbuild at game start.
 - Naval areas will now captured earlier
-- New unit categorie: 'Amphibious'
+- New unit category: 'Amphibious'
 - Fixed bug in "Air Fighter" platoon builder
 - Eco manager can handle a paragon to 100% now
 - Added new buildcondition "CanBuildCategory" to check if we can build a (modded) unit.
@@ -23,8 +44,8 @@ v42 (20.Sep.2018)
 - Changed ACU initial builder to do nothing. Eco manager is now deciding what to build at start.
 - Added naval expansion builder for more naval bases in long range
 - Patched buildmanager to handle multi faction builders.
-- Patched udatemanger to handle multi faction ugrades.
-- Support for All faction mod. All spawned ACU's now gets it's own CommanderBehaviorThread and build manager.
+- Patched upgrademanger to handle multi faction factory upgrades.
+- Support for all faction mod. All spawned ACU's now get a CommanderBehaviorThread and build manager.
 
 *************************************************************************************************************************************
 v41 (06.Aug.2018)

@@ -22,13 +22,12 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 HydroUpgrade',
         PlatoonTemplate = 'T1PowerHydroUpgrade',
-        Priority = 1100,
-        InstanceCount = 1,
+        Priority = 200,
         BuilderConditions = {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.HYDROCARBON * categories.ENERGYPRODUCTION * categories.TECH1 } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.HYDROCARBON * categories.ENERGYPRODUCTION * categories.TECH2 } },
             { EBC, 'GreaterThanEconIncome', { 2, 10 } },
-            { EBC, 'GreaterThanEconEfficiencyOverTime', { 0, 0 }},
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
         },
         FormRadius = 10000,
         BuilderType = 'Any',
@@ -36,14 +35,13 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 HydroUpgrade',
         PlatoonTemplate = 'T2PowerHydroUpgrade',
-        Priority = 1100,
-        InstanceCount = 1,
+        Priority = 200,
         BuilderConditions = {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.HYDROCARBON * categories.ENERGYPRODUCTION * categories.TECH1 } },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.HYDROCARBON * categories.ENERGYPRODUCTION * categories.TECH2 } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.HYDROCARBON * categories.ENERGYPRODUCTION * categories.TECH3 } },
             { EBC, 'GreaterThanEconIncome', { 2.6, 60 } },
-            { EBC, 'GreaterThanEconEfficiencyOverTime', { 0, 0 }},
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
         },
         FormRadius = 10000,
         BuilderType = 'Any',

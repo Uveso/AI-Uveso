@@ -21,9 +21,9 @@ BuilderGroup {
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'Turbo T4AirExperimental1',
-        PlatoonTemplate = 'T3EngineerBuilder',
+        PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 1100,
-        InstanceCount = 2,
+        InstanceCount = 5,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HasParagon', {} },
@@ -49,38 +49,10 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'Turbo T4LandExperimental3',
-        PlatoonTemplate = 'T3EngineerBuilder',
-        Priority = 1100,
-        InstanceCount = 1,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HasParagon', {} },
-            -- Do we need additional conditions to build it ?
-            -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
-        },
-        BuilderType = 'Any',
-        BuilderData = {
-            Construction = {
-                DesiresAssist = true,
-                NumAssistees = 10,
-                BuildClose = false,
-                AdjacencyCategory = 'SHIELD STRUCTURE',
-                BuildStructures = {
-                    'T4LandExperimental3',
-                },
-                Location = 'LocationType',
-            }
-        }
-    },
-    Builder {
         BuilderName = 'Turbo T4SeaExperimental1',
-        PlatoonTemplate = 'T3EngineerBuilder',
+        PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 1100,
-        InstanceCount = 1,
+        InstanceCount = 3,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HasParagon', {} },
@@ -108,9 +80,9 @@ BuilderGroup {
     },
     Builder {
         BuilderName = 'Turbo T4LandExperimental2',
-        PlatoonTemplate = 'T3EngineerBuilder',
+        PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 1100,
-        InstanceCount = 1,
+        InstanceCount = 5,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HasParagon', {} },
@@ -136,9 +108,9 @@ BuilderGroup {
     },
     Builder {
         BuilderName = 'Turbo T4LandExperimental1',
-        PlatoonTemplate = 'T3EngineerBuilder',
+        PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 1100,
-        InstanceCount = 1,
+        InstanceCount = 10,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HasParagon', {} },
@@ -166,10 +138,9 @@ BuilderGroup {
 -- ==                                    T3 Strategic Missile LAUNCHER                                       == --
 -- ===================================================-======================================================== --
     Builder {
-        BuilderName = 'Turbo U3 SML',
-        PlatoonTemplate = 'T3EngineerBuilder',
-        Priority = 1100,
-        InstanceCount = 1,
+        BuilderName = 'Turbo U2 TML',
+        PlatoonTemplate = 'T2EngineerBuilder',
+        Priority = 1000,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HasParagon', {} },
@@ -178,7 +149,40 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 30, categories.STRUCTURE * categories.LAND * categories.NUKE * categories.TECH3 }},
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 30, categories.STRUCTURE * categories.TACTICALMISSILEPLATFORM }},
+            -- Respect UnitCap
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Construction = {
+                AdjacencyCategory = 'STRUCTURE SHIELD',
+                AdjacencyDistance = 50,
+                BuildClose = false,
+                BuildStructures = {
+                    'T2StrategicMissile',
+                },
+                Location = 'LocationType',
+            }
+        }
+    },
+-- ===================================================-======================================================== --
+-- ==                                    T3 Strategic Missile LAUNCHER                                       == --
+-- ===================================================-======================================================== --
+    Builder {
+        BuilderName = 'Turbo U3 SML',
+        PlatoonTemplate = 'T3EngineerBuilderNoSUB',
+        Priority = 1100,
+        InstanceCount = 3,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HasParagon', {} },
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
+            -- Don't build it if...
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 60, categories.STRUCTURE * categories.LAND * categories.NUKE * categories.TECH3 }},
             { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Any',
@@ -202,7 +206,7 @@ BuilderGroup {
 -- ===================================================-======================================================== --
     Builder {
         BuilderName = 'Turbo U3 Artillery',
-        PlatoonTemplate = 'T3EngineerBuilder',
+        PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 1100,
         InstanceCount = 2,
         DelayEqualBuildPlattons = {'Artillery', 20},
@@ -214,7 +218,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 5, categories.STRUCTURE * categories.LAND * categories.ARTILLERY * ( categories.TECH3 * categories.EXPERIMENTAL ) }},
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 10, categories.STRUCTURE * categories.LAND * categories.ARTILLERY * categories.TECH3 }},
             { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Any',
@@ -230,7 +234,7 @@ BuilderGroup {
     },
     Builder {
         BuilderName = 'Turbo U3 RapidArtillery',
-        PlatoonTemplate = 'T3EngineerBuilder',
+        PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 1100,
         InstanceCount = 2,
         DelayEqualBuildPlattons = {'Artillery', 20},
@@ -242,7 +246,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 5, categories.STRUCTURE * categories.LAND * categories.ARTILLERY * ( categories.TECH3 * categories.EXPERIMENTAL ) }},
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 10, categories.STRUCTURE * categories.LAND * categories.ARTILLERY * categories.EXPERIMENTAL }},
             { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Any',
@@ -258,7 +262,7 @@ BuilderGroup {
     },
     Builder {
         BuilderName = 'Turbo U4 Artillery',
-        PlatoonTemplate = 'T3EngineerBuilder',
+        PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 1100,
         InstanceCount = 2,
         DelayEqualBuildPlattons = {'Artillery', 20},
@@ -270,7 +274,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 5, categories.STRUCTURE * categories.LAND * categories.ARTILLERY * ( categories.TECH3 * categories.EXPERIMENTAL ) }},
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 10, categories.STRUCTURE * categories.LAND * categories.ARTILLERY * categories.EXPERIMENTAL }},
             { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Any',
@@ -286,7 +290,7 @@ BuilderGroup {
     },    
     Builder {
         BuilderName = 'Turbo U4 Satellite',
-        PlatoonTemplate = 'T3EngineerBuilder',
+        PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 1100,
         InstanceCount = 2,
         BuilderConditions = {
@@ -298,7 +302,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 5, categories.STRUCTURE * categories.ORBITALSYSTEM }},
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 10, categories.STRUCTURE * categories.ORBITALSYSTEM }},
             { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Any',
@@ -394,29 +398,165 @@ BuilderGroup {
         },
         BuilderType = 'Any',
     },
+    -- =================== --
+    --    Experimentals    --
+    -- =================== --
 }
-
-
+-- ===================================================-======================================================== --
+-- ==                             Upgrade Factories Land/Air/Sea                                             == --
+-- ===================================================-======================================================== --
 BuilderGroup {
     BuilderGroupName = 'Paragon Turbo Factory',                      -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
-    BuildersType = 'FactoryBuilder',
-    -- ================ --
-    --    TECH 3 AIR    --
-    -- ================ --
+    BuildersType = 'PlatoonFormBuilder',
+-- LAND HQ Factories
     Builder {
-        BuilderName = 'U3 Paragon Air',
-        PlatoonTemplate = 'T3AirFighter',
-        Priority = 3100,
+        BuilderName = 'U1p L UP HQ 1->2',
+        PlatoonTemplate = 'T1LandFactoryUpgrade',
+        Priority = 15400,
         BuilderConditions = {
             -- When do we want to build this ?
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.FACTORY * categories.LAND  * categories.TECH1} },
+            -- Have we the eco to build it ?
             { UCBC, 'HasParagon', {} },
+            -- Don't build it if...
+        },
+        BuilderType = 'Any',
+    },
+    Builder {
+        BuilderName = 'U2p L UP HQ 2->3',
+        PlatoonTemplate = 'T2LandFactoryUpgrade',
+        Priority = 15400,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.FACTORY * categories.LAND  * categories.TECH2} },
+            -- Have we the eco to build it ?
+            { UCBC, 'HasParagon', {} },
+            -- Don't build it if...
+        },
+        BuilderType = 'Any',
+    },
+-- AIR HQ Factories
+    Builder {
+        BuilderName = 'U1p A UP HQ 1->2',
+        PlatoonTemplate = 'T1AirFactoryUpgrade',
+        Priority = 15400,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.FACTORY * categories.AIR  * categories.TECH1} },
+            -- Have we the eco to build it ?
+            { UCBC, 'HasParagon', {} },
+            -- Don't build it if...
+        },
+        BuilderType = 'Any',
+    },
+    Builder {
+        BuilderName = 'U2p A UP HQ 2->3',
+        PlatoonTemplate = 'T2AirFactoryUpgrade',
+        Priority = 15400,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.FACTORY * categories.AIR  * categories.TECH1} },
+            -- Have we the eco to build it ?
+            { UCBC, 'HasParagon', {} },
+            -- Don't build it if...
+        },
+        BuilderType = 'Any',
+    },
+-- NAVAL HQ Factories
+    Builder {
+        BuilderName = 'U1p N UP HQ 1->2',
+        PlatoonTemplate = 'T1SeaFactoryUpgrade',
+        Priority = 15400,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.FACTORY * categories.NAVAL  * categories.TECH1} },
+            -- Have we the eco to build it ?
+            { UCBC, 'HasParagon', {} },
+            -- Don't build it if...
+        },
+        BuilderType = 'Any',
+    },
+    Builder {
+        BuilderName = 'U2p N UP HQ 2->3',
+        PlatoonTemplate = 'T2SeaFactoryUpgrade',
+        Priority = 15400,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.FACTORY * categories.NAVAL  * categories.TECH1} },
+            -- Have we the eco to build it ?
+            { UCBC, 'HasParagon', {} },
+            -- Don't build it if...
+        },
+        BuilderType = 'Any',
+    },
+}
+-- ===================================================-======================================================== --
+-- ==                                            Air builder                                                 == --
+-- ===================================================-======================================================== --
+BuilderGroup {
+    BuilderGroupName = 'Paragon Turbo Air',                      -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuildersType = 'FactoryBuilder',
+    Builder {
+        BuilderName = 'U3p Air Scouts',
+        PlatoonTemplate = 'T3AirScout',
+        Priority = 1000,
+        BuilderConditions = {
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 8, categories.INTELLIGENCE * categories.AIR * categories.TECH3 }},
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, categories.INTELLIGENCE * categories.AIR } },
+        },
+        BuilderType = 'Air',
+    },
+    Builder {
+        BuilderName = 'U3p Air Fighter < Gunship',
+        PlatoonTemplate = 'T3AirFighter',
+        Priority = 350,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatio', { 3.00, categories.MOBILE * categories.AIR * categories.HIGHALTAIR * categories.ANTIAIR * categories.TECH3 - categories.GROUNDATTACK, '<=',categories.MOBILE * categories.AIR * categories.GROUNDATTACK * categories.TECH3 - categories.HIGHALTAIR } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             -- Don't build it if...
             -- Respect UnitCap
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
+            { UCBC, 'UnitCapCheckLess', { 0.97 } },
         },
         BuilderType = 'Air',
     },
-
+    Builder {
+        BuilderName = 'U3p Air Gunship < Fighter',
+        PlatoonTemplate = 'T3AirGunship',
+        Priority = 350,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatio', { 3.00, categories.MOBILE * categories.AIR * categories.GROUNDATTACK * categories.TECH3 - categories.HIGHALTAIR, '<=',categories.MOBILE * categories.AIR * categories.HIGHALTAIR * categories.ANTIAIR - categories.GROUNDATTACK } },
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+            -- Respect UnitCap
+            { UCBC, 'UnitCapCheckLess', { 0.97 } },
+        },
+        BuilderType = 'Air',
+    },
+    Builder {
+        BuilderName = 'U3p Air Bomber < 20',
+        PlatoonTemplate = 'T3AirBomber',
+        Priority = 350,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 20, categories.MOBILE * categories.AIR * categories.BOMBER }},
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.MOBILE * categories.AIR  * categories.BOMBER }},
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+            -- Respect UnitCap
+            { UCBC, 'UnitCapCheckLess', { 0.97 } },
+        },
+        BuilderType = 'Air',
+    },
 }

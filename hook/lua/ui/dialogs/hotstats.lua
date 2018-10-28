@@ -1,4 +1,4 @@
-local HistoryScoreInterval = 10 -- make an option with this
+local HistoryScoreInterval = 60 -- make an option with this
 
 function create_graph(parent,path,x1,y1,x2,y2)
     local data_nbr=table.getsize(scoreData.historical) -- data_nbr is the number of group of data saved

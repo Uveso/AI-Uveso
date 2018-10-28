@@ -648,3 +648,22 @@ function PoolGreaterAtLocationII(aiBrain, locationType, unitCount, unitCategory)
     return HavePoolUnitComparisonAtLocationII(aiBrain, locationType, unitCount, unitCategory, '>')
 end
 
+
+--            { UCBC, 'AreShieldsDamaged', { 'LocationType'}},
+function AreShieldsDamaged(aiBrain, locationType)
+    local engineerManager = aiBrain.BuilderManagers[locationType].EngineerManager
+    if not engineerManager then
+        return false
+    end
+    local shields = aiBrain:GetUnitsAroundPoint(categories.STRUCTURE * categories.SHIELD, engineerManager:GetLocationCoords(), engineerManager.Radius, 'Ally')
+    for num, unit in shields do
+        if not unit.Dead and unit:ShieldIsOn() then
+            shieldPercent = (unit.MyShield:GetHealth() / unit.MyShield:GetMaxHealth())
+            if shieldPercent < 0.90 then
+                LOG('* AreShieldsDamaged: true')
+                return true
+            end
+        end
+    end
+    return false
+end

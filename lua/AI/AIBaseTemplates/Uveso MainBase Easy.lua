@@ -69,6 +69,7 @@ BaseBuilderTemplate {
         'LandAttackBuildersPanic Uveso',
         'LandAttackBuilders Uveso',
         'LandAttackBuildersRatio Uveso',
+        'LandAttackBuildersAntiExperimental',
 
         -----------------------------------------------------------------------------
         -- ==== Land Units FORMER==== --
@@ -123,13 +124,14 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         'Tactical Missile Launcher minimum Uveso',
         'Tactical Missile Launcher Maximum Uveso',
-        'Tactical Missile Launcher TacticalAISorian Uveso',
+        'Tactical Missile Launcher Uveso',
         'Tactical Missile Defenses Uveso',
         'Strategic Missile Launcher Uveso',
         'Strategic Missile Launcher NukeAI Uveso',
         'Strategic Missile Defense Uveso',
         'Strategic Missile Defense Anti-NukeAI Uveso',
         'Artillery Builder Uveso',
+        'Artillery Platoon Former',
         -- Build Anti Air near AirFactories
         'Base Anti Air Defense Uveso',
 

@@ -20,6 +20,20 @@ PlatoonTemplate {
         { categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * categories.TECH3 , 1, 300, 'support', 'none' }
     },
 }
+PlatoonTemplate {
+    Name = 'AddToArtilleryPlatoon',
+    Plan = 'PlatoonMerger',
+    GlobalSquads = {
+        { (categories.STRUCTURE * categories.ARTILLERY * ( categories.TECH3 + categories.EXPERIMENTAL )) + categories.SATELLITE , 1, 300, 'support', 'none' }
+    },
+}
+PlatoonTemplate {
+    Name = 'AddToRepairShieldsPlatoon',
+    Plan = 'PlatoonMerger',
+    GlobalSquads = {
+        { categories.SUBCOMMANDER , 1, 300, 'support', 'none' }
+    },
+}
 
 PlatoonTemplate {
     Name = 'U1EngineerTransfer',
@@ -49,6 +63,13 @@ PlatoonTemplate {
         { categories.ENGINEER * categories.TECH1, 1, 1, "support", "None" }
     },
 }
+PlatoonTemplate {
+    Name = 'U2TML',
+    Plan = 'TMLAIUveso',
+    GlobalSquads = {
+        { categories.STRUCTURE * categories.TACTICALMISSILEPLATFORM * categories.TECH2 , 1, 300, 'support', 'none' }
+    },
+}
 
 PlatoonTemplate {
     Name = 'EngineerFinisher',
@@ -69,5 +90,19 @@ PlatoonTemplate {
     Plan = 'ManagerEngineerFindUnfinished',
     GlobalSquads = {
         { categories.ENGINEER * categories.TECH3, 1, 1, "support", "None" }
+    },
+}
+PlatoonTemplate {
+    Name = 'T3EngineerBuilderNoSUB',
+    Plan = 'EngineerBuildAI',
+    GlobalSquads = {
+        { categories.ENGINEER * categories.TECH3 - categories.SUBCOMMANDER, 1, 1, 'support', 'None' }
+    },
+}
+PlatoonTemplate {
+    Name = 'T3EngineerAssistNoSUB',
+    Plan = 'ManagerEngineerAssistAI',
+    GlobalSquads = {
+        { categories.ENGINEER * categories.TECH3 - categories.SUBCOMMANDER, 1, 1, 'support', 'None' }
     },
 }

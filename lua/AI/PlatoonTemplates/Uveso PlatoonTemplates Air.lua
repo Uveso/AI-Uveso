@@ -3,7 +3,14 @@ PlatoonTemplate {
     Name = 'U123-Fighter-Intercept 3 5', 
     Plan = 'InterceptorAIUveso',
     GlobalSquads = {
-        { categories.MOBILE * categories.AIR * categories.ANTIAIR * categories.HIGHALTAIR - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL - categories.ANTINAVY, 3, 5, 'Attack', 'none' },
+        { categories.MOBILE * categories.AIR * categories.ANTIAIR * categories.HIGHALTAIR - categories.GROUNDATTACK - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL - categories.ANTINAVY, 3, 5, 'Attack', 'none' },
+    }
+}
+PlatoonTemplate {
+    Name = 'U123-Fighter-Intercept 40 60', 
+    Plan = 'InterceptorAIUveso',
+    GlobalSquads = {
+        { categories.MOBILE * categories.AIR * categories.ANTIAIR * categories.HIGHALTAIR - categories.GROUNDATTACK - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL - categories.ANTINAVY, 40, 60, 'Attack', 'none' },
     }
 }
 -- Gunship
@@ -11,7 +18,7 @@ PlatoonTemplate {
     Name = 'U123-Gunship-Intercept 3 5',
     Plan = 'InterceptorAIUveso',
     GlobalSquads = {
-        { categories.MOBILE * categories.AIR * categories.GROUNDATTACK - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL - categories.ANTINAVY , 3, 5, 'Attack', 'none' }
+        { categories.MOBILE * categories.AIR * categories.GROUNDATTACK - categories.HIGHALTAIR - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL - categories.ANTINAVY , 3, 5, 'Attack', 'none' }
     }
 }
 -- Bomber
@@ -36,6 +43,13 @@ PlatoonTemplate {
     Plan = 'InterceptorAIUveso',
     GlobalSquads = {
         { categories.MOBILE * categories.AIR * ( categories.GROUNDATTACK + categories.BOMBER ) - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL - categories.ANTINAVY , 3, 5, 'Attack', 'none' }
+    }
+}
+PlatoonTemplate {
+    Name = 'U123-Gunship+Bomber-Intercept 40 60',
+    Plan = 'InterceptorAIUveso',
+    GlobalSquads = {
+        { categories.MOBILE * categories.AIR * ( categories.GROUNDATTACK + categories.BOMBER ) - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL - categories.ANTINAVY , 40, 60, 'Attack', 'none' }
     }
 }
 
@@ -63,35 +77,35 @@ PlatoonTemplate {
     Name = 'U123-MilitaryAntiTransport 1 12', 
     Plan = 'InterceptorAIUveso',
     GlobalSquads = {
-        { categories.MOBILE * categories.AIR * categories.ANTIAIR * categories.HIGHALTAIR - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL, 1, 12, 'Attack', 'none' },
+        { categories.MOBILE * categories.AIR * categories.ANTIAIR * categories.HIGHALTAIR - categories.GROUNDATTACK - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL, 1, 12, 'Attack', 'none' },
     }
 }
 PlatoonTemplate {
     Name = 'U123-MilitaryAntiBomber 1 12', 
     Plan = 'InterceptorAIUveso',
     GlobalSquads = {
-        { categories.MOBILE * categories.AIR * categories.ANTIAIR * categories.HIGHALTAIR - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL, 1, 12, 'Attack', 'none' },
+        { categories.MOBILE * categories.AIR * categories.ANTIAIR * categories.HIGHALTAIR - categories.GROUNDATTACK - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL, 1, 12, 'Attack', 'none' },
     }
 }
 PlatoonTemplate {
     Name = 'U123-MilitaryAntiAir 2 500', 
     Plan = 'InterceptorAIUveso',
     GlobalSquads = {
-        { categories.MOBILE * categories.AIR * categories.ANTIAIR * categories.HIGHALTAIR - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL, 2, 500, 'Attack', 'none' },
+        { categories.MOBILE * categories.AIR * categories.ANTIAIR * categories.HIGHALTAIR - categories.GROUNDATTACK - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL, 2, 500, 'Attack', 'none' },
     }
 }
 PlatoonTemplate {
     Name = 'U123-MilitaryAntiGround Gunship 2 500', 
     Plan = 'InterceptorAIUveso',
     GlobalSquads = {
-        { categories.MOBILE * categories.AIR * categories.GROUNDATTACK - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL - categories.ANTINAVY , 2, 500, 'Attack', 'none' }
+        { categories.MOBILE * categories.AIR * categories.GROUNDATTACK - categories.HIGHALTAIR - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL - categories.ANTINAVY , 2, 500, 'Attack', 'none' }
     }
 }
 PlatoonTemplate {
     Name = 'U123-EnemyAntiAir 10 10', 
     Plan = 'InterceptorAIUveso',
     GlobalSquads = {
-        { categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL - categories.GROUNDATTACK - categories.BOMBER, 10, 10, 'Attack', 'none' },
+        { categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL - categories.GROUNDATTACK - categories.BOMBER, 10, 10, 'Attack', 'none' },
     }
 }
 
@@ -118,7 +132,7 @@ PlatoonTemplate {
     Name = 'U123-EnemyAntiGround Gunship 3 20',
     Plan = 'InterceptorAIUveso',
     GlobalSquads = {
-        { categories.MOBILE * categories.AIR * categories.GROUNDATTACK - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL - categories.ANTINAVY , 3, 20, 'Attack', 'none' }
+        { categories.MOBILE * categories.AIR * categories.GROUNDATTACK - categories.HIGHALTAIR - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL - categories.ANTINAVY , 3, 20, 'Attack', 'none' }
     }
 }
 
@@ -153,10 +167,17 @@ PlatoonTemplate {
     }
 }
 PlatoonTemplate {
+    Name = 'U12-AntiGroundCap 30 40', 
+    Plan = 'InterceptorAIUveso',
+    GlobalSquads = {
+        { categories.MOBILE * categories.AIR * ( categories.GROUNDATTACK + categories.BOMBER ) * ( categories.TECH1 + categories.TECH2 ) - categories.TRANSPORTFOCUS, 30, 40, 'Attack', 'GrowthFormation' },
+    }
+}
+PlatoonTemplate {
     Name = 'U123-ExperimentalAttackGunshipGrow 3 100',
     Plan = 'InterceptorAIUveso',
     GlobalSquads = {
-        { categories.MOBILE * categories.AIR * categories.GROUNDATTACK - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL - categories.ANTINAVY , 3, 100, 'Attack', 'GrowthFormation' }
+        { categories.MOBILE * categories.AIR * categories.GROUNDATTACK - categories.HIGHALTAIR - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL - categories.ANTINAVY , 3, 100, 'Attack', 'GrowthFormation' }
     }
 }
 PlatoonTemplate {
@@ -170,14 +191,14 @@ PlatoonTemplate {
     Name = 'U4-ExperimentalInterceptor 1 1',
     Plan = 'InterceptorAIUveso',
     GlobalSquads = {
-        { categories.EXPERIMENTAL * categories.AIR * categories.MOBILE - categories.INSIGNIFICANTUNIT - categories.TRANSPORTFOCUS, 1, 1, 'attack', 'none' }
+        { categories.EXPERIMENTAL * categories.AIR * categories.MOBILE - categories.INSIGNIFICANTUNIT, 1, 1, 'attack', 'none' }
     },
 }
 PlatoonTemplate {
     Name = 'U4-ExperimentalInterceptor 3 8',
     Plan = 'InterceptorAIUveso',
     GlobalSquads = {
-        { categories.EXPERIMENTAL * categories.AIR * categories.MOBILE - categories.INSIGNIFICANTUNIT - categories.TRANSPORTFOCUS, 3, 8, 'attack', 'none' }
+        { categories.EXPERIMENTAL * categories.AIR * categories.MOBILE - categories.INSIGNIFICANTUNIT, 3, 8, 'attack', 'none' }
     },
 }
 

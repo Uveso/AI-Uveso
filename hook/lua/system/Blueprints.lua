@@ -8,9 +8,13 @@ function ModBlueprints(all_blueprints)
         -- Add category 'AMPHIBIOUS' for AI platoon builder
         if bp.Physics and bp.Physics.MotionType and (bp.Physics.MotionType == 'RULEUMT_Amphibious' or bp.Physics.MotionType == 'RULEUMT_Hover' or bp.Physics.MotionType == 'RULEUMT_AmphibiousFloating') then
             -- Add the category to the blueprint Categories table
-            table.insert(bp.Categories, 'AMPHIBIOUS')
+            if bp.Categories then
+                table.insert(bp.Categories, 'AMPHIBIOUS')
+            end
             -- Also add the category to the CategoriesHash table
-            bp.CategoriesHash['AMPHIBIOUS'] = true
+            if bp.CategoriesHash then
+                bp.CategoriesHash['AMPHIBIOUS'] = true
+            end
         end
     end
 end
