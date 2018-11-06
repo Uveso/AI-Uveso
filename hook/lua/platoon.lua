@@ -1553,21 +1553,21 @@ Platoon = Class(oldPlatoon) {
             if aiBrain.HasParagon then
                 -- if we have a paragon, upgrade mex as fast as possible. Mabye we lose the paragon and need mex again.
                 ratio = 1.0
-            elseif aiBrain:GetEconomyOverTime().MassIncome > 300 then
+            elseif aiBrain:GetEconomyIncome('MASS') * 10 > 600 then
                 --LOG('Mass over 200. Eco running with 30%')
-                ratio = 0.50
+                ratio = 0.40
             elseif GetGameTimeSeconds() > 1800 then -- 30 * 60
-                ratio = 0.50
-            elseif GetGameTimeSeconds() > 1200 then -- 20 * 60
-                ratio = 0.40
-            elseif GetGameTimeSeconds() > 900 then -- 15 * 60
-                ratio = 0.40
-            elseif GetGameTimeSeconds() > 600 then -- 10 * 60
-                ratio = 0.40
-            elseif GetGameTimeSeconds() > 360 then -- 6 * 60
                 ratio = 0.30
-            elseif GetGameTimeSeconds() <= 360 then -- 6 * 60 run the first 6 minutes with 0% Eco and 100% Army
+            elseif GetGameTimeSeconds() > 1200 then -- 20 * 60
+                ratio = 0.25
+            elseif GetGameTimeSeconds() > 900 then -- 15 * 60
                 ratio = 0.20
+            elseif GetGameTimeSeconds() > 600 then -- 10 * 60
+                ratio = 0.15
+            elseif GetGameTimeSeconds() > 360 then -- 6 * 60
+                ratio = 0.10
+            elseif GetGameTimeSeconds() <= 360 then -- 6 * 60 run the first 6 minutes with 0% Eco and 100% Army
+                ratio = 0.00
             end
             local platoonUnits = self:GetPlatoonUnits()
             local MassExtractorUnitList = aiBrain:GetListOfUnits(categories.MASSEXTRACTION * (categories.TECH1 + categories.TECH2 + categories.TECH3), false, false)
@@ -1593,7 +1593,7 @@ Platoon = Class(oldPlatoon) {
                 end
             end
             -- Check the Eco every x Ticks
-            WaitTicks(5)
+            WaitTicks(10)
             -- find dead units inside the platoon and disband if we find one
             for k,v in self:GetPlatoonUnits() do
                 if not v or v.Dead or v:BeenDestroyed() then
@@ -2324,7 +2324,9 @@ Platoon = Class(oldPlatoon) {
                             --IssueStop({v})
                             IssueClearCommands({Arty})
                             WaitTicks(1)
-                            IssueAttack({Arty}, ClosestTarget)
+                            if ClosestTarget and not ClosestTarget.Dead then
+                                IssueAttack({Arty}, ClosestTarget)
+                            end
                         end
                     end
                     WaitSeconds(5)
@@ -2389,8 +2391,6 @@ Platoon = Class(oldPlatoon) {
                         break
                     end
                     -- search for the closest idle unit
-
-
                     local closest
                     local bestUnit
                     for i,unit in self:GetPlatoonUnits() do

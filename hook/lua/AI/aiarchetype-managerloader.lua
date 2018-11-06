@@ -60,8 +60,7 @@ function EcoManager(aiBrain)
     local ParaCount = 0
     local ParaComplete = 0
     while true do
-        WaitTicks(5)
-        ArmyUnits = aiBrain:GetListOfUnits(categories.ENGINEER - categories.COMMAND, false) -- also gets unbuilded units (planed to build)
+        ArmyUnits = aiBrain:GetListOfUnits(categories.ENGINEER - categories.COMMAND - categories.SUBCOMMANDER, false) -- also gets unbuilded units (planed to build)
         paragons = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC  * categories.ENERGYPRODUCTION  * categories.MASSPRODUCTION, false)
         ParaCount = 0
         ParaComplete = 0
@@ -78,37 +77,72 @@ function EcoManager(aiBrain)
         end
 
         for _, unit in ArmyUnits do
-            if unit.Dead or not unit.PlatoonHandle.PlatoonData.Assist.AssisteeType then continue end
-            -- pause engioneers if we have less then 35% mass or less then 50% energy storage
+            -- if the unit is dead, continue with the next unit
+            if unit.Dead then continue end
+            -- Only Check units that are assisting
+            if not unit.PlatoonHandle.PlatoonData.Assist.AssisteeType then continue end
+            -- Is the engineer idle ?
             if aiBrain.HasParagon then
                 if unit:IsPaused() then
                     unit:SetPaused( false )
+                    break
                 end
-            elseif aiBrain:GetEconomyStoredRatio('MASS') < 0.15 or aiBrain:GetEconomyStoredRatio('ENERGY') < 0.15 then
-                if not unit:IsPaused() then
-                    unit.PlatoonHandle:Stop()
-                    unit.PlatoonHandle:PlatoonDisband()
-                end
-            elseif aiBrain:GetEconomyStoredRatio('MASS') < 0.30 or aiBrain:GetEconomyStoredRatio('ENERGY') < 0.80 then
-                if aiBrain:GetEconomyTrend('MASS') < 1.0 or aiBrain:GetEconomyTrend('ENERGY') < 1.0 then
-                    if not unit:IsPaused() and not unit:IsIdleState() then
-                        unit:SetPaused( true )
-                        -- break, so we only set 1 unit per 5 tick
-                        break
-                    end
-                end
-            elseif aiBrain:GetEconomyStoredRatio('MASS') > 0.30 or aiBrain:GetEconomyStoredRatio('ENERGY') > 0.80 then
-                if aiBrain:GetEconomyTrend('MASS') >= 1.0 and aiBrain:GetEconomyTrend('ENERGY') >= 1.0 then
-                    if unit:IsPaused() then
-                        unit:SetPaused( false )
-                        if not unit:IsIdleState() then
-                            -- break, so we only set 1 unit per 5 tick
+            -- We have negative eco. Check if we can switch something off
+            elseif aiBrain:GetEconomyTrend('MASS') < 1.0 or aiBrain:GetEconomyTrend('ENERGY') < 1.0 then
+                -- if this unit is paused, continue with the next unit
+                if unit:IsPaused() then continue end
+                -- Very low eco, disable everything but energy assister
+                if aiBrain:GetEconomyStoredRatio('MASS') < 0.05 or aiBrain:GetEconomyStoredRatio('ENERGY') < 0.60 then
+                    -- If we assist a paragon or energy structure, only pause the unit
+                    if unit.UnitBeingAssist then
+                        if EntityCategoryContains(categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC, unit.UnitBeingAssist) then
+                            unit:SetPaused( true )
+                            break
+                        elseif EntityCategoryContains(categories.STRUCTURE * categories.ENERGYPRODUCTION, unit.UnitBeingAssist) then
+                            unit:SetPaused( true )
                             break
                         end
                     end
+                    -- if we don't assist a paragon, disband the platoon.
+                    unit.PlatoonHandle:Stop()
+                    unit.PlatoonHandle:PlatoonDisband()
+                    break
+                -- Low Eco, disable all engineers exept thosw who are assisting energy buildings
+                elseif aiBrain:GetEconomyStoredRatio('MASS') < 0.30 or aiBrain:GetEconomyStoredRatio('ENERGY') < 0.80 then
+                    if unit.UnitBeingAssist then
+                        if EntityCategoryContains(categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC, unit.UnitBeingAssist) then
+                            continue
+                        elseif EntityCategoryContains(categories.STRUCTURE * categories.ENERGYPRODUCTION, unit.UnitBeingAssist) then
+                            continue
+                        end
+                    end
+                    unit:SetPaused( true )
+                    break
+                end
+            -- We have positive eco. Check if we can switch something on
+            elseif aiBrain:GetEconomyTrend('MASS') > 1.0 and aiBrain:GetEconomyTrend('ENERGY') > 1.0 then
+                -- if this unit is not paused, continue with the next unit
+                if not unit:IsPaused() then continue end
+                if aiBrain:GetEconomyStoredRatio('MASS') > 0.05 and aiBrain:GetEconomyStoredRatio('ENERGY') > 0.60 then
+                    -- If we assist a paragon or energy structure unpause the unit
+                    if unit.UnitBeingAssist then
+                        if EntityCategoryContains(categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC, unit.UnitBeingAssist) then
+                            unit:SetPaused( false )
+                            break
+                        elseif EntityCategoryContains(categories.STRUCTURE * categories.ENERGYPRODUCTION, unit.UnitBeingAssist) then
+                            unit:SetPaused( false )
+                            break
+                        end
+                    end
+                    continue
+                -- Low Eco, disable all engineers exept thosw who are assisting energy buildings
+                elseif aiBrain:GetEconomyStoredRatio('MASS') > 0.30 and aiBrain:GetEconomyStoredRatio('ENERGY') > 0.80 then
+                    unit:SetPaused( false )
+                    break
                 end
             end
         end
+        WaitTicks(5)
     end
 end
 

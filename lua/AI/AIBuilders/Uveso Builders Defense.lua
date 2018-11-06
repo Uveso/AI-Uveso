@@ -12,14 +12,14 @@ BuilderGroup {
     BuilderGroupName = 'Shields Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
-        BuilderName = 'U2 Shield Adjacency',
+        BuilderName = 'U2 Shield Ratio',
         PlatoonTemplate = 'T2EngineerBuilder',
         Priority = 1000,
         DelayEqualBuildPlattons = {'Shield', 3},
         InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'AdjacencyCheck', { 'LocationType', 'ENERGYPRODUCTION TECH3, ENERGYPRODUCTION EXPERIMENTAL', 100, 'ueb4301' } },
+            { UCBC, 'HaveUnitRatioAtLocation', { 'LocationType', 1.0, 'STRUCTURE SHIELD', '<=','STRUCTURE ENERGYPRODUCTION TECH3, STRUCTURE FACTORY TECH3' } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'FactionIndex', { 1, 3, 4 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             -- Have we the eco to build it ?
@@ -49,13 +49,13 @@ BuilderGroup {
         },
     },
     Builder {
-        BuilderName = 'U3 Shield Adjacency',
+        BuilderName = 'U3 Shield Ratio',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 1000,
         InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'AdjacencyCheck', { 'LocationType', 'ENERGYPRODUCTION TECH3, ENERGYPRODUCTION EXPERIMENTAL', 100, 'ueb4301' } },
+            { UCBC, 'HaveUnitRatioAtLocation', { 'LocationType', 1.0, 'STRUCTURE SHIELD', '<=','STRUCTURE ENERGYPRODUCTION TECH3, STRUCTURE FACTORY TECH3' } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'FactionIndex', { 2 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             -- Have we the eco to build it ?
@@ -99,7 +99,7 @@ BuilderGroup {
         InstanceCount = 10,
         BuilderConditions = {
             { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.10}}, -- Ratio from 0 to 1. (1=100%)
-            { EBC, 'GreaterThanEconEfficiencyOverTime', { 1.0, 1.0 }}, -- relative baseincome 0=bad, 1=ok, 2=full
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 0, categories.TECH3 * categories.ENERGYPRODUCTION}},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingUpgrade', { 3, categories.STRUCTURE * categories.SHIELD }},
             { UCBC, 'CheckBuildPlattonDelay', { 'Shield' }},
@@ -114,7 +114,7 @@ BuilderGroup {
         InstanceCount = 10,
         BuilderConditions = {
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.10}}, -- Ratio from 0 to 1. (1=100%)
-            { EBC, 'GreaterThanEconEfficiencyOverTime', { 1.0, 1.0 }}, -- relative baseincome 0=bad, 1=ok, 2=full
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 0, categories.TECH3 * categories.ENERGYPRODUCTION}},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingUpgrade', { 3, categories.STRUCTURE * categories.SHIELD }},
             { UCBC, 'CheckBuildPlattonDelay', { 'Shield' }},
@@ -129,7 +129,7 @@ BuilderGroup {
         InstanceCount = 10,
         BuilderConditions = {
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.10}}, -- Ratio from 0 to 1. (1=100%)
-            { EBC, 'GreaterThanEconEfficiencyOverTime', { 1.0, 1.0 }}, -- relative baseincome 0=bad, 1=ok, 2=full
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 0, categories.TECH3 * categories.ENERGYPRODUCTION}},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingUpgrade', { 3, categories.STRUCTURE * categories.SHIELD }},
             { UCBC, 'CheckBuildPlattonDelay', { 'Shield' }},
@@ -144,7 +144,7 @@ BuilderGroup {
         InstanceCount = 10,
         BuilderConditions = {
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
-            { EBC, 'GreaterThanEconEfficiencyOverTime', { 1.0, 1.0 }}, -- relative baseincome 0=bad, 1=ok, 2=full
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 1, categories.TECH3 * categories.ENERGYPRODUCTION}},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingUpgrade', { 3, categories.STRUCTURE * categories.SHIELD }},
             { UCBC, 'CheckBuildPlattonDelay', { 'Shield' }},
@@ -159,7 +159,7 @@ BuilderGroup {
         InstanceCount = 10,
         BuilderConditions = {
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
-            { EBC, 'GreaterThanEconEfficiencyOverTime', { 1.0, 1.0 }}, -- relative baseincome 0=bad, 1=ok, 2=full
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 1, categories.TECH3 * categories.ENERGYPRODUCTION}},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingUpgrade', { 3, categories.STRUCTURE * categories.SHIELD }},
             { UCBC, 'CheckBuildPlattonDelay', { 'Shield' }},

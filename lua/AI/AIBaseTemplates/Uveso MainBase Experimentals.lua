@@ -69,7 +69,6 @@ BaseBuilderTemplate {
         -- Build Land Units
 --        'LandAttackBuildersPanic Uveso',
 --        'LandAttackBuildersRatio Uveso',
---        'LandAttackBuildersAntiExperimental',
 
         -----------------------------------------------------------------------------
         -- ==== Land Units FORMER==== --
@@ -165,11 +164,6 @@ BaseBuilderTemplate {
 
         'AeonOptics',
         'CybranOptics',
-
-        -----------------------------------------------------------------------------
-        -- ==== Mod Builder ==== --
-        -----------------------------------------------------------------------------
-        'HydrocarbonUpgrade BlackOps',
 
     },
     -- Not used by Uveso's AI. We always need intel in case the commander is dead.

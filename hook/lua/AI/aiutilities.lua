@@ -254,9 +254,15 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
                 -- check if the Target is still alive, matches our target priority and can be attacked from our platoon
                 if not Target.Dead and EntityCategoryContains(category, Target) and platoon:CanAttackTarget(squad, Target) then
                     -- yes... we need to check if we got friendly units with GetUnitsAroundPoint(_, _, _, 'Enemy')
+                    if Target:BeenDestroyed() then
+                        SPEW('* AIFindNearestCategoryTargetInRange: Unit destroyed but not .Dead !?!')
+                        continue
+                    end
                     if not IsEnemy( aiBrain:GetArmyIndex(), Target:GetAIBrain():GetArmyIndex() ) then continue end
                     local targetRange = VDist2(position[1],position[3],TargetPosition[1],TargetPosition[3])
                     if targetRange < distance then
+                        WaitTicks(1)
+                        if not aiBrain:PlatoonExists(platoon) then return false, false, false, false end
                         if platoon.MovementLayer == 'Land' then
                             EnemyStrength = aiBrain:GetNumUnitsAroundPoint( (categories.STRUCTURE + categories.MOBILE) * (categories.DIRECTFIRE + categories.INDIRECTFIRE + categories.GROUNDATTACK) , TargetPosition, 40, 'Enemy' )
                         elseif platoon.MovementLayer == 'Air' then
@@ -303,24 +309,17 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
                     end
                 end
                 count = count + 1
-                if count > 200 then
+                if count > 500 then
                     WaitTicks(1)
                     count = 0
                 end
             end
-
-            if UnitWithPath and not IsEnemy( aiBrain:GetArmyIndex(), UnitWithPath:GetAIBrain():GetArmyIndex() ) then
-                WARN('UnitWithPath is Friendly!!!')
-            end
-            if UnitNoPath and not IsEnemy( aiBrain:GetArmyIndex(), UnitWithPath:GetAIBrain():GetArmyIndex() ) then
-                WARN('UnitNoPath is Friendly!!!')
-            end
-
             if UnitWithPath then
                 return UnitWithPath, UnitNoPath, path, reason
             end
-           WaitTicks(1)
+           --WaitTicks(10)
         end
+        WaitTicks(1)
     end
     return UnitWithPath, UnitNoPath, path, reason
 end

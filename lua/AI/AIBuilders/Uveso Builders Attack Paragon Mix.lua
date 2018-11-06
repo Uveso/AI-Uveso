@@ -507,9 +507,8 @@ BuilderGroup {
         PlatoonTemplate = 'T3AirScout',
         Priority = 1000,
         BuilderConditions = {
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { UCBC, 'HasParagon', {} },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 8, categories.INTELLIGENCE * categories.AIR * categories.TECH3 }},
-            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, categories.INTELLIGENCE * categories.AIR } },
         },
         BuilderType = 'Air',
     },
@@ -522,6 +521,7 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatio', { 3.00, categories.MOBILE * categories.AIR * categories.HIGHALTAIR * categories.ANTIAIR * categories.TECH3 - categories.GROUNDATTACK, '<=',categories.MOBILE * categories.AIR * categories.GROUNDATTACK * categories.TECH3 - categories.HIGHALTAIR } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
+            { UCBC, 'HasParagon', {} },
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'UnitCapCheckLess', { 0.97 } },
@@ -537,6 +537,7 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatio', { 3.00, categories.MOBILE * categories.AIR * categories.GROUNDATTACK * categories.TECH3 - categories.HIGHALTAIR, '<=',categories.MOBILE * categories.AIR * categories.HIGHALTAIR * categories.ANTIAIR - categories.GROUNDATTACK } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
+            { UCBC, 'HasParagon', {} },
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'UnitCapCheckLess', { 0.97 } },
@@ -553,6 +554,7 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.MOBILE * categories.AIR  * categories.BOMBER }},
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
+            { UCBC, 'HasParagon', {} },
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'UnitCapCheckLess', { 0.97 } },

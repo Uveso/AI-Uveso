@@ -823,7 +823,7 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND - categories.SUPPORTFACTORY } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconIncome',  { 0.6, 9.0}}, -- Absolut Base income 4 100
+            { EBC, 'GreaterThanEconIncome',  { 0.2, 9.0}}, -- Absolut Base income 4 100
             -- Don't build it if...
             { UCBC, 'GreaterThanGameTimeSeconds', { 60 } },
         },

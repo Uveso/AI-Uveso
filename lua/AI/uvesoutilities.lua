@@ -99,7 +99,7 @@ function ExtractorPause(self, aiBrain, MassExtractorUnitList, ratio, techLevel)
         if MassRatioCheckNegative then
             if UpgradingBuildingNum <= 1 and table.getn(MassExtractorUnitList) >= 6 then
                 return false
-            else
+            elseif not aiBrain:GetEconomyStoredRatio('MASS') >= 0.95 then
                 -- we don't have the eco to upgrade the extractor. Pause it!
                 UpgradingBuilding:SetPaused( true )
                 return true
@@ -140,8 +140,8 @@ function UnitUpgrade(self, aiBrain, MassExtractorUnitList, ratio, techLevel, Uni
         local TempID
         -- Check if we don't want to upgrade this unit
         if not v
-            or v:BeenDestroyed()
             or v.Dead
+            or v:BeenDestroyed()
             or v:IsPaused()
             or not EntityCategoryContains(ParseEntityCategory(techLevel), v)
             or v:GetFractionComplete() < 1
@@ -192,7 +192,7 @@ function UnitUpgrade(self, aiBrain, MassExtractorUnitList, ratio, techLevel, Uni
     end
     -- Have we found a unit that can upgrade ?
     if upgradeID and upgradeBuilding then
-        --LOG('* UnitUpgradeAIUveso: Upgrading Building in DistanceToBase '..(LowestDistanceToBase or 'Unknown ???')..' '..techLevel..' - UnitId '..upgradeBuilding:GetUnitId()..' - upgradeID '..upgradeID..'')
+        --LOG('* UnitUpgradeAIUveso: Upgrading Building in DistanceToBase '..(LowestDistanceToBase or 'Unknown ???')..' '..techLevel..' - UnitId '..upgradeBuilding:GetUnitId()..' - upgradeID '..upgradeID..' - GlobalUpgrading '..techLevel..': '..(UpgradingBuilding + 1) )
         IssueUpgrade({upgradeBuilding}, upgradeID)
         WaitTicks(1)
         return true
@@ -238,8 +238,12 @@ function GlobalMassUpgradeCostVsGlobalMassIncomeRatio(self, aiBrain, ratio, tech
             GlobalUpgradeCost = GlobalUpgradeCost + SingleUpgradeCost
         end
     end
-    local MassIncome = ( aiBrain:GetEconomyOverTime().MassIncome * 10 ) - MassIncomeLost
+    -- If we have full mass storage, then don't waste mass. Upgrade!
+    if aiBrain:GetEconomyStoredRatio('MASS') >= 0.95 then
+        return true
+    end
     -- If we have under 10 Massincome return always false
+    local MassIncome = ( aiBrain:GetEconomyIncome('MASS') * 10 ) - MassIncomeLost
     if MassIncome < 10 and ( compareType == '<' or compareType == '<=' ) then
         return false
     end
@@ -508,7 +512,7 @@ function FindTargetUnit(self, minRadius, maxRadius, MaxLoad)
     local uBP
     for k, v in targets do
         -- Only check if Unit is 100% builded and not AIR
-        if (not v.Dead) and v:GetFractionComplete() == 1 and EntityCategoryContains(categories.SELECTABLE - categories.AIR, v) then
+        if not v.Dead and not v:BeenDestroyed() and v:GetFractionComplete() == 1 and EntityCategoryContains(categories.SELECTABLE - categories.AIR, v) then
             -- Get Target Data
             uBP = v:GetBlueprint()
             UnitHealth = uBP.Defense.Health or 1

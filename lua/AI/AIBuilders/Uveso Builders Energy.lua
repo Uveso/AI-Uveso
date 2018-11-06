@@ -84,7 +84,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'UC Power low trend backup',
         PlatoonTemplate = 'CommanderBuilder',
-        Priority = 17875,
+        Priority = 17885,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'LessThanEnergyTrend', { 1.0 } },
@@ -143,7 +143,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Power MassRatio',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 17890,
+        Priority = 17870,
         InstanceCount = 4,                                                      -- Number of plattons that will be formed with this template.
         BuilderConditions = {
             -- When do we want to build this ?
@@ -174,7 +174,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Power MassRatio Full',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 17890,
+        Priority = 17870,
         InstanceCount = 4,                                                      -- Number of plattons that will be formed with this template.
         BuilderConditions = {
             -- When do we want to build this ?
@@ -205,7 +205,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Power Hydrocarbon',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 17750,
+        Priority = 17885,
         DelayEqualBuildPlattons = {'Energy', 1},
         InstanceCount = 1,
         BuilderConditions = {

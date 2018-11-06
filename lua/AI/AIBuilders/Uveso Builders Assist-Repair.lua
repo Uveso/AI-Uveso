@@ -118,7 +118,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.40, -0.00}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.20, -0.00}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
         },
         BuilderType = 'Any',
@@ -144,7 +144,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH2 } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.60, -0.00}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.30, -0.00}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
         },
         BuilderType = 'Any',
@@ -170,7 +170,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH3 } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.80, -0.00}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.30, -0.00}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
         },
         BuilderType = 'Any',
@@ -198,7 +198,7 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuilt', { 0, categories.STRUCTURE * categories.ECONOMIC * categories.EXPERIMENTAL }},
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.35, 1.00}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 1.00}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
         },
         BuilderType = 'Any',
@@ -224,7 +224,7 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.STRUCTURE * categories.ECONOMIC * categories.EXPERIMENTAL }},
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.40, 1.00}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.30, 1.00}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
         },
         BuilderType = 'Any',
@@ -250,7 +250,7 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ECONOMIC * categories.EXPERIMENTAL }},
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.45, 1.00}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.30, 1.00}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
         },
         BuilderType = 'Any',

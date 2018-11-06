@@ -49,7 +49,6 @@ BaseBuilderTemplate {
         'LandAttackBuildersPanic Uveso',
         'LandAttackBuilders Uveso',
         'LandAttackBuildersRatio Uveso',
-        'LandAttackBuildersAntiExperimental',
         'GateFactoryBuilders Uveso',
 
         -----------------------------------------------------------------------------

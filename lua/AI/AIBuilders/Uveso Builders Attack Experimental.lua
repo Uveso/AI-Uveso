@@ -237,7 +237,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Paragon 1st mass40',
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
-        Priority = 190,
+        Priority = 2000,
         DelayEqualBuildPlattons = {'Paragon', 30},
         BuilderConditions = {
             -- When do we want to build this ?
@@ -272,7 +272,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Paragon 1st 30min',
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
-        Priority = 190,
+        Priority = 2000,
         DelayEqualBuildPlattons = {'Paragon', 30},
         BuilderConditions = {
             -- When do we want to build this ?
@@ -307,7 +307,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Paragon 2nd',
         PlatoonTemplate = 'T3EngineerBuilder',
-        Priority = 190,
+        Priority = 18000,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HasParagon', {} },
@@ -340,7 +340,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Paragon 3nd',
         PlatoonTemplate = 'T3EngineerBuilder',
-        Priority = 190,
+        Priority = 18000,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HasParagon', {} },

@@ -1,23 +1,37 @@
 *************************************************************************************************************************************
+v44 (06.Nov.2018)
+
+- Fix: fixed a bug in case a platoon is dead but the target function is still searching for targets
+- Fix: Added failsave in case the target for Arty/satellite is dead
+- Fix: ACU now builds a factory with +0.2 mass to recover from a total lost.
+- Opt: Ecomanager will now force the build of an paragon.
+- Opt: Target function will now handle 500 targets per tick (was 1000)
+- Opt: Ecomanager will now upgrade more extractors if the mass storage will get near 100%
+- Opt: Changed assisting platoon to send more units for building a paragon
+- Opt: Changed land and air builder to build more high tier units and stop building lowtech on unitcap
+- Opt: Changed shiled builder to build more shields near factories
+- Opt: Changed priority for Hydrocarbon Power Plants to build them earlier.
+
+*************************************************************************************************************************************
 v43 (27.Oct.2018)
 
+- New: Added function to find damaged shields (for repair)
+- New: Tactical missile launchers now have an AI for geting targets and "lead target" shoots.
+- New: Added attack platoons for T3 and T4 artillery and satellites.
 - New: Base alert manager get's targets for artillery and satellites
-- Opt: Engineers now assist down to a mass storage of 30% (was 40%)
-- Fix: Platoon attack function will now ignore own units (game bug)
+- New: Added platoon for SubCommander to permanent assist shilds inside base.
+- New: New platoons for building and assisting in case a paragon is found.
+- New: Added new category 'AMPHIBIOUS' to blueprint.lua for all units.
+- New: AI-Uveso no longer allows players to reclaim AI owned units/buildings.
 - Fix: Removed original BaseMonitorThread, ParseIntelThread, EconomyMonitor. Those are not used by AI-Uveso.
 - Fix: Hooked functions to respect paragon buildings. (GreaterThanEconStorageRatio, GreaterThanEconTrend, GreaterThanEconIncome)
-- New: Added function to find damaged shields (for repair)
 - Fix: Air units will no longer follow targets back to their base if they are out of attack range.
-- New: Tactical missile launchers now have an AI for geting targets and "lead target" shoots.
+- Fix: Platoon attack function will now ignore own units (game bug)
+- Opt: Sub AI Adaptive Base builder can now build all units and all structures.
 - Opt: Ecomanager now uses up to 40% of global income for eco (up from 30%)
+- Opt: Engineers now assist down to a mass storage of 30% (was 40%)
 - Opt: Nuke AI has some more functions to get targets.
-- New: Added attack platoons for T3 and T4 artillery and satellites.
-- New: Added platoon for SubCommander to permanent assist shilds inside base.
 - Opt: Reduced the history poll for the endgame history from every 10 to every 60 ticks. (reduce game lag after 1hour+)
-- New: AI-Uveso no longer allowes players to reclaim AI owned units/buildings.
-- New: Added new category 'AMPHIBIOUS' to blueprint.lua for all units.
-- Opt: Base builder now can build all units and all structures.
-- New: New platoons for building and assisting in case a paragon is found.
 
 *************************************************************************************************************************************
 v42 (20.Sep.2018)

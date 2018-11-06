@@ -258,7 +258,7 @@ BuilderGroup {
         BuilderConditions = {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.OPTICS * categories.AEON}},
             { EBC, 'GreaterThanEconIncome', { 12, 1500}},
-            { EBC, 'GreaterThanEconEfficiencyOverTime', { 0.9, 1.2 }},
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.95, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
         },
         BuilderType = 'Any',
@@ -287,7 +287,7 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.OPTICS * categories.CYBRAN}},
             { EBC, 'GreaterThanEconIncome', { 12, 1500}},
             { EBC, 'GreaterThanEconStorageRatio', { 0.95, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
-            { EBC, 'GreaterThanEconEfficiencyOverTime', { 0.9, 1.2 }},
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
         },
         BuilderType = 'Any',
         BuilderData = {
