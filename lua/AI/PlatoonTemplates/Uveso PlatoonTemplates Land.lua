@@ -58,10 +58,10 @@ PlatoonTemplate {
     }
 }
 PlatoonTemplate {
-    Name = 'U12-LandCap 1 500', 
+    Name = 'U12-LandCap 1 30', 
     Plan = 'AttackPrioritizedLandTargetsAIUveso', -- is targetting in order from Platoondata.PrioritizedCategories.
     GlobalSquads = {
-        { categories.MOBILE * categories.LAND * ( categories.TECH1 + categories.TECH2 ) - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND, 1, 500, 'Attack', 'none' },
+        { categories.MOBILE * categories.LAND * ( categories.TECH1 + categories.TECH2 ) - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND, 1, 30, 'Attack', 'none' },
     }
 }
 PlatoonTemplate {
@@ -79,25 +79,25 @@ PlatoonTemplate {
     }
 }
 PlatoonTemplate {
-    Name = 'LandAttackInterceptUveso 1 500',
+    Name = 'LandAttackInterceptUveso 1 30',
     Plan = 'AttackPrioritizedLandTargetsAIUveso',
     GlobalSquads = {
-        { categories.MOBILE * categories.LAND - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND, 1, 500, 'Attack', 'none' },
+        { categories.MOBILE * categories.LAND - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND, 1, 30, 'Attack', 'none' },
     }
 }
 
 PlatoonTemplate {
-    Name = 'U1-ArtyAttack 1 500', 
+    Name = 'U1-ArtyAttack 1 30', 
     Plan = 'AttackPrioritizedLandTargetsAIUveso',
     GlobalSquads = {
-        { categories.MOBILE * categories.LAND * categories.INDIRECTFIRE - categories.EXPERIMENTAL - categories.COMMAND, 1, 500, 'Attack', 'none' },
+        { categories.MOBILE * categories.LAND * categories.INDIRECTFIRE - categories.EXPERIMENTAL - categories.COMMAND, 1, 30, 'Attack', 'none' },
     }
 }
 PlatoonTemplate {
-    Name = 'U1-AntiAirAttack 1 500', 
+    Name = 'U1-AntiAirAttack 1 30', 
     Plan = 'AttackPrioritizedLandTargetsAIUveso',
     GlobalSquads = {
-        { categories.MOBILE * categories.LAND * categories.ANTIAIR - categories.EXPERIMENTAL - categories.COMMAND, 1, 500, 'Attack', 'none' },
+        { categories.MOBILE * categories.LAND * categories.ANTIAIR - categories.EXPERIMENTAL - categories.COMMAND, 1, 30, 'Attack', 'none' },
     }
 }
 

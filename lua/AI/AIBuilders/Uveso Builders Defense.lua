@@ -14,9 +14,9 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 Shield Ratio',
         PlatoonTemplate = 'T2EngineerBuilder',
-        Priority = 1000,
+        Priority = 15000,
         DelayEqualBuildPlattons = {'Shield', 3},
-        InstanceCount = 1,
+        InstanceCount = 2,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioAtLocation', { 'LocationType', 1.0, 'STRUCTURE SHIELD', '<=','STRUCTURE ENERGYPRODUCTION TECH3, STRUCTURE FACTORY TECH3' } },
@@ -25,7 +25,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.SHIELD}},
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 2, categories.STRUCTURE * categories.SHIELD}},
             -- Respect UnitCap
             { UCBC, 'HaveLessThanUnitsWithCategory', { 30, 'STRUCTURE SHIELD TECH2, STRUCTURE SHIELD TECH3' } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, 'STRUCTURE SHIELD EXPERIMENTAL' } },
@@ -51,8 +51,8 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Shield Ratio',
         PlatoonTemplate = 'T3EngineerBuilder',
-        Priority = 1000,
-        InstanceCount = 1,
+        Priority = 15000,
+        InstanceCount = 2,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioAtLocation', { 'LocationType', 1.0, 'STRUCTURE SHIELD', '<=','STRUCTURE ENERGYPRODUCTION TECH3, STRUCTURE FACTORY TECH3' } },
@@ -61,7 +61,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.SHIELD}},
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 2, categories.STRUCTURE * categories.SHIELD}},
             -- Respect UnitCap
             { UCBC, 'HaveLessThanUnitsWithCategory', { 30, 'STRUCTURE SHIELD TECH2, STRUCTURE SHIELD TECH3' } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, 'STRUCTURE SHIELD EXPERIMENTAL' } },
@@ -384,12 +384,10 @@ BuilderGroup {
         BuilderConditions = {
             { EBC, 'GreaterThanEconStorageRatio', { 0.90, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             { EBC, 'GreaterThanEconTrend', { 8.0, 500.0 } }, -- relative income
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 3, categories.ENERGYPRODUCTION * categories.TECH3 } },
-
-            { UCBC, 'HaveUnitRatioVersusEnemy', { 2, 'STRUCTURE NUKE TECH3', '<=', 'STRUCTURE DEFENSE ANTIMISSILE TECH3' } },
-
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.NUKE * categories.STRUCTURE}},
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 2, categories.EXPERIMENTAL } },
+            { UCBC, 'HaveUnitRatioVersusEnemy', { 2, 'STRUCTURE NUKE TECH3', '<=', 'STRUCTURE DEFENSE ANTIMISSILE TECH3' } },
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.NUKE * categories.STRUCTURE}},
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 10, categories.STRUCTURE * categories.LAND * categories.NUKE * (categories.TECH3 + categories.EXPERIMENTAL) }},
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<=', categories.STRUCTURE * categories.DEFENSE } },
         },
@@ -672,7 +670,6 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.60, 0.95 } }, -- Ratio from 0 to 1. (1=100%)
             -- Do we need additional conditions to build it ?
             { MIBC, 'FactionIndex', { 1 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
-            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             -- Don't build it if...
             -- Respect UnitCap
@@ -906,11 +903,11 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.DEFENSE * categories.ANTIAIR * categories.TECH1 }},
             -- Have we the eco to build it ?
             -- Don't build it if...
-            { UCBC, 'UnitCapCheckGreater', { .95 } },
+            { UCBC, 'UnitCapCheckGreater', { .90 } },
         },
         BuilderData = {
             Location = 'LocationType',
-            Reclaim = {'STRUCTURE DEFENSE ANTIAIR TECH1'},
+            Reclaim = {categories.STRUCTURE * categories.DEFENSE * categories.ANTIAIR * categories.TECH1},
         },
         BuilderType = 'Any',
     },
@@ -927,11 +924,11 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.DEFENSE * categories.ANTIAIR * categories.TECH2 }},
             -- Have we the eco to build it ?
             -- Don't build it if...
-            { UCBC, 'UnitCapCheckGreater', { .95 } },
+            { UCBC, 'UnitCapCheckGreater', { .90 } },
         },
         BuilderData = {
             Location = 'LocationType',
-            Reclaim = {'STRUCTURE DEFENSE ANTIAIR TECH2'},
+            Reclaim = {categories.STRUCTURE * categories.DEFENSE * categories.ANTIAIR * categories.TECH2},
         },
         BuilderType = 'Any',
     },
@@ -1077,11 +1074,11 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.DEFENSE * categories.TECH1 * ( categories.DIRECTFIRE + categories.INDIRECTFIRE ) - categories.ANTIAIR }},
             -- Have we the eco to build it ?
             -- Don't build it if...
-            { UCBC, 'UnitCapCheckGreater', { .95 } },
+            { UCBC, 'UnitCapCheckGreater', { .90 } },
         },
         BuilderData = {
             Location = 'LocationType',
-            Reclaim = {'STRUCTURE DEFENSE DIRECTFIRE TECH1, STRUCTURE DEFENSE INDIRECTFIRE TECH1'},
+            Reclaim = {categories.STRUCTURE * categories.DEFENSE * categories.TECH1 * ( categories.DIRECTFIRE + categories.INDIRECTFIRE ) - categories.ANTIAIR},
         },
         BuilderType = 'Any',
     },
@@ -1098,11 +1095,11 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.DEFENSE * categories.TECH2 * ( categories.DIRECTFIRE + categories.INDIRECTFIRE ) - categories.ANTIAIR }},
             -- Have we the eco to build it ?
             -- Don't build it if...
-            { UCBC, 'UnitCapCheckGreater', { .95 } },
+            { UCBC, 'UnitCapCheckGreater', { .90 } },
         },
         BuilderData = {
             Location = 'LocationType',
-            Reclaim = {'STRUCTURE DEFENSE DIRECTFIRE TECH2, STRUCTURE DEFENSE INDIRECTFIRE TECH2'},
+            Reclaim = {categories.STRUCTURE * categories.DEFENSE * categories.TECH2 * ( categories.DIRECTFIRE + categories.INDIRECTFIRE ) - categories.ANTIAIR},
         },
         BuilderType = 'Any',
     },

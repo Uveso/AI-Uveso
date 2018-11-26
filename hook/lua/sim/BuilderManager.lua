@@ -57,22 +57,35 @@ BuilderManager = Class(OLDBuilderManager) {
             end
             -- DEBUG SPAM - End
             if self.Brain[ScenarioInfo.Options.AIBuilderNameDebug] or ScenarioInfo.Options.AIBuilderNameDebug == 'all' then
+                -- building Mass percent bar
                 local percent = self.Brain:GetEconomyStoredRatio('MASS')
-                local percentbar = ''
+                local massBar = ''
                 local count = 1
                 for i = count, percent*20 do
-                    percentbar = percentbar..'#'
+                    massBar = massBar..'#'
                     count = count + 1
                 end
                 for i = count, 20 do
-                    percentbar = percentbar..'~'
+                    massBar = massBar..'~'
                 end
+                -- building Mass percent bar
+                local percent = self.Brain:GetEconomyStoredRatio('ENERGY')
+                local energyBar = ''
+                local count = 1
+                for i = count, percent*20 do
+                    energyBar = energyBar..'#'
+                    count = count + 1
+                end
+                for i = count, 20 do
+                    energyBar = energyBar..'~'
+                end
+                -- format priority numbers
                 local PrioText = ''
                 local Priolen = string.len(found)
                 if 6 > Priolen then
                     PrioText = string.rep('  ', 6 - Priolen) .. found
                 end
-                LOG('# Mass: {['..percentbar..']}  BuilderPriority = '..PrioText..' - SelectedBuilder = '..self.BuilderData[bType].Builders[ possibleBuilders[whichBuilder] ].BuilderName)
+                LOG(' M: ['..massBar..']  E: ['..energyBar..']  -  BuilderPriority = '..PrioText..' - SelectedBuilder = '..self.BuilderData[bType].Builders[ possibleBuilders[whichBuilder] ].BuilderName)
             end
             return self.BuilderData[bType].Builders[ possibleBuilders[whichBuilder] ]
         end

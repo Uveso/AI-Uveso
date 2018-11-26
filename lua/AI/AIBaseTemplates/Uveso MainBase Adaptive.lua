@@ -91,17 +91,6 @@ BaseBuilderTemplate {
         -- ==== Air Units FORMER==== --
         -----------------------------------------------------------------------------
         'Air FormBuilders',
-        
-        -----------------------------------------------------------------------------
-        -- ==== Sea Units BUILDER ==== --
-        -----------------------------------------------------------------------------
-        -- Build Naval Units
-        'SeaFactoryBuilders Uveso',
-
-        -----------------------------------------------------------------------------
-        -- ==== Sea Units FORMER ==== --
-        -----------------------------------------------------------------------------
-        'SeaAttack FormBuilders Uveso',
 
         -----------------------------------------------------------------------------
         -- ==== EXPERIMENTALS BUILDER ==== --
@@ -139,7 +128,7 @@ BaseBuilderTemplate {
         'Artillery Platoon Former',
         -- Build Anti Air near AirFactories
         'Base Anti Air Defense Uveso',
-        -- Ground Defence Builder
+        -- Ground Defense Builder
         'Base Anti Ground Defense Uveso',
 
         -----------------------------------------------------------------------------
@@ -151,12 +140,14 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== Scout BUILDER ==== --
         -----------------------------------------------------------------------------
-        'ScoutBuilder Uveso',
+        'LandScoutBuilder Uveso',
+        'AirScoutBuilder Uveso',
 
         -----------------------------------------------------------------------------
         -- ==== Scout FORMER ==== --
         -----------------------------------------------------------------------------
-        'ScoutFormer Uveso',
+        'LandScoutFormer Uveso',
+        'AirScoutFormer Uveso', 
 
         -----------------------------------------------------------------------------
         -- ==== Intel/CounterIntel BUILDER ==== --

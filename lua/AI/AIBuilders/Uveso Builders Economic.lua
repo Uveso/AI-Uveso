@@ -71,24 +71,23 @@ BuilderGroup {
     },
     -- Build more engineers if we don't find idle engineers
     Builder {
-        BuilderName = 'U1 Engineer noPool',
+        BuilderName = 'U1 Engineer noPool land',
         PlatoonTemplate = 'T1BuildEngineer',
         Priority = 18400,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 100, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 50, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
             { UCBC, 'PoolLessAtLocation', { 'LocationType', 2, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
             -- Do we need additional conditions to build it ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.AIR } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.10 } },             -- Ratio from 0 to 1. (1=100%)
+--            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+--            { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.10 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'ENGINEER TECH1' } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers, '<=', categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
         },
-        BuilderType = 'All',
+        BuilderType = 'Land',
     },
     Builder {
         BuilderName = 'U1 Engineer noPool air',
@@ -96,17 +95,34 @@ BuilderGroup {
         Priority = 18400,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 100, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
-            { UCBC, 'PoolLessAtLocation', { 'LocationType', 3, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 50, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'PoolLessAtLocation', { 'LocationType', 2, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
             -- Do we need additional conditions to build it ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.FACTORY * categories.AIR } },
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.05 } },             -- Ratio from 0 to 1. (1=100%)
+            -- Don't build it if...
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers, '<=', categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
+        },
+        BuilderType = 'Air',
+    },
+    Builder {
+        BuilderName = 'U1 Engineer noPool naval',
+        PlatoonTemplate = 'T1BuildEngineer',
+        Priority = 18400,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 50, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'PoolLessAtLocation', { 'LocationType', 2, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
+            -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers, '<=', categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
         },
-        BuilderType = 'Air',
+        BuilderType = 'Sea',
     },
     -- ============ --
     --    TECH 2    --
@@ -134,12 +150,12 @@ BuilderGroup {
         Priority = 18400,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 100, categories.MOBILE * categories.ENGINEER * categories.TECH2 } },
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 50, categories.MOBILE * categories.ENGINEER * categories.TECH2 } },
             { UCBC, 'PoolLessAtLocation', { 'LocationType', 2, categories.MOBILE * categories.ENGINEER * categories.TECH2 } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.10 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers, '<=', categories.MOBILE * categories.ENGINEER * categories.TECH2 } },
@@ -177,7 +193,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.10 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers, '<=', categories.MOBILE * categories.ENGINEER * categories.TECH3 } },
@@ -211,7 +227,7 @@ BuilderGroup {
         BuilderType = 'Gate',
     },
     Builder {
-        BuilderName = 'U3 Sub Commander 20',
+        BuilderName = 'U3 Sub Commander 30',
         PlatoonTemplate = 'T3LandSubCommander',
         Priority = 18400,
         BuilderConditions = {
@@ -222,7 +238,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.75, 0.75}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 20, categories.SUBCOMMANDER } },
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 30, categories.SUBCOMMANDER } },
             -- Respect UnitCap
         },
         BuilderType = 'Gate',

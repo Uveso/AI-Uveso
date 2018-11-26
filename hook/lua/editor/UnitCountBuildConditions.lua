@@ -539,7 +539,7 @@ function HaveLessThanIdleEngineers(aiBrain, count, tech)
     return c < count
 end
 
--- { UCBC, 'HasParagon', {} },
+--            { UCBC, 'HasParagon', {} },
 function HasParagon(aiBrain)
     if aiBrain.HasParagon then
         return true
@@ -547,7 +547,7 @@ function HasParagon(aiBrain)
     return false
 end
 
--- { UCBC, 'HasNotParagon', {} },
+--            { UCBC, 'HasNotParagon', {} },
 function HasNotParagon(aiBrain)
     if not aiBrain.HasParagon then
         return true
@@ -571,6 +571,7 @@ function CanBuildOnHydroLessThanDistance(aiBrain, locationType, distance, threat
     return false
 end
 
+--            { UCBC, 'NavalBaseWithLeastUnits', {  60, 'LocationType', categories.STRUCTURE * categories.FACTORY * categories.NAVAL }}, -- radius, LocationType, categoryUnits
 function NavalBaseWithLeastUnits(aiBrain, radius, locationType, unitCategory)
     local navalMarkers = AIUtils.AIGetMarkerLocations(aiBrain, 'Naval Area')
     local lowloc
@@ -580,6 +581,8 @@ function NavalBaseWithLeastUnits(aiBrain, radius, locationType, unitCategory)
             if marker.Name == baseLocation then
                 local pos = aiBrain.BuilderManagers[baseLocation].EngineerManager.Location
                 local numUnits = aiBrain:GetNumUnitsAroundPoint(unitCategory, pos, radius , 'Ally')
+                local numFactory = aiBrain:GetNumUnitsAroundPoint(categories.STRUCTURE * categories.FACTORY * categories.NAVAL, pos, radius , 'Ally')
+                if numFactory < 1 then continue end
                 if not lownum or lownum > numUnits then
                     lowloc = baseLocation
                     lownum = numUnits
@@ -587,7 +590,24 @@ function NavalBaseWithLeastUnits(aiBrain, radius, locationType, unitCategory)
             end
         end
     end
+    --LOG('Checking location: '..repr(locationType)..' - Location with lowest units: '..repr(lowloc))
     return locationType == lowloc
+end
+
+--            { UCBC, 'UnfinishedUnitsAtLocation', { 'LocationType' }},
+function UnfinishedUnitsAtLocation(aiBrain, locationType)
+    local engineerManager = aiBrain.BuilderManagers[locationType].EngineerManager
+    if not engineerManager then
+        return false
+    end
+    local unfinishedUnits = aiBrain:GetUnitsAroundPoint(categories.STRUCTURE + categories.EXPERIMENTAL, engineerManager:GetLocationCoords(), engineerManager.Radius, 'Ally')
+    for num, unit in unfinishedUnits do
+        local FractionComplete = unit:GetFractionComplete()
+        if FractionComplete < 1 and table.getn(unit:GetGuards()) < 1 then
+            return true
+        end
+    end
+    return false
 end
 
 -----------------------------------------------------------------------------------------------------------------------------------

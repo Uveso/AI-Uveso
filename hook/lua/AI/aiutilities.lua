@@ -1,10 +1,6 @@
-    -- For AI Patch V2. Exclude masspoints near the map boder
+-- For AI Patch. Exclude masspoints near the map boder
 OLDAIGetSortedMassLocations = AIGetSortedMassLocations
 function AIGetSortedMassLocations(aiBrain, maxNum, tMin, tMax, tRings, tType, position)
-    -- Only use this with AI-Uveso
-    if not aiBrain.Uveso then
-        return OLDAIGetSortedMassLocations(aiBrain, maxNum, tMin, tMax, tRings, tType, position)
-    end
     local markerList = AIGetMarkerLocations(aiBrain, 'Mass')
     local newList = {}
     for _, v in markerList do
@@ -20,140 +16,44 @@ function AIGetSortedMassLocations(aiBrain, maxNum, tMin, tMax, tRings, tType, po
     return AISortMarkersFromLastPos(aiBrain, newList, maxNum, tMin, tMax, tRings, tType, position)
 end
 
-    -- For AI Patch V2. Exclude masspoints near the map boder
-OLDAIGetSortedMassWithEnemy = AIGetSortedMassWithEnemy
-function AIGetSortedMassWithEnemy(aiBrain, maxNum, tMin, tMax, tRings, tType, position, category)
-    -- Only use this with AI-Uveso
-    if not aiBrain.Uveso then
-        return OLDAIGetSortedMassWithEnemy(aiBrain, maxNum, tMin, tMax, tRings, tType, position, category)
-    end
-    local markerList = AIGetMarkerLocations(aiBrain, 'Mass')
-    local newList = {}
-    local num = 0
-    for _, v in markerList do
-        -- check distance to map border. (game engine can't build mass closer then 8 mapunits to the map border.) 
-        if v.Position[1] <= 8 or v.Position[1] >= ScenarioInfo.size[1] - 8 or v.Position[3] <= 8 or v.Position[3] >= ScenarioInfo.size[2] - 8 then
-            -- mass marker is too close to border, skip it.
-            continue
-        end
-        if aiBrain:GetNumUnitsAroundPoint(categories.MASSEXTRACTION, v.Position, 5, 'Enemy') > 0 then
-            table.insert(newList, v)
-            num = num + 1
-            if num >= maxNum then
-                break
-            end
-        end
-    end
-
-    return AISortMarkersFromLastPos(aiBrain, newList, maxNum, tMin, tMax, tRings, tType, position)
-end
-
-
-
-
--- Hook for own engineer pathing
-OLDEngineerMoveWithSafePath = EngineerMoveWithSafePath
-function EngineerMoveWithSafePath(aiBrain, unit, destination)
-    -- Only use this with AI-Uveso
-    if not aiBrain.Uveso then
-        return OLDEngineerMoveWithSafePath(aiBrain, unit, destination)
-    end
-    if not destination then
+-- For AI Patch. reclaim before building mexes etc
+OLDEngineerTryReclaimCaptureArea = EngineerTryReclaimCaptureArea
+function EngineerTryReclaimCaptureArea(aiBrain, eng, pos)
+    if not pos then
         return false
     end
-    local pos = unit:GetPosition()
-    local result, bestPos = unit:CanPathTo(destination)
-    local bUsedTransports = false
-    -- Increase check to 300 for transports
-    if not result or VDist2Sq(pos[1], pos[3], destination[1], destination[3]) > 300 * 300
-    and unit.PlatoonHandle and not EntityCategoryContains(categories.COMMAND, unit) then
-        -- If we can't path to our destination, we need, rather than want, transports
-        local needTransports = not result
-        if VDist2Sq(pos[1], pos[3], destination[1], destination[3]) > 300 * 300 then
-            needTransports = true
+    local Reclaiming = false
+    -- Check if enemy units are at location
+    local checkUnits = aiBrain:GetUnitsAroundPoint( (categories.STRUCTURE + categories.MOBILE) - categories.AIR, pos, 10, 'Enemy')
+    -- reclaim units near our building place.
+    if checkUnits and table.getn(checkUnits) > 0 then
+        for num, unit in checkUnits do
+            if unit.Dead or unit:BeenDestroyed() then
+                continue
+            end
+            if not IsEnemy( aiBrain:GetArmyIndex(), unit:GetAIBrain():GetArmyIndex() ) then
+                continue
+            end
+            if unit:IsCapturable() then 
+                -- if we can capture the unit/building then do so
+                IssueCapture({eng}, unit)
+            else
+                -- if we can't capture then reclaim
+                IssueReclaim({eng}, unit)
+            end
         end
-
-        -- Skip the last move... we want to return and do a build
-        bUsedTransports = AIAttackUtils.SendPlatoonWithTransportsNoCheck(aiBrain, unit.PlatoonHandle, destination, needTransports, true, false)
-
-        if bUsedTransports then
-            return true
-        elseif VDist2Sq(pos[1], pos[3], destination[1], destination[3]) > 512 * 512 then
-            -- If over 512 and no transports dont try and walk!
-            return false
-        end
+        Reclaiming = true
     end
-
-    -- If we're here, we haven't used transports and we can path to the destination
-    if result then
-        local path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, 'Amphibious', pos, destination)
-        if path then
-            local pathSize = table.getn(path)
-            -- Move to way points (but not to destination... leave that for the final command)
-            for widx, waypointPath in path do
-                if pathSize ~= widx then
-                    IssueMove({unit}, waypointPath)
-                end
-            end
-        end
-        -- If there wasn't a *safe* path (but dest was pathable), then the last move would have been to go there directly
-        -- so don't bother... the build/capture/reclaim command will take care of that after we return
-        return true
-    -- if we are here, then we don't have a valid Path from the c-engine. maybe we find an alternative destination.
-    elseif aiBrain.Uveso then
-        --LOG('* EngineerMoveWithSafePath: Fist unit:CanPathTo('..repr(destination)..') = '..repr(result)..' - bestPos'..repr(bestPos))
-        local DistEngDestination = VDist2(pos[1], pos[3], destination[1], destination[3])
-        local DistDestinationBestPosition = VDist2(bestPos[1], bestPos[3], destination[1], destination[3])
-        --LOG('* EngineerMoveWithSafePath: DistEngDestination '..DistEngDestination..' - DistDestinationBestPosition '..DistDestinationBestPosition..'')
-        -- Are we near our destination ?
-        if DistEngDestination < 30 then
-            --LOG('* EngineerMoveWithSafePath: near destination! DistEngDestination '..DistEngDestination..' - Moving directly.')
-            IssueMove({unit}, destination)
-            return true
-        end
-        -- Do we have a alternative destination that is near the original destination ?
-        if DistDestinationBestPosition < 15 then
-            --LOG('* EngineerMoveWithSafePath: alternative destination! DistDestinationBestPosition '..DistDestinationBestPosition..' - Moving directly.')
-            path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, 'Amphibious', pos, bestPos)
-            if path then
-                for widx, waypointPath in path do
-                    IssueMove({unit}, waypointPath)
-                end
-                return true
-            end
-        end
-        --WaitTicks(3)
-        -- Search again for a redundant path with slight different destination.
-        destination[1] = destination[1] + 5
-        destination[3] = destination[3] + 5
-        result, bestPos = unit:CanPathTo(destination)
-        --LOG('* EngineerMoveWithSafePath: redundant unit:CanPathTo('..repr(destination)..') = '..repr(result)..' - bestPos'..repr(bestPos))
-        if result then
-            path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, 'Amphibious', pos, destination)
-            if path then
-                local pathSize = table.getn(path)
-                -- Move to way points (but not to destination... leave that for the final command)
-                for widx, waypointPath in path do
-                    if pathSize ~= widx then
-                        IssueMove({unit}, destination)
-                    end
-                end
-                return true
-            else
-                --LOG('* EngineerMoveWithSafePath: redundant no Path!.')
-            end
-        else
-            DistDestinationBestPosition = VDist2(bestPos[1], bestPos[3], destination[1], destination[3])
-            if DistDestinationBestPosition < 15 then
-                --LOG('* EngineerMoveWithSafePath: redundant destination! DistDestinationBestPosition '..DistDestinationBestPosition..' - Moving directly.')
-                IssueMove({unit}, bestPos)
-                return true
-            else
-                --LOG('* EngineerMoveWithSafePath: No way to the Destination.')
+    -- reclaim rocks etc or we can't build mexes or hydros
+    local Reclaimables = GetReclaimablesInRect(Rect(pos[1], pos[3], pos[1], pos[3]))
+    if Reclaimables and table.getn( Reclaimables ) > 0 then
+        for k,v in Reclaimables do
+            if v.MaxMassReclaim and v.MaxMassReclaim > 0 or v.MaxEnergyReclaim and v.MaxEnergyReclaim > 0 then
+                IssueReclaim({eng}, v)
             end
         end
     end
-    return false
+    return Reclaiming
 end
 
 -- Helper function for targeting
@@ -161,19 +61,23 @@ function ValidateLayer(UnitPos,MovementLayer)
     if MovementLayer == 'Air' then
         return true
     end
-    local height = GetTerrainHeight( UnitPos[1], UnitPos[3] ) -- terran high
-    local surfHeight = GetSurfaceHeight( UnitPos[1], UnitPos[3] ) -- water high
-    if height >= surfHeight and ( MovementLayer == 'Land' or MovementLayer == 'Amphibious' ) then
+    local TerrainHeight = GetTerrainHeight( UnitPos[1], UnitPos[3] ) -- terran high
+    local SurfaceHeight = GetSurfaceHeight( UnitPos[1], UnitPos[3] ) -- water high
+    -- Terrain > Surface = Target is on land
+    if TerrainHeight >= SurfaceHeight and ( MovementLayer == 'Land' or MovementLayer == 'Amphibious' ) then
+        --LOG('AttackLayer '..MovementLayer..' - TerrainHeight > SurfaceHeight. = Target is on land ')
         return true
     end
-    if height < surfHeight  and ( MovementLayer == 'Water' or MovementLayer == 'Amphibious' ) then
+    -- Terrain > Surface = Target is underwater
+    if TerrainHeight < SurfaceHeight and ( MovementLayer == 'Water' or MovementLayer == 'Amphibious' ) then
+        --LOG('AttackLayer '..MovementLayer..' - TerrainHeight < SurfaceHeight. = Target is on water ')
         return true
     end
---    LOG('MovementLayer '..MovementLayer..' - height '..height..' - surfHeight '..surfHeight)
+
     return false
 end
 
--- target function
+-- Target function
 function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, maxRange, PrioritizedTargetList, TargetSearchCategory, enemyBrain)
     if not maxRange then
         LOG('* AIFindNearestCategoryTargetInRange: function called with empty "maxRange"')
@@ -192,7 +96,7 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
     local platoonUnits = platoon:GetPlatoonUnits()
     local PlatoonStrength = table.getn(platoonUnits)
 
-        if type(TargetSearchCategory) == 'string' then
+    if type(TargetSearchCategory) == 'string' then
         TargetSearchCategory = ParseEntityCategory(TargetSearchCategory)
     end
     local enemyIndex = false
@@ -227,42 +131,46 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
             [2] = maxRange,
         }
     end
-
     local path = false
     local reason = false
     local UnitWithPath = false
     local UnitNoPath = false
     local count = 0
-
+    local TargetsInRange, EnemyStrength, TargetPosition, category, distance, targetRange, success, bestGoalPos, canAttack
     for _, range in RangeList do
-        TargetsInBaseRange = aiBrain:GetUnitsAroundPoint(TargetSearchCategory, position, range, 'Enemy')
+        TargetsInRange = aiBrain:GetUnitsAroundPoint(TargetSearchCategory, position, range, 'Enemy')
         --DrawCircle(position, range, '0000FF')
         for _, v in PrioritizedTargetList do
-            local category = v
+            category = v
             if type(category) == 'string' then
                 category = ParseEntityCategory(category)
             end
-            local distance = maxRange
-            --LOG('* AIFindNearestCategoryTargetInRange: numTargets '..table.getn(TargetsInBaseRange)..'  ')
-            for num, Target in TargetsInBaseRange do
-                local TargetPosition = Target:GetPosition()
-                local EnemyStrength = 0
+            distance = maxRange
+            --LOG('* AIFindNearestCategoryTargetInRange: numTargets '..table.getn(TargetsInRange)..'  ')
+            for num, Target in TargetsInRange do
+                if Target.Dead or Target:BeenDestroyed() then
+                    continue
+                end
+                TargetPosition = Target:GetPosition()
+                EnemyStrength = 0
                 -- check if the target is on the same layer then the attacker
-                if not ValidateLayer(TargetPosition,platoon.MovementLayer) then continue end
+                if not ValidateLayer(TargetPosition, platoon.MovementLayer) then continue end
                 -- check if we have a special player index as enemy
                 if enemyBrain and enemyIndex and enemyBrain ~= enemyIndex then continue end
                 -- check if the Target is still alive, matches our target priority and can be attacked from our platoon
-                if not Target.Dead and EntityCategoryContains(category, Target) and platoon:CanAttackTarget(squad, Target) then
+                canAttack = platoon:CanAttackTarget(squad, Target) or false
+                if not Target.Dead and EntityCategoryContains(category, Target) and canAttack then
                     -- yes... we need to check if we got friendly units with GetUnitsAroundPoint(_, _, _, 'Enemy')
                     if Target:BeenDestroyed() then
-                        SPEW('* AIFindNearestCategoryTargetInRange: Unit destroyed but not .Dead !?!')
+                        WARN('* AIFindNearestCategoryTargetInRange: Unit destroyed but not .Dead !?!')
                         continue
                     end
                     if not IsEnemy( aiBrain:GetArmyIndex(), Target:GetAIBrain():GetArmyIndex() ) then continue end
-                    local targetRange = VDist2(position[1],position[3],TargetPosition[1],TargetPosition[3])
+                    targetRange = VDist2(position[1],position[3],TargetPosition[1],TargetPosition[3])
                     if targetRange < distance then
-                        WaitTicks(1)
-                        if not aiBrain:PlatoonExists(platoon) then return false, false, false, false end
+                        if not aiBrain:PlatoonExists(platoon) then
+                            return false, false, false, false
+                        end
                         if platoon.MovementLayer == 'Land' then
                             EnemyStrength = aiBrain:GetNumUnitsAroundPoint( (categories.STRUCTURE + categories.MOBILE) * (categories.DIRECTFIRE + categories.INDIRECTFIRE + categories.GROUNDATTACK) , TargetPosition, 40, 'Enemy' )
                         elseif platoon.MovementLayer == 'Air' then
@@ -275,7 +183,8 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
                         --LOG('PlatoonStrength / 100 * AttackEnemyStrength <= '..(PlatoonStrength / 100 * AttackEnemyStrength)..' || EnemyStrength = '..EnemyStrength)
                         -- Only attack if we have a chance to win
                         if PlatoonStrength / 100 * AttackEnemyStrength < EnemyStrength then continue end
-                        path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, platoon.MovementLayer, platoon:GetPlatoonPosition(), TargetPosition, platoon.PlatoonData.NodeWeight or 10 )
+                        WaitTicks(1)
+                        path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, platoon.MovementLayer, position, TargetPosition, platoon.PlatoonData.NodeWeight or 10 )
                         -- Check if we found a path with markers
                         if path then
                             UnitWithPath = Target
@@ -290,6 +199,7 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
                                 --LOG('* AIFindNearestCategoryTargetInRange: Possible target no path. distance '..distance..'  ')
                             -- NoGraph means we have no Map markers. Lets try to path with c-engine command CanPathTo()
                             elseif reason == 'NoGraph' then
+                                WaitTicks(1)
                                 local success, bestGoalPos = AIAttackUtils.CheckPlatoonPathingEx(platoon, TargetPosition)
                                 -- check if we found a path with c-engine command.
                                 if success then
@@ -309,7 +219,7 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
                     end
                 end
                 count = count + 1
-                if count > 500 then
+                if count > 300 then
                     WaitTicks(1)
                     count = 0
                 end
@@ -317,10 +227,110 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
             if UnitWithPath then
                 return UnitWithPath, UnitNoPath, path, reason
             end
-           --WaitTicks(10)
+           WaitTicks(10)
         end
         WaitTicks(1)
     end
     return UnitWithPath, UnitNoPath, path, reason
 end
 
+-- WARNING THIS FUNCTION CAUSED CRASH AT 002cbc63. ONLY LEFT FOR DEBUGGING
+-- Hook for AI-Uveso engineer pathing
+--OLDEngineerMoveWithSafePath = EngineerMoveWithSafePath
+--function XXXXXXEngineerMoveWithSafePathXXXXX(aiBrain, unit, destination)
+--    -- Only use this with AI-Uveso
+--    if not aiBrain.Uveso then
+--        return OLDEngineerMoveWithSafePath(aiBrain, unit, destination)
+--    end
+--    if not destination then
+--        return false
+--    end
+--    local pos = unit:GetPosition()
+--    local result, bestPos = unit:CanPathTo(destination)
+--    local bUsedTransports = false
+--    -- Increase check to 300 for transports
+--    if not result or VDist2Sq(pos[1], pos[3], destination[1], destination[3]) > 300 * 300
+--    and unit.PlatoonHandle and not EntityCategoryContains(categories.COMMAND, unit) then
+--        -- If we can't path to our destination, we need, rather than want, transports
+--        local needTransports = not result
+--        if VDist2Sq(pos[1], pos[3], destination[1], destination[3]) > 300 * 300 then
+--            needTransports = true
+--        end
+--        -- Skip the last move... we want to return and do a build
+--        bUsedTransports = AIAttackUtils.SendPlatoonWithTransportsNoCheck(aiBrain, unit.PlatoonHandle, destination, needTransports, true, false)
+--        if bUsedTransports then
+--            return true
+--        elseif VDist2Sq(pos[1], pos[3], destination[1], destination[3]) > 512 * 512 then
+--            -- If over 512 and no transports dont try and walk!
+--            return false
+--        end
+--    end
+--    -- If we're here, we haven't used transports and we can path to the destination
+--    if result then
+--        local path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, 'Amphibious', pos, destination)
+--        if path then
+--            local pathSize = table.getn(path)
+--            -- Move to way points (but not to destination... leave that for the final command)
+--            for widx, waypointPath in path do
+--                if pathSize ~= widx then
+--                    IssueMove({unit}, waypointPath)
+--                end
+--            end
+--        end
+--        -- If there wasn't a *safe* path (but dest was pathable), then the last move would have been to go there directly
+--        -- so don't bother... the build/capture/reclaim command will take care of that after we return
+--        return true
+--    -- if we are here, then we don't have a valid Path from the c-engine. maybe we find an alternative destination.
+--    elseif aiBrain.Uveso then
+--        --LOG('* EngineerMoveWithSafePath: Fist unit:CanPathTo('..repr(destination)..') = '..repr(result)..' - bestPos'..repr(bestPos))
+--        local DistEngDestination = VDist2(pos[1], pos[3], destination[1], destination[3])
+--        local DistDestinationBestPosition = VDist2(bestPos[1], bestPos[3], destination[1], destination[3])
+--        -- Are we near our destination ?
+--        if DistEngDestination < 30 then
+--            --LOG('* EngineerMoveWithSafePath: near destination! DistEngDestination '..DistEngDestination..' - Moving directly.')
+--            IssueMove({unit}, destination)
+--            return true
+--        end
+--        -- Do we have a alternative destination that is near the original destination ?
+--        if DistDestinationBestPosition < 15 then
+--            --LOG('* EngineerMoveWithSafePath: alternative destination! DistDestinationBestPosition '..DistDestinationBestPosition..' - Moving Waypoints.')
+--            path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, 'Amphibious', pos, bestPos)
+--            if path then
+--                for widx, waypointPath in path do
+--                    IssueMove({unit}, waypointPath)
+--                end
+--                return true
+--            end
+--        end
+--        --WaitTicks(3)
+--        -- Search again for a redundant path with slight different destination.
+--        destination[1] = destination[1] + 5
+--        destination[3] = destination[3] + 5
+--        result, bestPos = unit:CanPathTo(destination)
+--        --LOG('* EngineerMoveWithSafePath: redundant unit:CanPathTo('..repr(destination)..') = '..repr(result)..' - bestPos'..repr(bestPos))        if result then
+--            path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, 'Amphibious', pos, destination)
+--            if path then
+--                local pathSize = table.getn(path)
+--                -- Move to way points (but not to destination... leave that for the final command)
+--                for widx, waypointPath in path do
+--                    if pathSize ~= widx then
+--                        IssueMove({unit}, destination)
+--                    end
+--                end
+--                return true
+--            else
+--                --LOG('* EngineerMoveWithSafePath: redundant no Path!.')
+--            end
+--        else
+--            DistDestinationBestPosition = VDist2(bestPos[1], bestPos[3], destination[1], destination[3])
+--            if DistDestinationBestPosition < 15 then
+--                --LOG('* EngineerMoveWithSafePath: redundant destination! DistDestinationBestPosition '..DistDestinationBestPosition..' - Moving directly.')
+--                IssueMove({unit}, bestPos)
+--                return true
+--            else
+--                --LOG('* EngineerMoveWithSafePath: No way to the Destination.')
+--            end
+--        end
+--    end
+--    return false
+--end

@@ -8,6 +8,7 @@ AIBrain = Class(oldAIBrain) {
             return oldAIBrain.BaseMonitorThread(self)
         end
         WaitTicks(10)
+        -- We are leaving this forked thread here because we don't need it.
     end,
 
     ParseIntelThread = function(self)
@@ -16,6 +17,7 @@ AIBrain = Class(oldAIBrain) {
             return oldAIBrain.ParseIntelThread(self)
         end
         WaitTicks(10)
+        -- We are leaving this forked thread here because we don't need it.
     end,
 
     EconomyMonitor = function(self)
@@ -24,6 +26,7 @@ AIBrain = Class(oldAIBrain) {
             return oldAIBrain.EconomyMonitor(self)
         end
         WaitTicks(10)
+        -- We are leaving this forked thread here because we don't need it.
     end,
 
 }

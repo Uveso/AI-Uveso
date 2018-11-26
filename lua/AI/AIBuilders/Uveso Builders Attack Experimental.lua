@@ -27,7 +27,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, 'ENGINEER TECH3' }},
             { UCBC, 'CanBuildCategory', { categories.MOBILE * categories.AIR * categories.EXPERIMENTAL - categories.SATELLITE } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 1.00, 1.00 }}, -- Ratio from 0 to 1. (1=100%)
@@ -57,7 +57,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 2, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, 'ENGINEER TECH3' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 1.00, 1.00 }}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
@@ -86,7 +86,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, 'ENGINEER TECH3' }},
             { SBC, 'IsWaterMap', { true } },
             { UCBC, 'CanBuildCategory', { categories.MOBILE * categories.NAVAL * categories.EXPERIMENTAL } },
             -- Have we the eco to build it ?
@@ -117,7 +117,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 2, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, 'ENGINEER TECH3' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 1.00, 1.00 }}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
@@ -146,7 +146,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, 'ENGINEER TECH3' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 1.00, 1.00 }}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
@@ -172,6 +172,7 @@ BuilderGroup {
         Priority = 160,
         InstanceCount = 1,
         BuilderConditions = {
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60*20 } },
             -- When do we want to build this ?
             { EBC, 'GreaterThanEconIncome', { 7.0, 1000.0 }},
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.95 } }, -- Ratio from 0 to 1. (1=100%)
@@ -201,6 +202,7 @@ BuilderGroup {
         Priority = 160,
         InstanceCount = 1,
         BuilderConditions = {
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60*20 } },
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
             { EBC, 'GreaterThanEconIncome', { 7.0, 100.0 }},
@@ -242,6 +244,7 @@ BuilderGroup {
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HasNotParagon', {} },
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60*30 } },
             -- Do we need additional conditions to build it ?
             { UCBC, 'CanBuildCategory', { categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC } },
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
@@ -270,14 +273,14 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'U3 Paragon 1st 30min',
+        BuilderName = 'U3 Paragon 1st 40min',
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 2000,
         DelayEqualBuildPlattons = {'Paragon', 30},
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HasNotParagon', {} },
-            { UCBC, 'GreaterThanGameTimeSeconds', { 60*30 } },
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60*40 } },
             -- Do we need additional conditions to build it ?
             { UCBC, 'CanBuildCategory', { categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC } },
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
@@ -307,7 +310,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Paragon 2nd',
         PlatoonTemplate = 'T3EngineerBuilder',
-        Priority = 18000,
+        Priority = 2000,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HasParagon', {} },
@@ -340,7 +343,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Paragon 3nd',
         PlatoonTemplate = 'T3EngineerBuilder',
-        Priority = 18000,
+        Priority = 2000,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HasParagon', {} },
@@ -446,7 +449,7 @@ BuilderGroup {
         PlatoonTemplate = 'U4-ExperimentalInterceptor 1 1',
         --PlatoonAddPlans = {'NameUnitsSorian'},
         Priority = 80,                                        -- Priority. 1000 is normal.
-        InstanceCount = 1,                                      -- Number of plattons that will be formed.
+        InstanceCount = 3,                                      -- Number of plattons that will be formed.
         FormRadius = 10000,
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                        -- Searchradius for new target.
@@ -454,18 +457,14 @@ BuilderGroup {
             AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 1000,                                         -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.MASSEXTRACTION,                   -- Only find targets matching these categories.
+            TargetSearchCategory = categories.EXPERIMENTAL,                   -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'MOBILE AIR EXPERIMENTAL',
                 'MOBILE LAND EXPERIMENTAL',
-                'LAND ANTIAIR',
-                'MOBILE LAND',
-                'STRUCTURE',
-                'ALLUNITS',
             },
         },
         BuilderConditions = {                                   -- platoon will be formed if all conditions are true
-            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 0, categories.MASSEXTRACTION}}, -- radius, LocationType, unitCount, categoryEnemy
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 0, categories.EXPERIMENTAL}}, -- radius, LocationType, unitCount, categoryEnemy
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.EXPERIMENTAL * categories.MOBILE * categories.AIR } },
         },
         BuilderType = 'Any',                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
@@ -474,56 +473,95 @@ BuilderGroup {
     --    EnemyZone    --
     -- =============== --
      Builder {
-        BuilderName = 'U-T4 EnemyBase Land',
+        BuilderName = 'U4 EnemyBase Land Solo',
         --PlatoonAddPlans = {'NameUnitsSorian'},
-        PlatoonTemplate = 'T4ExperimentalLandGroupUveso 2 2',
+        PlatoonTemplate = 'T4ExperimentalLandUveso 1 1',
         Priority = 60,                                        -- Priority. 1000 is normal.
-        InstanceCount = 1,                                      -- Number of plattons that will be formed.
-        FormRadius = 10000,
-        BuilderData = {
-            SearchRadius = 10000,                               -- Searchradius for new target.
-            GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
-            AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
-            AttackEnemyStrength = 1000,                                         -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            TargetSearchCategory = 'STRUCTURE, MOBILE LAND',    -- Only find targets matching these categories.
-            PrioritizedCategories = {
-                'EXPERIMENTAL',
-                'MOBILE LAND INDIRECTFIRE',
-                'MOBILE LAND DIRECTFIRE',
-                'STRUCTURE DEFENSE',
-                'MOBILE LAND ANTIAIR',
-                'STRUCTURE ANTIAIR',
-                'ALLUNITS',
-            },
-        },
-        BuilderConditions = {                                   -- platoon will be formed if all conditions are true
-            { UCBC, 'GreaterThanGameTimeSeconds', { 60*30 } },
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 3, categories.EXPERIMENTAL * categories.MOBILE * categories.LAND } },
-        },
-        BuilderType = 'Any',                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
-    },
-    Builder {
-        BuilderName = 'U4 EnemyBase Air',
-        PlatoonTemplate = 'U4-ExperimentalInterceptor 1 1',
-        --PlatoonAddPlans = {'NameUnitsSorian'},
-        Priority = 60,                                        -- Priority. 1000 is normal.
-        InstanceCount = 1,                                      -- Number of plattons that will be formed.
+        InstanceCount = 3,                                      -- Number of plattons that will be formed.
         FormRadius = 10000,
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 10000,                                         -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            TargetSearchCategory = 'EXPERIMENTAL',                 -- Only find targets matching these categories.
+            TargetSearchCategory = 'ALLUNITS',                    -- Only find targets matching these categories.
             PrioritizedCategories = {
+                'STRUCTURE EXPERIMENTAL SHIELD',
+                'STRUCTURE ARTILLERY',
+                'STRUCTURE NUKE',
                 'STRUCTURE ENERGYPRODUCTION',
-                'STRUCTURE SHIELD',
-                'STRUCTURE',
+                'STRUCTURE EXPERIMENTAL',
+                'STRUCTURE ANTIMISSILE TECH3',
+                'STRUCTURE DEFENSE TECH3',
+                'FACTORY TECH3',
+                'ALLUNITS',
             },
         },
         BuilderConditions = {                                   -- platoon will be formed if all conditions are true
             { UCBC, 'GreaterThanGameTimeSeconds', { 60*30 } },
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 3, categories.EXPERIMENTAL * categories.MOBILE * categories.AIR } },
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.EXPERIMENTAL * categories.MOBILE * categories.LAND } },
+        },
+        BuilderType = 'Any',                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
+    },
+     Builder {
+        BuilderName = 'U4 EnemyBase Land Duo',
+        --PlatoonAddPlans = {'NameUnitsSorian'},
+        PlatoonTemplate = 'T4ExperimentalLandGroupUveso 2 2',
+        Priority = 60,                                        -- Priority. 1000 is normal.
+        InstanceCount = 3,                                      -- Number of plattons that will be formed.
+        FormRadius = 10000,
+        BuilderData = {
+            SearchRadius = 10000,                               -- Searchradius for new target.
+            GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
+            AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
+            AttackEnemyStrength = 10000,                                         -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            TargetSearchCategory = 'ALLUNITS',                    -- Only find targets matching these categories.
+            PrioritizedCategories = {
+                'STRUCTURE EXPERIMENTAL SHIELD',
+                'STRUCTURE ARTILLERY',
+                'STRUCTURE NUKE',
+                'STRUCTURE ENERGYPRODUCTION',
+                'STRUCTURE EXPERIMENTAL',
+                'STRUCTURE ANTIMISSILE TECH3',
+                'STRUCTURE DEFENSE TECH3',
+                'FACTORY TECH3',
+                'ALLUNITS',
+            },
+        },
+        BuilderConditions = {                                   -- platoon will be formed if all conditions are true
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60*30 } },
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, categories.EXPERIMENTAL * categories.MOBILE * categories.LAND } },
+        },
+        BuilderType = 'Any',                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
+    },
+    Builder {
+        BuilderName = 'U4 EnemyBase Air Solo',
+        PlatoonTemplate = 'U4-ExperimentalInterceptor 1 1',
+        --PlatoonAddPlans = {'NameUnitsSorian'},
+        Priority = 60,                                        -- Priority. 1000 is normal.
+        InstanceCount = 2,                                      -- Number of plattons that will be formed.
+        FormRadius = 10000,
+        BuilderData = {
+            SearchRadius = 10000,                               -- Searchradius for new target.
+            GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
+            AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
+            AttackEnemyStrength = 10000,                                         -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            TargetSearchCategory = 'ALLUNITS',                    -- Only find targets matching these categories.
+            PrioritizedCategories = {
+                'STRUCTURE EXPERIMENTAL SHIELD',
+                'STRUCTURE ARTILLERY',
+                'STRUCTURE NUKE',
+                'STRUCTURE ENERGYPRODUCTION',
+                'STRUCTURE EXPERIMENTAL',
+                'STRUCTURE ANTIMISSILE TECH3',
+                'STRUCTURE DEFENSE TECH3',
+                'FACTORY TECH3',
+                'ALLUNITS',
+            },
+        },
+        BuilderConditions = {                                   -- platoon will be formed if all conditions are true
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60*30 } },
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.EXPERIMENTAL * categories.MOBILE * categories.AIR } },
         },
         BuilderType = 'Any',                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
@@ -533,7 +571,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U4 Land. Kill STRUCTURE',
         --PlatoonAddPlans = {'NameUnitsSorian'},
-        PlatoonTemplate = 'T4ExperimentalLandGroupUveso 3 8',
+        PlatoonTemplate = 'T4ExperimentalLandGroupUveso 2 2',
         Priority = 50,                                        -- Priority. 1000 is normal.
         InstanceCount = 5,                                     -- Number of plattons that will be formed.
         FormRadius = 10000,
@@ -542,11 +580,16 @@ BuilderGroup {
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 10000,                                         -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            TargetSearchCategory = 'STRUCTURE, MOBILE LAND',    -- Only find targets matching these categories.
+            TargetSearchCategory = 'ALLUNITS',                    -- Only find targets matching these categories.
             PrioritizedCategories = {
-                'MOBILE EXPERIMENTAL LAND',
+                'STRUCTURE EXPERIMENTAL SHIELD',
+                'STRUCTURE ARTILLERY',
+                'STRUCTURE NUKE',
+                'STRUCTURE ENERGYPRODUCTION',
                 'STRUCTURE EXPERIMENTAL',
-                'STRUCTURE DEFENSE',
+                'STRUCTURE ANTIMISSILE TECH3',
+                'STRUCTURE DEFENSE TECH3',
+                'FACTORY TECH3',
                 'ALLUNITS',
             },
         },
@@ -573,12 +616,16 @@ BuilderGroup {
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 10000,                                         -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            TargetSearchCategory = 'STRUCTURE, MOBILE',    -- Only find targets matching these categories.
+            TargetSearchCategory = 'ALLUNITS',                    -- Only find targets matching these categories.
             PrioritizedCategories = {
-                'MOBILE EXPERIMENTAL AIR',
-                'MOBILE EXPERIMENTAL LAND',
+                'STRUCTURE EXPERIMENTAL SHIELD',
+                'STRUCTURE ARTILLERY',
+                'STRUCTURE NUKE',
+                'STRUCTURE ENERGYPRODUCTION',
                 'STRUCTURE EXPERIMENTAL',
-                'STRUCTURE DEFENSE',
+                'STRUCTURE ANTIMISSILE TECH3',
+                'STRUCTURE DEFENSE TECH3',
+                'FACTORY TECH3',
                 'ALLUNITS',
             },
         },

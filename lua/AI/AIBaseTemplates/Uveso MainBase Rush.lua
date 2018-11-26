@@ -32,7 +32,7 @@ BaseBuilderTemplate {
         -- Build Engineers Tech 1,2,3 and SACU
         'EngineerFactoryBuilders Uveso',            -- Priority = 900
         -- Assistees
---        'Assistees Uveso',
+        'Assistees Uveso',
         -- Reclaim mass
         'Engineer Reclaim Uveso',
 
@@ -57,7 +57,7 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- Build Land/Air/Naval Factories
         'FactoryBuildersRush Uveso',
---        'GateConstruction Uveso',
+        'GateConstruction Uveso',
         -- Upgrade Factories TECH1->TECH2 and TECH2->TECH3
         'FactoryUpgradeBuildersRush Uveso',
         -- Build Air Staging Platform to refill and repair air units.
@@ -105,7 +105,7 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== EXPERIMENTALS BUILDER ==== --
         -----------------------------------------------------------------------------
---        'Mobile Experimental Builder Uveso',
+        'Mobile Experimental Builder Uveso',
         'Economic Experimental Builder Uveso',
         'Paragon Turbo Builder',
         'Paragon Turbo Factory',
@@ -146,12 +146,14 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== Scout BUILDER ==== --
         -----------------------------------------------------------------------------
-        'ScoutBuilder Uveso',
+        'LandScoutBuilder Uveso',
+        'AirScoutBuilder Uveso',
 
         -----------------------------------------------------------------------------
         -- ==== Scout FORMER ==== --
         -----------------------------------------------------------------------------
-        'ScoutFormer Uveso',
+        'LandScoutFormer Uveso',
+        'AirScoutFormer Uveso', 
 
         -----------------------------------------------------------------------------
         -- ==== Intel/CounterIntel BUILDER ==== --

@@ -21,39 +21,47 @@ function CommanderThreadUveso(cdr, platoon)
 
     while not cdr.Dead do
         -- Go back to base
-        if not cdr.Dead then
+        if not cdr.Dead and cdr:GetHealth() < cdr:GetMaxHealth() then
             CDRReturnHomeUveso(aiBrain, cdr)
         end
-        WaitTicks(2)
+        WaitTicks(1)
         -- Call platoon resume building deal...
         if not cdr.Dead and cdr:IsIdleState() then
             if not cdr.EngineerBuildQueue or table.getn(cdr.EngineerBuildQueue) == 0 then
-                --LOG('* CommanderThreadUveso: Idle and no BuildQueue')
+                -- check if the we have still a platton assigned to the CDR
+                if cdr.PlatoonHandle then
+                    local platoonUnits = cdr.PlatoonHandle:GetPlatoonUnits() or 1
+                    -- only disband the platton if we have 1 unit, plan and buildername. (NEVER disband the armypool platoon!!!)
+                    if table.getn(platoonUnits) == 1 and cdr.PlatoonHandle.PlanName and cdr.PlatoonHandle.BuilderName then
+                        --SPEW('ACU PlatoonHandle found. Plan: '..cdr.PlatoonHandle.PlanName..' - Builder '..cdr.PlatoonHandle.BuilderName..'. Disbanding CDR platoon!')
+                        cdr.PlatoonHandle:PlatoonDisband()
+                    end
+                end
+                -- get the global armypool platoon
                 local pool = aiBrain:GetPlatoonUniquelyNamed('ArmyPool')
-                aiBrain:AssignUnitsToPlatoon( pool, {cdr}, 'Unassigned', 'None' )
+                -- assing the CDR to the armypool
+                aiBrain:AssignUnitsToPlatoon(pool, {cdr}, 'Unassigned', 'None')
+            -- if we have a BuildQueue then continue building
             elseif cdr.EngineerBuildQueue and table.getn(cdr.EngineerBuildQueue) != 0 then
-                --LOG('* CommanderThreadUveso: Idle and BuildQueue')
                 if not cdr.NotBuildingThread then
                     cdr.NotBuildingThread = cdr:ForkThread(platoon.WatchForNotBuilding)
                 end             
             end
         end        
-        WaitTicks(2)
+        WaitTicks(1)
     end
 end
 
 function CDRReturnHomeUveso(aiBrain, cdr)
-    -- This is a reference... so it will autoupdate
     local cdrPos = cdr:GetPosition()
-    local distAway = 50
-    local loc = cdr.CDRHome
-    if not cdr.Dead and VDist2(cdrPos[1], cdrPos[3], loc[1], loc[3]) > distAway then
+    local distAway = 20
+    if not cdr.Dead and VDist2(cdrPos[1], cdrPos[3], cdr.CDRHome[1], cdr.CDRHome[3]) > distAway then
         repeat
             CDRRevertPriorityChange(aiBrain, cdr)
             IssueStop({cdr})
-            IssueMove({cdr}, loc)
+            IssueMove({cdr}, cdr.CDRHome)
             WaitSeconds(7)
-        until cdr.Dead or VDist2(cdrPos[1], cdrPos[3], loc[1], loc[3]) <= distAway
+        until cdr.Dead or VDist2(cdrPos[1], cdrPos[3], cdr.CDRHome[1], cdr.CDRHome[3]) <= distAway
         IssueClearCommands({cdr})
     end
     return

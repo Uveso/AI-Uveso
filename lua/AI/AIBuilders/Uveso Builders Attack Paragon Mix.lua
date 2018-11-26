@@ -27,6 +27,8 @@ BuilderGroup {
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HasParagon', {} },
+            { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 1, 'MOBILE ENGINEER TECH3' }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, 'MOBILE ENGINEER TECH3' }},
             -- Do we need additional conditions to build it ?
             { UCBC, 'CanBuildCategory', { categories.MOBILE * categories.AIR * categories.EXPERIMENTAL - categories.SATELLITE } },
             -- Have we the eco to build it ?
@@ -56,6 +58,8 @@ BuilderGroup {
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HasParagon', {} },
+            { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 1, 'MOBILE ENGINEER TECH3' }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, 'MOBILE ENGINEER TECH3' }},
             -- Do we need additional conditions to build it ?
             { SBC, 'IsWaterMap', { true } },
             { UCBC, 'CanBuildCategory', { categories.MOBILE * categories.NAVAL * categories.EXPERIMENTAL } },
@@ -86,6 +90,8 @@ BuilderGroup {
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HasParagon', {} },
+            { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 1, 'MOBILE ENGINEER TECH3' }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, 'MOBILE ENGINEER TECH3' }},
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
@@ -114,6 +120,8 @@ BuilderGroup {
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HasParagon', {} },
+            { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 1, 'MOBILE ENGINEER TECH3' }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, 'MOBILE ENGINEER TECH3' }},
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
@@ -135,7 +143,7 @@ BuilderGroup {
         }
     },
 -- ===================================================-======================================================== --
--- ==                                    T3 Strategic Missile LAUNCHER                                       == --
+-- ==                                    T2 Tactical Missile LAUNCHER                                       == --
 -- ===================================================-======================================================== --
     Builder {
         BuilderName = 'Turbo U2 TML',
@@ -171,19 +179,17 @@ BuilderGroup {
 -- ===================================================-======================================================== --
     Builder {
         BuilderName = 'Turbo U3 SML',
-        PlatoonTemplate = 'T3EngineerBuilderNoSUB',
+        PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 1100,
-        InstanceCount = 3,
+        InstanceCount = 6,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HasParagon', {} },
             -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH3' }},
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 60, categories.STRUCTURE * categories.LAND * categories.NUKE * categories.TECH3 }},
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 100, categories.STRUCTURE * categories.LAND * categories.NUKE * (categories.TECH3 + categories.EXPERIMENTAL) }},
+            { UCBC, 'UnitCapCheckLess', { 0.97 } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -218,7 +224,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 10, categories.STRUCTURE * categories.LAND * categories.ARTILLERY * categories.TECH3 }},
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 20, categories.STRUCTURE * categories.LAND * categories.ARTILLERY * categories.TECH3 }},
             { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Any',
@@ -233,7 +239,7 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'Turbo U3 RapidArtillery',
+        BuilderName = 'Turbo U4 RapidArtillery',
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 1100,
         InstanceCount = 2,
@@ -302,7 +308,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 10, categories.STRUCTURE * categories.ORBITALSYSTEM }},
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 30, categories.STRUCTURE * categories.ORBITALSYSTEM }},
             { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Any',

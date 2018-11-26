@@ -1,4 +1,34 @@
 *************************************************************************************************************************************
+v45 (26.Nov.2018)
+
+- New: Added base, build and attack platoons for naval maps
+- New: Nukes can now shoot at experimentals with "lead target"
+- New: added function FinisherAI to finish buildings with no engineers working on it.
+- New: First ACU function! Commander runs home after getting damage :)
+- New: New buildcondition "CanPathToCurrentEnemy". To check if we have a water/naval map.
+- New: New buildcondition "UnfinishedUnitsAtLocation". To find unfinished buildings with no engineers.
+- Fix: fixed crash at 002cbc63 in function EngineerMoveWithSafePath.
+- Fix: Changed platoon disband logic for CommanderThread. Prevents disbanding of the armypool platoon.
+- Fix: fixed a bug in function unitupgrade where after an upgrade all factories canceled their buildorders.
+- Fix: Buildcondition "FactionIndex" can now identify up to 5 factions (was 3!)
+- Fix: Locationmanager now allowes overlaping from naval and land expansions.
+- Opt: Updated naval target function to have the same functionality then land and air functions.
+- Opt: Updated AIBasebuilder for naval builders
+- Opt: Platoon target function optimized for naval/land targets
+- Opt: Changed several land and air platoons to work better with naval together
+- Opt: Buildcondition NavalBaseWithLeastUnits now only count areas with at least 1 naval factory.
+- Opt: Enhanced function EngineerTryReclaimCaptureArea. Only capture capturable units and reclaim the rest.
+- Opt: Enhanced function AIExecuteBuildStructure to find more places to build buildings.
+- Opt: Ecomanager manages now also massfabrikators and antinukes.
+- Opt: Ecomanager is no longer pausing units that builds energy buildings.
+- Opt: Ecomanager now uses more eco for army. (70-85%)
+- Opt: Global target manager targets now TECH3 units in case no experimental units are present.
+- Opt: capped the assisting of building experimentals to max 20 engineers. (so they don't block each other)
+- Opt: Optimized permanent shield repair. SACU now repair/guard the highest and 2nd highest shields.
+- Opt: Changed BrainConditionsMonitor for better game performance.
+- Opt: New logic for nuke targetting and missile launching.
+
+*************************************************************************************************************************************
 v44 (06.Nov.2018)
 
 - Fix: fixed a bug in case a platoon is dead but the target function is still searching for targets

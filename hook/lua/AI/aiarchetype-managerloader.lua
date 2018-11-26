@@ -1,5 +1,5 @@
--- This hook is for debug Option Platoon-Names. Hook for all AI's
 
+-- This hook is for debug-option Platoon-Names. Hook for all AI's
 OLDExecutePlan = ExecutePlan
 function ExecutePlan(aiBrain)
     aiBrain:SetConstantEvaluate(false)
@@ -54,13 +54,16 @@ function ExecutePlan(aiBrain)
     end
 end
 
+-- Uveso AI
 function EcoManager(aiBrain)
-    local ArmyUnits = {}
+    local Engineers = {}
     local paragons = {}
     local ParaCount = 0
     local ParaComplete = 0
     while true do
-        ArmyUnits = aiBrain:GetListOfUnits(categories.ENGINEER - categories.COMMAND - categories.SUBCOMMANDER, false) -- also gets unbuilded units (planed to build)
+        Engineers = aiBrain:GetListOfUnits(categories.ENGINEER - categories.COMMAND - categories.SUBCOMMANDER, false) -- also gets unbuilded units (planed to build)
+        MassFabrikators = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.MASSFABRICATION, false) -- also gets unbuilded units (planed to build)
+        AntiNuke = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.ANTIMISSILE * categories.SILO * categories.TECH3, false) -- also gets unbuilded units (planed to build)
         paragons = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC  * categories.ENERGYPRODUCTION  * categories.MASSPRODUCTION, false)
         ParaCount = 0
         ParaComplete = 0
@@ -75,8 +78,46 @@ function EcoManager(aiBrain)
         else
             aiBrain.HasParagon = false
         end
-
-        for _, unit in ArmyUnits do
+        -- loop over MassFabrikators and manage pause / unpause
+        for _, unit in MassFabrikators do
+            -- if the unit is dead, continue with the next unit
+            if unit.Dead then continue end
+            -- only manage finished buildings
+            if unit:GetFractionComplete() >= 1 then
+                if aiBrain:GetEconomyTrend('ENERGY') < 0.0 and aiBrain:GetEconomyStoredRatio('ENERGY') < 0.99 then
+                    if not unit:IsPaused() then
+                        unit:SetPaused( true )
+                        break
+                    end
+                elseif aiBrain:GetEconomyTrend('ENERGY') > 150.0 and aiBrain:GetEconomyStoredRatio('ENERGY') > 0.99 then
+                    if unit:IsPaused() then
+                        unit:SetPaused( false )
+                        break
+                    end
+                end
+            end
+        end
+        -- loop over Antinukes and manage pause / unpause
+        for _, unit in AntiNuke do
+            -- if the unit is dead, continue with the next unit
+            if unit.Dead then continue end
+            -- only manage finished buildings
+            if unit:GetFractionComplete() >= 1 then
+                if aiBrain:GetEconomyTrend('ENERGY') < 0.0 and aiBrain:GetEconomyStoredRatio('ENERGY') < 0.50 then
+                    if not unit:IsPaused() then
+                        unit:SetPaused( true )
+                        break
+                    end
+                elseif aiBrain:GetEconomyTrend('ENERGY') > 0.0 and aiBrain:GetEconomyStoredRatio('ENERGY') > 0.50 then
+                    if unit:IsPaused() then
+                        unit:SetPaused( false )
+                        break
+                    end
+                end
+            end
+        end
+        -- loop over engineers and manage pause / unpause
+        for _, unit in Engineers do
             -- if the unit is dead, continue with the next unit
             if unit.Dead then continue end
             -- Only Check units that are assisting
@@ -88,7 +129,7 @@ function EcoManager(aiBrain)
                     break
                 end
             -- We have negative eco. Check if we can switch something off
-            elseif aiBrain:GetEconomyTrend('MASS') < 1.0 or aiBrain:GetEconomyTrend('ENERGY') < 1.0 then
+            elseif aiBrain:GetEconomyTrend('MASS') < 0.0 or aiBrain:GetEconomyTrend('ENERGY') < 0.0 then
                 -- if this unit is paused, continue with the next unit
                 if unit:IsPaused() then continue end
                 -- Very low eco, disable everything but energy assister
@@ -120,10 +161,20 @@ function EcoManager(aiBrain)
                     break
                 end
             -- We have positive eco. Check if we can switch something on
-            elseif aiBrain:GetEconomyTrend('MASS') > 1.0 and aiBrain:GetEconomyTrend('ENERGY') > 1.0 then
-                -- if this unit is not paused, continue with the next unit
+            elseif aiBrain:GetEconomyTrend('MASS') >= 0.0 and aiBrain:GetEconomyTrend('ENERGY') >= 0.0 then
+                -- if this unit is paused, continue with the next unit
                 if not unit:IsPaused() then continue end
-                if aiBrain:GetEconomyStoredRatio('MASS') > 0.05 and aiBrain:GetEconomyStoredRatio('ENERGY') > 0.60 then
+                if aiBrain:GetEconomyStoredRatio('MASS') >= 0.05 and aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.05 then
+                    if unit.UnitBeingAssist then
+                        elseif EntityCategoryContains(categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.EXPERIMENTAL, unit.UnitBeingAssist) then
+                            unit:SetPaused( false )
+                            break
+                        end
+                    end
+                if aiBrain:GetEconomyStoredRatio('MASS') >= 0.30 and aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.80 then
+                    unit:SetPaused( false )
+                    break
+                elseif aiBrain:GetEconomyStoredRatio('MASS') >= 0.05 and aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.60 then
                     -- If we assist a paragon or energy structure unpause the unit
                     if unit.UnitBeingAssist then
                         if EntityCategoryContains(categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC, unit.UnitBeingAssist) then
@@ -136,9 +187,6 @@ function EcoManager(aiBrain)
                     end
                     continue
                 -- Low Eco, disable all engineers exept thosw who are assisting energy buildings
-                elseif aiBrain:GetEconomyStoredRatio('MASS') > 0.30 and aiBrain:GetEconomyStoredRatio('ENERGY') > 0.80 then
-                    unit:SetPaused( false )
-                    break
                 end
             end
         end
@@ -146,12 +194,10 @@ function EcoManager(aiBrain)
     end
 end
 
--- Check the distance between locations and set location radius half the distance.
 function LocationRangeManagerThread(aiBrain)
     local unitcounterdelayer = 0
     local ArmyUnits = {}
     while true do
-
         -- loop over all location managers
         for baseLocation, managers in aiBrain.BuilderManagers do
             -- get all factories from this location
@@ -169,7 +215,6 @@ function LocationRangeManagerThread(aiBrain)
                 end
             end
         end
-
         -- Check and set the location radius of our main base and expansions
         local BasePositions = BaseRanger(aiBrain)
         -- Check if we have units outside the range of any BaseManager
@@ -293,12 +338,14 @@ function BaseRanger(aiBrain)
                 -- We found a BaseLocation
                 local StartPos = v.FactoryManager.Location
                 local StartRad = v.FactoryManager.Radius
+                local V1Naval = string.find(k, 'Naval Area')
                 -- This is the maximum base radius.
                 local NewMax = 120
                 -- Now check against every other baseLocation, and see if we need to reduce our base radius.
                 for k2,v2 in aiBrain.BuilderManagers do
+                    local V2Naval = string.find(k2, 'Naval Area')
                     -- Only check, if start and end marker are not the same.
-                    if v ~= v2 then
+                    if v ~= v2 and ((V1Naval and V2Naval) or (not V1Naval and not V2Naval)) then
                         local EndPos = v2.FactoryManager.Location
                         local EndRad = v2.FactoryManager.Radius
                         local dist = VDist2( StartPos[1], StartPos[3], EndPos[1], EndPos[3] )
@@ -323,7 +370,7 @@ function BaseRanger(aiBrain)
                                 NewMax = dist - EndRad
                                 --LOG('Distance to mainbase['..k..']->['..k2..']='..dist..' Mainbase radius='..EndRad..' Set Radius to '..dist - EndRad) 
                             end
-                        -- Use as base radius half the way to the next marker
+                        -- Use as base radius half the way to the next marker. Exclude compare between land and water locations
                         else
                             -- if we dont compare against the mainbase then use 50% of the distance to the next location
                             if NewMax > dist/2 and dist/2 >= 30 then
@@ -370,7 +417,11 @@ function BaseAlertManager(aiBrain)
     local GetEnemyUnitsInSphereOnRadar = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua').GetEnemyUnitsInSphereOnRadar
     local targets = {}
     local baseposition, radius
+    local ClosestTarget
+    local distance
     while true do
+        ClosestTarget = nil
+        distance = 1024
         WaitTicks(50)
         if not baseposition then
             if aiBrain:PBMHasPlatoonList() then
@@ -389,11 +440,11 @@ function BaseAlertManager(aiBrain)
                 continue
             end 
         end
-        targets = GetEnemyUnitsInSphereOnRadar(aiBrain, baseposition, 60, BaseMilitaryZone) or {}
-        local ClosestTarget = nil
-        local distance = BaseMilitaryZone
+        -- Search for experimentals in BasePanicZone
+        targets = aiBrain:GetUnitsAroundPoint(categories.EXPERIMENTAL - categories.AIR, baseposition, 120, 'Enemy')
         for _, unit in targets do
-            if not unit.Dead and EntityCategoryContains(categories.EXPERIMENTAL - categories.AIR, unit) then
+            if not unit.Dead then
+                if not IsEnemy( aiBrain:GetArmyIndex(), unit:GetAIBrain():GetArmyIndex() ) then continue end
                 local TargetPosition = unit:GetPosition()
                 local targetRange = VDist2(baseposition[1], baseposition[3], TargetPosition[1], TargetPosition[3])
                 if targetRange < distance then
@@ -402,8 +453,42 @@ function BaseAlertManager(aiBrain)
                 end
             end
         end
+        WaitTicks(1)
+        -- Search for experimentals in BaseMilitaryZone
+        if not ClosestTarget then
+            targets = aiBrain:GetUnitsAroundPoint((categories.EXPERIMENTAL + categories.TECH3) - categories.AIR, baseposition, BaseMilitaryZone, 'Enemy')
+            for _, unit in targets do
+                if not unit.Dead then
+                    if not IsEnemy( aiBrain:GetArmyIndex(), unit:GetAIBrain():GetArmyIndex() ) then continue end
+                    local TargetPosition = unit:GetPosition()
+                    local targetRange = VDist2(baseposition[1], baseposition[3], TargetPosition[1], TargetPosition[3])
+                    if targetRange < distance then
+                        distance = targetRange
+                        ClosestTarget = unit
+                    end
+                end
+            end
+        end
+        WaitTicks(1)
+        -- Search for experimentals in EnemyZone
         if not ClosestTarget then
             targets = aiBrain:GetUnitsAroundPoint((categories.EXPERIMENTAL + categories.TECH3) - categories.AIR, baseposition, 1024, 'Enemy')
+            for _, unit in targets do
+                if not unit.Dead then
+                    if not IsEnemy( aiBrain:GetArmyIndex(), unit:GetAIBrain():GetArmyIndex() ) then continue end
+                    local TargetPosition = unit:GetPosition()
+                    local targetRange = VDist2(baseposition[1], baseposition[3], TargetPosition[1], TargetPosition[3])
+                    if targetRange < distance then
+                        distance = targetRange
+                        ClosestTarget = unit
+                    end
+                end
+            end
+        end
+        WaitTicks(1)
+        -- Search for TECH3 in BaseMilitaryZone
+        if not ClosestTarget then
+            targets = aiBrain:GetUnitsAroundPoint(categories.TECH3 - categories.AIR, baseposition, BaseMilitaryZone, 'Enemy')
             for _, unit in targets do
                 if not unit.Dead then
                     if not IsEnemy( aiBrain:GetArmyIndex(), unit:GetAIBrain():GetArmyIndex() ) then continue end

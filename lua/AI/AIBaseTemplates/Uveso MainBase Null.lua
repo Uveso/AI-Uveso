@@ -13,16 +13,22 @@ BaseBuilderTemplate {
         'Initial ACU Builders Uveso',               -- Priority = 1000
 
         'EngineerFactoryBuilders Uveso',            -- Priority = 900
+        'Assistees Uveso',
 
         'MassBuilders Uveso',                           -- Priority = 1100
---        'ExtractorUpgrades Uveso',                      -- Priority = 1100
+        'ExtractorUpgrades Uveso',                      -- Priority = 1100
 
         'EnergyBuilders Uveso',                       -- Priority = 1100
 
-        'FactoryBuilders Uveso', 
+        'FactoryBuildersExp Uveso',
         'FactoryUpgradeBuildersRush Uveso',
+        'GateConstruction Uveso',
+        'GateFactoryBuilders Uveso',
 
         'Air Transport Builder Uveso',
+
+        'Strategic Missile Launcher NukeAI Uveso',
+        'RepairLowShields',
 
 
     },
@@ -34,9 +40,9 @@ BaseBuilderTemplate {
     BaseSettings = {
         FactoryCount = {
             Land = 5,
-            Air = 5,
-            Sea = 3,
-            Gate = 1,
+            Air = 1,
+            Sea = 1,
+            Gate = 3,
         },
         EngineerCount = {
             Tech1 = 4,

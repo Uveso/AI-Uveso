@@ -44,6 +44,30 @@ BuilderGroup {
             }
         }
     },
+    Builder {
+        BuilderName = 'UC Mass 12',
+        PlatoonTemplate = 'CommanderBuilder',
+        Priority = 17900,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { MABC, 'CanBuildOnMassLessThanDistance', { 'LocationType', 12, -500, 0, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.STRUCTURE * categories.MASSEXTRACTION }},
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            DesiresAssist = false,
+            Construction = {
+                BuildClose = true,
+                BuildStructures = {
+                    'T1Resource',
+                },
+            }
+        }
+    },
     -- ======================= --
     --    TECH 1 - Engineer    --
     -- ======================= --
@@ -84,6 +108,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconStorageRatio', { -0.00, 0.05}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
 --            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
         },
@@ -110,6 +135,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconStorageRatio', { -0.00, 0.05}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
 --            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
         },
@@ -136,6 +162,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconStorageRatio', { -0.00, 0.05}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
 --            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
         },
@@ -162,6 +189,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconStorageRatio', { -0.00, 0.05}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
 --            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
         },
@@ -188,6 +216,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconStorageRatio', { -0.00, 0.05}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
 --            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
         },
@@ -237,14 +266,12 @@ BuilderGroup {
         Priority = 16200,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 6, 'ENERGYPRODUCTION TECH3' } },
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 10, categories.STRUCTURE * categories.MASSEXTRACTION }},
             -- Do we need additional conditions to build it ?
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'HaveUnitRatio', { 0.3, 'MASSFABRICATION', '<=','ENERGYPRODUCTION TECH3' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.75, 0.75}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.40, 1.00}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, 'MASSFABRICATION' } },
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
@@ -411,7 +438,7 @@ BuilderGroup {
         },
         BuilderData = {
             Location = 'LocationType',
-            Reclaim = {'STRUCTURE MASSSTORAGE'},
+            Reclaim = {categories.STRUCTURE * categories.MASSSTORAGE},
         },
         BuilderType = 'Any',
     },

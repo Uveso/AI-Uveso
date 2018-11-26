@@ -121,7 +121,7 @@ function ExtractorPause(self, aiBrain, MassExtractorUnitList, ratio, techLevel)
 end
 
 -- UnitUpgradeAIUveso is upgrading the nearest building to our own main base instead of a random building.
-function UnitUpgrade(self, aiBrain, MassExtractorUnitList, ratio, techLevel, UnitUpgradeTemplates, StructureUpgradeTemplates)
+function ExtractorUpgrade(self, aiBrain, MassExtractorUnitList, ratio, techLevel, UnitUpgradeTemplates, StructureUpgradeTemplates)
     -- Do we have the eco to upgrade ?
     local MassRatioCheckPositive = GlobalMassUpgradeCostVsGlobalMassIncomeRatio(self, aiBrain, ratio, techLevel, '<' )
     local aiBrain = self:GetBrain()
@@ -182,10 +182,10 @@ function UnitUpgrade(self, aiBrain, MassExtractorUnitList, ratio, techLevel, Uni
             end
         end
     end
-    -- If we have not the Eco then return false. Exept we have none extractor upgrading
-    if not MassRatioCheckPositive then
+    -- If we have not the Eco then return false. Exept we have none extractor upgrading or 100% mass storrage
+    if not MassRatioCheckPositive and aiBrain:GetEconomyStoredRatio('MASS') < 1.00 then
         -- if we have at least 1 extractor upgrading or less then 4 extractors, then return false
-        if UpgradingBuilding > 0 or table.getn(MassExtractorUnitList) < 6 then
+        if UpgradingBuilding > 0 or table.getn(MassExtractorUnitList) < 4 then
             return false
         end
         -- Even if we don't have the Eco for it; If we have more then 4 Extractors, then upgrade at least one of them.
@@ -194,7 +194,7 @@ function UnitUpgrade(self, aiBrain, MassExtractorUnitList, ratio, techLevel, Uni
     if upgradeID and upgradeBuilding then
         --LOG('* UnitUpgradeAIUveso: Upgrading Building in DistanceToBase '..(LowestDistanceToBase or 'Unknown ???')..' '..techLevel..' - UnitId '..upgradeBuilding:GetUnitId()..' - upgradeID '..upgradeID..' - GlobalUpgrading '..techLevel..': '..(UpgradingBuilding + 1) )
         IssueUpgrade({upgradeBuilding}, upgradeID)
-        WaitTicks(1)
+        WaitTicks(10)
         return true
     end
     return false
@@ -238,13 +238,9 @@ function GlobalMassUpgradeCostVsGlobalMassIncomeRatio(self, aiBrain, ratio, tech
             GlobalUpgradeCost = GlobalUpgradeCost + SingleUpgradeCost
         end
     end
-    -- If we have full mass storage, then don't waste mass. Upgrade!
-    if aiBrain:GetEconomyStoredRatio('MASS') >= 0.95 then
-        return true
-    end
-    -- If we have under 10 Massincome return always false
+    -- If we have under 20 Massincome return always false
     local MassIncome = ( aiBrain:GetEconomyIncome('MASS') * 10 ) - MassIncomeLost
-    if MassIncome < 10 and ( compareType == '<' or compareType == '<=' ) then
+    if MassIncome < 20 and ( compareType == '<' or compareType == '<=' ) then
         return false
     end
     return CompareBody(GlobalUpgradeCost / MassIncome, ratio, compareType)
@@ -569,7 +565,7 @@ end
 function LeadTarget(launcher, target)
     -- Get launcher and target position
     local LauncherPos = launcher:GetPosition()
-    local TargetPos = target:GetPosition()
+    local TargetPos
     -- Get target position in 1 second intervals.
     -- This allows us to get speed and direction from the target
     local TargetStartPosition=0
