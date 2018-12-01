@@ -205,10 +205,10 @@ function LocationRangeManagerThread(aiBrain)
             -- loop over all factories
             for k,factory in Factories do
                 -- is our factory not building or upgrading ?
-                if not factory.Dead and factory:IsUnitState('Building') == false and factory:IsUnitState('Upgrading') == false then
+                if factory and not factory.Dead and not factory:BeenDestroyed() and factory:IsUnitState('Building') == false and factory:IsUnitState('Upgrading') == false then
                     -- check if our factory is more then 30 seconds inactice
                     if factory.LastActive and GetGameTimeSeconds() - factory.LastActive > 30 then
-                        SPEW('Factory '..k..' at location ('..baseLocation..') is not working for '.. math.floor(GetGameTimeSeconds() - factory.LastActive) ..' seconds. Restarting factory... ')
+                        SPEW('* Uveso-AI: LocationRangeManagerThread: Factory '..k..' at location ('..baseLocation..') is not working for '.. math.floor(GetGameTimeSeconds() - factory.LastActive) ..' seconds. Restarting factory... ')
                         -- fork a new build thread for our factory
                         managers.FactoryManager:ForkThread(managers.FactoryManager.DelayBuildOrder, factory, factory.BuilderManagerData.BuilderType, 1)
                     end

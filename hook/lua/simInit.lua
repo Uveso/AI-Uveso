@@ -90,13 +90,13 @@ function ValidateMapAndMarkers()
     -- Check norushradius
     if ScenarioInfo.norushradius and ScenarioInfo.norushradius > 0 then
         if ScenarioInfo.norushradius < 10 then
-            WARN('* ValidateMapAndMarkers: norushradius is too smal ('..ScenarioInfo.norushradius..')! Set radius to minimum (15).')
+            WARN('* Uveso-AI: ValidateMapAndMarkers: norushradius is too smal ('..ScenarioInfo.norushradius..')! Set radius to minimum (15).')
             ScenarioInfo.norushradius = 15
         else
-            LOG('* ValidateMapAndMarkers: norushradius is OK. ('..ScenarioInfo.norushradius..')')
+            LOG('* Uveso-AI: ValidateMapAndMarkers: norushradius is OK. ('..ScenarioInfo.norushradius..')')
         end
     else
-        WARN('* ValidateMapAndMarkers: norushradius is missing! Set radius to default (20).')
+        WARN('* Uveso-AI: ValidateMapAndMarkers: norushradius is missing! Set radius to default (20).')
         ScenarioInfo.norushradius = 20
     end
 
@@ -108,14 +108,14 @@ function ValidateMapAndMarkers()
         -- Check if the marker is known. If not, send a debug message
         if not KnownMarkerTypes[v.type] then
             if not UNKNOWNMARKER[v.type] then
-                LOG('* ValidateMapAndMarkers: Unknown MarkerType: [\''..v.type..'\']=true,')
+                LOG('* Uveso-AI: ValidateMapAndMarkers: Unknown MarkerType: [\''..v.type..'\']=true,')
                 UNKNOWNMARKER[v.type] = true
             end
         end
         -- Check Mass Marker
         if v.type == 'Mass' then
             if v.position[1] <= 8 or v.position[1] >= ScenarioInfo.size[1] - 8 or v.position[3] <= 8 or v.position[3] >= ScenarioInfo.size[2] - 8 then
-                WARN('* ValidateMapAndMarkers: MarkerType: [\''..v.type..'\'] is too close to map border. IndexName = ['..k..']. (Mass marker deleted!!!)')
+                WARN('* Uveso-AI: ValidateMapAndMarkers: MarkerType: [\''..v.type..'\'] is too close to map border. IndexName = ['..k..']. (Mass marker deleted!!!)')
                 Scenario.MasterChain._MASTERCHAIN_.Markers[k] = nil
             end
         end
@@ -127,25 +127,25 @@ function ValidateMapAndMarkers()
                     for i, node in adjancents do
                         --local otherMarker = Scenario.MasterChain._MASTERCHAIN_.Markers[node]
                         if not Scenario.MasterChain._MASTERCHAIN_.Markers[node] then
-                            WARN('* ValidateMapAndMarkers: adjacentTo is wrong in marker ['..k..'] - MarkerType: [\''..v.type..'\']. - Adjacent marker ['..node..'] is missing.')
+                            WARN('* Uveso-AI: ValidateMapAndMarkers: adjacentTo is wrong in marker ['..k..'] - MarkerType: [\''..v.type..'\']. - Adjacent marker ['..node..'] is missing.')
                         end
                     end
                 else
-                    WARN('* ValidateMapAndMarkers: adjacentTo is empty in marker ['..k..'] - MarkerType: [\''..v.type..'\']. - Pathmarker must have an adjacent marker for pathing.')
+                    WARN('* Uveso-AI: ValidateMapAndMarkers: adjacentTo is empty in marker ['..k..'] - MarkerType: [\''..v.type..'\']. - Pathmarker must have an adjacent marker for pathing.')
                 end
             else
-                WARN('* ValidateMapAndMarkers: adjacentTo is missing in marker ['..k..'] - MarkerType: [\''..v.type..'\']. - Pathmarker must have an adjacent marker for pathing.')
+                WARN('* Uveso-AI: ValidateMapAndMarkers: adjacentTo is missing in marker ['..k..'] - MarkerType: [\''..v.type..'\']. - Pathmarker must have an adjacent marker for pathing.')
             end
             -- Checking marker type/graph 
             if MarkerDefaults[v.type]['graph'] ~= v.graph then
-                WARN('* ValidateMapAndMarkers: graph missmatch in marker ['..k..'] - MarkerType: [\''..v.type..'\']. - marker.type is ('..repr(v.graph)..'), but should be ('..MarkerDefaults[v.type]['graph']..').')
+                WARN('* Uveso-AI: ValidateMapAndMarkers: graph missmatch in marker ['..k..'] - MarkerType: [\''..v.type..'\']. - marker.type is ('..repr(v.graph)..'), but should be ('..MarkerDefaults[v.type]['graph']..').')
                 -- save the correct graph type 
                 v.graph = MarkerDefaults[v.type]['graph']
             end
             -- Checking colors (for debug)
             if MarkerDefaults[v.type]['color'] ~= v.color then
                 -- we actual don't print a debugmessage here. This message is for debuging a debug function :)
-                --LOG('* ValidateMapAndMarkers: color missmatch in marker ['..k..'] - MarkerType: [\''..v.type..'\']. marker.color is ('..repr(v.color)..'), but should be ('..MarkerDefaults[v.type]['color']..').')
+                --LOG('* Uveso-AI: ValidateMapAndMarkers: color missmatch in marker ['..k..'] - MarkerType: [\''..v.type..'\']. marker.color is ('..repr(v.color)..'), but should be ('..MarkerDefaults[v.type]['color']..').')
                 v.color = MarkerDefaults[v.type]['color']
             end
         -- Check BaseLocations distances to other locations
@@ -155,13 +155,13 @@ function ValidateMapAndMarkers()
                     local dist = VDist2( v.position[1], v.position[3], v2.position[1], v2.position[3] )
                     -- Are we checking a Start location, and another marker is nearer then 80 units ?
                     if v.type == 'Blank Marker' and v2.type ~= 'Blank Marker' and dist < 80 then
-                        WARN('* ValidateMapAndMarkers: Marker [\''..k2..'\'] is to close to Start Location [\''..k..'\']. Distance= '..math.floor(dist)..' (under 80).')
+                        LOG('* Uveso-AI: ValidateMapAndMarkers: Marker [\''..k2..'\'] is to close to Start Location [\''..k..'\']. Distance= '..math.floor(dist)..' (under 80).')
                         --Scenario.MasterChain._MASTERCHAIN_.Markers[k2] = nil
                     -- Check if we have other locations that have a low distance (under 60)
                     elseif v.type ~= 'Blank Marker' and v2.type ~= 'Blank Marker' and dist < 60 then
                         -- Check priority from small locations up to main base.
                         if BaseLocations[v.type].priority >= BaseLocations[v2.type].priority then
-                            WARN('* ValidateMapAndMarkers: Marker [\''..k2..'\'] is to close to Marker [\''..k..'\']. Distance= '..math.floor(dist)..' (under 60).')
+                            LOG('* Uveso-AI: ValidateMapAndMarkers: Marker [\''..k2..'\'] is to close to Marker [\''..k..'\']. Distance= '..math.floor(dist)..' (under 60).')
                             -- Not used at the moment, but we can delete the location with the lower priority here.
                             -- This is used for debuging the locationmanager, so we can be sure that locations are not overlapping.
                             --Scenario.MasterChain._MASTERCHAIN_.Markers[k2] = nil

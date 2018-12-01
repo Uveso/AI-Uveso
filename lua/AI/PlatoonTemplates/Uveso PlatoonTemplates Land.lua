@@ -103,8 +103,15 @@ PlatoonTemplate {
 
 
 PlatoonTemplate {
-    Name = 'T4ExperimentalLandUveso 1 1',
+    Name = 'T4 Interceptor Land 1 1',
     Plan = 'InterceptorAIUveso', -- is targetting in order from Platoondata.PrioritizedCategories.
+    GlobalSquads = {
+        { categories.EXPERIMENTAL * categories.LAND * categories.MOBILE - categories.INSIGNIFICANTUNIT, 1, 1, 'attack', 'none' }
+    },
+}
+PlatoonTemplate {
+    Name = 'T4ExperimentalLandUveso 1 1',
+    Plan = 'AttackPrioritizedLandTargetsAIUveso', -- is targetting in order from Platoondata.PrioritizedCategories.
     GlobalSquads = {
         { categories.EXPERIMENTAL * categories.LAND * categories.MOBILE - categories.INSIGNIFICANTUNIT, 1, 1, 'attack', 'none' }
     },

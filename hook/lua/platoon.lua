@@ -722,7 +722,7 @@ Platoon = Class(oldPlatoon) {
                 -- if we can't find a StructureUpgradeTemplate for this unit, warn the programmer
                 if not upgradeID then
                     -- Output: WARNING: [platoon.lua, line:xxx] *UnitUpgradeAI ERROR: Can\'t find StructureUpgradeTemplate for structure: ABC1234
-                    WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI ERROR: Can\'t find StructureUpgradeTemplate for structure: ' .. repr(v:GetUnitId()) .. '  factionIndex: ' .. repr(factionIndex) )
+                    WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI ERROR: Can\'t find StructureUpgradeTemplate for structure: ' .. repr(v:GetUnitId()) .. '  faction: ' .. repr(v.factionCategory) )
                 end
             end
             if upgradeID and EntityCategoryContains(categories.STRUCTURE, v) and not v:CanBuild(upgradeID) then
@@ -999,6 +999,7 @@ Platoon = Class(oldPlatoon) {
         local LastTargetPos = PlatoonPos
         local DistanceToTarget = 0
         local basePosition = aiBrain.BuilderManagers['MAIN'].Position
+        local losttargetnum = 0
         while aiBrain:PlatoonExists(self) do
             if self:IsOpponentAIRunning() then
                 PlatoonPos = self:GetPlatoonPosition()
@@ -1006,6 +1007,7 @@ Platoon = Class(oldPlatoon) {
                 if not target or target.Dead then
                     UnitWithPath, UnitNoPath, path, reason = AIUtils.AIFindNearestCategoryTargetInRange(aiBrain, self, 'Attack', PlatoonPos, maxRadius, PrioritizedTargetList, TargetSearchCategory, false )
                     if UnitWithPath then
+                        losttargetnum = 0
                         self:Stop()
                         target = UnitWithPath
                         LastTargetPos = table.copy(target:GetPosition())
@@ -1014,9 +1016,11 @@ Platoon = Class(oldPlatoon) {
                             -- if we have a path then use the waypoints
                             if self.PlatoonData.IgnorePathing then
                                 self:Stop()
+                                self:SetPlatoonFormationOverride('AttackFormation')
                                 self:AttackTarget(UnitWithPath)
                             elseif path then
-                                self:MovePath(aiBrain, path, bAggroMove, target)
+--                                self:MovePath(aiBrain, path, bAggroMove, target)
+                                self:MoveToLocationInclTransport(target, LastTargetPos, bAggroMove, WantsTransport, basePosition, ExperimentalInPlatoon)
                             -- if we dont have a path, but UnitWithPath is true, then we have no map markers but PathCanTo() found a direct path
                             else
                                 self:MoveDirect(aiBrain, bAggroMove, target)
@@ -1024,24 +1028,32 @@ Platoon = Class(oldPlatoon) {
                             -- We moved to the target, attack it now if its still exists
                             if aiBrain:PlatoonExists(self) and UnitWithPath and not UnitWithPath.Dead and not UnitWithPath:BeenDestroyed() then
                                 self:Stop()
+                                self:SetPlatoonFormationOverride('AttackFormation')
                                 self:AttackTarget(UnitWithPath)
                             end
                         end
                     elseif UnitNoPath then
+                        losttargetnum = 0
                         self:Stop()
                         target = UnitNoPath
                         self:MoveWithTransport(aiBrain, bAggroMove, target, basePosition, ExperimentalInPlatoon)
                         -- We moved to the target, attack it now if its still exists
                         if aiBrain:PlatoonExists(self) and UnitNoPath and not UnitNoPath.Dead and not UnitNoPath:BeenDestroyed() then
+                            self:SetPlatoonFormationOverride('AttackFormation')
                             self:AttackTarget(UnitNoPath)
                         end
                     else
                         -- we have no target return to main base
-                        self:Stop()
-                        self:ForceReturnToNearestBaseAIUveso()
+                        losttargetnum = losttargetnum + 1
+                        if losttargetnum > 2 then
+                            self:Stop()
+                            self:SetPlatoonFormationOverride('NoFormation')
+                            self:ForceReturnToNearestBaseAIUveso()
+                        end
                     end
                 else
                     if aiBrain:PlatoonExists(self) and target and not target.Dead and not target:BeenDestroyed() then
+                        self:SetPlatoonFormationOverride('AttackFormation')
                         self:AttackTarget(target)
                         WaitSeconds(2)
                     end
@@ -1050,7 +1062,7 @@ Platoon = Class(oldPlatoon) {
             WaitSeconds(1)
         end
     end,
-
+    
     MoveWithTransport = function(self, aiBrain, bAggroMove, target, basePosition, ExperimentalInPlatoon)
         local TargetPosition = table.copy(target:GetPosition())
         --LOG('* MoveWithTransport: CanPathTo() failed for '..repr(TargetPosition)..' forcing SendPlatoonWithTransportsNoCheck.')
@@ -1201,6 +1213,7 @@ Platoon = Class(oldPlatoon) {
         local LastTargetPos = PlatoonPos
         local DistanceToTarget = 0
         local basePosition = PlatoonPos   -- Platoons will be created near a base, so we can return to this position if we don't have targets.
+        local losttargetnum = 0
         while aiBrain:PlatoonExists(self) do
             if self:IsOpponentAIRunning() then
                 PlatoonPos = self:GetPlatoonPosition()
@@ -1208,6 +1221,7 @@ Platoon = Class(oldPlatoon) {
                 if not target or target.Dead then
                     UnitWithPath, UnitNoPath, path, reason = AIUtils.AIFindNearestCategoryTargetInRange(aiBrain, self, 'Attack', PlatoonPos, maxRadius, PrioritizedTargetList, TargetSearchCategory, false )
                     if UnitWithPath then
+                        losttargetnum = 0
                         self:Stop()
                         target = UnitWithPath
                         LastTargetPos = table.copy(target:GetPosition())
@@ -1231,8 +1245,11 @@ Platoon = Class(oldPlatoon) {
                         end
                     else
                         -- we have no target return to main base
-                        self:Stop()
-                        self:ForceReturnToNavalBaseAIUveso(aiBrain, basePosition)
+                        losttargetnum = losttargetnum + 1
+                        if losttargetnum > 2 then
+                            self:Stop()
+                            self:ForceReturnToNavalBaseAIUveso(aiBrain, basePosition)
+                        end
                     end
                 else
                     if aiBrain:PlatoonExists(self) and target and not target.Dead and not target:BeenDestroyed() then

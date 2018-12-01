@@ -34,7 +34,7 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 10, categories.MOBILE * categories.AIR * categories.ANTIAIR * categories.TECH3 }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.TECH2 - categories.ENGINEER }},
             { UCBC, 'HasNotParagon', {} },
@@ -58,7 +58,7 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.ANTIAIR * categories.TECH3 }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.TECH2 - categories.ENGINEER }},
             { UCBC, 'HasNotParagon', {} },
@@ -78,7 +78,7 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.MOBILE * categories.AIR * categories.BOMBER * categories.TECH3 }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.TECH2 - categories.ENGINEER }},
             { UCBC, 'HasNotParagon', {} },
@@ -99,7 +99,7 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.LAND * categories.FACTORY * categories.TECH1 }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.TECH2 - categories.ENGINEER }},
             { UCBC, 'HasNotParagon', {} },
@@ -120,7 +120,7 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.LAND * categories.FACTORY * categories.TECH1 }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.TECH2 - categories.ENGINEER }},
             { UCBC, 'HasNotParagon', {} },
@@ -142,7 +142,7 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.LAND * categories.FACTORY * categories.TECH1 }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.TECH2 - categories.ENGINEER }},
             { UCBC, 'HasNotParagon', {} },
@@ -823,10 +823,9 @@ BuilderGroup {
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = categories.MOBILE - categories.AIR,           -- Only find targets matching these categories.
             PrioritizedCategories = {                                           -- Attack these targets.
-                'LAND ANTIAIR',
-                'NAVAL ANTIAIR',
-                'INDIRECTFIRE',
-                'DIRECTFIRE',
+                'MOBILE ANTIAIR',
+                'MOBILE INDIRECTFIRE',
+                'MOBILE DIRECTFIRE',
                 'ALLUNITS',
             },
         },
@@ -1075,7 +1074,7 @@ BuilderGroup {
             SearchRadius = 10000,                                               -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
-            AttackEnemyStrength = 10000,                                        -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            AttackEnemyStrength = 100000,                                        -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = 'MOBILE AIR',                                -- Only find targets matching these categories.
             PrioritizedCategories = {
@@ -1096,16 +1095,18 @@ BuilderGroup {
         BuilderName = 'U12 UnitCap AntiGround 30',
         PlatoonTemplate = 'U12-AntiGroundCap 30 40',
         Priority = 70,                                                          -- Priority. 1000 is normal.
-        InstanceCount = 1,                                                      -- Number of plattons that will be formed.
+        InstanceCount = 3,                                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = 10000,                                               -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
-            AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
-            AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = 'ALLUNITS',                                 -- Only find targets matching these categories.
+            AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
+            AttackEnemyStrength = 100000,                                       -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            IgnorePathing = false,                                              -- If true, the platoon will not use AI pathmarkers and move directly to the target
+            TargetSearchCategory = 'STRUCTURE, MOBILE',                         -- Only find targets matching these categories.
             PrioritizedCategories = {
-                'STRUCTURE ANTIAIR',
+                'STRUCTURE ANTIAIR TECH3',
+                'STRUCTURE ANTIAIR TECH2',
+                'STRUCTURE ANTIAIR TECH1',
                 'STRUCTURE DEFENSE ANTIMISSILE TECH3',
                 'STRUCTURE ARTILLERY',
                 'STRUCTURE NUKE',
@@ -1122,16 +1123,18 @@ BuilderGroup {
         BuilderName = 'U12 UnitCap AntiGround 50',
         PlatoonTemplate = 'U12-AntiGroundCap 30 40',
         Priority = 70,                                                          -- Priority. 1000 is normal.
-        InstanceCount = 1,                                                      -- Number of plattons that will be formed.
+        InstanceCount = 3,                                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = 10000,                                               -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
-            AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
-            AttackEnemyStrength = 10000,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = 'ALLUNITS',                                 -- Only find targets matching these categories.
+            AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
+            AttackEnemyStrength = 100000,                                       -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            IgnorePathing = false,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
+            TargetSearchCategory = 'STRUCTURE, MOBILE',                         -- Only find targets matching these categories.
             PrioritizedCategories = {
-                'STRUCTURE ANTIAIR',
+                'STRUCTURE ANTIAIR TECH3',
+                'STRUCTURE ANTIAIR TECH2',
+                'STRUCTURE ANTIAIR TECH1',
                 'STRUCTURE DEFENSE ANTIMISSILE TECH3',
                 'STRUCTURE ARTILLERY',
                 'STRUCTURE NUKE',

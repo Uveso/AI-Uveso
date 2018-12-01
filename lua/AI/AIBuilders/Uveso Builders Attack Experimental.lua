@@ -385,7 +385,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U4 BasePanicZone LAND',
         --PlatoonAddPlans = {'NameUnitsSorian'},
-        PlatoonTemplate = 'T4ExperimentalLandUveso 1 1',
+        PlatoonTemplate = 'T4 Interceptor Land 1 1',
         Priority = 90,                                        -- Priority. 1000 is normal.
         InstanceCount = 5,                                      -- Number of plattons that will be formed.
         FormRadius = 10000,
@@ -393,7 +393,7 @@ BuilderGroup {
             SearchRadius = BasePanicZone,                       -- Searchradius for new target.
             GetTargetsFromBase = true,                          -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
-            AttackEnemyStrength = 10000,                                        -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            AttackEnemyStrength = 100000,                                        -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = 'MOBILE LAND, STRUCTURE',    -- Only find targets matching these categories.
             PrioritizedCategories = {
@@ -423,7 +423,7 @@ BuilderGroup {
             SearchRadius = BasePanicZone,                       -- Searchradius for new target.
             GetTargetsFromBase = true,                          -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
-            AttackEnemyStrength = 10000,                                        -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            AttackEnemyStrength = 100000,                                        -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = 'MOBILE, STRUCTURE',         -- Only find targets matching these categories.
             PrioritizedCategories = {
@@ -455,7 +455,7 @@ BuilderGroup {
             SearchRadius = BaseMilitaryZone,                        -- Searchradius for new target.
             GetTargetsFromBase = true,                          -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = true,                                             -- If true, the unit will attack everything while moving to the target.
-            AttackEnemyStrength = 1000,                                         -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            AttackEnemyStrength = 100000,                                         -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = categories.EXPERIMENTAL,                   -- Only find targets matching these categories.
             PrioritizedCategories = {
@@ -483,7 +483,7 @@ BuilderGroup {
             SearchRadius = 10000,                               -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
-            AttackEnemyStrength = 10000,                                         -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            AttackEnemyStrength = 100000,                                         -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = 'ALLUNITS',                    -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'STRUCTURE EXPERIMENTAL SHIELD',
@@ -514,7 +514,7 @@ BuilderGroup {
             SearchRadius = 10000,                               -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
-            AttackEnemyStrength = 10000,                                         -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            AttackEnemyStrength = 100000,                                         -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = 'ALLUNITS',                    -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'STRUCTURE EXPERIMENTAL SHIELD',
@@ -545,7 +545,7 @@ BuilderGroup {
             SearchRadius = 10000,                               -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
-            AttackEnemyStrength = 10000,                                         -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            AttackEnemyStrength = 100000,                                         -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = 'ALLUNITS',                    -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'STRUCTURE EXPERIMENTAL SHIELD',
@@ -579,17 +579,15 @@ BuilderGroup {
             SearchRadius = 10000,                               -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
-            AttackEnemyStrength = 10000,                                         -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            TargetSearchCategory = 'ALLUNITS',                    -- Only find targets matching these categories.
+            AttackEnemyStrength = 100000,                                         -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            TargetSearchCategory = 'STRUCTURE, MOBILE',                         -- Only find targets matching these categories.
             PrioritizedCategories = {
-                'STRUCTURE EXPERIMENTAL SHIELD',
+                'STRUCTURE ANTIAIR TECH3',
+                'STRUCTURE FACTORY TECH3',
+                'STRUCTURE DEFENSE ANTIMISSILE TECH3',
                 'STRUCTURE ARTILLERY',
                 'STRUCTURE NUKE',
-                'STRUCTURE ENERGYPRODUCTION',
-                'STRUCTURE EXPERIMENTAL',
-                'STRUCTURE ANTIMISSILE TECH3',
-                'STRUCTURE DEFENSE TECH3',
-                'FACTORY TECH3',
+                'STRUCTURE ENERGYPRODUCTION TECH3',
                 'ALLUNITS',
             },
         },
@@ -615,17 +613,15 @@ BuilderGroup {
             SearchRadius = 10000,                               -- Searchradius for new target.
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
-            AttackEnemyStrength = 10000,                                         -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            TargetSearchCategory = 'ALLUNITS',                    -- Only find targets matching these categories.
+            AttackEnemyStrength = 100000,                                         -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            TargetSearchCategory = 'STRUCTURE, MOBILE',                         -- Only find targets matching these categories.
             PrioritizedCategories = {
-                'STRUCTURE EXPERIMENTAL SHIELD',
+                'STRUCTURE ANTIAIR TECH3',
+                'STRUCTURE FACTORY TECH3',
+                'STRUCTURE DEFENSE ANTIMISSILE TECH3',
                 'STRUCTURE ARTILLERY',
                 'STRUCTURE NUKE',
-                'STRUCTURE ENERGYPRODUCTION',
-                'STRUCTURE EXPERIMENTAL',
-                'STRUCTURE ANTIMISSILE TECH3',
-                'STRUCTURE DEFENSE TECH3',
-                'FACTORY TECH3',
+                'STRUCTURE ENERGYPRODUCTION TECH3',
                 'ALLUNITS',
             },
         },

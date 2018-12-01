@@ -60,7 +60,7 @@ BuilderGroup {
         Priority = 18500,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'EngineerCapCheck', { 'LocationType', 'Tech1' } },
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 6, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             -- Don't build it if...
@@ -68,6 +68,24 @@ BuilderGroup {
             -- Respect UnitCap
          },
         BuilderType = 'All',
+    },
+-- Mass full ? Build more engineers!
+    Builder {
+        BuilderName = 'U1 Engineer Mass Full',
+        PlatoonTemplate = 'T1BuildEngineer',
+        Priority = 18400,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 50, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.80, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
+            -- Don't build it if...
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers, '<=', categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
+        },
+        BuilderType = 'Land',
     },
     -- Build more engineers if we don't find idle engineers
     Builder {

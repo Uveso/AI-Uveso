@@ -7,7 +7,7 @@ function FactionIndex(aiBrain, ...)
         if faction == FactionIndex then
             return true
         end
-    end    
+    end
     return false
 end
 
@@ -27,53 +27,48 @@ function CanPathToCurrentEnemy(aiBrain, bool)
         -- if we don't have a current enemy then return false
         return false
     end
-    
+
     -- Get the armyindex from the enemy
     local EnemyIndex = aiBrain:GetCurrentEnemy():GetArmyIndex()
     -- Check if we have already done a path search to the current enemy
     if CanPathToEnemy[EnemyIndex] == 'LAND' then
-        --LOG('* CanPathToCurrentEnemy: Cached LAND. bool=('..repr(bool)..') return=('..repr(true == bool)..')')
         return true == bool
     elseif CanPathToEnemy[EnemyIndex] == 'WATER' then
-        --LOG('* CanPathToCurrentEnemy: Cached WATER. bool=('..repr(bool)..') return=('..repr(false == bool)..')')
         return false == bool
     end
-    
+
     -- path wit AI markers from our base to the enemy base
     local path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, 'Land', {startX,0,startZ}, {enemyX,0,enemyZ}, 1000)
     -- if we have a path generated with AI path markers then....
     if path then
-        --LOG('* CanPathToCurrentEnemy: Path to the enemy found! LAND')
+        LOG('* Uveso-AI: CanPathToCurrentEnemy: Land path to the enemy found! LAND map! '..ArmyBrains[aiBrain:GetArmyIndex()].Nickname..' -> ['..ArmyBrains[EnemyIndex].Nickname..']')
         CanPathToEnemy[EnemyIndex] = 'LAND'
     -- if we not have a path
     else
         -- "NoPath" means we have AI markers but can't find a path to the enemy - There is no path!
         if reason == 'NoPath' then
-            --LOG('* CanPathToCurrentEnemy: No path to the enemy found! WATER')
+            LOG('* Uveso-AI: CanPathToCurrentEnemy: No land path to the enemy found! WATER map! '..ArmyBrains[aiBrain:GetArmyIndex()].Nickname..' -> ['..ArmyBrains[EnemyIndex].Nickname..']')
             CanPathToEnemy[EnemyIndex] = 'WATER'
         -- "NoGraph" means we have no AI markers and cant graph to the enemy. We can't search for a path - No markers
         elseif reason == 'NoGraph' then
-            --LOG('* CanPathToCurrentEnemy: No AI markers! using Land/Water ratio instead')
+            LOG('* Uveso-AI: CanPathToCurrentEnemy: No AI markers found! Using land/water ratio instead')
             -- Check if we have less then 50% water on the map
             if aiBrain:GetMapWaterRatio() < 0.50 then
                 --lets asume we can move on land to the enemy
-                --LOG('* CanPathToCurrentEnemy: Asuming Land map - Water on map: '..aiBrain:GetMapWaterRatio()..'%')
+                LOG(string.format('* Uveso-AI: CanPathToCurrentEnemy: Water on map: %0.2f%%. Assuming LAND map '..ArmyBrains[aiBrain:GetArmyIndex()].Nickname..' -> ['..ArmyBrains[EnemyIndex].Nickname..']',aiBrain:GetMapWaterRatio() ))
                 CanPathToEnemy[EnemyIndex] = 'LAND'
+            else
+                -- we have more then 50% water on this map. Ity maybe a water map..
+                LOG(string.format('* Uveso-AI: CanPathToCurrentEnemy: Water on map: %0.2f%%. Assuming WATER map '..ArmyBrains[aiBrain:GetArmyIndex()].Nickname..' -> ['..ArmyBrains[EnemyIndex].Nickname..']',aiBrain:GetMapWaterRatio() ))
+                CanPathToEnemy[EnemyIndex] = 'WATER'
             end
-            -- we have more then 50% water on this map. Ity maybe a water map..
-            --LOG('* CanPathToCurrentEnemy: Asuming Water map - Water on map: '..aiBrain:GetMapWaterRatio()..'%')
-            CanPathToEnemy[EnemyIndex] = 'WATER'
         end
     end
-    LOG('* UVESO-AI: Map has '..aiBrain:GetMapWaterRatio()..'% water.')
     if CanPathToEnemy[EnemyIndex] == 'LAND' then
-        LOG('* UVESO-AI: Using this map as LAND map.')
         return true == bool
     elseif CanPathToEnemy[EnemyIndex] == 'WATER' then
-        LOG('* UVESO-AI: Using this map as WATER map.')
         return false == bool
     end
-    --LOG('* CanPathToCurrentEnemy: WARNING function failed to decide if this is a Land or Water map. reason: '..repr(reason))
     CanPathToEnemy[EnemyIndex] = 'WATER'
     return false == bool
 end

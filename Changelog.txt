@@ -1,4 +1,14 @@
 *************************************************************************************************************************************
+v46 (01.Dec.2018)
+
+- Fix: Blocked T2SonarUpgrade template for seraphim (Seraphim sonar tech3 can't upgrade)
+- Fix: Changed AIBAseTemplates functions to return always -1 if no Uveso-AI is running. (Normal AI was using Uveso-AI Templates in expansions)
+- Opt: Air fighter will now wait at least for 2 seconds if they can find new targets before they return to main base.
+- Opt: AI spends now 5% more mass income for building air units.
+- Opt: Reduced the eco for naval tech3 ships (10%)
+- Opt: Changed and added some log messages for better error logging. (land / water map detection etc.)
+
+*************************************************************************************************************************************
 v45 (26.Nov.2018)
 
 - New: Added base, build and attack platoons for naval maps

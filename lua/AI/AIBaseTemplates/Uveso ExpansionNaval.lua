@@ -82,10 +82,10 @@ BaseBuilderTemplate {
     },
     ExpansionFunction = function(aiBrain, location, markerType)
         if not aiBrain.Uveso then
-            return 0
+            return -1
         end
         if markerType ~= 'Naval Area' then
-            return 0
+            return -1
         end
         return 1000, 'UvesoExpansionNaval'
     end,
