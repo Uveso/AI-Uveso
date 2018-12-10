@@ -21,10 +21,10 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== Factory ==== --
         -----------------------------------------------------------------------------
-        -- Build Land/Air/Naval Factories
-        'FactoryBuilders Uveso',
-        -- Upgrade Factories TECH1->TECH2 and TECH2->TECH3
-        'FactoryUpgradeBuildersRush Uveso',
+        -- Build Naval Factories
+        'FactoryBuildersNaval Uveso',
+        -- Upgrade Naval Factories TECH1->TECH2 and TECH2->TECH3
+        'FactoryUpgradeBuildersNaval Uveso',
 
         -----------------------------------------------------------------------------
         -- ==== Sea Units BUILDER ==== --
@@ -40,13 +40,12 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== EXPERIMENTALS BUILDER ==== --
         -----------------------------------------------------------------------------
-        'Mobile Experimental Builder Uveso',
-        'Paragon Turbo Builder',
+        'Mobile Experimental Builder Naval Uveso',
         
         -----------------------------------------------------------------------------
         -- ==== EXPERIMENTALS FORMER ==== --
         -----------------------------------------------------------------------------
-        'ExperimentalAttackFormBuilders Uveso',
+        'ExperimentalAttackFormBuildersNaval Uveso',
 
         -----------------------------------------------------------------------------
         -- ==== Defenses BUILDER ==== --

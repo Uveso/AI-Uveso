@@ -40,7 +40,7 @@ BuilderGroup {
             { UCBC, 'HasNotParagon', {} },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
+            { UCBC, 'UnitCapCheckLess', { 0.97 } },
         },
         BuilderType = 'Air',
     },
@@ -63,7 +63,7 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.TECH2 - categories.ENGINEER }},
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
+            { UCBC, 'UnitCapCheckLess', { 0.97 } },
         },
         BuilderType = 'Air',
     },
@@ -83,7 +83,7 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.TECH2 - categories.ENGINEER }},
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
+            { UCBC, 'UnitCapCheckLess', { 0.97 } },
         },
         BuilderType = 'Air',
     },
@@ -104,7 +104,7 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.TECH2 - categories.ENGINEER }},
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
+            { UCBC, 'UnitCapCheckLess', { 0.97 } },
         },
         BuilderType = 'Air',
     },
@@ -126,7 +126,7 @@ BuilderGroup {
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE AIR GROUNDATTACK', '<','MOBILE AIR HIGHALTAIR ANTIAIR' } },
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
+            { UCBC, 'UnitCapCheckLess', { 0.97 } },
         },
         BuilderType = 'Air',
     },
@@ -148,7 +148,7 @@ BuilderGroup {
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE AIR BOMBER', '<','MOBILE AIR HIGHALTAIR ANTIAIR' } },
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
+            { UCBC, 'UnitCapCheckLess', { 0.97 } },
         },
         BuilderType = 'Air',
     },
@@ -169,7 +169,7 @@ BuilderGroup {
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.HIGHALTAIR * categories.ANTIAIR * categories.TECH3 }},
             -- Respect UnitCap
-            { UCBC, 'UnitCapCheckLess', { 0.97 } },
+            { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
         BuilderType = 'Air',
     },
@@ -186,7 +186,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.30, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
-            { UCBC, 'UnitCapCheckLess', { 0.97 } },
+            { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
         BuilderType = 'Air',
     },
@@ -206,7 +206,7 @@ BuilderGroup {
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.ANTINAVY * categories.TECH3 }},
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
-            { UCBC, 'UnitCapCheckLess', { 0.96 } },
+            { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
         BuilderType = 'Air',
     },
@@ -226,7 +226,7 @@ BuilderGroup {
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.ANTINAVY * categories.TECH3 }},
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
-            { UCBC, 'UnitCapCheckLess', { 0.96 } },
+            { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
         BuilderType = 'Air',
     },
@@ -246,7 +246,6 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
-            { UCBC, 'UnitCapCheckLess', { 0.97 } },
         },
         BuilderType = 'Air',
     },
@@ -263,7 +262,6 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
-            { UCBC, 'UnitCapCheckLess', { 0.97 } },
         },
         BuilderType = 'Air',
     },
@@ -280,7 +278,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
-            { UCBC, 'UnitCapCheckLess', { 0.97 } },
+            { UCBC, 'UnitCapCheckLess', { 1.00 } },
         },
         BuilderType = 'Air',
     },
@@ -297,7 +295,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
-            { UCBC, 'UnitCapCheckLess', { 0.97 } },
+            { UCBC, 'UnitCapCheckLess', { 1.00 } },
         },
         BuilderType = 'Air',
     },
@@ -316,7 +314,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
-            { UCBC, 'UnitCapCheckLess', { 0.97 } },
+            { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Air',
     },
@@ -336,7 +334,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
-            { UCBC, 'UnitCapCheckLess', { 0.97 } },
+            { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Air',
     },
@@ -353,7 +351,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
-            { UCBC, 'UnitCapCheckLess', { 0.97 } },
+            { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Air',
     },
@@ -381,7 +379,8 @@ BuilderGroup {
             -- Don't build it if...
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'TRANSPORTFOCUS TECH1' } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.TRANSPORTFOCUS - categories.uea0203 }},
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
+            -- Respect UnitCap
+            { UCBC, 'UnitCapCheckLess', { 0.97 } },
         },
         BuilderType = 'Air',
     },
@@ -400,7 +399,8 @@ BuilderGroup {
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsWithCategory', { 5, categories.MOBILE * categories.AIR * (categories.TECH2 * categories.TECH3) }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 20, categories.MOBILE * categories.AIR * categories.TRANSPORTFOCUS - categories.uea0203 }},
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
+            -- Respect UnitCap
+            { UCBC, 'UnitCapCheckLess', { 0.97 } },
         },
         BuilderType = 'Air',
     },
@@ -420,7 +420,8 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.TECH3 }},
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'TRANSPORTFOCUS TECH2' } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 5, categories.MOBILE * categories.AIR * categories.TRANSPORTFOCUS - categories.uea0203 }},
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
+            -- Respect UnitCap
+            { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
         BuilderType = 'Air',
     },
@@ -439,8 +440,9 @@ BuilderGroup {
             -- Don't build it if...
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'TRANSPORTFOCUS TECH3' } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 20, categories.MOBILE * categories.AIR * categories.TRANSPORTFOCUS - categories.uea0203 }},
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.45, '<=', categories.MOBILE - categories.ENGINEER } },
-        },
+             -- Respect UnitCap
+            { UCBC, 'UnitCapCheckLess', { 1.00 } },
+       },
         BuilderType = 'Air',
     },
 }

@@ -189,7 +189,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsWithCategory', { 100, categories.STRUCTURE * categories.LAND * categories.NUKE * (categories.TECH3 + categories.EXPERIMENTAL) }},
-            { UCBC, 'UnitCapCheckLess', { 0.97 } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -515,6 +515,7 @@ BuilderGroup {
         BuilderConditions = {
             { UCBC, 'HasParagon', {} },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 8, categories.INTELLIGENCE * categories.AIR * categories.TECH3 }},
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Air',
     },
@@ -530,7 +531,7 @@ BuilderGroup {
             { UCBC, 'HasParagon', {} },
             -- Don't build it if...
             -- Respect UnitCap
-            { UCBC, 'UnitCapCheckLess', { 0.97 } },
+            { UCBC, 'UnitCapCheckLess', { 1.00 } },
         },
         BuilderType = 'Air',
     },
@@ -546,7 +547,7 @@ BuilderGroup {
             { UCBC, 'HasParagon', {} },
             -- Don't build it if...
             -- Respect UnitCap
-            { UCBC, 'UnitCapCheckLess', { 0.97 } },
+            { UCBC, 'UnitCapCheckLess', { 1.00 } },
         },
         BuilderType = 'Air',
     },
@@ -563,7 +564,7 @@ BuilderGroup {
             { UCBC, 'HasParagon', {} },
             -- Don't build it if...
             -- Respect UnitCap
-            { UCBC, 'UnitCapCheckLess', { 0.97 } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Air',
     },

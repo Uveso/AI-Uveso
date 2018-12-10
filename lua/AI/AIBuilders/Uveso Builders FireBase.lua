@@ -3,6 +3,8 @@ local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 local MABC = '/lua/editor/MarkerBuildConditions.lua'
 local EBC = '/lua/editor/EconomyBuildConditions.lua'
 
+local MaxDefense = 0.15 -- 15% of all units can be defenses (categories.STRUCTURE * categories.DEFENSE)
+
 BuilderGroup {
     BuilderGroupName = 'U1 FirebaseBuilders',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
@@ -14,6 +16,8 @@ BuilderGroup {
         BuilderConditions = {
             { MABC, 'CanBuildFirebase', { 'LocationType', 256, 'Expansion Area', -1000, 5, 1, 'AntiSurface', 1, 'STRATEGIC', 20} },
             { UCBC, 'GreaterThanGameTimeSeconds', { 600 } },
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<=', categories.STRUCTURE * categories.DEFENSE } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -47,6 +51,8 @@ BuilderGroup {
         BuilderConditions = {
             { MABC, 'CanBuildFirebase', { 'LocationType', 256, 'Expansion Area', -1000, 5, 1, 'AntiSurface', 1, 'STRATEGIC', 20} },
             { UCBC, 'GreaterThanGameTimeSeconds', { 600 } },
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<=', categories.STRUCTURE * categories.DEFENSE } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -80,6 +86,8 @@ BuilderGroup {
         BuilderConditions = {
             { MABC, 'CanBuildFirebase', { 'LocationType', 256, 'Expansion Area', -1000, 5, 1, 'AntiSurface', 1, 'STRATEGIC', 20} },
             { UCBC, 'GreaterThanGameTimeSeconds', { 600 } },
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<=', categories.STRUCTURE * categories.DEFENSE } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -113,6 +121,8 @@ BuilderGroup {
         BuilderConditions = {
             { MABC, 'CanBuildFirebase', { 'LocationType', 256, 'Naval Area', -1000, 5, 1, 'AntiSurface', 1, 'STRATEGIC', 20} },
             { UCBC, 'GreaterThanGameTimeSeconds', { 600 } },
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<=', categories.STRUCTURE * categories.DEFENSE } },
         },
         BuilderType = 'Any',
         BuilderData = {

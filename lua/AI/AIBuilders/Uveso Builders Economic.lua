@@ -6,7 +6,7 @@ local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 local MABC = '/lua/editor/MarkerBuildConditions.lua'
 local MIBC = '/lua/editor/MiscBuildConditions.lua'
 
-local MaxCapEngineers = 0.10 -- 10% of all units can be Engineers (categories.MOBILE * categories.ENGINEER)
+local MaxCapEngineers = 0.15 -- 15% of all units can be Engineers (categories.MOBILE * categories.ENGINEER)
 
 local mapSizeX, mapSizeZ = GetMapSize()
 local BaseMilitaryZone = math.max( mapSizeX-50, mapSizeZ-50 ) / 2               -- Half the map
@@ -83,7 +83,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.80, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers, '<=', categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers / 3 , '<=', categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
         },
         BuilderType = 'Land',
     },
@@ -98,12 +98,10 @@ BuilderGroup {
             { UCBC, 'PoolLessAtLocation', { 'LocationType', 2, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
---            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
---            { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.10 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'ENGINEER TECH1' } },
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers, '<=', categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers / 3 , '<=', categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
         },
         BuilderType = 'Land',
     },
@@ -121,7 +119,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.05 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers, '<=', categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers / 3 , '<=', categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
         },
         BuilderType = 'Air',
     },
@@ -138,7 +136,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- Don't build it if...
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers, '<=', categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers / 3 , '<=', categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
         },
         BuilderType = 'Sea',
     },
@@ -156,7 +154,6 @@ BuilderGroup {
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             -- Don't build it if...
-            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BasePanicZone, 'LocationType', 1, categories.MOBILE * categories.LAND - categories.SCOUT - categories.ENGINEER}}, -- radius, LocationType, unitCount, categoryEnemy
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'ENGINEER TECH2' } },
             -- Respect UnitCap
         },
@@ -176,7 +173,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers, '<=', categories.MOBILE * categories.ENGINEER * categories.TECH2 } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers / 3 , '<=', categories.MOBILE * categories.ENGINEER * categories.TECH2 } },
         },
         BuilderType = 'All',
     },
@@ -194,7 +191,6 @@ BuilderGroup {
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             -- Don't build it if...
-            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BasePanicZone, 'LocationType', 1, categories.MOBILE * categories.LAND - categories.SCOUT - categories.ENGINEER}}, -- radius, LocationType, unitCount, categoryEnemy
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'ENGINEER TECH3' } },
             -- Respect UnitCap
         },
@@ -214,7 +210,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers, '<=', categories.MOBILE * categories.ENGINEER * categories.TECH3 } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers / 3 , '<=', categories.MOBILE * categories.ENGINEER * categories.TECH3 } },
         },
         BuilderType = 'All',
     },
@@ -256,8 +252,8 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.75, 0.75}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 30, categories.SUBCOMMANDER } },
             -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { 0.03 , '<=', categories.MOBILE * categories.SUBCOMMANDER } },
         },
         BuilderType = 'Gate',
     },
@@ -291,7 +287,7 @@ BuilderGroup {
         BuilderName = 'U2 Engi Trans to MainBase',
         PlatoonTemplate = 'U2EngineerTransfer',
         Priority = 18300,
-        InstanceCount = 2,
+        InstanceCount = 3,
         BuilderConditions = {
             { UCBC, 'GreaterThanGameTimeSeconds', { 60*20 } },
             { UCBC, 'BuildNotOnLocation', { 'LocationType', 'MAIN' } },
@@ -306,7 +302,7 @@ BuilderGroup {
         BuilderName = 'U3 Engi Trans to MainBase',
         PlatoonTemplate = 'U3EngineerTransfer',
         Priority = 18300,
-        InstanceCount = 1,
+        InstanceCount = 3,
         BuilderConditions = {
             { UCBC, 'GreaterThanGameTimeSeconds', { 60*20 } },
             { UCBC, 'BuildNotOnLocation', { 'LocationType', 'MAIN' } },

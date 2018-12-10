@@ -164,29 +164,24 @@ function EcoManager(aiBrain)
             elseif aiBrain:GetEconomyTrend('MASS') >= 0.0 and aiBrain:GetEconomyTrend('ENERGY') >= 0.0 then
                 -- if this unit is paused, continue with the next unit
                 if not unit:IsPaused() then continue end
-                if aiBrain:GetEconomyStoredRatio('MASS') >= 0.05 and aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.05 then
-                    if unit.UnitBeingAssist then
-                        elseif EntityCategoryContains(categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.EXPERIMENTAL, unit.UnitBeingAssist) then
-                            unit:SetPaused( false )
-                            break
-                        end
-                    end
                 if aiBrain:GetEconomyStoredRatio('MASS') >= 0.30 and aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.80 then
                     unit:SetPaused( false )
                     break
-                elseif aiBrain:GetEconomyStoredRatio('MASS') >= 0.05 and aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.60 then
-                    -- If we assist a paragon or energy structure unpause the unit
+                elseif aiBrain:GetEconomyStoredRatio('MASS') >= 0.15 and aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.15 then
                     if unit.UnitBeingAssist then
-                        if EntityCategoryContains(categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC, unit.UnitBeingAssist) then
-                            unit:SetPaused( false )
-                            break
-                        elseif EntityCategoryContains(categories.STRUCTURE * categories.ENERGYPRODUCTION, unit.UnitBeingAssist) then
+                        if EntityCategoryContains(categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.EXPERIMENTAL, unit.UnitBeingAssist) then
                             unit:SetPaused( false )
                             break
                         end
                     end
-                    continue
-                -- Low Eco, disable all engineers exept thosw who are assisting energy buildings
+                elseif aiBrain:GetEconomyStoredRatio('MASS') >= 0.05 and aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.05 then
+                    -- If we assist energy structure unpause the unit
+                    if unit.UnitBeingAssist then
+                        if EntityCategoryContains(categories.STRUCTURE * categories.ENERGYPRODUCTION, unit.UnitBeingAssist) then
+                            unit:SetPaused( false )
+                            break
+                        end
+                    end
                 end
             end
         end
@@ -219,7 +214,7 @@ function LocationRangeManagerThread(aiBrain)
         local BasePositions = BaseRanger(aiBrain)
         -- Check if we have units outside the range of any BaseManager
         -- Get all units from our ArmyPool. These are units without a special platoon or task. They have nothing to do.
-        ArmyUnits = aiBrain:GetListOfUnits(categories.MOBILE, false) -- also gets unbuilded units (planed to build)
+        ArmyUnits = aiBrain:GetListOfUnits(categories.MOBILE - categories.MOBILESONAR, false) -- also gets unbuilded units (planed to build)
         -- Loop over every unit that has no platton and is idle
         local LoopDelay = 0
         for _, unit in ArmyUnits do
@@ -295,23 +290,28 @@ function LocationRangeManagerThread(aiBrain)
                 WaitTicks(1)
             end
         end
+        if 1 == 2 then
         -- watching the unit Cap for AI balance.
-        unitcounterdelayer = unitcounterdelayer + 1
---        if unitcounterdelayer > 12 then
---            unitcounterdelayer = 0
---            local MaxCap = GetArmyUnitCap(aiBrain:GetArmyIndex())
---            LOG('  ')
---            LOG(' 10.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE * categories.ENGINEER, true) ) )..' -  Engineers   - ' )
---            LOG(' 45.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE - categories.ENGINEER, true) ) )..' -  Mobile Attack Force  - ' )
---            LOG(' 10.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE * categories.MASSEXTRACTION, true) ) )..' -  Extractors    - ' )
---            LOG(' 15.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE * categories.DEFENSE, true) ) )..' -  Structures Defense   - ' )
---            LOG(' 14.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY, true) ) )..' -  Structures all   - ' )
---            LOG(' 02.4 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE * categories.FACTORY * categories.LAND, true) ) )..' -  Factory Land  - ' )
---            LOG(' 02.4 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE * categories.FACTORY * categories.AIR, true) ) )..' -  Factory Air   - ' )
---            LOG(' 02.4 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE * categories.FACTORY * categories.NAVAL, true) ) )..' -  Factory Sea   - ' )
---            LOG('------|------')
---            LOG('100.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE + categories.MOBILE, true) ) )..' -  Structure + Mobile   - ' )
---        end
+            unitcounterdelayer = unitcounterdelayer + 1
+            if unitcounterdelayer > 12 then
+                unitcounterdelayer = 0
+                local MaxCap = GetArmyUnitCap(aiBrain:GetArmyIndex())
+                LOG('  ')
+                LOG(' 05.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE * categories.ENGINEER * categories.TECH1, true) ) )..' -  Engineers TECH1  - ' )
+                LOG(' 05.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE * categories.ENGINEER * categories.TECH2, true) ) )..' -  Engineers TECH2  - ' )
+                LOG(' 05.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE * categories.ENGINEER * categories.TECH3 - categories.SUBCOMMANDER, true) ) )..' -  Engineers TECH3  - ' )
+                LOG(' 03.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE * categories.SUBCOMMANDER, true) ) )..' -  SubCommander   - ' )
+                LOG(' 45.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE - categories.ENGINEER, true) ) )..' -  Mobile Attack Force  - ' )
+                LOG(' 10.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE * categories.MASSEXTRACTION, true) ) )..' -  Extractors    - ' )
+                LOG(' 12.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE * categories.DEFENSE, true) ) )..' -  Structures Defense   - ' )
+                LOG(' 12.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY, true) ) )..' -  Structures all   - ' )
+                LOG(' 02.4 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE * categories.FACTORY * categories.LAND, true) ) )..' -  Factory Land  - ' )
+                LOG(' 02.4 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE * categories.FACTORY * categories.AIR, true) ) )..' -  Factory Air   - ' )
+                LOG(' 02.4 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE * categories.FACTORY * categories.NAVAL, true) ) )..' -  Factory Sea   - ' )
+                LOG('------|------')
+                LOG('100.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE + categories.MOBILE, true) ) )..' -  Structure + Mobile   - ' )
+            end
+        end
         WaitTicks(50)
     end
 end
@@ -456,7 +456,7 @@ function BaseAlertManager(aiBrain)
         WaitTicks(1)
         -- Search for experimentals in BaseMilitaryZone
         if not ClosestTarget then
-            targets = aiBrain:GetUnitsAroundPoint((categories.EXPERIMENTAL + categories.TECH3) - categories.AIR, baseposition, BaseMilitaryZone, 'Enemy')
+            targets = aiBrain:GetUnitsAroundPoint(categories.EXPERIMENTAL - categories.AIR, baseposition, BaseMilitaryZone, 'Enemy')
             for _, unit in targets do
                 if not unit.Dead then
                     if not IsEnemy( aiBrain:GetArmyIndex(), unit:GetAIBrain():GetArmyIndex() ) then continue end
@@ -472,23 +472,7 @@ function BaseAlertManager(aiBrain)
         WaitTicks(1)
         -- Search for experimentals in EnemyZone
         if not ClosestTarget then
-            targets = aiBrain:GetUnitsAroundPoint((categories.EXPERIMENTAL + categories.TECH3) - categories.AIR, baseposition, 1024, 'Enemy')
-            for _, unit in targets do
-                if not unit.Dead then
-                    if not IsEnemy( aiBrain:GetArmyIndex(), unit:GetAIBrain():GetArmyIndex() ) then continue end
-                    local TargetPosition = unit:GetPosition()
-                    local targetRange = VDist2(baseposition[1], baseposition[3], TargetPosition[1], TargetPosition[3])
-                    if targetRange < distance then
-                        distance = targetRange
-                        ClosestTarget = unit
-                    end
-                end
-            end
-        end
-        WaitTicks(1)
-        -- Search for TECH3 in BaseMilitaryZone
-        if not ClosestTarget then
-            targets = aiBrain:GetUnitsAroundPoint(categories.TECH3 - categories.AIR, baseposition, BaseMilitaryZone, 'Enemy')
+            targets = aiBrain:GetUnitsAroundPoint(categories.EXPERIMENTAL - categories.AIR, baseposition, 1024, 'Enemy')
             for _, unit in targets do
                 if not unit.Dead then
                     if not IsEnemy( aiBrain:GetArmyIndex(), unit:GetAIBrain():GetArmyIndex() ) then continue end

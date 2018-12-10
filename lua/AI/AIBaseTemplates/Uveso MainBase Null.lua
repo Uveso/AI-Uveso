@@ -27,7 +27,7 @@ BaseBuilderTemplate {
 
         'Air Transport Builder Uveso',
 
-        'Strategic Missile Launcher NukeAI Uveso',
+--        'Strategic Missile Launcher NukeAI Uveso',
         'RepairLowShields',
 
 

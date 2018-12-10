@@ -35,5 +35,12 @@ PlatoonTemplate {
         { categories.MOBILE * categories.NAVAL - categories.MOBILESONAR, 10, 10, 'Attack', 'none' }
     }
 }
+PlatoonTemplate {
+    Name = 'U4-ExperimentalSea 1 1',
+    Plan = 'AttackPrioritizedSeaTargetsAIUveso',
+    GlobalSquads = {
+        { categories.EXPERIMENTAL * categories.NAVAL * categories.MOBILE, 1, 1, 'attack', 'none' }
+    },
+}
 
 

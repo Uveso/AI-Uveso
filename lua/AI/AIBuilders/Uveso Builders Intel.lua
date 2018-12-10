@@ -2,6 +2,8 @@ local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 local IBC = '/lua/editor/InstantBuildConditions.lua'
 local EBC = '/lua/editor/EconomyBuildConditions.lua'
 
+local MaxCapStructure = 0.12                                                    -- 12% of all units can be structures (STRUCTURE -MASSEXTRACTION -DEFENSE -FACTORY)
+
 -- ===================================================-======================================================== --
 -- ==                                        Radar T1 T3 builder                                             == --
 -- ===================================================-======================================================== --
@@ -116,6 +118,23 @@ BuilderGroup {
         },
         BuilderType = 'Any',
     },
+    Builder {
+        BuilderName = 'U2 Radar Upgrade',
+        PlatoonTemplate = 'T2RadarUpgrade',
+        Priority = 1000,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 2, 'ENERGYPRODUCTION TECH3' } },
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.OMNI * categories.STRUCTURE }},
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            -- Don't build it if...
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingUpgrade', { 1, categories.RADAR * categories.TECH2 }},
+            -- Respect UnitCap
+        },
+        BuilderType = 'Any',
+    },
 }
 -- =============================================-==================================================== --
 -- ==                                    Special Optics                                            == --
@@ -133,6 +152,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconIncome', { 12, 1500}},
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.95, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<=', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -161,6 +181,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconIncome', { 12, 1500}},
             { EBC, 'GreaterThanEconStorageRatio', { 0.95, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<=', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
         },
         BuilderType = 'Any',
         BuilderData = {

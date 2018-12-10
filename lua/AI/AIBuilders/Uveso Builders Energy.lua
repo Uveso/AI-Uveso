@@ -6,7 +6,7 @@ local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 local MABC = '/lua/editor/MarkerBuildConditions.lua'
 local MIBC = '/lua/editor/MiscBuildConditions.lua'
 
-local MaxCapStructure = 0.14 -- 14% of all units can be structures (STRUCTURE -MASSEXTRACTION -DEFENSE -FACTORY)
+local MaxCapStructure = 0.12                                                    -- 12% of all units can be structures (STRUCTURE -MASSEXTRACTION -DEFENSE -FACTORY)
 
 -- ===================================================-======================================================== --
 -- ==                                       Build Power TECH 1,2,3                                           == --
@@ -158,6 +158,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}}, -- Absolut Base income
             -- Don't build it if...
             -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<=', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -191,6 +192,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.99, 0.00 } },
             -- Don't build it if...
             -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<=', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -424,6 +426,7 @@ BuilderGroup {
             { UCBC, 'CheckBuildPlattonDelay', { 'Energy' }},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 4, categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3}},
             -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<=', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -460,6 +463,7 @@ BuilderGroup {
             { UCBC, 'CheckBuildPlattonDelay', { 'Energy' }},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 4, categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3}},
             -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<=', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -520,6 +524,8 @@ BuilderGroup {
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveLessThanUnitsWithCategory', { 20, categories.STRUCTURE * categories.ENERGYSTORAGE }},
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<=', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
         },
         BuilderType = 'Any',
         BuilderData = {

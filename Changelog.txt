@@ -1,4 +1,16 @@
 *************************************************************************************************************************************
+v47 (10.Dec.2018)
+
+- New: Added attack platoons for naval experimentals
+- New: AI can now handle a unitcap down to 250 units.
+- Fix: Tech3 sonar buildings will lo longer move away from their buildlocation
+- Fix: Changed logic for buildconditions and mass storage ratio in case a paragon is present.
+- Fix: some minor fixes in case a unit is destroyed inside nukeAI function
+- Opt: Splitted factorybuilder in land+air and naval. Saves sim speed and navalbases no longer build land or air factories. 
+- Opt: Ecomanager will now also pause engineers that are building a paragon
+- Opt: New cache for the scanresult of "is water map or not" for every AI versus every AI
+
+*************************************************************************************************************************************
 v46 (01.Dec.2018)
 
 - Fix: Blocked T2SonarUpgrade template for seraphim (Seraphim sonar tech3 can't upgrade)

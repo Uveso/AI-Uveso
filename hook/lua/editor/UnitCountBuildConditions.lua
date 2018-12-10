@@ -131,7 +131,7 @@ function HaveUnitRatioVersusCap(aiBrain, ratio, compareType, categoryOwn, DEBUG)
     local numOwnUnits = aiBrain:GetCurrentUnits(testCatOwn)
     local cap = GetArmyUnitCap(aiBrain:GetArmyIndex())
     if DEBUG then
-        LOG(aiBrain:GetArmyIndex()..' CompareBody {World} ( '..numOwnUnits..' '..compareType..' '..cap..' ) -- ['..ratio..'] -- '..repr(DEBUG)..' '..compareType..' '..cap..' return '..repr(CompareBody(numOwnUnits / cap, ratio, compareType)))
+        LOG(aiBrain:GetArmyIndex()..' CompareBody {World} ( '..numOwnUnits..' '..compareType..' '..cap..' ) -- ['..ratio..'] -- '..repr(DEBUG)..' :: '..(numOwnUnits / cap)..' '..compareType..' '..cap..' return '..repr(CompareBody(numOwnUnits / cap, ratio, compareType)))
     end
     return CompareBody(numOwnUnits / cap, ratio, compareType)
 end

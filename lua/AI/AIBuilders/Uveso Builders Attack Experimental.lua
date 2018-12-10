@@ -78,37 +78,6 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'U4 SeaExperimental1',
-        PlatoonTemplate = 'T3EngineerBuilderNoSUB',
-        Priority = 150,
-        InstanceCount = 3,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, 'ENGINEER TECH3' }},
-            { SBC, 'IsWaterMap', { true } },
-            { UCBC, 'CanBuildCategory', { categories.MOBILE * categories.NAVAL * categories.EXPERIMENTAL } },
-            -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 1.00, 1.00 }}, -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
-            { UCBC, 'UnitCapCheckLess', { 0.99 } },
-        },
-        BuilderType = 'Any',
-        BuilderData = {
-            Construction = {
-                DesiresAssist = true,
-                NumAssistees = 10,
-                BuildClose = true,
-                AdjacencyCategory = 'SHIELD STRUCTURE',
-                BuildStructures = {
-                    'T4SeaExperimental1',
-                },
-                Location = 'LocationType',
-            }
-        }
-    },
-    Builder {
         BuilderName = 'U4 LandExperimental2',
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 150,
@@ -146,6 +115,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
             -- Do we need additional conditions to build it ?
+            { SBC, 'IsWaterMap', { false } },
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, 'ENGINEER TECH3' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 1.00, 1.00 }}, -- Ratio from 0 to 1. (1=100%)
@@ -177,10 +147,12 @@ BuilderGroup {
             { EBC, 'GreaterThanEconIncome', { 7.0, 1000.0 }},
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.95 } }, -- Ratio from 0 to 1. (1=100%)
             -- Do we need additional conditions to build it ?
+            { SBC, 'IsWaterMap', { false } },
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.MOBILE * categories.EXPERIMENTAL }},
+            { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -212,7 +184,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.MOBILE * categories.EXPERIMENTAL }},
-            { UCBC, 'UnitCapCheckLess', { 0.98 } },
+            { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Any',
         BuilderData = {

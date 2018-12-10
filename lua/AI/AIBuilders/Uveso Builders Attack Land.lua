@@ -15,198 +15,6 @@ LOG('* Uveso-AI: BasePanicZone= '..math.floor( BasePanicZone * 0.01953125 ) ..' 
 LOG('* Uveso-AI: BaseMilitaryZone= '..math.floor( BaseMilitaryZone * 0.01953125 )..' Km - ('..BaseMilitaryZone..' units)' )
 
 -- ===================================================-======================================================== --
--- ==                                        Build T1 T2 T3 Land                                             == --
--- ===================================================-======================================================== --
--- ============= --
---    AI-RUSH    --
--- ============= --
-BuilderGroup {
-    BuilderGroupName = 'LandAttackBuildersRush Uveso',                           -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
-    BuildersType = 'FactoryBuilder',
-    -- ============ --
-    --    TECH 1    --
-    -- ============ --
-    Builder {
-        BuilderName = 'U1R Arty',
-        PlatoonTemplate = 'T1LandArtillery',
-        Priority = 150,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            -- Do we need additional conditions to build it ?
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
-            -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
-            -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
-        },
-        BuilderType = 'Land',
-    },
-    -- ============ --
-    --    TECH 2    --
-    -- ============ --
-    Builder {
-        BuilderName = 'U2R Arty',
-        PlatoonTemplate = 'T2LandArtillery',
-        Priority = 280,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            -- Do we need additional conditions to build it ?
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
-            -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
-            -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
-            { UCBC, 'UnitCapCheckLess', { 0.96 } },
-        },
-        BuilderType = 'Land',
-    },
-
-    -- ============ --
-    --    TECH 3    --
-    -- ============ --
-    Builder {
-        BuilderName = 'U3R Arty',
-        PlatoonTemplate = 'T3LandArtillery',
-        Priority = 480,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            -- Do we need additional conditions to build it ?
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
-            -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
-            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'MOBILE LAND INDIRECTFIRE TECH1' } },
-            -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
-            { UCBC, 'UnitCapCheckLess', { 0.97 } },
-        },
-        BuilderType = 'Land',
-    },
-}
--- ================= --
---    AI-ADAPTIVE    --
--- ================= --
-BuilderGroup {
-    BuilderGroupName = 'LandAttackBuilders Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
-    BuildersType = 'FactoryBuilder',
-    Builder {
-        BuilderName = 'U1 Land Scout Always',
-        PlatoonTemplate = 'T1LandScout',
-        Priority = 1000,
-        DelayEqualBuildPlattons = {'Scouts', 10},
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 3, categories.MOBILE * categories.ENGINEER}},
-            -- Do we need additional conditions to build it ?
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
-            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, categories.SCOUT * categories.LAND } },
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-            { UCBC, 'CheckBuildPlattonDelay', { 'Scouts' }},
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.LAND * categories.SCOUT }},
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.AIR * categories.SCOUT }},
-            -- Respect UnitCap
-        },
-        BuilderType = 'Land',
-    },
-    -- =========================== --
-    --    TECH 1   MilitaryZone    --
-    -- =========================== --
-    Builder {
-        BuilderName = 'U1A MilitaryZone Arty',
-        PlatoonTemplate = 'T1LandArtillery',
-        Priority = 150,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 1, categories.MOBILE * categories.LAND - categories.ENGINEER - categories.SCOUT}}, -- radius, LocationType, unitCount, categoryEnemy
-            -- Do we need additional conditions to build it ?
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
-            -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.LAND * categories.TECH3 - categories.ENGINEER }},
-            -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
-        },
-        BuilderType = 'Land',
-    },
-    -- ======================== --
-    --    TECH 1   EnemyZone    --
-    -- ======================== --
-    Builder {
-        BuilderName = 'U1A EnemyZone Arty',
-        PlatoonTemplate = 'T1LandArtillery',
-        Priority = 150,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            -- Do we need additional conditions to build it ?
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
-            -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.LAND * categories.TECH3 - categories.ENGINEER }},
-            -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
-        },
-        BuilderType = 'Land',
-    },
-    -- ============ --
-    --    TECH 2    --
-    -- ============ --
-    Builder {
-        BuilderName = 'U2A Artillery',
-        PlatoonTemplate = 'T2LandArtillery',
-        Priority = 250,
-        BuilderType = 'Land',
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.ENERGYPRODUCTION * categories.TECH3 }},
-            -- Do we need additional conditions to build it ?
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
-            -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL - categories.ENGINEER }},
-            -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
-            { UCBC, 'UnitCapCheckLess', { 0.96 } },
-        },
-    },
-
-    -- ============ --
-    --    TECH 3    --
-    -- ============ --
-    Builder {
-        BuilderName = 'U3A Mobile Artillery',
-        PlatoonTemplate = 'T3LandArtillery',
-        Priority = 350,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            -- Do we need additional conditions to build it ?
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
-            -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 2.0, 30.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
-            -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
-            { UCBC, 'UnitCapCheckLess', { 0.97 } },
-        },
-        BuilderType = 'Land',
-    },
-}
--- ===================================================-======================================================== --
 --                                           LAND Scouts Builder                                                --
 -- ===================================================-======================================================== --
 BuilderGroup {
@@ -234,6 +42,178 @@ BuilderGroup {
     },
 }
 -- ===================================================-======================================================== --
+-- ==                                        Build T1 T2 T3 Land                                             == --
+-- ===================================================-======================================================== --
+-- ============= --
+--    AI-RUSH    --
+-- ============= --
+BuilderGroup {
+    BuilderGroupName = 'LandAttackBuildersRush Uveso',                           -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuildersType = 'FactoryBuilder',
+    -- ============ --
+    --    TECH 1    --
+    -- ============ --
+    Builder {
+        BuilderName = 'U1R Arty',
+        PlatoonTemplate = 'T1LandArtillery',
+        Priority = 150,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            -- Do we need additional conditions to build it ?
+            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            -- Don't build it if...
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
+            { UCBC, 'UnitCapCheckLess', { 0.97 } },
+        },
+        BuilderType = 'Land',
+    },
+    -- ============ --
+    --    TECH 2    --
+    -- ============ --
+    Builder {
+        BuilderName = 'U2R Arty',
+        PlatoonTemplate = 'T2LandArtillery',
+        Priority = 280,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            -- Do we need additional conditions to build it ?
+            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
+            -- Don't build it if...
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
+            { UCBC, 'UnitCapCheckLess', { 0.98 } },
+        },
+        BuilderType = 'Land',
+    },
+
+    -- ============ --
+    --    TECH 3    --
+    -- ============ --
+    Builder {
+        BuilderName = 'U3R Arty',
+        PlatoonTemplate = 'T3LandArtillery',
+        Priority = 480,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            -- Do we need additional conditions to build it ?
+            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
+            -- Don't build it if...
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'MOBILE LAND INDIRECTFIRE TECH1' } },
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
+            { UCBC, 'UnitCapCheckLess', { 0.99 } },
+        },
+        BuilderType = 'Land',
+    },
+}
+-- ================= --
+--    AI-ADAPTIVE    --
+-- ================= --
+BuilderGroup {
+    BuilderGroupName = 'LandAttackBuilders Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuildersType = 'FactoryBuilder',
+    -- =========================== --
+    --    TECH 1   MilitaryZone    --
+    -- =========================== --
+    Builder {
+        BuilderName = 'U1A MilitaryZone Arty',
+        PlatoonTemplate = 'T1LandArtillery',
+        Priority = 150,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 1, categories.MOBILE * categories.LAND - categories.ENGINEER - categories.SCOUT}}, -- radius, LocationType, unitCount, categoryEnemy
+            -- Do we need additional conditions to build it ?
+            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            -- Don't build it if...
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.LAND * categories.TECH3 - categories.ENGINEER }},
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
+            { UCBC, 'UnitCapCheckLess', { 0.97 } },
+        },
+        BuilderType = 'Land',
+    },
+    -- ======================== --
+    --    TECH 1   EnemyZone    --
+    -- ======================== --
+    Builder {
+        BuilderName = 'U1A EnemyZone Arty',
+        PlatoonTemplate = 'T1LandArtillery',
+        Priority = 150,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            -- Do we need additional conditions to build it ?
+            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            -- Don't build it if...
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.LAND * categories.TECH3 - categories.ENGINEER }},
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
+            { UCBC, 'UnitCapCheckLess', { 0.97 } },
+        },
+        BuilderType = 'Land',
+    },
+    -- ============ --
+    --    TECH 2    --
+    -- ============ --
+    Builder {
+        BuilderName = 'U2A Artillery',
+        PlatoonTemplate = 'T2LandArtillery',
+        Priority = 250,
+        BuilderType = 'Land',
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.ENERGYPRODUCTION * categories.TECH3 }},
+            -- Do we need additional conditions to build it ?
+            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
+            -- Don't build it if...
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL - categories.ENGINEER }},
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
+            { UCBC, 'UnitCapCheckLess', { 0.98 } },
+        },
+    },
+
+    -- ============ --
+    --    TECH 3    --
+    -- ============ --
+    Builder {
+        BuilderName = 'U3A Mobile Artillery',
+        PlatoonTemplate = 'T3LandArtillery',
+        Priority = 350,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            -- Do we need additional conditions to build it ?
+            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 2.0, 30.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
+            -- Don't build it if...
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
+            { UCBC, 'UnitCapCheckLess', { 0.99 } },
+        },
+        BuilderType = 'Land',
+    },
+}
+-- ===================================================-======================================================== --
 -- ==                                         Land panic builder                                             == --
 -- ===================================================-======================================================== --
 BuilderGroup {
@@ -256,7 +236,7 @@ BuilderGroup {
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 20, categories.LAND * (categories.DIRECTFIRE + categories.INDIRECTFIRE) }},
             -- Respect UnitCap
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
+            { UCBC, 'UnitCapCheckLess', { 0.97 } },
         },
         BuilderType = 'Land',
     },
@@ -295,7 +275,7 @@ BuilderGroup {
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 20, categories.LAND * (categories.DIRECTFIRE + categories.INDIRECTFIRE) }},
             -- Respect UnitCap
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
+            { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
         BuilderType = 'Land',
     },
@@ -313,7 +293,7 @@ BuilderGroup {
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 20, categories.ANTIAIR }},
             -- Respect UnitCap
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
+            { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
         BuilderType = 'Land',
     },
@@ -334,7 +314,7 @@ BuilderGroup {
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 20, categories.LAND * (categories.DIRECTFIRE + categories.INDIRECTFIRE) }},
             -- Respect UnitCap
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
+            { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Land',
     },
@@ -352,11 +332,12 @@ BuilderGroup {
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 20, categories.ANTIAIR }},
             -- Respect UnitCap
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
+            { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Land',
     },
-}BuilderGroup {
+}
+BuilderGroup {
     BuilderGroupName = 'LandAttackBuildersPanicEXP Uveso',                         -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'FactoryBuilder',
     -- ================================== --
@@ -375,7 +356,7 @@ BuilderGroup {
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 10, categories.LAND * (categories.DIRECTFIRE + categories.INDIRECTFIRE) }},
             -- Respect UnitCap
-            { UCBC, 'UnitCapCheckLess', { 0.94 } },
+            { UCBC, 'UnitCapCheckLess', { 0.97 } },
         },
         BuilderType = 'Land',
     },
@@ -392,7 +373,7 @@ BuilderGroup {
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 10, categories.ANTIAIR }},
             -- Respect UnitCap
-            { UCBC, 'UnitCapCheckLess', { 0.94 } },
+            { UCBC, 'UnitCapCheckLess', { 0.97 } },
         },
         BuilderType = 'Land',
     },
@@ -421,7 +402,7 @@ BuilderGroup {
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
+            { UCBC, 'UnitCapCheckLess', { 0.97 } },
         },
         BuilderType = 'Land',
     },
@@ -441,7 +422,7 @@ BuilderGroup {
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
+            { UCBC, 'UnitCapCheckLess', { 0.97 } },
         },
         BuilderType = 'Land',
     },
@@ -460,7 +441,7 @@ BuilderGroup {
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
+            { UCBC, 'UnitCapCheckLess', { 0.97 } },
         },
         BuilderType = 'Land',
     },
@@ -483,7 +464,7 @@ BuilderGroup {
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
-            { UCBC, 'UnitCapCheckLess', { 0.96 } },
+            { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
     },
     Builder {
@@ -502,7 +483,7 @@ BuilderGroup {
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
-            { UCBC, 'UnitCapCheckLess', { 0.93 } },
+            { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
     },
     Builder {
@@ -521,7 +502,7 @@ BuilderGroup {
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
-            { UCBC, 'UnitCapCheckLess', { 0.93 } },
+            { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
     },
     Builder {
@@ -539,7 +520,7 @@ BuilderGroup {
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
-            { UCBC, 'UnitCapCheckLess', { 0.93 } },
+            { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
         BuilderType = 'Land',
     },
@@ -560,7 +541,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
-            { UCBC, 'UnitCapCheckLess', { 0.97 } },
+            { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Land',
     },
@@ -578,7 +559,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
-            { UCBC, 'UnitCapCheckLess', { 0.97 } },
+            { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Land',
     },
@@ -596,7 +577,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
-            { UCBC, 'UnitCapCheckLess', { 0.97 } },
+            { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Land',
     },
@@ -614,7 +595,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
-            { UCBC, 'UnitCapCheckLess', { 0.97 } },
+            { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Land',
     },
@@ -632,7 +613,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
-            { UCBC, 'UnitCapCheckLess', { 0.97 } },
+            { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Land',
     },

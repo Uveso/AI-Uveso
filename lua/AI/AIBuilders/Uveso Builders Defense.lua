@@ -3,7 +3,7 @@ local IBC = '/lua/editor/InstantBuildConditions.lua'
 local EBC = '/lua/editor/EconomyBuildConditions.lua'
 local MIBC = '/lua/editor/MiscBuildConditions.lua'
 
-local MaxDefense = 0.15 -- 15% of all units can be defenses (categories.STRUCTURE * categories.DEFENSE)
+local MaxDefense = 0.12 -- 12% of all units can be defenses (categories.STRUCTURE * categories.DEFENSE)
 
 -- ===================================================-======================================================== --
 -- ==                                       Build T2 & T3 Shields                                            == --
@@ -566,6 +566,7 @@ BuilderGroup {
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 6, 'ARTILLERY TECH2 STRUCTURE' }},
             { EBC, 'GreaterThanEconStorageRatio', { 0.80, 1.00 }}, -- Ratio from 0 to 1. (1=100%)
             { UCBC, 'UnitCapCheckLess', { .8 } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<=', categories.STRUCTURE * categories.DEFENSE } },
         },
         BuilderData = {
             NumAssistees = 2,
@@ -593,6 +594,7 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 2, categories.STRUCTURE * categories.ARTILLERY * categories.TECH3 } },
             { UCBC, 'CheckBuildPlattonDelay', { 'Artillery' }},
             -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<=', categories.STRUCTURE * categories.DEFENSE } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -621,6 +623,7 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 2, categories.STRUCTURE * categories.ARTILLERY * categories.TECH3 } },
             { UCBC, 'CheckBuildPlattonDelay', { 'Artillery' }},
             -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<=', categories.STRUCTURE * categories.DEFENSE } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -649,6 +652,7 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 2, categories.STRUCTURE * categories.ARTILLERY * categories.EXPERIMENTAL } },
             { UCBC, 'CheckBuildPlattonDelay', { 'Artillery' }},
             -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<=', categories.STRUCTURE * categories.DEFENSE } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -673,6 +677,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             -- Don't build it if...
             -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<=', categories.STRUCTURE * categories.DEFENSE } },
         },
         BuilderType = 'Any',
         BuilderData = {

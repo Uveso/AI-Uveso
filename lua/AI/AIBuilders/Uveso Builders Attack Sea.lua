@@ -31,8 +31,7 @@ BuilderGroup {
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 30,  categories.MOBILE * categories.NAVAL } },
             -- Have we the eco to build it ?
             -- Don't build it if...
-            { UCBC, 'HasNotParagon', {} },
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
+            { UCBC, 'UnitCapCheckLess', { 0.97 } },
         },
         BuilderType = 'Sea',
     },
@@ -47,8 +46,7 @@ BuilderGroup {
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 30,  categories.MOBILE * categories.NAVAL } },
             -- Have we the eco to build it ?
             -- Don't build it if...
-            { UCBC, 'HasNotParagon', {} },
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
+            { UCBC, 'UnitCapCheckLess', { 0.97 } },
         },
         BuilderType = 'Sea',
     },
@@ -68,9 +66,8 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HasNotParagon', {} },
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
-            { UCBC, 'UnitCapCheckLess', { 0.92 } },
+            { UCBC, 'UnitCapCheckLess', { 0.97 } },
         },
         BuilderType = 'Sea',
     },
@@ -90,9 +87,9 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.30, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HasNotParagon', {} },
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'MOBILE NAVAL TECH2' } },
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
+            { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
         BuilderType = 'Sea',
     },
@@ -109,9 +106,9 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.30, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HasNotParagon', {} },
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'MOBILE NAVAL TECH2' } },
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
+            { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
         BuilderType = 'Sea',
     },
@@ -128,9 +125,9 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.30, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HasNotParagon', {} },
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'MOBILE NAVAL TECH2' } },
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
+            { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
         BuilderType = 'Sea',
     },
@@ -147,9 +144,9 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.30, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HasNotParagon', {} },
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'MOBILE NAVAL TECH2' } },
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
+            { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
         BuilderType = 'Sea',
     },
@@ -166,9 +163,9 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.30, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HasNotParagon', {} },
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'MOBILE NAVAL TECH2' } },
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
+            { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
         BuilderType = 'Sea',
     },
@@ -187,8 +184,9 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 2.0, 30.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'MOBILE NAVAL TECH3' } },
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
+            { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Sea',
     },
@@ -204,8 +202,9 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 2.0, 30.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'MOBILE NAVAL TECH3' } },
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
+            { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Sea',
     },
@@ -221,8 +220,9 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 2.0, 30.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'MOBILE NAVAL TECH3' } },
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
+            { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Sea',
     },
@@ -238,8 +238,9 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 2.0, 30.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'MOBILE NAVAL TECH3' } },
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
+            { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Sea',
     },
@@ -255,8 +256,9 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 2.0, 30.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'MOBILE NAVAL TECH3' } },
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
+            { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Sea',
     },
@@ -282,7 +284,7 @@ BuilderGroup {
             -- Don't build it if...
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
-            { UCBC, 'UnitCapCheckLess', { 0.92 } },
+            { UCBC, 'UnitCapCheckLess', { 0.97 } },
         },
         BuilderType = 'Sea',
     },
@@ -357,8 +359,6 @@ BuilderGroup {
         BuilderType = 'Any',
     },
 }
---torpedo
---antiair
 -- ===================================================-======================================================== --
 -- ==                                      NAVAL T1 T2 T3 Formbuilder                                        == --
 -- ===================================================-======================================================== --
@@ -372,11 +372,11 @@ BuilderGroup {
         BuilderName = 'U123 PANIC AntiSea',
         PlatoonTemplate = 'U123 Panic AntiSea 1 500',
         Priority = 90,                                        -- Priority. 1000 is normal.
-        InstanceCount = 3,                                      -- Number of plattons that will be formed.
+        InstanceCount = 5,                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BasePanicZone,                       -- Searchradius for new target.
-            AggressiveMove = true,                              -- If true, the unit will attack everything while moving to the target.
-            AttackEnemyStrength = 10000,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            AggressiveMove = false,                              -- If true, the unit will attack everything while moving to the target.
+            AttackEnemyStrength = 100000,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = (categories.MOBILE + categories.STRUCTURE) * categories.NAVAL, -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'STRUCTURE NAVAL DEFENSE',
@@ -417,7 +417,7 @@ BuilderGroup {
         BuilderConditions = {                                   -- platoon will be formed if all conditions are true
             -- When do we want to build this ?
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 0, (categories.MOBILE + categories.STRUCTURE) * categories.NAVAL }}, -- radius, LocationType, unitCount, categoryEnemy
-            { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 10, categories.MOBILE * categories.NAVAL } },
+            { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 6, categories.MOBILE * categories.NAVAL } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             -- Don't build it if...
@@ -431,7 +431,7 @@ BuilderGroup {
         BuilderName = 'U123 Kill early',
         PlatoonTemplate = 'U123 Enemy Dual 2 2',
         Priority = 10000,
-        InstanceCount = 100,
+        InstanceCount = 1,
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
             AggressiveMove = true,                              -- If true, the unit will attack everything while moving to the target.
@@ -456,7 +456,7 @@ BuilderGroup {
         BuilderName = 'U123 Enemy AntiStructure',
         PlatoonTemplate = 'U123 Enemy AntiSea 10 10',
         Priority = 60,
-        InstanceCount = 1,
+        InstanceCount = 2,
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
             AggressiveMove = false,                              -- If true, the unit will attack everything while moving to the target.
@@ -481,7 +481,7 @@ BuilderGroup {
         BuilderName = 'U123 Enemy AntiMobile',
         PlatoonTemplate = 'U123 Enemy AntiSea 10 10',
         Priority = 50,
-        InstanceCount = 5,
+        InstanceCount = 2,
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
             AggressiveMove = false,                              -- If true, the unit will attack everything while moving to the target.
@@ -531,30 +531,28 @@ BuilderGroup {
         },
         BuilderType = 'Any',
     },
-    -- ================= --
-    --    Finish him!    --
-    -- ================= --
+    -- ==================== --
+    --    Kill Them All!    --
+    -- ==================== --
     Builder {
-        BuilderName = 'U123 Kill Them All!!!',
+        BuilderName = 'U123 Anti NavalFactories',
         PlatoonTemplate = 'U123 Enemy AntiSea 10 10',
         Priority = 1,
         InstanceCount = 1,
         BuilderData = {
             SearchRadius = 10000,                               -- Searchradius for new target.
-            AggressiveMove = true,                              -- If true, the unit will attack everything while moving to the target.
-            AttackEnemyStrength = 10000,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            TargetSearchCategory = categories.MOBILE + categories.STRUCTURE, -- Only find targets matching these categories.
+            AggressiveMove = false,                              -- If true, the unit will attack everything while moving to the target.
+            AttackEnemyStrength = 1000000,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            TargetSearchCategory = categories.STRUCTURE * categories.FACTORY * categories.NAVAL, -- Only find targets matching these categories.
             PrioritizedCategories = {
-                'STRUCTURE',
-                'MOBILE',
                 'ALLUNITS',
             },
         },
         BuilderConditions = {                                   -- platoon will be formed if all conditions are true
             -- When do we want to build this ?
-            { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 20, categories.MOBILE * categories.NAVAL } },
+            { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 10, categories.MOBILE * categories.NAVAL } },
             -- Do we need additional conditions to build it ?
-            { UCBC, 'UnitsGreaterAtEnemy', { 1 , 'MOBILE, STRUCTURE' } },
+            { UCBC, 'UnitsGreaterAtEnemy', { 1 , 'STRUCTURE FACTORY NAVAL' } },
             -- Have we the eco to build it ?
             -- Don't build it if...
         },

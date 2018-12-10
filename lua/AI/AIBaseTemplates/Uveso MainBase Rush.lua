@@ -55,7 +55,7 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== Factory ==== --
         -----------------------------------------------------------------------------
-        -- Build Land/Air/Naval Factories
+        -- Build Land/Air Factories
         'FactoryBuildersRush Uveso',
         'GateConstruction Uveso',
         -- Upgrade Factories TECH1->TECH2 and TECH2->TECH3
