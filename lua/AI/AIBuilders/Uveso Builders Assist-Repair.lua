@@ -499,8 +499,13 @@ BuilderGroup {
         Priority = 18000,
         InstanceCount = 1,
         BuilderConditions = {
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 4, categories.MOBILE * categories.ENGINEER}},
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 6, categories.MOBILE * categories.ENGINEER}},
+            -- Do we need additional conditions to build it ?
             { EBC, 'LessThanEconStorageRatio', { 0.80, 2.00}}, -- Ratio from 0 to 1. (1=100%)
+            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
+            -- Have we the eco to build it ?
+            -- Don't build it if...
         },
         BuilderData = {
             LocationType = 'LocationType',
@@ -513,8 +518,13 @@ BuilderGroup {
         Priority = 17400,
         InstanceCount = 2,
         BuilderConditions = {
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 6, categories.MOBILE * categories.ENGINEER}},
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 12, categories.MOBILE * categories.ENGINEER}},
+            -- Do we need additional conditions to build it ?
             { EBC, 'LessThanEconStorageRatio', { 0.80, 2.00}}, -- Ratio from 0 to 1. (1=100%)
+            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
+            -- Have we the eco to build it ?
+            -- Don't build it if...
         },
         BuilderData = {
             LocationType = 'LocationType',
@@ -522,13 +532,18 @@ BuilderGroup {
         BuilderType = 'Any',
     },
     Builder {
-        BuilderName = 'U1 Reclaim Resource 4',
+        BuilderName = 'U1 Reclaim Resource 3',
         PlatoonTemplate = 'U1Reclaim',
         Priority = 17400,
-        InstanceCount = 4,
+        InstanceCount = 3,
         BuilderConditions = {
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 8, categories.MOBILE * categories.ENGINEER}},
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 18, categories.MOBILE * categories.ENGINEER}},
+            -- Do we need additional conditions to build it ?
             { EBC, 'LessThanEconStorageRatio', { 0.80, 2.00}}, -- Ratio from 0 to 1. (1=100%)
+            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
+            -- Have we the eco to build it ?
+            -- Don't build it if...
         },
         BuilderData = {
             LocationType = 'LocationType',

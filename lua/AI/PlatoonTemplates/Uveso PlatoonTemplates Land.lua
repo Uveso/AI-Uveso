@@ -3,7 +3,7 @@
 
 PlatoonTemplate {
     Name = 'CDR Attack',
-    Plan = 'AttackPrioritizedLandTargetsAIUveso',
+    Plan = 'CommanderAIUveso',
     GlobalSquads = {
         { categories.COMMAND, 1, 1, 'Attack', 'none' }
     }
@@ -13,6 +13,20 @@ PlatoonTemplate {
     Plan = 'AttackPrioritizedLandTargetsAIUveso',
     GlobalSquads = {
         { categories.MOBILE * categories.LAND - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND, 1, 1, 'Attack', 'none' }
+    }
+}
+PlatoonTemplate {
+    Name = 'LandAttackHuntUveso Arty 1 100',
+    Plan = 'AttackPrioritizedLandTargetsAIUveso',
+    GlobalSquads = {
+        { categories.MOBILE * categories.LAND * categories.INDIRECTFIRE - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND, 1, 100, 'Attack', 'none' }
+    }
+}
+PlatoonTemplate {
+    Name = 'LandAttackHuntUveso Tank 1 100',
+    Plan = 'AttackPrioritizedLandTargetsAIUveso',
+    GlobalSquads = {
+        { categories.MOBILE * categories.LAND * categories.DIRECTFIRE - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND, 1, 100, 'Attack', 'none' }
     }
 }
 PlatoonTemplate {
@@ -48,6 +62,13 @@ PlatoonTemplate {
     Plan = 'AttackPrioritizedLandTargetsAIUveso',
     GlobalSquads = {
         { categories.MOBILE * categories.LAND - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND, 10, 10, 'Attack', 'none' },
+    }
+}
+PlatoonTemplate {
+    Name = 'LandAttackHuntUveso 10 100',
+    Plan = 'AttackPrioritizedLandTargetsAIUveso',
+    GlobalSquads = {
+        { categories.MOBILE * categories.LAND - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND, 10, 100, 'Attack', 'none' },
     }
 }
 PlatoonTemplate {

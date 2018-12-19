@@ -210,6 +210,14 @@ function LocationRangeManagerThread(aiBrain)
                 end
             end
         end
+        -- Check engineers
+        EngineerUnits = aiBrain:GetListOfUnits(categories.MOBILE * categories.ENGINEER * categories.TECH1 , false) -- also gets unbuilded units (planed to build)
+        for k, engineer in EngineerUnits do
+            if engineer.LastActive and GetGameTimeSeconds() - engineer.LastActive > 30 then
+                --WARN('* Uveso-AI: LocationRangeManagerThread: engineer '..k..' is not working for '.. math.floor(GetGameTimeSeconds() - engineer.LastActive) ..' seconds.')
+            end
+        end
+        
         -- Check and set the location radius of our main base and expansions
         local BasePositions = BaseRanger(aiBrain)
         -- Check if we have units outside the range of any BaseManager
@@ -271,7 +279,7 @@ function LocationRangeManagerThread(aiBrain)
                         nearestbase.dist = dist
                     end
                 end
-                -- if we are not in range of an base, then move to a base.
+                -- if we are not in range of an base, then move closer to a base.
                 if WeAreInRange == false and not unit.Dead then
                     if nearestbase then
                         if aiBrain[ScenarioInfo.Options.AIPLatoonNameDebug] or ScenarioInfo.Options.AIPLatoonNameDebug == 'all' then

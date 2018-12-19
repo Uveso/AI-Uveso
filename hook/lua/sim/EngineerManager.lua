@@ -19,7 +19,9 @@ EngineerManager = Class(OLDEngineerManager) {
 
     -- For AI Patch V2. 
     AssignEngineerTask = function(self, unit)
+        unit.LastActive = GetGameTimeSeconds()
         if unit.UnitBeingAssist or unit.UnitBeingBuilt then
+            self:DelayAssign(self, unit)
             return
         end
 
@@ -28,7 +30,7 @@ EngineerManager = Class(OLDEngineerManager) {
         unit.MinNumAssistees = nil
 
         if self.AssigningTask then
-            DelayAssign(self, unit)
+            self:DelayAssign(self, unit)
             return
         else
             self.AssigningTask = true

@@ -60,7 +60,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.TECH2 - categories.ENGINEER }},
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.TECH3 - categories.ENGINEER }},
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'UnitCapCheckLess', { 0.97 } },
@@ -80,7 +80,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.TECH2 - categories.ENGINEER }},
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.TECH3 - categories.ENGINEER }},
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'UnitCapCheckLess', { 0.97 } },
@@ -101,7 +101,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.TECH2 - categories.ENGINEER }},
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.TECH3 - categories.ENGINEER }},
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'UnitCapCheckLess', { 0.97 } },
@@ -122,7 +122,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.TECH2 - categories.ENGINEER }},
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.TECH3 - categories.ENGINEER }},
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE AIR GROUNDATTACK', '<','MOBILE AIR HIGHALTAIR ANTIAIR' } },
@@ -144,7 +144,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.TECH2 - categories.ENGINEER }},
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.TECH3 - categories.ENGINEER }},
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE AIR BOMBER', '<','MOBILE AIR HIGHALTAIR ANTIAIR' } },
@@ -167,7 +167,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.HIGHALTAIR * categories.ANTIAIR * categories.TECH3 }},
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 10, categories.MOBILE * categories.AIR * categories.HIGHALTAIR * categories.ANTIAIR * categories.TECH3 }},
             -- Respect UnitCap
             { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
@@ -1100,19 +1100,16 @@ BuilderGroup {
         InstanceCount = 3,                                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = 10000,                                               -- Searchradius for new target.
-            GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
+            GetTargetsFromBase = nil,                                         -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100000,                                       -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            IgnorePathing = false,                                              -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = 'STRUCTURE, MOBILE',                         -- Only find targets matching these categories.
+            IgnorePathing = true,                                              -- If true, the platoon will not use AI pathmarkers and move directly to the target
+            TargetSearchCategory = 'STRUCTURE LAND',               -- Only find targets matching these categories.
             PrioritizedCategories = {
-                'STRUCTURE ANTIAIR TECH3',
-                'STRUCTURE ANTIAIR TECH2',
-                'STRUCTURE ANTIAIR TECH1',
-                'STRUCTURE DEFENSE ANTIMISSILE TECH3',
-                'STRUCTURE ARTILLERY',
-                'STRUCTURE NUKE',
-                'STRUCTURE ENERGYPRODUCTION TECH3',
+                'STRUCTURE ANTIAIR',
+                'STRUCTURE TECH3',
+                'STRUCTURE TECH2',
+                'STRUCTURE TECH1',
                 'ALLUNITS',
             },
         },
@@ -1131,16 +1128,13 @@ BuilderGroup {
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100000,                                       -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            IgnorePathing = false,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = 'STRUCTURE, MOBILE',                         -- Only find targets matching these categories.
+            IgnorePathing = true,                                              -- If true, the platoon will not use AI pathmarkers and move directly to the target
+            TargetSearchCategory = 'STRUCTURE LAND',                            -- Only find targets matching these categories.
             PrioritizedCategories = {
-                'STRUCTURE ANTIAIR TECH3',
-                'STRUCTURE ANTIAIR TECH2',
-                'STRUCTURE ANTIAIR TECH1',
-                'STRUCTURE DEFENSE ANTIMISSILE TECH3',
-                'STRUCTURE ARTILLERY',
-                'STRUCTURE NUKE',
-                'STRUCTURE ENERGYPRODUCTION TECH3',
+                'STRUCTURE FACTORY',
+                'STRUCTURE TECH3',
+                'STRUCTURE TECH2',
+                'STRUCTURE TECH1',
                 'ALLUNITS',
             },
         },
@@ -1194,17 +1188,12 @@ BuilderGroup {
             AggressiveMove = false,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = 'STRUCTURE, MOBILE LAND',                    -- Only find targets matching these categories.
+            TargetSearchCategory = 'STRUCTURE, MOBILE',                         -- Only find targets matching these categories.
             PrioritizedCategories = {
-                'MASSEXTRACTION TECH1',
-                'MASSEXTRACTION TECH2',
-                'MASSEXTRACTION TECH3',
-                'ANTIAIR',
-                'MOBILE LAND EXPERIMENTAL',
-                'STRUCTURE DEFENSE ANTIMISSILE TECH3',
-                'STRUCTURE ARTILLERY',
-                'STRUCTURE NUKE',
-                'STRUCTURE ENERGYPRODUCTION TECH3',
+                'STRUCTURE ANTIAIR',
+                'STRUCTURE TECH3',
+                'STRUCTURE TECH2',
+                'STRUCTURE TECH1',
                 'ALLUNITS',
             },
         },

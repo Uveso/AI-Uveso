@@ -16,34 +16,6 @@ BasePanicZone = math.min( 120, BasePanicZone )
 BaseMilitaryZone = math.max( 250, BaseMilitaryZone )
 
 -- ===================================================-======================================================== --
--- ==                                         Build Start Base                                               == --
--- ===================================================-======================================================== --
-BuilderGroup {
-    -- Build Main Base (only once). Factory and basic Energy
-    BuilderGroupName = 'Initial ACU Builders Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
-    BuildersType = 'EngineerBuilder',
-    Builder {
-        BuilderName = 'UC CDR Initial',
-        PlatoonAddBehaviors = { 'CommanderBehaviorUveso', },
-        PlatoonTemplate = 'CommanderBuilderInitial',
-        Priority = 19500,
-        BuilderConditions = {
-        },
-        InstantCheck = true,
-        BuilderType = 'Any',
-        PlatoonAddFunctions = { {SAI, 'BuildOnce'}, },
-        BuilderData = {
-            Construction = {
-                AdjacencyCategory = 'MASSEXTRACTION, FACTORY CONSTRUCTION',
-                AdjacencyDistance = 50,
-                BuildStructures = {
-                    'T1LANDFactory',
-                }
-            }
-        }
-    },
-}
--- ===================================================-======================================================== --
 -- ==                                 Build Engineers TECH 1,2,3 and SACU                                    == --
 -- ===================================================-======================================================== --
 BuilderGroup {
@@ -54,6 +26,21 @@ BuilderGroup {
     --    TECH 1    --
     -- ============ --
     -- Build the minimum number of engineers to fill EngineerCap
+    Builder {
+        BuilderName = 'U1 Engineer Minimum',
+        PlatoonTemplate = 'T1BuildEngineer',
+        Priority = 19000,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'ENGINEER TECH1' } },
+            -- Respect UnitCap
+         },
+        BuilderType = 'All',
+    },
     Builder {
         BuilderName = 'U1 Engineer builder Cap',
         PlatoonTemplate = 'T1BuildEngineer',
@@ -85,7 +72,7 @@ BuilderGroup {
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers / 3 , '<=', categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
         },
-        BuilderType = 'Land',
+        BuilderType = 'All',
     },
     -- Build more engineers if we don't find idle engineers
     Builder {
@@ -95,29 +82,27 @@ BuilderGroup {
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 50, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
-            { UCBC, 'PoolLessAtLocation', { 'LocationType', 2, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'PoolLessAtLocation', { 'LocationType', 3, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             -- Don't build it if...
-            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'ENGINEER TECH1' } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers / 3 , '<=', categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
         },
         BuilderType = 'Land',
     },
     Builder {
-        BuilderName = 'U1 Engineer noPool air',
+        BuilderName = 'U1 Engineer max',
         PlatoonTemplate = 'T1BuildEngineer',
         Priority = 18400,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 50, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
-            { UCBC, 'PoolLessAtLocation', { 'LocationType', 2, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
             -- Do we need additional conditions to build it ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.05 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+--            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'ENGINEER TECH2' } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers / 3 , '<=', categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
         },
@@ -130,7 +115,7 @@ BuilderGroup {
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 50, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
-            { UCBC, 'PoolLessAtLocation', { 'LocationType', 2, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'PoolLessAtLocation', { 'LocationType', 3, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income

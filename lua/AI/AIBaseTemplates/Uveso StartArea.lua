@@ -21,14 +21,6 @@ BaseBuilderTemplate {
         'Engineer Reclaim Uveso',
 
         -----------------------------------------------------------------------------
-        -- ==== Mass ==== --
-        -----------------------------------------------------------------------------
-        -- Build MassExtractors / Creators
-        'MassBuilders Uveso',                           -- Priority = 1100
-        -- Build Mass Storage (Adjacency)
-        'MassStorageBuilder Uveso',                     -- Priority = 1100
-
-        -----------------------------------------------------------------------------
         -- ==== Energy ==== --
         -----------------------------------------------------------------------------
         -- Build Power Tech 1,2,3

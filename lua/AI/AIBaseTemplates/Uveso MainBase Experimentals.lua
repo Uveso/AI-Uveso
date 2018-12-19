@@ -14,7 +14,7 @@ BaseBuilderTemplate {
         -- ==== ACU ==== --
         -----------------------------------------------------------------------------
         -- Build Main Base (only once). Land/Air factory and basic Energy
-        'Initial ACU Builders Uveso',               -- Priority = 1000
+        'ACU Former Uveso',
 
         -----------------------------------------------------------------------------
         -- ==== Expansion Builders ==== --

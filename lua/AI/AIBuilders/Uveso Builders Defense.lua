@@ -262,12 +262,10 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 TMD Panic 1',
         PlatoonTemplate = 'T2EngineerBuilder',
-        Priority = 1000,
+        Priority = 10000,
         BuilderConditions = {
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  280, 'LocationType', 0, categories.TACTICALMISSILEPLATFORM }}, -- radius, LocationType, unitCount, categoryEnemy
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 2, categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * categories.TECH2 }},
-            -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<=', categories.STRUCTURE * categories.DEFENSE } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -289,12 +287,11 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 TMD Panic 2',
         PlatoonTemplate = 'T2EngineerBuilder',
-        Priority = 1000,
+        Priority = 10000,
         BuilderConditions = {
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  280, 'LocationType', 3, categories.TACTICALMISSILEPLATFORM }}, -- radius, LocationType, unitCount, categoryEnemy
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 6, categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * categories.TECH2 }},
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<=', categories.STRUCTURE * categories.DEFENSE } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -316,7 +313,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 TMD Panic 3',
         PlatoonTemplate = 'T2EngineerBuilder',
-        Priority = 1000,
+        Priority = 10000,
         BuilderConditions = {
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  280, 'LocationType', 6, categories.TACTICALMISSILEPLATFORM }}, -- radius, LocationType, unitCount, categoryEnemy
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 20, categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * categories.TECH2 }},
@@ -343,7 +340,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 TMD',
         PlatoonTemplate = 'T2EngineerBuilder',
-        Priority = 1000,
+        Priority = 10000,
         BuilderConditions = {
             { EBC, 'GreaterThanEconStorageRatio', { 0.75, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income

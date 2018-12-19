@@ -10,7 +10,11 @@
 BaseBuilderTemplate {
     BaseTemplateName = 'Uveso Null',
     Builders = {
-        'Initial ACU Builders Uveso',               -- Priority = 1000
+        -----------------------------------------------------------------------------
+        -- ==== ACU ==== --
+        -----------------------------------------------------------------------------
+        -- Build Main Base (only once). Land/Air factory and basic Energy
+        'ACU Former Uveso',
 
         'EngineerFactoryBuilders Uveso',            -- Priority = 900
         'Assistees Uveso',
@@ -25,10 +29,18 @@ BaseBuilderTemplate {
         'GateConstruction Uveso',
         'GateFactoryBuilders Uveso',
 
-        'Air Transport Builder Uveso',
+--        'Air Transport Builder Uveso',
 
 --        'Strategic Missile Launcher NukeAI Uveso',
         'RepairLowShields',
+
+        -----------------------------------------------------------------------------
+        -- ==== Factory ==== --
+        -----------------------------------------------------------------------------
+        -- Build Land/Air Factories
+        'FactoryBuildersRush Uveso',
+        -- Upgrade Factories TECH1->TECH2 and TECH2->TECH3
+--        'FactoryUpgradeBuildersRush Uveso',
 
 
     },

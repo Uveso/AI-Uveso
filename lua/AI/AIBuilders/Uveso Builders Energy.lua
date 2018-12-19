@@ -22,13 +22,13 @@ BuilderGroup {
         BuilderName = 'U1 Power low trend',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17890,
-        InstanceCount = 3,                                                      -- Number of plattons that will be formed with this template.
+        InstanceCount = 1,                                                      -- Number of plattons that will be formed with this template.
         DelayEqualBuildPlattons = {'Energy', 3},
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'LessThanEnergyTrend', { 10.0 } },
+            { UCBC, 'GreaterThanGameTimeSeconds', { 180 } },
+            { UCBC, 'LessThanEnergyTrend', { 60.0 } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 2, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 }},
             -- Do we need additional conditions to build it ?
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 1, 'MOBILE ENGINEER TECH1' }},
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, 'MOBILE ENGINEER TECH1' }},
@@ -59,42 +59,13 @@ BuilderGroup {
         Priority = 17900,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'LessThanEnergyTrend', { 6.0 } },
+            { UCBC, 'LessThanEnergyTrend', { 0.0 } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
             -- Do we need additional conditions to build it ?
             { UCBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconIncome',  { 0.6, 0.0}}, -- Absolut Base income
+            { EBC, 'GreaterThanEconIncome',  { 0.5, 0.0}}, -- Absolut Base income
             -- Don't build it if...
-            -- Respect UnitCap
-        },
-        InstanceCount = 1,
-        BuilderType = 'Any',
-        BuilderData = {
-            Construction = {
-                AdjacencyCategory = 'FACTORY STRUCTURE AIR, FACTORY STRUCTURE LAND',
-                AdjacencyDistance = 50,
-                BuildClose = true,
-                LocationType = 'LocationType',
-                BuildStructures = {
-                    'T1EnergyProduction',
-                },
-            }
-        }
-    },
-    Builder {
-        BuilderName = 'UC Power low trend backup',
-        PlatoonTemplate = 'CommanderBuilder',
-        Priority = 17885,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'LessThanEnergyTrend', { 6.0 } },
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'HasNotParagon', {} },
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-            { UCBC, 'GreaterThanGameTimeSeconds', { 180 } },
             -- Respect UnitCap
         },
         InstanceCount = 1,
@@ -117,7 +88,7 @@ BuilderGroup {
         Priority = 15000,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'EnergyToMassRatioIncome', { 12.0, '<=' } },  -- True if we have less than 10 times more Energy then Mass income ( 100 <= 10 = true )
+            { UCBC, 'EnergyToMassRatioIncome', { 10.0, '<=' } },  -- True if we have less than 10 times more Energy then Mass income ( 100 <= 10 = true )
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
             -- Do we need additional conditions to build it ?
             { UCBC, 'HasNotParagon', {} },
@@ -142,13 +113,15 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'U1 Power MassRatio',
+        BuilderName = 'U1 Power MassRatio 5',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17870,
-        InstanceCount = 3,                                                      -- Number of plattons that will be formed with this template.
+        InstanceCount = 1,                                                      -- Number of plattons that will be formed with this template.
+        DelayEqualBuildPlattons = {'Energy', 3},
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'EnergyToMassRatioIncome', { 10.0, '<=' } },  -- True if we have less than 10 times more Energy then Mass income ( 100 <= 10 = true )
+            { UCBC, 'GreaterThanGameTimeSeconds', { 180 } },
+            { UCBC, 'EnergyToMassRatioIncome', { 5.0, '<=' } },  -- True if we have less than 10 times more Energy then Mass income ( 100 <= 10 = true )
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
             -- Do we need additional conditions to build it ?
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 1, 'MOBILE ENGINEER TECH1' }},
@@ -156,7 +129,9 @@ BuilderGroup {
             { UCBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}}, -- Absolut Base income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'CheckBuildPlattonDelay', { 'Energy' }},
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<=', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
         },
@@ -175,12 +150,14 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'U1 Power MassRatio Full',
+        BuilderName = 'U1 Power MassRatio 10',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17870,
-        InstanceCount = 4,                                                      -- Number of plattons that will be formed with this template.
+        InstanceCount = 1,                                                      -- Number of plattons that will be formed with this template.
+        DelayEqualBuildPlattons = {'Energy', 3},
         BuilderConditions = {
             -- When do we want to build this ?
+            { UCBC, 'GreaterThanGameTimeSeconds', { 180 } },
             { UCBC, 'EnergyToMassRatioIncome', { 10.0, '<=' } },  -- True if we have less than 10 times more Energy then Mass income ( 100 <= 10 = true )
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
             -- Do we need additional conditions to build it ?
@@ -189,8 +166,9 @@ BuilderGroup {
             { UCBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}}, -- Absolut Base income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.99, 0.00 } },
+            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'CheckBuildPlattonDelay', { 'Energy' }},
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<=', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
         },
@@ -242,10 +220,10 @@ BuilderGroup {
     Builder {
         BuilderName = 'UC Energy RECOVER',
         PlatoonTemplate = 'CommanderBuilder',
-        Priority = 19100,
+        Priority = 19200,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.STRUCTURE * categories.ENERGYPRODUCTION } },
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             -- Don't build it if...
@@ -486,14 +464,14 @@ BuilderGroup {
     --    EnergyStorage    --
     -- =================== --
     Builder {
-        BuilderName = 'U1 Energy Storage 1st',
+        BuilderName = 'U1 Energy Storage 3min',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17750,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYSTORAGE }},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'GreaterThanGameTimeSeconds', { 180 } },
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60 * 3 } },
             -- Have we the eco to build it ?
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1,  'ENERGYSTORAGE' }},
@@ -502,7 +480,59 @@ BuilderGroup {
         BuilderData = {
             Location = 'LocationType',
             Construction = {
-                BuildClose = false,
+                BuildClose = true,
+                AdjacencyCategory = 'STRUCTURE ENERGYPRODUCTION TECH3, STRUCTURE ENERGYPRODUCTION TECH2, STRUCTURE ENERGYPRODUCTION TECH1',
+                LocationType = 'LocationType',
+                BuildStructures = {
+                    'EnergyStorage',
+                },
+            }
+        }
+    },
+    Builder {
+        BuilderName = 'U1 Energy Storage 5min',
+        PlatoonTemplate = 'EngineerBuilder',
+        Priority = 17750,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.STRUCTURE * categories.ENERGYSTORAGE }},
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60 * 5 } },
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1,  'ENERGYSTORAGE' }},
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Location = 'LocationType',
+            Construction = {
+                BuildClose = true,
+                AdjacencyCategory = 'STRUCTURE ENERGYPRODUCTION TECH3, STRUCTURE ENERGYPRODUCTION TECH2, STRUCTURE ENERGYPRODUCTION TECH1',
+                LocationType = 'LocationType',
+                BuildStructures = {
+                    'EnergyStorage',
+                },
+            }
+        }
+    },
+    Builder {
+        BuilderName = 'U1 Energy Storage 7min',
+        PlatoonTemplate = 'EngineerBuilder',
+        Priority = 17750,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 5, categories.STRUCTURE * categories.ENERGYSTORAGE }},
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60 * 7 } },
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1,  'ENERGYSTORAGE' }},
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Location = 'LocationType',
+            Construction = {
+                BuildClose = true,
                 AdjacencyCategory = 'STRUCTURE ENERGYPRODUCTION TECH3, STRUCTURE ENERGYPRODUCTION TECH2, STRUCTURE ENERGYPRODUCTION TECH1',
                 LocationType = 'LocationType',
                 BuildStructures = {

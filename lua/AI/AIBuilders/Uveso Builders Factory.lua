@@ -255,6 +255,51 @@ BuilderGroup {
             }
         }
     },
+    -- ==================== --
+    --    TECH 1 RECOVER    --
+    -- ==================== --
+    Builder {
+        BuilderName = 'U1 Land Factory RECOVER',
+        PlatoonTemplate = 'EngineerBuilder',
+        Priority = 19300,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND - categories.SUPPORTFACTORY } },
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Construction = {
+                Location = 'LocationType',
+                BuildStructures = {
+                    'T1LandFactory',
+                },
+            }
+        }
+    },
+    Builder {
+        BuilderName = 'UC Land Factory RECOVER',
+        PlatoonTemplate = 'CommanderBuilder',
+        Priority = 19300,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND - categories.SUPPORTFACTORY } },
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Construction = {
+                Location = 'LocationType',
+                BuildStructures = {
+                    'T1LandFactory',
+                },
+            }
+        }
+    },
 }
 -- ====================== --
 --    AI-EXPERIMENTALS    --
@@ -379,6 +424,51 @@ BuilderGroup {
             }
         }
     },
+    -- ==================== --
+    --    TECH 1 RECOVER    --
+    -- ==================== --
+    Builder {
+        BuilderName = 'U1 Land Factory RECOVER',
+        PlatoonTemplate = 'EngineerBuilder',
+        Priority = 19300,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND - categories.SUPPORTFACTORY } },
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Construction = {
+                Location = 'LocationType',
+                BuildStructures = {
+                    'T1LandFactory',
+                },
+            }
+        }
+    },
+    Builder {
+        BuilderName = 'UC Land Factory RECOVER',
+        PlatoonTemplate = 'CommanderBuilder',
+        Priority = 19300,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND - categories.SUPPORTFACTORY } },
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Construction = {
+                Location = 'LocationType',
+                BuildStructures = {
+                    'T1LandFactory',
+                },
+            }
+        }
+    },
 }
 -- ================= --
 --    AI-ADAPTIVE    --
@@ -401,7 +491,6 @@ BuilderGroup {
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 0.8, 12.0}}, -- Absolut Base income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.80}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH1 }},
@@ -550,7 +639,6 @@ BuilderGroup {
             { UCBC, 'FactoryCapCheck', { 'LocationType', 'Land' } },
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH1' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.30, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
@@ -667,13 +755,11 @@ BuilderGroup {
         BuilderConditions = {
             -- When do we want to build this ?
             -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH1' }},
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.35, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.75, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH1 }},
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapFactory , '<=', categories.STRUCTURE * categories.FACTORY * categories.LAND } }, -- Maximal 3 factories at 125 unitcap, 12 factories at 500 unitcap...
         },
@@ -695,7 +781,6 @@ BuilderGroup {
         BuilderConditions = {
             -- When do we want to build this ?
             -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH1' }},
             { UCBC, 'HaveUnitRatio', { 1.0, 'STRUCTURE FACTORY AIR', '<','STRUCTURE FACTORY LAND' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.35, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
@@ -722,14 +807,13 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Land Factory RECOVER',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 19500,
+        Priority = 19300,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND - categories.SUPPORTFACTORY } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             -- Don't build it if...
-            { UCBC, 'GreaterThanGameTimeSeconds', { 60 } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -744,15 +828,13 @@ BuilderGroup {
     Builder {
         BuilderName = 'UC Land Factory RECOVER',
         PlatoonTemplate = 'CommanderBuilder',
-        Priority = 19000,
+        Priority = 19300,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND - categories.SUPPORTFACTORY } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconIncome',  { 0.2, 9.0}}, -- Absolut Base income 4 100
             -- Don't build it if...
-            { UCBC, 'GreaterThanGameTimeSeconds', { 60 } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -846,7 +928,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND * (categories.TECH2 + categories.TECH3) - categories.SUPPORTFACTORY } },
             -- Do we need additional conditions to build it ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 4, categories.STRUCTURE * categories.FACTORY * categories.LAND } },
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 4, categories.STRUCTURE * categories.FACTORY } },
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income

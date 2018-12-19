@@ -513,18 +513,18 @@ function FindTargetUnit(self, minRadius, maxRadius, MaxLoad)
             uBP = v:GetBlueprint()
             UnitHealth = uBP.Defense.Health or 1
             -- Check Targets
-            if EntityCategoryContains(categories.COMMAND, v) and (not IsProtected(self,v:GetPosition())) then
+            if not v:BeenDestroyed() and EntityCategoryContains(categories.COMMAND, v) and (not IsProtected(self,v:GetPosition())) then
                 AllTargets[1] = v
-            elseif (UnitHealth > MaxHealthpoints or (UnitHealth == MaxHealthpoints and v.distance < AllTargets[2].distance)) and EntityCategoryContains(categories.EXPERIMENTAL * categories.MOBILE, v) and (not IsProtected(self,v:GetPosition())) then
+            elseif not v:BeenDestroyed() and (UnitHealth > MaxHealthpoints or (UnitHealth == MaxHealthpoints and v.distance < AllTargets[2].distance)) and EntityCategoryContains(categories.EXPERIMENTAL * categories.MOBILE, v) and (not IsProtected(self,v:GetPosition())) then
                 AllTargets[2] = v
                 MaxHealthpoints = UnitHealth
-            elseif UnitHealth > MaxHealthpoints and EntityCategoryContains(categories.MOBILE, v) and uBP.StrategicIconName == 'icon_experimental_generic' and (not IsProtected(self,v:GetPosition())) then
+            elseif not v:BeenDestroyed() and UnitHealth > MaxHealthpoints and EntityCategoryContains(categories.MOBILE, v) and uBP.StrategicIconName == 'icon_experimental_generic' and (not IsProtected(self,v:GetPosition())) then
                 AllTargets[3] = v
                 MaxHealthpoints = UnitHealth
-            elseif (not AllTargets[5] or v.distance < AllTargets[5].distance) and EntityCategoryContains(categories.STRUCTURE - categories.WALL, v) and (not IsProtected(self,v:GetPosition())) then
+            elseif not v:BeenDestroyed() and (not AllTargets[5] or v.distance < AllTargets[5].distance) and EntityCategoryContains(categories.STRUCTURE - categories.WALL, v) and (not IsProtected(self,v:GetPosition())) then
                 AllTargets[5] = v
                 break
-            elseif v:IsMoving() == false then
+            elseif not v:BeenDestroyed() and v:IsMoving() == false then
                 if (not AllTargets[4] or v.distance < AllTargets[4].distance) and EntityCategoryContains(categories.TECH3 * categories.MOBILE * categories.INDIRECTFIRE, v) and (not IsProtected(self,v:GetPosition())) then
                     AllTargets[4] = v
                 elseif (not AllTargets[6] or v.distance < AllTargets[6].distance) and EntityCategoryContains(categories.ENGINEER, v) and (not IsProtected(self,v:GetPosition())) then
@@ -740,15 +740,112 @@ function IsProtected(self,position)
     return false
 end
 
-function DebugArray(Table)
-    for Index, Array in Table do
-        if type(Array) == 'thread' or type(Array) == 'userdata' then
-            LOG('Index['..Index..'] is type('..type(Array)..'). I won\'t print that!')
-        elseif type(Array) == 'table' then
-            LOG('Index['..Index..'] is type('..type(Array)..'). I won\'t print that!')
-            LOG(repr(Array))
-        else
-            LOG('Index['..Index..'] is type('..type(Array)..'). "', repr(Array),'".')
+function ComHealth(cdr)
+    local armorPercent = 100 / cdr:GetMaxHealth() * cdr:GetHealth()
+    local shieldPercent = armorPercent
+    if cdr.MyShield then
+        shieldPercent = 100 / cdr.MyShield:GetMaxHealth() * cdr.MyShield:GetHealth()
+    end
+    return ( armorPercent + shieldPercent ) / 2
+end
+
+function CDRRunHomeEnemyNearBase(platoon,cdr,UnitsInBasePanicZone)
+    local minEnemyDist, EnemyPosition
+    local enemyCount = 0
+    for _, EnemyUnit in UnitsInBasePanicZone do
+        if not EnemyUnit.Dead and not EnemyUnit:BeenDestroyed() then
+            if EntityCategoryContains(categories.MOBILE * categories.EXPERIMENTAL, EnemyUnit) then
+                --LOG('* CommanderAIUveso: CDRRunHomeEnemyNearBase EXPERIMENTAL!!!! RUN HOME:')
+                minEnemyDist = 40
+                break
+            end
+            enemyCount = enemyCount + 1
+            EnemyPosition = EnemyUnit:GetPosition()
+            local dist = VDist2(cdr.CDRHome[1], cdr.CDRHome[3], EnemyPosition[1], EnemyPosition[3])
+            if not minEnemyDist or minEnemyDist > dist then
+                minEnemyDist = dist
+            end
         end
     end
+    if minEnemyDist then
+        local CDRDist = VDist2(cdr.position[1], cdr.position[3], cdr.CDRHome[1], cdr.CDRHome[3])
+        local cdrNewPos = {}
+        if CDRDist > minEnemyDist then
+            cdrNewPos[1] = cdr.CDRHome[1] + Random(-6, 6)
+            cdrNewPos[2] = cdr.CDRHome[2]
+            cdrNewPos[3] = cdr.CDRHome[3] + Random(-6, 6)
+            platoon:Stop()
+            WaitTicks(1)
+            platoon:MoveToLocation(cdrNewPos, false)
+            WaitTicks(50)
+            return true
+        end
+    end
+    return false
 end
+
+function CDRRunHomeHealthRange(platoon,cdr,maxRadius)
+    local cdrNewPos = {}
+    if VDist2(cdr.position[1], cdr.position[3], cdr.CDRHome[1], cdr.CDRHome[3]) > maxRadius then
+        cdrNewPos[1] = cdr.CDRHome[1] + Random(-6, 6)
+        cdrNewPos[2] = cdr.CDRHome[2]
+        cdrNewPos[3] = cdr.CDRHome[3] + Random(-6, 6)
+        platoon:Stop()
+        WaitTicks(1)
+        platoon:MoveToLocation(cdrNewPos, false)
+        WaitTicks(50)
+        return true
+    end
+    return false
+end
+
+function CDRRunHomeAtDamage(platoon,cdr)
+    local CDRHealth = ComHealth(cdr)
+    local diff = CDRHealth - cdr.HealthOLD
+    if diff < -1 then
+        --LOG('Health diff = '..diff)
+        local cdrNewPos = {}
+        cdrNewPos[1] = cdr.CDRHome[1] + Random(-6, 6)
+        cdrNewPos[2] = cdr.CDRHome[2]
+        cdrNewPos[3] = cdr.CDRHome[3] + Random(-6, 6)
+        platoon:Stop()
+        WaitTicks(1)
+        platoon:MoveToLocation(cdrNewPos, false)
+        WaitTicks(10)
+        cdr.HealthOLD = CDRHealth
+        return true
+    end    
+    cdr.HealthOLD = CDRHealth
+    return false
+end
+
+function CDRForceRunHome(platoon,cdr)
+    local cdrNewPos = {}
+    cdrNewPos[1] = cdr.CDRHome[1] + Random(-6, 6)
+    cdrNewPos[2] = cdr.CDRHome[2]
+    cdrNewPos[3] = cdr.CDRHome[3] + Random(-6, 6)
+    platoon:Stop()
+    WaitTicks(1)
+    platoon:MoveToLocation(cdrNewPos, false)
+    WaitTicks(30)
+    if VDist2(cdr.position[1], cdr.position[3], cdr.CDRHome[1], cdr.CDRHome[3]) > 20 then
+        return true
+    end
+    return false
+end
+
+function CDRParkingHome(platoon,cdr)
+    local cdrNewPos = {}
+    while VDist2(cdr.position[1], cdr.position[3], cdr.CDRHome[1], cdr.CDRHome[3]) > 20 do
+        cdr.position = platoon:GetPlatoonPosition()
+        cdrNewPos[1] = cdr.CDRHome[1] + Random(-6, 6)
+        cdrNewPos[2] = cdr.CDRHome[2]
+        cdrNewPos[3] = cdr.CDRHome[3] + Random(-6, 6)
+        platoon:Stop()
+        WaitTicks(1)
+        platoon:MoveToLocation(cdrNewPos, false)
+        WaitTicks(30)
+    end
+    return
+end
+

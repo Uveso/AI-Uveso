@@ -270,12 +270,12 @@ function ReclaimableEnergyInArea(aiBrain, locType)
 end
 
 function CanBuildOnMassLessThanLocationDistance(aiBrain, locationType, distance, threatMin, threatMax, threatRings, threatType, maxNum )
-    local locationPos = aiBrain.BuilderManagers[locationType].EngineerManager:GetLocationCoords()
     local engineerManager = aiBrain.BuilderManagers[locationType].EngineerManager
     if not engineerManager then
         WARN('*AI WARNING: Invalid location - ' .. locationType)
         return false
     end
+    local locationPos = aiBrain.BuilderManagers[locationType].EngineerManager.Location
     local markerTable = AIUtils.AIGetSortedMassLocations(aiBrain, maxNum, threatMin, threatMax, threatRings, threatType, locationPos)
     if markerTable[1] and VDist3( markerTable[1], locationPos ) < distance then
         --LOG('We can build in less than '..VDist3( markerTable[1], locationPos ))
@@ -286,12 +286,12 @@ function CanBuildOnMassLessThanLocationDistance(aiBrain, locationType, distance,
     return false
 end
 function CanNotBuildOnMassLessThanLocationDistance(aiBrain, locationType, distance, threatMin, threatMax, threatRings, threatType, maxNum )
-    local locationPos = aiBrain.BuilderManagers[locationType].EngineerManager:GetLocationCoords()
     local engineerManager = aiBrain.BuilderManagers[locationType].EngineerManager
     if not engineerManager then
         WARN('*AI WARNING: Invalid location - ' .. locationType)
         return false
     end
+    local locationPos = aiBrain.BuilderManagers[locationType].EngineerManager.Location
     local markerTable = AIUtils.AIGetSortedMassLocations(aiBrain, maxNum, threatMin, threatMax, threatRings, threatType, locationPos)
     if markerTable[1] and VDist3( markerTable[1], locationPos ) < distance then
         return false

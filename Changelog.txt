@@ -1,4 +1,16 @@
 *************************************************************************************************************************************
+v48 (19.Dec.2018)
+
+- New: Removed old CDR AIBehaviors.lua and replaced it with real CDR Attack platoon.
+- New: AI can now upgrade all ACU, incl. Black ops ACU's and ACU from Nomads. (also respecting eco for upgrades)
+- Fix: Target function no longer targets units while reclaim is in progress.
+- Fix: Fixed some functions not returning if the platoon is disbanded.
+- Fix: Bomber/Gunships no longer hover over the target without shooting.
+- Opt: Removed initial ACU builders. (No longer needed)
+- Opt: Changed attack-priorities for air and land platoons.
+- Opt: Minimized the amount of energy buildings at game start. (Ecomanager is now calculating the need of energy)
+
+*************************************************************************************************************************************
 v47 (10.Dec.2018)
 
 - New: Added attack platoons for naval experimentals
