@@ -348,7 +348,7 @@ BuilderGroup {
     },
     Builder {
         BuilderName = 'U3 Assist Experimental',
-        PlatoonTemplate = 'T3EngineerAssist',
+        PlatoonTemplate = 'T3EngineerAssistNoSUB',
         Priority = 200,
         InstanceCount = 15,
         BuilderConditions = {

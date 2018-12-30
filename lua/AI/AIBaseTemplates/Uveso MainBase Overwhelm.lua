@@ -8,7 +8,7 @@
 #****************************************************************************
 
 BaseBuilderTemplate {
-    BaseTemplateName = 'uvesoeasy',
+    BaseTemplateName = 'uvesooverwhelm',
     Builders = {
         -----------------------------------------------------------------------------
         -- ==== ACU ==== --
@@ -19,6 +19,8 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== Expansion Builders ==== --
         -----------------------------------------------------------------------------
+        -- Build an Expansion
+        'U1 Expansion Builder Uveso',
 
         -----------------------------------------------------------------------------
         -- ==== SCU ==== --
@@ -55,7 +57,7 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- Build Land/Air Factories
         'FactoryBuilders 1st Uveso',
-        'FactoryBuildersExperimental Uveso',
+        'FactoryBuilders ADAPTIVE Uveso',
         'FactoryBuilders RECOVER Uveso',
         'GateConstruction Uveso',
         -- Upgrade Factories TECH1->TECH2 and TECH2->TECH3
@@ -66,20 +68,23 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== Land Units BUILDER ==== --
         -----------------------------------------------------------------------------
-        -- Build Land Units
+        -- Build T1 Land Units
         'LandAttackBuildersPanic Uveso',
         'LandAttackBuilders Uveso',
         'LandAttackBuildersRatio Uveso',
+        'GateFactoryBuilders Uveso',
 
         -----------------------------------------------------------------------------
         -- ==== Land Units FORMER==== --
         -----------------------------------------------------------------------------
         'Land FormBuilders Panic',
+        'Land FormBuilders MilitaryZone',
+        'Land FormBuilders EnemyZone',
 
         -----------------------------------------------------------------------------
         -- ==== Air Units BUILDER ==== --
         -----------------------------------------------------------------------------
-        -- Build Air Units
+        -- Build as much antiair as the enemy has
         'AntiAirBuilders Uveso',
         -- Build Air Transporter
         'Air Transport Builder Uveso',
@@ -96,7 +101,8 @@ BaseBuilderTemplate {
         'Economic Experimental Builder Uveso',
         'Paragon Turbo Builder',
         'Paragon Turbo Factory',
-
+        'Paragon Turbo Air',
+        
         -----------------------------------------------------------------------------
         -- ==== EXPERIMENTALS FORMER ==== --
         -----------------------------------------------------------------------------
@@ -107,6 +113,7 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         'Shields Uveso',
         'ShieldUpgrades Uveso',
+        'RepairLowShields',
 
         -----------------------------------------------------------------------------
         -- ==== Defenses BUILDER ==== --
@@ -123,6 +130,8 @@ BaseBuilderTemplate {
         'Artillery Platoon Former',
         -- Build Anti Air near AirFactories
         'Base Anti Air Defense Uveso',
+        -- Ground Defense Builder
+        'Base Anti Ground Defense Uveso',
 
         -----------------------------------------------------------------------------
         -- ==== FireBase BUILDER ==== --
@@ -168,14 +177,14 @@ BaseBuilderTemplate {
         FactoryCount = {
             Land = 5,
             Air = 5,
-            Sea = 3,
-            Gate = 1,
+            Sea = 4,
+            Gate = 2,
         },
         EngineerCount = {
             Tech1 = 6,
             Tech2 = 3,
             Tech3 = 3,
-            SCU = 1,
+            SCU = 3,
         },
         MassToFactoryValues = {
             T1Value = 6,
@@ -188,9 +197,9 @@ BaseBuilderTemplate {
     end,
     FirstBaseFunction = function(aiBrain)
         local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
-        if personality == 'uvesoeasy' or personality == 'uvesoeasycheat' then
+        if personality == 'uvesooverwhelm' or personality == 'uvesooverwhelmcheat' then
             --LOG('### M-FirstBaseFunction '..personality)
-            return 1000, 'uvesoeasy'
+            return 1000, 'uvesooverwhelm'
         end
         return -1
     end,

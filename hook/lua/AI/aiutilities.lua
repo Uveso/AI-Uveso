@@ -80,15 +80,15 @@ end
 -- Target function
 function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, maxRange, PrioritizedTargetList, TargetSearchCategory, enemyBrain)
     if not maxRange then
-        LOG('* AIFindNearestCategoryTargetInRange: function called with empty "maxRange"')
+        LOG('* Uveso-AI: AIFindNearestCategoryTargetInRange: function called with empty "maxRange"' )
         return false, false, false, 'NoRange'
     end
     if not TargetSearchCategory then
-        LOG('* AIFindNearestCategoryTargetInRange: function called with empty "TargetSearchCategory"')
+        LOG('* Uveso-AI: AIFindNearestCategoryTargetInRange: function called with empty "TargetSearchCategory"' )
         return false, false, false, 'NoCat'
     end
     if not position then
-        LOG('* AIFindNearestCategoryTargetInRange: function called with empty "position"')
+        LOG('* Uveso-AI: AIFindNearestCategoryTargetInRange: function called with empty "position"' )
         return false, false, false, 'NoPos'
     end
 
@@ -159,6 +159,7 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
                 if enemyBrain and enemyIndex and enemyBrain ~= enemyIndex then continue end
                 -- check if the Target is still alive, matches our target priority and can be attacked from our platoon
                 canAttack = platoon:CanAttackTarget(squad, Target) or false
+                --LOG('* AIFindNearestCategoryTargetInRange: canAttack '..repr(canAttack))
                 if not Target.Dead and EntityCategoryContains(category, Target) and canAttack then
                     -- yes... we need to check if we got friendly units with GetUnitsAroundPoint(_, _, _, 'Enemy')
                     if Target:BeenDestroyed() then
@@ -171,6 +172,7 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
                     end
                     if not IsEnemy( aiBrain:GetArmyIndex(), Target:GetAIBrain():GetArmyIndex() ) then continue end
                     targetRange = VDist2(position[1],position[3],TargetPosition[1],TargetPosition[3])
+                    --LOG('* AIFindNearestCategoryTargetInRange: targetRange '..repr(targetRange))
                     if targetRange < distance then
                         if not aiBrain:PlatoonExists(platoon) then
                             return false, false, false, 'NoPlatoonExists'
@@ -187,7 +189,8 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
                         --LOG('PlatoonStrength / 100 * AttackEnemyStrength <= '..(PlatoonStrength / 100 * AttackEnemyStrength)..' || EnemyStrength = '..EnemyStrength)
                         -- Only attack if we have a chance to win
                         if PlatoonStrength / 100 * AttackEnemyStrength < EnemyStrength then continue end
-                        WaitTicks(1)
+                        --WaitTicks(1)
+                        --LOG('* AIFindNearestCategoryTargetInRange: PlatoonGenerateSafePathTo ')
                         path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, platoon.MovementLayer, position, TargetPosition, platoon.PlatoonData.NodeWeight or 10 )
                         -- Check if we found a path with markers
                         if path then
@@ -203,7 +206,7 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
                                 --LOG('* AIFindNearestCategoryTargetInRange: Possible target no path. distance '..distance..'  ')
                             -- NoGraph means we have no Map markers. Lets try to path with c-engine command CanPathTo()
                             elseif reason == 'NoGraph' then
-                                WaitTicks(1)
+                                --WaitTicks(1)
                                 local success, bestGoalPos = AIAttackUtils.CheckPlatoonPathingEx(platoon, TargetPosition)
                                 -- check if we found a path with c-engine command.
                                 if success then
@@ -231,11 +234,12 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
             if UnitWithPath then
                 return UnitWithPath, UnitNoPath, path, reason
             end
-           --WaitTicks(1)
         end
-        --WaitTicks(1)
     end
-    return UnitWithPath, UnitNoPath, path, reason
+    if UnitNoPath then
+        return UnitWithPath, UnitNoPath, path, reason
+    end
+    return false, false, false, 'NoUnitFound'
 end
 
 function AIFindNearestCategoryTargetInRangeCDR(aiBrain, position, maxRange, PrioritizedTargetList, TargetSearchCategory, enemyBrain)

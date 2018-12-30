@@ -12,6 +12,11 @@ AIOpts = {
                 key = 'off',
             },
             {
+                text = "<LOC aisettings_0185>Pathfinding",
+                help = "<LOC aisettings_0186>Show pathfinding for all layers",
+                key = 'path',
+            },
+            {
                 text = "<LOC aisettings_0157>Pathfinding and locations",
                 help = "<LOC aisettings_0158>Show pathfinding and location radii",
                 key = 'all',

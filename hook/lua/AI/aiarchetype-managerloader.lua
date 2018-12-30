@@ -1,3 +1,5 @@
+local CalculateBrainScore = import('/lua/sim/score.lua').CalculateBrainScore
+local Buff = import('/lua/sim/Buff.lua')
 
 -- This hook is for debug-option Platoon-Names. Hook for all AI's
 OLDExecutePlan = ExecutePlan
@@ -55,29 +57,119 @@ function ExecutePlan(aiBrain)
 end
 
 -- Uveso AI
+
+function SetArmyPoolBuff(aiBrain, CheatMult, BuildMult)
+    -- Store the new mult inside options, so new builded units get the new mult automatically
+    ScenarioInfo.Options.CheatMult = tostring(CheatMult)
+    ScenarioInfo.Options.BuildMult = tostring(BuildMult)
+    -- Modify Buildrate buff
+    local buffDef = Buffs['CheatBuildRate']
+    local buffAffects = buffDef.Affects
+    buffAffects.BuildRate.Mult = BuildMult
+    -- Modify CheatIncome buff
+    buffDef = Buffs['CheatIncome']
+    buffAffects = buffDef.Affects
+    buffAffects.EnergyProduction.Mult = CheatMult
+    buffAffects.MassProduction.Mult = CheatMult
+    allUnits = aiBrain:GetListOfUnits(categories.ALLUNITS, false, false)
+    for _, unit in allUnits do
+        -- Remove old build rate and income buffs
+        Buff.RemoveBuff(unit, 'CheatIncome', true) -- true = removeAllCounts
+        Buff.RemoveBuff(unit, 'CheatBuildRate', true) -- true = removeAllCounts
+        -- Apply new build rate and income buffs
+        Buff.ApplyBuff(unit, 'CheatIncome')
+        Buff.ApplyBuff(unit, 'CheatBuildRate')
+    end
+end
 function EcoManager(aiBrain)
+    local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
+    local CheatMultOption = tonumber(ScenarioInfo.Options.CheatMult)
+    local BuildMultOption = tonumber(ScenarioInfo.Options.BuildMult)
+    local CheatMult = CheatMultOption
+    local BuildMult = BuildMultOption
     local Engineers = {}
+    local MassFabrikators = {}
+    local AntiNuke = {}
     local paragons = {}
-    local ParaCount = 0
-    local ParaComplete = 0
+    local lastCall = 0
+    local ParaComplete
+    local allyScore
+    local enemyScore
+    local MyArmyRatio
     while true do
-        Engineers = aiBrain:GetListOfUnits(categories.ENGINEER - categories.COMMAND - categories.SUBCOMMANDER, false) -- also gets unbuilded units (planed to build)
-        MassFabrikators = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.MASSFABRICATION, false) -- also gets unbuilded units (planed to build)
-        AntiNuke = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.ANTIMISSILE * categories.SILO * categories.TECH3, false) -- also gets unbuilded units (planed to build)
-        paragons = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC  * categories.ENERGYPRODUCTION  * categories.MASSPRODUCTION, false)
-        ParaCount = 0
+        Engineers = aiBrain:GetListOfUnits(categories.ENGINEER - categories.COMMAND - categories.SUBCOMMANDER, false, false) -- also gets unbuilded units (planed to build)
+        MassFabrikators = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.MASSFABRICATION, false, false) -- also gets unbuilded units (planed to build)
+        AntiNuke = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.ANTIMISSILE * categories.SILO * categories.TECH3, false, false) -- also gets unbuilded units (planed to build)
+        paragons = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC  * categories.ENERGYPRODUCTION  * categories.MASSPRODUCTION, false, false)
         ParaComplete = 0
         for unitNum, unit in paragons do
             if unit:GetFractionComplete() >= 1 then
                 ParaComplete = ParaComplete + 1
             end
-            ParaCount = ParaCount + 1
         end
         if ParaComplete >= 1 then
             aiBrain.HasParagon = true
         else
             aiBrain.HasParagon = false
         end
+        -- Cheatbuffs
+        if personality == 'uvesooverwhelm' then
+            -- Check every 30 seconds for new armyStats to change ECO
+            if (GetGameTimeSeconds() > 60 * 1) and lastCall+30 < GetGameTimeSeconds() then
+                lastCall = GetGameTimeSeconds()
+                --score of all players (unitcount)
+                allyScore = 0
+                enemyScore = 0
+                for k, brain in ArmyBrains do
+                    if ArmyIsCivilian(brain:GetArmyIndex()) then
+                        --NOOP
+                    elseif IsAlly( aiBrain:GetArmyIndex(), brain:GetArmyIndex() ) then
+                        allyScore = allyScore + table.getn(brain:GetListOfUnits( (categories.MOBILE + categories.DEFENSE) - categories.MASSEXTRACTION - categories.ENGINEER - categories.SCOUT, false, false))
+                    elseif IsEnemy( aiBrain:GetArmyIndex(), brain:GetArmyIndex() ) then
+                        enemyScore = enemyScore + table.getn(brain:GetListOfUnits( (categories.MOBILE + categories.DEFENSE) - categories.MASSEXTRACTION - categories.ENGINEER - categories.SCOUT, false, false))
+                    end
+                end
+                if allyScore ~= 0 and enemyScore ~= 0 then
+                    MyArmyRatio = 100/enemyScore*allyScore
+                else
+                    MyArmyRatio = 100
+                end
+                -- Increase ECO if we have less then 50% of the enemy units
+                if MyArmyRatio < 60 then
+                    CheatMult = 6
+                    BuildMult = 6
+                    --LOG('* ECO+++  allyScore('..allyScore..') enemyScore('..enemyScore..') - My Army: '..math.floor(MyArmyRatio)..'% - Build/CheatMult old: '..ScenarioInfo.Options.BuildMult..' '..ScenarioInfo.Options.CheatMult..' - new: '..BuildMult..' '..CheatMult..'')
+                    SetArmyPoolBuff(aiBrain, CheatMult, BuildMult)
+                -- Increase ECO if we have less units or after 35 minutes
+                elseif MyArmyRatio < 85 or GetGameTimeSeconds() > 60 * 35 then
+                    CheatMult = CheatMult + 0.5
+                    BuildMult = BuildMult + 0.5
+                    if CheatMult < tonumber(CheatMultOption) then CheatMult = tonumber(CheatMultOption) end
+                    if BuildMult < tonumber(BuildMultOption) then BuildMult = tonumber(BuildMultOption) end
+                    if CheatMult > tonumber(CheatMultOption) + 2 then CheatMult = tonumber(CheatMultOption) + 2 end
+                    if BuildMult > tonumber(BuildMultOption) + 2 then BuildMult = tonumber(BuildMultOption) + 2 end
+                    --LOG('* ECO+++  allyScore('..allyScore..') enemyScore('..enemyScore..') - My Army: '..math.floor(MyArmyRatio)..'% - Build/CheatMult old: '..ScenarioInfo.Options.BuildMult..' '..ScenarioInfo.Options.CheatMult..' - new: '..BuildMult..' '..CheatMult..'')
+                    SetArmyPoolBuff(aiBrain, CheatMult, BuildMult)
+                -- Decrease ECO if we have to much units
+                elseif MyArmyRatio > 100 then
+                    CheatMult = CheatMult - 0.5
+                    BuildMult = BuildMult - 0.5
+                    if CheatMult > tonumber(CheatMultOption) then CheatMult = tonumber(CheatMultOption) end
+                    if BuildMult > tonumber(BuildMultOption) then BuildMult = tonumber(BuildMultOption) end
+                    if CheatMult < 0.5 then CheatMult = 0.5 end
+                    if BuildMult < 0.5 then BuildMult = 0.5 end
+                    --LOG('* ECO---  allyScore('..allyScore..') enemyScore('..enemyScore..') - My Army: '..math.floor(MyArmyRatio)..'% - Build/CheatMult old: '..ScenarioInfo.Options.BuildMult..' '..ScenarioInfo.Options.CheatMult..' - new: '..BuildMult..' '..CheatMult..'')
+                    SetArmyPoolBuff(aiBrain, CheatMult, BuildMult)
+                -- Normal ECO
+                else
+                    CheatMult = CheatMultOption
+                    BuildMult = BuildMultOption
+                    --LOG('* ECO===  allyScore('..allyScore..') enemyScore('..enemyScore..') - My Army: '..math.floor(MyArmyRatio)..'% - Build/CheatMult old: '..ScenarioInfo.Options.BuildMult..' '..ScenarioInfo.Options.CheatMult..' - new: '..BuildMult..' '..CheatMult..'')
+                    SetArmyPoolBuff(aiBrain, CheatMult, BuildMult)
+                end
+            end
+        end
+
         -- loop over MassFabrikators and manage pause / unpause
         for _, unit in MassFabrikators do
             -- if the unit is dead, continue with the next unit
@@ -133,7 +225,7 @@ function EcoManager(aiBrain)
                 -- if this unit is paused, continue with the next unit
                 if unit:IsPaused() then continue end
                 -- Very low eco, disable everything but energy assister
-                if aiBrain:GetEconomyStoredRatio('MASS') < 0.05 or aiBrain:GetEconomyStoredRatio('ENERGY') < 0.60 then
+                if aiBrain:GetEconomyStoredRatio('MASS') < 0.20 or aiBrain:GetEconomyStoredRatio('ENERGY') < 0.60 then
                     -- If we assist a paragon or energy structure, only pause the unit
                     if unit.UnitBeingAssist then
                         if EntityCategoryContains(categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC, unit.UnitBeingAssist) then
@@ -149,7 +241,7 @@ function EcoManager(aiBrain)
                     unit.PlatoonHandle:PlatoonDisband()
                     break
                 -- Low Eco, disable all engineers exept thosw who are assisting energy buildings
-                elseif aiBrain:GetEconomyStoredRatio('MASS') < 0.30 or aiBrain:GetEconomyStoredRatio('ENERGY') < 0.80 then
+                elseif aiBrain:GetEconomyStoredRatio('MASS') < 0.40 or aiBrain:GetEconomyStoredRatio('ENERGY') < 0.80 then
                     if unit.UnitBeingAssist then
                         if EntityCategoryContains(categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC, unit.UnitBeingAssist) then
                             continue
@@ -164,7 +256,7 @@ function EcoManager(aiBrain)
             elseif aiBrain:GetEconomyTrend('MASS') >= 0.0 and aiBrain:GetEconomyTrend('ENERGY') >= 0.0 then
                 -- if this unit is paused, continue with the next unit
                 if not unit:IsPaused() then continue end
-                if aiBrain:GetEconomyStoredRatio('MASS') >= 0.30 and aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.80 then
+                if aiBrain:GetEconomyStoredRatio('MASS') >= 0.40 and aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.80 then
                     unit:SetPaused( false )
                     break
                 elseif aiBrain:GetEconomyStoredRatio('MASS') >= 0.15 and aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.15 then
@@ -174,7 +266,7 @@ function EcoManager(aiBrain)
                             break
                         end
                     end
-                elseif aiBrain:GetEconomyStoredRatio('MASS') >= 0.05 and aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.05 then
+                elseif aiBrain:GetEconomyStoredRatio('MASS') >= 0.20 and aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.60 then
                     -- If we assist energy structure unpause the unit
                     if unit.UnitBeingAssist then
                         if EntityCategoryContains(categories.STRUCTURE * categories.ENERGYPRODUCTION, unit.UnitBeingAssist) then
@@ -203,7 +295,7 @@ function LocationRangeManagerThread(aiBrain)
                 if factory and not factory.Dead and not factory:BeenDestroyed() and factory:IsUnitState('Building') == false and factory:IsUnitState('Upgrading') == false then
                     -- check if our factory is more then 30 seconds inactice
                     if factory.LastActive and GetGameTimeSeconds() - factory.LastActive > 30 then
-                        SPEW('* Uveso-AI: LocationRangeManagerThread: Factory '..k..' at location ('..baseLocation..') is not working for '.. math.floor(GetGameTimeSeconds() - factory.LastActive) ..' seconds. Restarting factory... ')
+                        SPEW('* Uveso-AI: LocationRangeManagerThread: "Factory '..k..'" at location "'..baseLocation..'" is not working. Last activity "'.. math.floor(GetGameTimeSeconds() - factory.LastActive) ..'" seconds ago. Reforking FactoryManager.')
                         -- fork a new build thread for our factory
                         managers.FactoryManager:ForkThread(managers.FactoryManager.DelayBuildOrder, factory, factory.BuilderManagerData.BuilderType, 1)
                     end
@@ -211,18 +303,23 @@ function LocationRangeManagerThread(aiBrain)
             end
         end
         -- Check engineers
-        EngineerUnits = aiBrain:GetListOfUnits(categories.MOBILE * categories.ENGINEER * categories.TECH1 , false) -- also gets unbuilded units (planed to build)
-        for k, engineer in EngineerUnits do
-            if engineer.LastActive and GetGameTimeSeconds() - engineer.LastActive > 30 then
-                --WARN('* Uveso-AI: LocationRangeManagerThread: engineer '..k..' is not working for '.. math.floor(GetGameTimeSeconds() - engineer.LastActive) ..' seconds.')
-            end
-        end
+        -- at the moment engineers are working well. no need to validate
+--        EngineerUnits = aiBrain:GetListOfUnits(categories.MOBILE * categories.ENGINEER * categories.TECH1, false, false) -- also gets unbuilded units (planed to build)
+--        for k, engineer in EngineerUnits do
+--            if engineer.LastActive then
+--                local LastActive = GetGameTimeSeconds() - engineer.LastActive
+--                engineer:SetCustomName(LastActive)
+--                if LastActive > 70 then
+--                    WARN('* Uveso-AI: LocationRangeManagerThread: "engineer '..k..'" at location "'..'X'..'" is not working. Last activity "'.. math.floor(LastActive) ..'" seconds ago.')
+--                end
+--            end
+--        end
         
         -- Check and set the location radius of our main base and expansions
         local BasePositions = BaseRanger(aiBrain)
         -- Check if we have units outside the range of any BaseManager
         -- Get all units from our ArmyPool. These are units without a special platoon or task. They have nothing to do.
-        ArmyUnits = aiBrain:GetListOfUnits(categories.MOBILE - categories.MOBILESONAR, false) -- also gets unbuilded units (planed to build)
+        ArmyUnits = aiBrain:GetListOfUnits(categories.MOBILE - categories.MOBILESONAR, false, false) -- also gets unbuilded units (planed to build)
         -- Loop over every unit that has no platton and is idle
         local LoopDelay = 0
         for _, unit in ArmyUnits do
@@ -305,19 +402,19 @@ function LocationRangeManagerThread(aiBrain)
                 unitcounterdelayer = 0
                 local MaxCap = GetArmyUnitCap(aiBrain:GetArmyIndex())
                 LOG('  ')
-                LOG(' 05.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE * categories.ENGINEER * categories.TECH1, true) ) )..' -  Engineers TECH1  - ' )
-                LOG(' 05.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE * categories.ENGINEER * categories.TECH2, true) ) )..' -  Engineers TECH2  - ' )
-                LOG(' 05.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE * categories.ENGINEER * categories.TECH3 - categories.SUBCOMMANDER, true) ) )..' -  Engineers TECH3  - ' )
-                LOG(' 03.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE * categories.SUBCOMMANDER, true) ) )..' -  SubCommander   - ' )
-                LOG(' 45.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE - categories.ENGINEER, true) ) )..' -  Mobile Attack Force  - ' )
-                LOG(' 10.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE * categories.MASSEXTRACTION, true) ) )..' -  Extractors    - ' )
-                LOG(' 12.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE * categories.DEFENSE, true) ) )..' -  Structures Defense   - ' )
-                LOG(' 12.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY, true) ) )..' -  Structures all   - ' )
-                LOG(' 02.4 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE * categories.FACTORY * categories.LAND, true) ) )..' -  Factory Land  - ' )
-                LOG(' 02.4 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE * categories.FACTORY * categories.AIR, true) ) )..' -  Factory Air   - ' )
-                LOG(' 02.4 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE * categories.FACTORY * categories.NAVAL, true) ) )..' -  Factory Sea   - ' )
+                LOG(' 05.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE * categories.ENGINEER * categories.TECH1, false, false) ) )..' -  Engineers TECH1  - ' )
+                LOG(' 05.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE * categories.ENGINEER * categories.TECH2, false, false) ) )..' -  Engineers TECH2  - ' )
+                LOG(' 05.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE * categories.ENGINEER * categories.TECH3 - categories.SUBCOMMANDER, false, false) ) )..' -  Engineers TECH3  - ' )
+                LOG(' 03.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE * categories.SUBCOMMANDER, false, false) ) )..' -  SubCommander   - ' )
+                LOG(' 45.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE - categories.ENGINEER, false, false) ) )..' -  Mobile Attack Force  - ' )
+                LOG(' 10.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE * categories.MASSEXTRACTION, false, false) ) )..' -  Extractors    - ' )
+                LOG(' 12.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE * categories.DEFENSE, false, false) ) )..' -  Structures Defense   - ' )
+                LOG(' 12.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY, false, false) ) )..' -  Structures all   - ' )
+                LOG(' 02.4 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE * categories.FACTORY * categories.LAND, false, false) ) )..' -  Factory Land  - ' )
+                LOG(' 02.4 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE * categories.FACTORY * categories.AIR, false, false) ) )..' -  Factory Air   - ' )
+                LOG(' 02.4 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE * categories.FACTORY * categories.NAVAL, false, false) ) )..' -  Factory Sea   - ' )
                 LOG('------|------')
-                LOG('100.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE + categories.MOBILE, true) ) )..' -  Structure + Mobile   - ' )
+                LOG('100.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE + categories.MOBILE, false, false) ) )..' -  Structure + Mobile   - ' )
             end
         end
         WaitTicks(50)

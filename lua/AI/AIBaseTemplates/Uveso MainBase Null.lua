@@ -8,7 +8,7 @@
 #****************************************************************************
 
 BaseBuilderTemplate {
-    BaseTemplateName = 'Uveso Null',
+    BaseTemplateName = 'uvesonull',
     Builders = {
         -----------------------------------------------------------------------------
         -- ==== ACU ==== --
@@ -24,7 +24,10 @@ BaseBuilderTemplate {
 
         'EnergyBuilders Uveso',                       -- Priority = 1100
 
-        'FactoryBuildersExp Uveso',
+        'FactoryBuilders 1st Uveso',
+        'FactoryBuildersExperimental Uveso',
+        'FactoryBuilders RECOVER Uveso',
+
         'FactoryUpgradeBuildersRush Uveso',
         'GateConstruction Uveso',
         'GateFactoryBuilders Uveso',
@@ -38,10 +41,14 @@ BaseBuilderTemplate {
         -- ==== Factory ==== --
         -----------------------------------------------------------------------------
         -- Build Land/Air Factories
-        'FactoryBuildersRush Uveso',
+--        'FactoryBuilders RUSH Uveso',
         -- Upgrade Factories TECH1->TECH2 and TECH2->TECH3
 --        'FactoryUpgradeBuildersRush Uveso',
 
+        -----------------------------------------------------------------------------
+        -- ==== Sniper Former ==== --
+        -----------------------------------------------------------------------------
+        'SACU TeleportFormer',
 
     },
     -- Not used by Uveso's AI. We always need intel in case the commander is dead.
@@ -75,7 +82,7 @@ BaseBuilderTemplate {
         local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
         if personality == 'uvesonull' or personality == 'uvesonullcheat' then
             --LOG('### M-FirstBaseFunction '..personality)
-            return 1000, 'Uveso Null'
+            return 1000, 'uvesonull'
         end
         return -1
     end,

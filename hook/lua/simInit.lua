@@ -178,7 +178,7 @@ function GraphRender()
     WaitTicks(100)
     while true do
         -- draw all paths with location radius and AI Pathfinding
-        if ScenarioInfo.Options.AIPathingDebug == 'all' then
+        if ScenarioInfo.Options.AIPathingDebug == 'all' or ScenarioInfo.Options.AIPathingDebug == 'path' then
             -- display first all land nodes (true will let them blink)
             if GetGameTimeSeconds() < 15 then
                 DrawPathGraph('DefaultLand', false)
@@ -215,7 +215,9 @@ function GraphRender()
                 --DrawPathGraph('DefaultAir', false)
             end
             -- Draw the radius of each base(manager)
-            DrawBaseRanger()
+            if ScenarioInfo.Options.AIPathingDebug == 'all' then
+                DrawBaseRanger()
+            end
             DrawAIPatchCache()
         -- Display land path permanent
         elseif ScenarioInfo.Options.AIPathingDebug == 'land' then

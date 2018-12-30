@@ -62,8 +62,8 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
---            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
---            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
@@ -261,7 +261,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 PanicZone Tank',
         PlatoonTemplate = 'T1LandDFTank',
-        Priority = 18500,
+        Priority = 18600,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 1, categories.MOBILE * categories.LAND - categories.SCOUT }}, -- radius, LocationType, unitCount, categoryEnemy
@@ -422,12 +422,12 @@ BuilderGroup {
         Priority = 160,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatio', { 0.90, 'MOBILE LAND DIRECTFIRE TECH1', '<','MOBILE LAND INDIRECTFIRE TECH1' } },
+            { UCBC, 'HaveUnitRatio', { 4.0, 'MOBILE LAND DIRECTFIRE TECH1', '<','MOBILE LAND INDIRECTFIRE TECH1' } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
@@ -441,13 +441,13 @@ BuilderGroup {
         Priority = 160,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatio', { 0.3, 'MOBILE LAND BOT TECH1', '<','MOBILE LAND INDIRECTFIRE TECH1' } },
+            { UCBC, 'HaveUnitRatio', { 2.0, 'MOBILE LAND BOT TECH1', '<','MOBILE LAND INDIRECTFIRE TECH1' } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             { MIBC, 'FactionIndex', { 1, 2, 3 , 5 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
@@ -461,12 +461,12 @@ BuilderGroup {
         Priority = 160,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatio', { 0.05, 'MOBILE LAND ANTIAIR TECH1', '<','MOBILE LAND INDIRECTFIRE TECH1' } },
+            { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE LAND ANTIAIR TECH1', '<','MOBILE LAND INDIRECTFIRE TECH1' } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
@@ -484,12 +484,12 @@ BuilderGroup {
         BuilderType = 'Land',
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatio', { 2.00, 'MOBILE LAND DIRECTFIRE TECH2', '<','MOBILE LAND INDIRECTFIRE TECH2' } },
+            { UCBC, 'HaveUnitRatio', { 8.00, 'MOBILE LAND DIRECTFIRE TECH2', '<','MOBILE LAND INDIRECTFIRE TECH2' } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
@@ -503,12 +503,12 @@ BuilderGroup {
         BuilderType = 'Land',
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatio', { 2.00, 'MOBILE LAND DIRECTFIRE TECH2', '<','MOBILE LAND INDIRECTFIRE TECH2' } },
+            { UCBC, 'HaveUnitRatio', { 8.00, 'MOBILE LAND DIRECTFIRE TECH2', '<','MOBILE LAND INDIRECTFIRE TECH2' } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
@@ -522,12 +522,12 @@ BuilderGroup {
         BuilderType = 'Land',
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatio', { 2.0, 'MOBILE LAND DIRECTFIRE TECH2', '<','MOBILE LAND INDIRECTFIRE TECH2' } },
+            { UCBC, 'HaveUnitRatio', { 8.0, 'MOBILE LAND DIRECTFIRE TECH2', '<','MOBILE LAND INDIRECTFIRE TECH2' } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
@@ -545,7 +545,7 @@ BuilderGroup {
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
@@ -562,12 +562,12 @@ BuilderGroup {
         Priority = 350,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatio', { 2.0, 'MOBILE LAND DIRECTFIRE TECH3', '<','MOBILE LAND INDIRECTFIRE TECH3' } },
+            { UCBC, 'HaveUnitRatio', { 8.0, 'MOBILE LAND DIRECTFIRE TECH3', '<','MOBILE LAND INDIRECTFIRE TECH3' } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 2.0, 30.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'UnitCapCheckLess', { 0.99 } },
@@ -580,12 +580,12 @@ BuilderGroup {
         Priority = 350,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatio', { 2.0, 'MOBILE LAND DIRECTFIRE TECH3', '<','MOBILE LAND INDIRECTFIRE TECH3' } },
+            { UCBC, 'HaveUnitRatio', { 8.0, 'MOBILE LAND DIRECTFIRE TECH3', '<','MOBILE LAND INDIRECTFIRE TECH3' } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 2.0, 30.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'UnitCapCheckLess', { 0.99 } },
@@ -598,12 +598,12 @@ BuilderGroup {
         Priority = 350,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatio', { 2.0, 'MOBILE LAND DIRECTFIRE TECH3', '<','MOBILE LAND INDIRECTFIRE TECH3' } },
+            { UCBC, 'HaveUnitRatio', { 8.0, 'MOBILE LAND DIRECTFIRE TECH3', '<','MOBILE LAND INDIRECTFIRE TECH3' } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 2.0, 30.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'UnitCapCheckLess', { 0.99 } },
@@ -616,12 +616,12 @@ BuilderGroup {
         Priority = 350,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatio', { 2.0, 'MOBILE LAND ANTIAIR TECH3', '<','MOBILE LAND INDIRECTFIRE TECH3' } },
+            { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE LAND ANTIAIR TECH3', '<','MOBILE LAND INDIRECTFIRE TECH3' } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 2.0, 30.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'UnitCapCheckLess', { 0.99 } },
@@ -631,15 +631,16 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 MobileShields',
         PlatoonTemplate = 'T3MobileShields',
-        Priority = 0,
+        Priority = 350,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatio', { 2.0, 'MOBILE LAND SHIELD TECH3', '<','MOBILE LAND INDIRECTFIRE TECH3' } },
+            { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE LAND SHIELD', '<','MOBILE LAND INDIRECTFIRE TECH3' } },
+            { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE LAND STEALTHFIELD', '<','MOBILE LAND INDIRECTFIRE TECH3' } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 2.0, 30.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'UnitCapCheckLess', { 0.99 } },

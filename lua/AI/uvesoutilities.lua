@@ -849,3 +849,20 @@ function CDRParkingHome(platoon,cdr)
     return
 end
 
+function RandomizePosition(position)
+    local Posx = position[1]
+    local Posz = position[3]
+    local X = -1
+    local Z = -1
+    while X <= 0 or X >= ScenarioInfo.size[1] do
+        X = Posx + Random(-10, 10)
+    end
+    while Z <= 0 or Z >= ScenarioInfo.size[2] do
+        Z = Posz + Random(-10, 10)
+    end
+    local Y = GetTerrainHeight(Posx, Posz)
+    if GetSurfaceHeight(Posx, Posz) > Y then
+        Y = GetSurfaceHeight(Posx, Posz)
+    end
+    return {X, Y, Z}
+end

@@ -28,14 +28,6 @@ PlatoonTemplate {
     },
 }
 PlatoonTemplate {
-    Name = 'AddToRepairShieldsPlatoon',
-    Plan = 'PlatoonMerger',
-    GlobalSquads = {
-        { categories.SUBCOMMANDER , 1, 300, 'support', 'none' }
-    },
-}
-
-PlatoonTemplate {
     Name = 'U1EngineerTransfer',
     Plan = 'TransferAIUveso',
     GlobalSquads = {

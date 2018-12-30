@@ -17,20 +17,140 @@ BaseMilitaryZone = math.max( 250, BaseMilitaryZone )
 -- ===================================================-======================================================== --
 -- ==                             Build Factories Land/Air/Sea/Quantumgate                                   == --
 -- ===================================================-======================================================== --
+-- ================ --
+--    TECH 1 2nd    --
+-- ================ --
+BuilderGroup {
+    BuilderGroupName = 'FactoryBuilders 1st Uveso',                             -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuildersType = 'EngineerBuilder',
+    Builder {
+        BuilderName = 'UC Land Factory 2nd',
+        PlatoonTemplate = 'CommanderBuilder',
+        Priority = 16600,
+        DelayEqualBuildPlattons = {'Factories', 3},
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.STRUCTURE * categories.FACTORY * categories.LAND } },
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconIncome',  { 0.8, 12.0}}, -- Absolut Base income
+            -- Don't build it if...
+            { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH1 }},
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapFactory , '<=', categories.STRUCTURE * categories.FACTORY * categories.LAND } }, -- Maximal 3 factories at 125 unitcap, 12 factories at 500 unitcap...
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Construction = {
+                Location = 'LocationType',
+                BuildStructures = {
+                    'T1LandFactory',
+                },
+            }
+        }
+    },
+    Builder {
+        BuilderName = 'UC AIR Factory 1st',
+        PlatoonTemplate = 'CommanderBuilder',
+        Priority = 16600,
+        DelayEqualBuildPlattons = {'Factories', 3},
+        BuilderConditions = {
+            -- When do we want to build this ?
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.AIR - categories.SUPPORTFACTORY } },
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 3, categories.STRUCTURE * categories.FACTORY * categories.LAND } },
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.00}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconIncome',  { 0.8, 0.1}}, -- Absolut Base income
+            -- Don't build it if...
+            { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.FACTORY * categories.AIR * categories.TECH1 }},
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapFactory , '<=', categories.STRUCTURE * categories.FACTORY * categories.AIR } }, -- Maximal 3 factories at 125 unitcap, 12 factories at 500 unitcap...
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Construction = {
+                Location = 'LocationType',
+                BuildStructures = {
+                    'T1AirFactory',
+                },
+            }
+        }
+    },
+}
+-- ==================== --
+--    TECH 1 RECOVER    --
+-- ==================== --
+BuilderGroup {
+    BuilderGroupName = 'FactoryBuilders RECOVER Uveso',                             -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuildersType = 'EngineerBuilder',
+    Builder {
+        BuilderName = 'U1 Land Factory RECOVER',
+        PlatoonTemplate = 'EngineerBuilder',
+        Priority = 19300,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND - categories.SUPPORTFACTORY } },
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Location = 'LocationType',
+            Construction = {
+                BuildClose = false,
+                AdjacencyCategory = 'MASSEXTRACTION TECH3, MASSEXTRACTION TECH2, MASSEXTRACTION TECH1',
+                LocationType = 'LocationType',
+                BuildStructures = {
+                    'T1LandFactory',
+                },
+            }
+        }
+    },
+    Builder {
+        BuilderName = 'UC Land Factory RECOVER',
+        PlatoonTemplate = 'CommanderBuilder',
+        Priority = 19300,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND - categories.SUPPORTFACTORY } },
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Location = 'LocationType',
+            Construction = {
+                BuildClose = false,
+                AdjacencyCategory = 'MASSEXTRACTION TECH3, MASSEXTRACTION TECH2, MASSEXTRACTION TECH1',
+                LocationType = 'LocationType',
+                BuildStructures = {
+                    'T1LandFactory',
+                },
+            }
+        }
+    },
+}
 -- ============= --
 --    AI-RUSH    --
 -- ============= --
 BuilderGroup {
-    BuilderGroupName = 'FactoryBuildersRush Uveso',                             -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'FactoryBuilders RUSH Uveso',                             -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
-        BuilderName = 'UC Land Factory Mass > 35%',
+        BuilderName = 'UC Land Factory Mass > 15%',
         PlatoonTemplate = 'CommanderBuilder',
         Priority = 17750,
         DelayEqualBuildPlattons = {'Factories', 3},
         BuilderConditions = {
             -- When do we want to build this ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.35, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
@@ -52,13 +172,13 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'UC Land Factory Mass > 50%',
+        BuilderName = 'UC Land Factory Mass > 35%',
         PlatoonTemplate = 'CommanderBuilder',
         Priority = 17600,
         DelayEqualBuildPlattons = {'Factories', 3},
         BuilderConditions = {
             -- When do we want to build this ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.35, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
@@ -80,14 +200,14 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'U1 Land Factory Mass > 35%',
+        BuilderName = 'U1 Land Factory Mass > 15%',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17500,
         InstanceCount = 1,                                                      -- Number of plattons that will be formed with this template.
         DelayEqualBuildPlattons = {'Factories', 3},
         BuilderConditions = {
             -- When do we want to build this ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.35, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Do we need additional conditions to build it ?
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH1' }},
             -- Have we the eco to build it ?
@@ -110,14 +230,14 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'U1 Land Factory Mass > 50% Emergency',
+        BuilderName = 'U1 Land Factory Mass > 35% Emergency',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17500,
         InstanceCount = 1,                                                      -- Number of plattons that will be formed with this template.
         DelayEqualBuildPlattons = {'Factories', 3},
         BuilderConditions = {
             -- When do we want to build this ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.35, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
@@ -177,7 +297,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'HaveUnitRatio', { 0.25, 'STRUCTURE FACTORY AIR', '<','STRUCTURE FACTORY LAND' } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.30, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.10, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 2, categories.STRUCTURE * categories.FACTORY * categories.TECH1 }},
@@ -206,7 +326,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'HaveUnitRatio', { 0.25, 'STRUCTURE FACTORY AIR', '<','STRUCTURE FACTORY LAND' } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.30, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
@@ -226,7 +346,7 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'U1 Air Factory Ratio Rush 75',
+        BuilderName = 'U1 Air Factory Ratio Rush 50',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17550,
         DelayEqualBuildPlattons = {'Factories', 3},
@@ -236,7 +356,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'HaveUnitRatio', { 0.75, 'STRUCTURE FACTORY AIR', '<','STRUCTURE FACTORY LAND' } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.75, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
@@ -255,57 +375,12 @@ BuilderGroup {
             }
         }
     },
-    -- ==================== --
-    --    TECH 1 RECOVER    --
-    -- ==================== --
-    Builder {
-        BuilderName = 'U1 Land Factory RECOVER',
-        PlatoonTemplate = 'EngineerBuilder',
-        Priority = 19300,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND - categories.SUPPORTFACTORY } },
-            -- Do we need additional conditions to build it ?
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-        },
-        BuilderType = 'Any',
-        BuilderData = {
-            Construction = {
-                Location = 'LocationType',
-                BuildStructures = {
-                    'T1LandFactory',
-                },
-            }
-        }
-    },
-    Builder {
-        BuilderName = 'UC Land Factory RECOVER',
-        PlatoonTemplate = 'CommanderBuilder',
-        Priority = 19300,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND - categories.SUPPORTFACTORY } },
-            -- Do we need additional conditions to build it ?
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-        },
-        BuilderType = 'Any',
-        BuilderData = {
-            Construction = {
-                Location = 'LocationType',
-                BuildStructures = {
-                    'T1LandFactory',
-                },
-            }
-        }
-    },
 }
 -- ====================== --
 --    AI-EXPERIMENTALS    --
 -- ====================== --
 BuilderGroup {
-    BuilderGroupName = 'FactoryBuildersExp Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'FactoryBuildersExperimental Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'UC Land Factory CapCheck',
@@ -424,119 +499,13 @@ BuilderGroup {
             }
         }
     },
-    -- ==================== --
-    --    TECH 1 RECOVER    --
-    -- ==================== --
-    Builder {
-        BuilderName = 'U1 Land Factory RECOVER',
-        PlatoonTemplate = 'EngineerBuilder',
-        Priority = 19300,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND - categories.SUPPORTFACTORY } },
-            -- Do we need additional conditions to build it ?
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-        },
-        BuilderType = 'Any',
-        BuilderData = {
-            Construction = {
-                Location = 'LocationType',
-                BuildStructures = {
-                    'T1LandFactory',
-                },
-            }
-        }
-    },
-    Builder {
-        BuilderName = 'UC Land Factory RECOVER',
-        PlatoonTemplate = 'CommanderBuilder',
-        Priority = 19300,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND - categories.SUPPORTFACTORY } },
-            -- Do we need additional conditions to build it ?
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-        },
-        BuilderType = 'Any',
-        BuilderData = {
-            Construction = {
-                Location = 'LocationType',
-                BuildStructures = {
-                    'T1LandFactory',
-                },
-            }
-        }
-    },
 }
 -- ================= --
 --    AI-ADAPTIVE    --
 -- ================= --
 BuilderGroup {
-    BuilderGroupName = 'FactoryBuilders Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'FactoryBuilders ADAPTIVE Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
-    -- ================ --
-    --    TECH 1 2nd    --
-    -- ================ --
-    Builder {
-        BuilderName = 'UC Land Factory 2nd',
-        PlatoonTemplate = 'CommanderBuilder',
-        Priority = 16600,
-        DelayEqualBuildPlattons = {'Factories', 3},
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.STRUCTURE * categories.FACTORY * categories.LAND } },
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
-            -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconIncome',  { 0.8, 12.0}}, -- Absolut Base income
-            -- Don't build it if...
-            { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH1 }},
-            -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapFactory , '<=', categories.STRUCTURE * categories.FACTORY * categories.LAND } }, -- Maximal 3 factories at 125 unitcap, 12 factories at 500 unitcap...
-        },
-        BuilderType = 'Any',
-        BuilderData = {
-            Construction = {
-                Location = 'LocationType',
-                BuildStructures = {
-                    'T1LandFactory',
-                },
-            }
-        }
-    },
-    Builder {
-        BuilderName = 'UC AIR Factory 1st',
-        PlatoonTemplate = 'CommanderBuilder',
-        Priority = 16600,
-        DelayEqualBuildPlattons = {'Factories', 3},
-        BuilderConditions = {
-            -- When do we want to build this ?
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.AIR - categories.SUPPORTFACTORY } },
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 3, categories.STRUCTURE * categories.FACTORY * categories.LAND } },
-            -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.00}}, -- Ratio from 0 to 1. (1=100%)
-            { EBC, 'GreaterThanEconIncome',  { 0.8, 0.1}}, -- Absolut Base income
-            -- Don't build it if...
-            { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.FACTORY * categories.AIR * categories.TECH1 }},
-            -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapFactory , '<=', categories.STRUCTURE * categories.FACTORY * categories.AIR } }, -- Maximal 3 factories at 125 unitcap, 12 factories at 500 unitcap...
-        },
-        BuilderType = 'Any',
-        BuilderData = {
-            Construction = {
-                Location = 'LocationType',
-                BuildStructures = {
-                    'T1AirFactory',
-                },
-            }
-        }
-    },
     -- ================== --
     --    TECH 1 Enemy    --
     -- ================== --
@@ -797,51 +766,6 @@ BuilderGroup {
                 Location = 'LocationType',
                 BuildStructures = {
                     'T1AirFactory',
-                },
-            }
-        }
-    },
-    -- ==================== --
-    --    TECH 1 RECOVER    --
-    -- ==================== --
-    Builder {
-        BuilderName = 'U1 Land Factory RECOVER',
-        PlatoonTemplate = 'EngineerBuilder',
-        Priority = 19300,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND - categories.SUPPORTFACTORY } },
-            -- Do we need additional conditions to build it ?
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-        },
-        BuilderType = 'Any',
-        BuilderData = {
-            Construction = {
-                Location = 'LocationType',
-                BuildStructures = {
-                    'T1LandFactory',
-                },
-            }
-        }
-    },
-    Builder {
-        BuilderName = 'UC Land Factory RECOVER',
-        PlatoonTemplate = 'CommanderBuilder',
-        Priority = 19300,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND - categories.SUPPORTFACTORY } },
-            -- Do we need additional conditions to build it ?
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-        },
-        BuilderType = 'Any',
-        BuilderData = {
-            Construction = {
-                Location = 'LocationType',
-                BuildStructures = {
-                    'T1LandFactory',
                 },
             }
         }

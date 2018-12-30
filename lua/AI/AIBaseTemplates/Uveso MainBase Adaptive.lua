@@ -8,7 +8,7 @@
 #****************************************************************************
 
 BaseBuilderTemplate {
-    BaseTemplateName = 'UvesoAdaptiveBalanced',
+    BaseTemplateName = 'uvesoadaptive',
     Builders = {
         -----------------------------------------------------------------------------
         -- ==== ACU ==== --
@@ -56,7 +56,9 @@ BaseBuilderTemplate {
         -- ==== Factory ==== --
         -----------------------------------------------------------------------------
         -- Build Land/Air Factories
-        'FactoryBuilders Uveso',
+        'FactoryBuilders 1st Uveso',
+        'FactoryBuilders ADAPTIVE Uveso',
+        'FactoryBuilders RECOVER Uveso',
         'GateConstruction Uveso',
         -- Upgrade Factories TECH1->TECH2 and TECH2->TECH3
         'FactoryUpgradeBuildersRush Uveso',
@@ -136,6 +138,11 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         'U1 FirebaseBuilders',
 
+        -----------------------------------------------------------------------------
+        -- ==== Sniper Former ==== --
+        -----------------------------------------------------------------------------
+        'SACU TeleportFormer',
+
         -- We need this even if we have Omni View to get target informations for experimentals attack.
         -----------------------------------------------------------------------------
         -- ==== Scout BUILDER ==== --
@@ -190,9 +197,9 @@ BaseBuilderTemplate {
     end,
     FirstBaseFunction = function(aiBrain)
         local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
-        if personality == 'uveso' or personality == 'uvesocheat' then
+        if personality == 'uvesoadaptive' or personality == 'uvesoadaptivecheat' then
             --LOG('### M-FirstBaseFunction '..personality)
-            return 1000, 'UvesoAdaptiveBalanced'
+            return 1000, 'uvesoadaptive'
         end
         return -1
     end,

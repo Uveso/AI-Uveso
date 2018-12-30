@@ -66,34 +66,25 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'U3 Radar Backup',
-        PlatoonTemplate = 'T3EngineerBuilder',
-        Priority = 0,
+        BuilderName = 'U1 Reclaim T1+T2 Radar',
+        PlatoonTemplate = 'EngineerBuilder',
+        PlatoonAIPlan = 'ReclaimStructuresAI',
+        Priority = 790,
+        InstanceCount = 2,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 1, categories.OMNI * categories.STRUCTURE } },
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.OMNI * categories.STRUCTURE }},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.OMNI * categories.STRUCTURE }},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3 }},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.RADAR }},
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.90, 0.95 } }, -- Ratio from 0 to 1. (1=100%)
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconTrend', { 5.2, 800.0 } }, -- relative income
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.OMNI * categories.STRUCTURE } },
             -- Respect UnitCap
         },
-        BuilderType = 'Any',
         BuilderData = {
-            Construction = {
-                AdjacencyCategory = categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
-                AdjacencyDistance = 50,
-                BuildStructures = {
-                    'T3Radar',
-                },
-                Location = 'LocationType',
-            }
-        }
+            Location = 'LocationType',
+            Reclaim = {categories.STRUCTURE * categories.RADAR * (categories.TECH1 + categories.TECH2)},
+        },
+        BuilderType = 'Any',
     },
 }
 -- ===================================================-======================================================== --

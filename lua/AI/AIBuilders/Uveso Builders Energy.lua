@@ -464,38 +464,12 @@ BuilderGroup {
     --    EnergyStorage    --
     -- =================== --
     Builder {
-        BuilderName = 'U1 Energy Storage 3min',
-        PlatoonTemplate = 'EngineerBuilder',
-        Priority = 17750,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYSTORAGE }},
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'GreaterThanGameTimeSeconds', { 60 * 3 } },
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1,  'ENERGYSTORAGE' }},
-        },
-        BuilderType = 'Any',
-        BuilderData = {
-            Location = 'LocationType',
-            Construction = {
-                BuildClose = true,
-                AdjacencyCategory = 'STRUCTURE ENERGYPRODUCTION TECH3, STRUCTURE ENERGYPRODUCTION TECH2, STRUCTURE ENERGYPRODUCTION TECH1',
-                LocationType = 'LocationType',
-                BuildStructures = {
-                    'EnergyStorage',
-                },
-            }
-        }
-    },
-    Builder {
         BuilderName = 'U1 Energy Storage 5min',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17750,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.STRUCTURE * categories.ENERGYSTORAGE }},
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYSTORAGE }},
             -- Do we need additional conditions to build it ?
             { UCBC, 'GreaterThanGameTimeSeconds', { 60 * 5 } },
             -- Have we the eco to build it ?
@@ -521,9 +495,61 @@ BuilderGroup {
         Priority = 17750,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 5, categories.STRUCTURE * categories.ENERGYSTORAGE }},
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.STRUCTURE * categories.ENERGYSTORAGE }},
             -- Do we need additional conditions to build it ?
             { UCBC, 'GreaterThanGameTimeSeconds', { 60 * 7 } },
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1,  'ENERGYSTORAGE' }},
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Location = 'LocationType',
+            Construction = {
+                BuildClose = true,
+                AdjacencyCategory = 'STRUCTURE ENERGYPRODUCTION TECH3, STRUCTURE ENERGYPRODUCTION TECH2, STRUCTURE ENERGYPRODUCTION TECH1',
+                LocationType = 'LocationType',
+                BuildStructures = {
+                    'EnergyStorage',
+                },
+            }
+        }
+    },
+    Builder {
+        BuilderName = 'U1 Energy Storage 10min',
+        PlatoonTemplate = 'EngineerBuilder',
+        Priority = 17750,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.STRUCTURE * categories.ENERGYSTORAGE }},
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60 * 10 } },
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1,  'ENERGYSTORAGE' }},
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Location = 'LocationType',
+            Construction = {
+                BuildClose = true,
+                AdjacencyCategory = 'STRUCTURE ENERGYPRODUCTION TECH3, STRUCTURE ENERGYPRODUCTION TECH2, STRUCTURE ENERGYPRODUCTION TECH1',
+                LocationType = 'LocationType',
+                BuildStructures = {
+                    'EnergyStorage',
+                },
+            }
+        }
+    },
+    Builder {
+        BuilderName = 'U1 Energy Storage 15min',
+        PlatoonTemplate = 'EngineerBuilder',
+        Priority = 17750,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 5, categories.STRUCTURE * categories.ENERGYSTORAGE }},
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60 * 15 } },
             -- Have we the eco to build it ?
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1,  'ENERGYSTORAGE' }},
@@ -580,10 +606,8 @@ BuilderGroup {
         Priority = 790,
         InstanceCount = 2,
         BuilderConditions = {
-            { EBC, 'GreaterThanEconStorageRatio', { 0.00, 1.00}}, -- Ratio from 0 to 1. (1=100%)
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3 }},
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.TECH1 * categories.ENERGYPRODUCTION - categories.HYDROCARBON }},
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH1' }},
         },
         BuilderData = {
             Location = 'LocationType',
@@ -598,14 +622,12 @@ BuilderGroup {
         Priority = 0,
         InstanceCount = 2,
         BuilderConditions = {
-            { EBC, 'GreaterThanEconStorageRatio', { 0.00, 1.00}}, -- Ratio from 0 to 1. (1=100%)
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 3, categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3 }},
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.TECH2 * categories.ENERGYPRODUCTION - categories.HYDROCARBON }},
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH1' }},
         },
         BuilderData = {
             Location = 'LocationType',
-            Reclaim = {categories.STRUCTURE * categories.TECH2 * categories.ENERGYPRODUCTION - categories.HYDROCARBON},
+            Reclaim = {categories.STRUCTURE * categories.TECH2 * categories.ENERGYPRODUCTION},
         },
         BuilderType = 'Any',
     },

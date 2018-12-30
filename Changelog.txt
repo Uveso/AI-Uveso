@@ -1,4 +1,19 @@
 *************************************************************************************************************************************
+v49 (30.Dec.2018)
+
+- New: Added new sub AI: "AIx: Uveso Overwhelm" (will start overwhelm attack after 35 minutes)
+- New: Ecomanager is now able to change dynamically the cheat/build factor for "Overwhelm" AI.
+- New: Added option for path debugging to only show paths (without locations).
+- New: Sub Commander can now upgrade and teleport into enemy base (first snipe platoon).
+- Fix: Excluded SubCommander from any attack platoon, so they can be assigned to special tasks.
+- Opt: AI is reclaiming more unused structures on unitcap
+- Opt: AI no longer has a second omni radar as backup.
+- Opt: Reduced the attack range for the ACU.
+- Opt: Assister will now assist the build of a paragon only if mass storage is over 20%
+- Opt: Targetfunction tweaked for lower cpu impact.
+- Opt: Sea Attackplatoons now check for units with Jamming abilities and activate it.
+
+*************************************************************************************************************************************
 v48 (19.Dec.2018)
 
 - New: Removed old CDR AIBehaviors.lua and replaced it with real CDR Attack platoon.

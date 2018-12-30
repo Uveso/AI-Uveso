@@ -26,7 +26,7 @@ BuilderGroup {
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AttackEnemyStrength = 500,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.ALLUNITS - categories.ENGINEER - categories.AIR - categories.SCOUT, -- Only find targets matching these categories.
+            TargetSearchCategory = categories.ALLUNITS - (categories.ENGINEER * categories.TECH1 * categories.TECH2) - categories.AIR - categories.SCOUT , -- Only find targets matching these categories.
             PrioritizedCategories = {                                           -- Attack these targets.
                 'COMMAND',
                 'EXPERIMENTAL',

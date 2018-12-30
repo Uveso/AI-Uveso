@@ -586,6 +586,7 @@ BuilderGroup {
             GetTargetsFromBase = false,                         -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100000,                                         -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = 'STRUCTURE, MOBILE',                         -- Only find targets matching these categories.
             PrioritizedCategories = {
                 'STRUCTURE ANTIAIR TECH3',

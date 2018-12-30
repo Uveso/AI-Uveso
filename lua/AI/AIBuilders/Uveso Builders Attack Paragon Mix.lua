@@ -179,7 +179,7 @@ BuilderGroup {
 -- ===================================================-======================================================== --
     Builder {
         BuilderName = 'Turbo U3 SML',
-        PlatoonTemplate = 'T3EngineerBuilder',
+        PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 1100,
         InstanceCount = 6,
         BuilderConditions = {

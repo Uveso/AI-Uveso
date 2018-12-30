@@ -14,6 +14,9 @@ Uveso_0010="Eine KI die auf Experimentals fokussiert ist. Gut für 10x10 und 20x
 Uveso_0011="KIx: Uveso Experimentals"
 Uveso_0012="Eine Cheat KI die auf Experimentals fokussiert ist. Gut für 10x10 und 20x20 Karten."
 
+Uveso_0017="AIx: Uveso Brecher"
+Uveso_0018="Eine Cheat KI die ab der 35. Minute den Gegner überrennt. Gut für 5x5, 10x10 und 20x20 maps."
+
 Uveso_0013="KI: Uveso Einfach"
 Uveso_0014="Eine einfache KI. Gut für 5x5, 10x10 und 20x20 Karten"
 Uveso_0015="KIx: Uveso Einfach"
@@ -23,6 +26,8 @@ aisettings_0153="KI Wegfindung"
 aisettings_0154="Zeigt Wegfindung, Wegpunkte und Standort Radien (nur KI-Uveso)"
 aisettings_0155="Aus"
 aisettings_0156="Anzeige ist aus"
+aisettings_0185="Wegfindung"
+aisettings_0186="Zeigt Wegfindung für alle Ebenen"
 aisettings_0157="Wegfindung und Standorte"
 aisettings_0158="Zeigt Wegfindung und Standort Radien"
 aisettings_0159="Pfade und Land Marker"
