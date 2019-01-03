@@ -1,9 +1,9 @@
 
 -- Permanent Hook. We need this to build platoons with Amphibious units only.
 
-local OldModBlueprints = ModBlueprints
+local TheOldModBlueprints = ModBlueprints
 function ModBlueprints(all_blueprints)
-    OldModBlueprints(all_blueprints)
+    TheOldModBlueprints(all_blueprints)
     for id,bp in all_blueprints.Unit do
         -- Add category 'AMPHIBIOUS' for AI platoon builder
         if bp.Physics and bp.Physics.MotionType and (bp.Physics.MotionType == 'RULEUMT_Amphibious' or bp.Physics.MotionType == 'RULEUMT_Hover' or bp.Physics.MotionType == 'RULEUMT_AmphibiousFloating') then

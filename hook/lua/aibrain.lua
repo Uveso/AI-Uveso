@@ -1,11 +1,11 @@
 
-oldAIBrain = AIBrain
-AIBrain = Class(oldAIBrain) {
+TheOldAIBrain = AIBrain
+AIBrain = Class(TheOldAIBrain) {
 
     BaseMonitorThread = function(self)
        -- Only use this with AI-Uveso
         if not self.Uveso then
-            return oldAIBrain.BaseMonitorThread(self)
+            return TheOldAIBrain.BaseMonitorThread(self)
         end
         WaitTicks(10)
         -- We are leaving this forked thread here because we don't need it.
@@ -14,7 +14,7 @@ AIBrain = Class(oldAIBrain) {
     ParseIntelThread = function(self)
         -- Only use this with AI-Uveso
         if not self.Uveso then
-            return oldAIBrain.ParseIntelThread(self)
+            return TheOldAIBrain.ParseIntelThread(self)
         end
         WaitTicks(10)
         -- We are leaving this forked thread here because we don't need it.
@@ -23,7 +23,7 @@ AIBrain = Class(oldAIBrain) {
     EconomyMonitor = function(self)
         -- Only use this with AI-Uveso
         if not self.Uveso then
-            return oldAIBrain.EconomyMonitor(self)
+            return TheOldAIBrain.EconomyMonitor(self)
         end
         WaitTicks(10)
         -- We are leaving this forked thread here because we don't need it.

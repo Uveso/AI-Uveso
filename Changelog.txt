@@ -1,4 +1,11 @@
 *************************************************************************************************************************************
+v50 (03.Jan.2019)
+
+- Fix: AI now also works with the Nomads mod. (changed hooknames to prevent destructive hooking)
+- Fix: Targetfunction is now ignoring the seraphim energy being
+- Fix: Targetfunction will now also ignore targets where capturing is in progress.
+
+*************************************************************************************************************************************
 v49 (30.Dec.2018)
 
 - New: Added new sub AI: "AIx: Uveso Overwhelm" (will start overwhelm attack after 35 minutes)

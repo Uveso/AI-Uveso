@@ -2,7 +2,7 @@ local CalculateBrainScore = import('/lua/sim/score.lua').CalculateBrainScore
 local Buff = import('/lua/sim/Buff.lua')
 
 -- This hook is for debug-option Platoon-Names. Hook for all AI's
-OLDExecutePlan = ExecutePlan
+TheOldExecutePlan = ExecutePlan
 function ExecutePlan(aiBrain)
     aiBrain:SetConstantEvaluate(false)
     local behaviors = import('/lua/ai/AIBehaviors.lua')
@@ -519,7 +519,6 @@ function BaseAlertManager(aiBrain)
     local mapSizeX, mapSizeZ = GetMapSize()
     local BaseMilitaryZone = math.max( mapSizeX-50, mapSizeZ-50 ) / 2               -- Half the map
     BaseMilitaryZone = math.max( 250, BaseMilitaryZone )
-    local GetEnemyUnitsInSphereOnRadar = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua').GetEnemyUnitsInSphereOnRadar
     local targets = {}
     local baseposition, radius
     local ClosestTarget
@@ -546,7 +545,7 @@ function BaseAlertManager(aiBrain)
             end 
         end
         -- Search for experimentals in BasePanicZone
-        targets = aiBrain:GetUnitsAroundPoint(categories.EXPERIMENTAL - categories.AIR, baseposition, 120, 'Enemy')
+        targets = aiBrain:GetUnitsAroundPoint(categories.EXPERIMENTAL - categories.AIR - categories.INSIGNIFICANTUNIT, baseposition, 120, 'Enemy')
         for _, unit in targets do
             if not unit.Dead then
                 if not IsEnemy( aiBrain:GetArmyIndex(), unit:GetAIBrain():GetArmyIndex() ) then continue end
@@ -561,7 +560,7 @@ function BaseAlertManager(aiBrain)
         WaitTicks(1)
         -- Search for experimentals in BaseMilitaryZone
         if not ClosestTarget then
-            targets = aiBrain:GetUnitsAroundPoint(categories.EXPERIMENTAL - categories.AIR, baseposition, BaseMilitaryZone, 'Enemy')
+            targets = aiBrain:GetUnitsAroundPoint(categories.EXPERIMENTAL - categories.AIR - categories.INSIGNIFICANTUNIT, baseposition, BaseMilitaryZone, 'Enemy')
             for _, unit in targets do
                 if not unit.Dead then
                     if not IsEnemy( aiBrain:GetArmyIndex(), unit:GetAIBrain():GetArmyIndex() ) then continue end
@@ -577,7 +576,7 @@ function BaseAlertManager(aiBrain)
         WaitTicks(1)
         -- Search for experimentals in EnemyZone
         if not ClosestTarget then
-            targets = aiBrain:GetUnitsAroundPoint(categories.EXPERIMENTAL - categories.AIR, baseposition, 1024, 'Enemy')
+            targets = aiBrain:GetUnitsAroundPoint(categories.EXPERIMENTAL - categories.AIR - categories.INSIGNIFICANTUNIT, baseposition, 1024, 'Enemy')
             for _, unit in targets do
                 if not unit.Dead then
                     if not IsEnemy( aiBrain:GetArmyIndex(), unit:GetAIBrain():GetArmyIndex() ) then continue end

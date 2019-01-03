@@ -674,12 +674,35 @@ BuilderGroup {
         BuilderType = 'Any',
     },
 }
--- =============== --
---    PanicZone    --
--- =============== --
+-- ================= --
+--    Land Former    --
+-- ================= --
+
 BuilderGroup {
     BuilderGroupName = 'Land FormBuilders Panic',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',                                        -- BuilderTypes are: EngineerBuilder, FactoryBuilder, PlatoonFormBuilder.
+-- =========== --
+--    Guards   --
+-- =========== --
+    Builder {
+        BuilderName = 'LandExperimentalGuard',
+        PlatoonTemplate = 'T3ExperimentalAAGuard',
+        PlatoonAIPlan = 'GuardUnit',
+        Priority = 750,
+        InstanceCount = 10,
+        BuilderData = {
+            GuardCategory = categories.MOBILE * categories.EXPERIMENTAL * categories.LAND - categories.ORBITALSYSTEM - categories.SATELLITE,
+            LocationType = 'LocationType',
+        },
+        BuilderConditions = {
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 5, categories.MOBILE * (categories.TECH3 + categories.TECH2) * categories.ANTIAIR - categories.SCOUT - categories.ENGINEER } },
+            { UCBC, 'UnitsNeedGuard', { categories.MOBILE * categories.EXPERIMENTAL * categories.LAND} },
+        },
+        BuilderType = 'Any',
+    },
+-- =============== --
+--    PanicZone    --
+-- =============== --
     Builder {
         BuilderName = 'U123 AntiCDR PANIC',                                     -- Random Builder Name.
         PlatoonTemplate = 'LandAttackInterceptUveso 2 5',                       -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"

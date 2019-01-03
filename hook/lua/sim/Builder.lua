@@ -1,7 +1,7 @@
 
 -- For Platoon debugging. Unremarking the debugline will print all platoons with priority inside game.log
-OLDPlatoonBuilder = PlatoonBuilder
-PlatoonBuilder = Class(OLDPlatoonBuilder) {
+TheOldPlatoonBuilder = PlatoonBuilder
+PlatoonBuilder = Class(TheOldPlatoonBuilder) {
 
     Create = function(self,brain,data,locationType)
         Builder.Create(self,brain,data,locationType)
@@ -25,8 +25,8 @@ PlatoonBuilder = Class(OLDPlatoonBuilder) {
 
 
 -- For Platoon debugging. Unremarking the debugline will print all platoons with priority inside game.log
-OLDFactoryBuilder = FactoryBuilder
-FactoryBuilder = Class(OLDFactoryBuilder) {
+TheOldFactoryBuilder = FactoryBuilder
+FactoryBuilder = Class(TheOldFactoryBuilder) {
 
     Create = function(self,brain,data,locationType)
         Builder.Create(self,brain,data,locationType)
@@ -41,8 +41,8 @@ FactoryBuilder = Class(OLDFactoryBuilder) {
 }
 
 -- For Platoon debugging. Unremarking the debugline will print all platoons with priority inside game.log
-OLDEngineerBuilder = EngineerBuilder
-EngineerBuilder = Class(OLDEngineerBuilder) {
+TheOldEngineerBuilder = EngineerBuilder
+EngineerBuilder = Class(TheOldEngineerBuilder) {
 
     Create = function(self,brain,data, locationType)
         PlatoonBuilder.Create(self,brain,data, locationType)

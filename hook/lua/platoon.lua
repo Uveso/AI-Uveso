@@ -1,8 +1,8 @@
 WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] * Uveso-AI: offset platoon.lua' )
 -- 6627
 local UUtils = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua')
-oldPlatoon = Platoon
-Platoon = Class(oldPlatoon) {
+TheOldPlatoon = Platoon
+Platoon = Class(TheOldPlatoon) {
 
 -- For AI Patch V3. 
     EngineerBuildAI = function(self)
@@ -689,7 +689,104 @@ Platoon = Class(oldPlatoon) {
             end
         end
     end,
-    
+-- For AI Patch V3. Set CaptureInProgress to prevent attacking
+    CaptureAI = function(self)
+        local engineers = {}
+        local notEngineers = {}
+
+        for k, unit in self:GetPlatoonUnits() do
+            if EntityCategoryContains(categories.ENGINEER, unit) then
+                table.insert(engineers, unit)
+            else
+                table.insert(notEngineers, unit)
+            end
+        end
+
+        self:Stop()
+        local aiBrain = self:GetBrain()
+        local index = aiBrain:GetArmyIndex()
+        local data = self.PlatoonData
+        local pos = self:GetPlatoonPosition()
+        local radius = data.Radius or 100
+        if not data.Categories then
+            error('PLATOON.LUA ERROR- CaptureAI requires Categories field',2)
+        end
+
+        local checkThreat = false
+        if data.ThreatMin and data.ThreatMax and data.ThreatRings then
+            checkThreat = true
+        end
+        while aiBrain:PlatoonExists(self) do
+            local target = AIAttackUtils.AIFindUnitRadiusThreat(aiBrain, 'Enemy', data.Categories, pos, radius, data.ThreatMin, data.ThreatMax, data.ThreatRings)
+            if target and not target.Dead then
+                local blip = target:GetBlip(index)
+                if blip then
+                    IssueClearCommands(self:GetPlatoonUnits())
+                    IssueCapture(engineers, target)
+                    -- Set CaptureInProgress to prevent attacking
+                    target.CaptureInProgress = true
+                    local guardTarget
+
+                    for i, unit in engineers do
+                        if not unit.Dead then
+                            IssueGuard(notEngineers, unit)
+                            break
+                        end
+                    end
+
+                    local allIdle
+                    repeat
+                        WaitSeconds(2)
+                        if not aiBrain:PlatoonExists(self) then
+                            return
+                        end
+                        allIdle = true
+                        for k,v in self:GetPlatoonUnits() do
+                            if not v.Dead and not v:IsIdleState() then
+                                allIdle = false
+                                break
+                            end
+                        end
+                    until allIdle or blip:BeenDestroyed() or blip:IsKnownFake(index) or blip:IsMaybeDead(index)
+                    target.CaptureInProgress = nil
+                end
+            else
+                if data.TransportReturn then
+                    local retPos = ScenarioUtils.MarkerToPosition(data.TransportReturn)
+                    self:MoveToLocation(retPos, false)
+
+                    local rect = {x0 = retPos[1]-10, y0 = retPos[3]-10, x1 = retPos[1]+10, y1 = retPos[3]+10}
+                    while true do
+                        local alive = 0
+                        local cnt = 0
+                        for k,unit in self:GetPlatoonUnits() do
+                            if not unit.Dead then
+                                alive = alive + 1
+
+                                if ScenarioUtils.InRect(unit:GetPosition(), rect) then
+                                    cnt = cnt + 1
+                                end
+                            end
+                        end
+
+                        if cnt >= alive then
+                            break
+                        end
+                        WaitTicks(5)
+                    end
+
+                    self:ForkThread(SPAI.LandAssaultWithTransports, self)
+                    break
+                else
+                    local location = AIUtils.RandomLocation(aiBrain:GetArmyStartPos())
+                    self:MoveToLocation(location, false)
+                    self:PlatoonDisband()
+                end
+            end
+            WaitSeconds(1)
+        end
+    end,
+
 -- For AI Patch V3. change platoon disband and stop. Was stopping ALL factories on disband
     UnitUpgradeAI = function(self)
         local aiBrain = self:GetBrain()

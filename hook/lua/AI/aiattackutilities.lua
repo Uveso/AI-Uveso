@@ -1,10 +1,10 @@
 
 --hook to inject own pathfinding function
-OLDPlatoonGenerateSafePathTo = PlatoonGenerateSafePathTo
+TheOldPlatoonGenerateSafePathTo = PlatoonGenerateSafePathTo
 function PlatoonGenerateSafePathTo(aiBrain, platoonLayer, startPos, endPos, optThreatWeight, optMaxMarkerDist, testPathDist)
     -- Only use this with AI-Uveso
     if not aiBrain.Uveso then
-        return OLDPlatoonGenerateSafePathTo(aiBrain, platoonLayer, startPos, endPos, optThreatWeight, optMaxMarkerDist, testPathDist)
+        return TheOldPlatoonGenerateSafePathTo(aiBrain, platoonLayer, startPos, endPos, optThreatWeight, optMaxMarkerDist, testPathDist)
     end
     if not GetPathGraphs()[platoonLayer] then
         --LOG('*AI DEBUG: PlatoonGenerateSafePathTo(): No graph for layer ('..platoonLayer..') found.')

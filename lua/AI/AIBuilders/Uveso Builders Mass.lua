@@ -300,14 +300,14 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'U1 Reclaim T1+T2 Massextraction',
+        BuilderName = 'U1 Reclaim T1+T2 Massfabrikation',
         PlatoonTemplate = 'EngineerBuilder',
         PlatoonAIPlan = 'ReclaimStructuresAI',
         Priority = 790,
         InstanceCount = 2,
         BuilderConditions = {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 20, categories.STRUCTURE * categories.MASSEXTRACTION }},
-            { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.MASSEXTRACTION * (categories.TECH1 + categories.TECH2) }},
+            { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.MASSFABRICATION * (categories.TECH1 + categories.TECH2) }},
         },
         BuilderData = {
             Location = 'LocationType',

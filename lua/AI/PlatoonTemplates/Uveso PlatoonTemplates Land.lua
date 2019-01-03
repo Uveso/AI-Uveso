@@ -154,3 +154,11 @@ PlatoonTemplate {
         { categories.EXPERIMENTAL * categories.LAND * categories.MOBILE - categories.INSIGNIFICANTUNIT, 3, 8, 'attack', 'none' },
     },
 }
+-- Assist experimentals
+PlatoonTemplate {
+    Name = 'T3ExperimentalAAGuard',
+    Plan = 'GuardUnit',
+    GlobalSquads = {
+        { categories.MOBILE * categories.LAND * (categories.TECH3 + categories.TECH2) * categories.ANTIAIR - categories.SCOUT - categories.ENGINEER, 4, 10, 'guard', 'None' }
+    },
+}

@@ -1,15 +1,17 @@
 -- This hook is for debug Option Platoon-Names. Hook for all AI's
-OLDFactoryBuilderManager = FactoryBuilderManager
-FactoryBuilderManager = Class(OLDFactoryBuilderManager) {
+TheOldFactoryBuilderManager = FactoryBuilderManager
+FactoryBuilderManager = Class(TheOldFactoryBuilderManager) {
 
     -- For AI Patch V2. 
     GetFactoryTemplate = function(self, templateName, factory)
         local templateData = PlatoonTemplates[templateName]
         if not templateData then
-            error('*AI ERROR: Invalid platoon template named - ' .. templateName)
+            SPEW('*AI WARNING: No templateData found for template '..templateName..'. ')
+            return false
         end
         if not templateData.FactionSquads then
-            error('*AI ERROR: PlatoonTemplate named: ' .. templateName .. ' does not have a GlobalSquads')
+            SPEW('*AI ERROR: PlatoonTemplate named: ' .. templateName .. ' does not have a FactionSquads')
+            return false
         end
         local template = {
             templateData.Name,
@@ -119,13 +121,13 @@ FactoryBuilderManager = Class(OLDFactoryBuilderManager) {
     -- Hook for adding factory.LastActive to restart factories.
     DelayBuildOrder = function(self,factory,bType,time)
         factory.LastActive = GetGameTimeSeconds()
-        OLDFactoryBuilderManager.DelayBuildOrder(self,factory,bType,time)
+        TheOldFactoryBuilderManager.DelayBuildOrder(self,factory,bType,time)
     end,
 
     RallyPointMonitor = function(self)
         -- Only use this with AI-Uveso
         if not self.Brain.Uveso then
-            return OLDFactoryBuilderManager.RallyPointMonitor(self)
+            return TheOldFactoryBuilderManager.RallyPointMonitor(self)
         end
         -- Exit the ForkThread RallyPointMonitor
         --LOG('*UVESO Ending forked thread RallyPointMonitor')
@@ -134,7 +136,7 @@ FactoryBuilderManager = Class(OLDFactoryBuilderManager) {
     SetRallyPoint = function(self, factory)
         -- Only use this with AI-Uveso
         if not self.Brain.Uveso then
-            return OLDFactoryBuilderManager.SetRallyPoint(self, factory)
+            return TheOldFactoryBuilderManager.SetRallyPoint(self, factory)
         end
         -- don't set any rally point, we use units on the fly.
         return true

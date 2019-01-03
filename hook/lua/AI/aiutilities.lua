@@ -80,18 +80,21 @@ end
 -- Target function
 function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, maxRange, PrioritizedTargetList, TargetSearchCategory, enemyBrain)
     if not maxRange then
-        LOG('* Uveso-AI: AIFindNearestCategoryTargetInRange: function called with empty "maxRange"' )
+        --LOG('* Uveso-AI: AIFindNearestCategoryTargetInRange: function called with empty "maxRange"' )
         return false, false, false, 'NoRange'
     end
     if not TargetSearchCategory then
-        LOG('* Uveso-AI: AIFindNearestCategoryTargetInRange: function called with empty "TargetSearchCategory"' )
+        --LOG('* Uveso-AI: AIFindNearestCategoryTargetInRange: function called with empty "TargetSearchCategory"' )
         return false, false, false, 'NoCat'
     end
     if not position then
-        LOG('* Uveso-AI: AIFindNearestCategoryTargetInRange: function called with empty "position"' )
+        --LOG('* Uveso-AI: AIFindNearestCategoryTargetInRange: function called with empty "position"' )
         return false, false, false, 'NoPos'
     end
-
+    if not platoon then
+        LOG('* Uveso-AI: AIFindNearestCategoryTargetInRange: function called with no "platoon"' )
+        return false, false, false, 'NoPos'
+    end
     local AttackEnemyStrength = platoon.PlatoonData.AttackEnemyStrength or 300
     local platoonUnits = platoon:GetPlatoonUnits()
     local PlatoonStrength = table.getn(platoonUnits)
@@ -168,6 +171,10 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
                     end
                     if Target.ReclaimInProgress then
                         --WARN('* AIFindNearestCategoryTargetInRange: ReclaimInProgress !!! Ignoring the target.')
+                        continue
+                    end
+                    if Target.CaptureInProgress then
+                        --WARN('* AIFindNearestCategoryTargetInRange: CaptureInProgress !!! Ignoring the target.')
                         continue
                     end
                     if not IsEnemy( aiBrain:GetArmyIndex(), Target:GetAIBrain():GetArmyIndex() ) then continue end
@@ -281,8 +288,12 @@ function AIFindNearestCategoryTargetInRangeCDR(aiBrain, position, maxRange, Prio
                 -- check if the Target is still alive, matches our target priority and can be attacked from our platoon
                 if not Target.Dead and EntityCategoryContains(category, Target) then
                     -- yes... we need to check if we got friendly units with GetUnitsAroundPoint(_, _, _, 'Enemy')
-                    if Target:BeenDestroyed() then
-                        WARN('* AIFindNearestCategoryTargetInRange: Unit destroyed but not .Dead !?!')
+                    if Target.ReclaimInProgress then
+                        --WARN('* AIFindNearestCategoryTargetInRange: ReclaimInProgress !!! Ignoring the target.')
+                        continue
+                    end
+                    if Target.CaptureInProgress then
+                        --WARN('* AIFindNearestCategoryTargetInRange: CaptureInProgress !!! Ignoring the target.')
                         continue
                     end
                     if Target.ReclaimInProgress then

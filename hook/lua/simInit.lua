@@ -1,14 +1,14 @@
 -- hooks for map validation on game start and debugstuff for pathfinding and base ranger.
 
-local OLDSetupSession = SetupSession
+local TheOldSetupSession = SetupSession
 function SetupSession()
-    OLDSetupSession()
+    TheOldSetupSession()
     ValidateMapAndMarkers()
 end
 
-local OLDBeginSession = BeginSession
+local TheOldBeginSession = BeginSession
 function BeginSession()
-    OLDBeginSession()
+    TheOldBeginSession()
     if ScenarioInfo.Options.AIPathingDebug ~= 'off' then
         LOG('ForkThread(GraphRender)')
         ForkThread(GraphRender)
