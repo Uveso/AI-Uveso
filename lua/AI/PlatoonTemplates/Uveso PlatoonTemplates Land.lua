@@ -20,7 +20,7 @@ PlatoonTemplate {
     Plan = 'AttackPrioritizedLandTargetsAIUveso',
     GlobalSquads = {
         { categories.MOBILE * categories.LAND * categories.INDIRECTFIRE - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND - categories.SUBCOMMANDER, 1, 100, 'Attack', 'none' },
-        { categories.ENGINEER - categories.SUBCOMMANDER, 0, 1, 'Attack', 'none' },
+        { categories.ENGINEER  - categories.COMMAND - categories.SUBCOMMANDER, 0, 1, 'Attack', 'none' },
     }
 }
 PlatoonTemplate {
@@ -28,7 +28,7 @@ PlatoonTemplate {
     Plan = 'AttackPrioritizedLandTargetsAIUveso',
     GlobalSquads = {
         { categories.MOBILE * categories.LAND * categories.DIRECTFIRE - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND - categories.SUBCOMMANDER, 1, 100, 'Attack', 'none' },
-        { categories.ENGINEER - categories.SUBCOMMANDER, 0, 1, 'Attack', 'none' },
+        { categories.ENGINEER  - categories.COMMAND - categories.SUBCOMMANDER, 0, 1, 'Attack', 'none' },
     }
 }
 PlatoonTemplate {

@@ -494,6 +494,41 @@ BuilderGroup {
     BuilderGroupName = 'Engineer Reclaim Uveso',                                -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     Builder {
+        BuilderName = 'U1 Reclaim RECOVER mass',
+        PlatoonTemplate = 'U1Reclaim',
+        Priority = 19600,
+        InstanceCount = 1,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.MASSEXTRACTION } },
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+        },
+        BuilderData = {
+            LocationType = 'LocationType',
+        },
+        BuilderType = 'Any',
+    },
+    Builder {
+        BuilderName = 'U1 Reclaim RECOVER energy',
+        PlatoonTemplate = 'U1Reclaim',
+        Priority = 19500,
+        InstanceCount = 1,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION } },
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+        },
+        BuilderData = {
+            LocationType = 'LocationType',
+        },
+        BuilderType = 'Any',
+    },
+
+    Builder {
         BuilderName = 'U1 Reclaim Resource 1',
         PlatoonTemplate = 'U1Reclaim',
         Priority = 18000,

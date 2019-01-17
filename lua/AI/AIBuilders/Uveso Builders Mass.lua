@@ -26,7 +26,7 @@ BuilderGroup {
         Priority = 19400,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'CanBuildOnMassLessThanLocationDistance', { 'LocationType', 12, -500, 0, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
+            { UCBC, 'CanBuildOnMassLessThanLocationDistance', { 'LocationType', 12, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Do we need additional conditions to build it ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.MASSEXTRACTION }},
             -- Have we the eco to build it ?
@@ -50,7 +50,7 @@ BuilderGroup {
         Priority = 19100,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'CanBuildOnMassLessThanLocationDistance', { 'LocationType', 12, -500, 0, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
+            { UCBC, 'CanBuildOnMassLessThanLocationDistance', { 'LocationType', 12, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Do we need additional conditions to build it ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.STRUCTURE * categories.MASSEXTRACTION }},
             -- Have we the eco to build it ?
@@ -78,7 +78,7 @@ BuilderGroup {
         InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'CanBuildOnMassLessThanLocationDistance', { 'LocationType', 30, -500, 0, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
+            { UCBC, 'CanBuildOnMassLessThanLocationDistance', { 'LocationType', 30, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Do we need additional conditions to build it ?
             { UCBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
@@ -104,7 +104,7 @@ BuilderGroup {
         InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'CanBuildOnMassLessThanLocationDistance', { 'LocationType', 60, -500, 0, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
+            { UCBC, 'CanBuildOnMassLessThanLocationDistance', { 'LocationType', 60, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Do we need additional conditions to build it ?
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH1' }},
@@ -132,7 +132,7 @@ BuilderGroup {
         InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'CanBuildOnMassLessThanLocationDistance', { 'LocationType', 128, -500, 0, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
+            { UCBC, 'CanBuildOnMassLessThanLocationDistance', { 'LocationType', 128, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Do we need additional conditions to build it ?
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, 'ENGINEER TECH1' }},
@@ -160,7 +160,7 @@ BuilderGroup {
         InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'CanBuildOnMassLessThanLocationDistance', { 'LocationType', 256, -500, 0, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
+            { UCBC, 'CanBuildOnMassLessThanLocationDistance', { 'LocationType', 256, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Do we need additional conditions to build it ?
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 3, 'ENGINEER TECH1' }},
@@ -185,10 +185,10 @@ BuilderGroup {
         BuilderName = 'U1 Mass 512',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17860,
-        InstanceCount = 4,
+        InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'CanBuildOnMassLessThanLocationDistance', { 'LocationType', 512, -500, 0, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
+            { UCBC, 'CanBuildOnMassLessThanLocationDistance', { 'LocationType', 512, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Do we need additional conditions to build it ?
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 4, 'ENGINEER TECH1' }},
@@ -213,10 +213,10 @@ BuilderGroup {
         BuilderName = 'U1 Mass 1000',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17850,
-        InstanceCount = 4,
+        InstanceCount = 10,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'CanBuildOnMassLessThanLocationDistance', { 'LocationType', 1000, -500, 0, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
+            { UCBC, 'CanBuildOnMassLessThanLocationDistance', { 'LocationType', 1000, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Do we need additional conditions to build it ?
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 4, 'ENGINEER TECH1' }},
@@ -227,7 +227,7 @@ BuilderGroup {
         },
         BuilderType = 'Any',
         BuilderData = {
-            RequireTransport = false,                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
+            RequireTransport = true,                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             NeedGuard = false,
             DesiresAssist = false,
             Construction = {
@@ -243,9 +243,35 @@ BuilderGroup {
         Priority = 19100,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'CanBuildOnMassLessThanLocationDistance', { 'LocationType', 60, -5000, 0, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRings, threatType, maxNum
+            { UCBC, 'GreaterThanGameTimeSeconds', { 2*60 } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.MASSEXTRACTION } },
             -- Do we need additional conditions to build it ?
+            { UCBC, 'CanBuildOnMassLessThanLocationDistance', { 'LocationType', 60, -5000, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRings, threatType, maxNum
+            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            NeedGuard = false,
+            DesiresAssist = false,
+            Construction = {
+                BuildStructures = {
+                    'T1Resource',
+                }
+            }
+        }
+    },
+    Builder {
+        BuilderName = 'U1 Resource RECOVER',
+        PlatoonTemplate = 'EngineerBuilder',
+        Priority = 19100,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'GreaterThanGameTimeSeconds', { 2*60 } },
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.MASSEXTRACTION } },
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'CanBuildOnMassLessThanLocationDistance', { 'LocationType', 60, -5000, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRings, threatType, maxNum
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             -- Don't build it if...

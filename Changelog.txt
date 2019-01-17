@@ -1,4 +1,18 @@
 *************************************************************************************************************************************
+v51 (18.Jan.2019)
+
+- New: Added new AI function to search teleporter targets. (Now respecting antiteleport towers).
+- New: Added new buildcondition to check if a platoon has x units.
+- New: Added some builders for base recovery to build energy + mass and reclaim in case of zero eco income.
+- Opt: Ecomanager now only pause/unpause 1 unit per loop cycle not up to 3.
+- Opt: Added debug messages in case we have a buildplatoon (customunits) assigned to a builder with lower tech level than needed.
+- Opt: Reworked shield assist function for SubCommanders. (using the new buildcondition)
+- Opt: Reworked nuke launcher function. (More nukes if a paragon is present)
+- Opt: Fixed an issue inside the teleport platoon where units are assisting even if we have low energy.
+- Fix: AI was not able to get a higher techlevel in case a paragon was prebuilded on game start.
+- Fix: Excluded the ACU from any attack platoon. (ACU has it's own attack function)
+
+*************************************************************************************************************************************
 v50 (03.Jan.2019)
 
 - Fix: AI now also works with the Nomads mod. (changed hooknames to prevent destructive hooking)

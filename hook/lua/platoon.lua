@@ -1,5 +1,5 @@
 WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] * Uveso-AI: offset platoon.lua' )
--- 6627
+-- 6584
 local UUtils = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua')
 TheOldPlatoon = Platoon
 Platoon = Class(TheOldPlatoon) {
@@ -1183,16 +1183,6 @@ Platoon = Class(TheOldPlatoon) {
         end
     end,
 
---RULEUTC_ShieldToggle
---RULEUTC_WeaponToggle
---RULEUTC_JammingToggle
---RULEUTC_IntelToggle
---RULEUTC_ProductionToggle
---RULEUTC_StealthToggle
---RULEUTC_GenericToggle
---RULEUTC_SpecialToggle
---RULEUTC_CloakToggle
-
     AttackPrioritizedSeaTargetsAIUveso = function(self)
         AIAttackUtils.GetMostRestrictiveLayer(self) -- this will set self.MovementLayer to the platoon
         -- Search all platoon units and activate Stealth and Cloak (mostly Modded units)
@@ -1202,18 +1192,13 @@ Platoon = Class(TheOldPlatoon) {
         if platoonUnits and PlatoonStrength > 0 then
             for k, v in platoonUnits do
                 if not v.Dead then
---                    LOG('scanning unit in layer '..v:GetCurrentLayer())
---                    IssueDive({v})
                     if v:TestToggleCaps('RULEUTC_StealthToggle') then
-                        LOG('Found a unit that can Stealth.')
                         v:SetScriptBit('RULEUTC_StealthToggle', false)
                     end
                     if v:TestToggleCaps('RULEUTC_CloakToggle') then
-                        LOG('Found a unit that can Cloak.')
                         v:SetScriptBit('RULEUTC_CloakToggle', false)
                     end
                     if v:TestToggleCaps('RULEUTC_JammingToggle') then
-                        LOG('Found a unit that can Jam.')
                         v:SetScriptBit('RULEUTC_JammingToggle', false)
                     end
                 end
@@ -1306,7 +1291,7 @@ Platoon = Class(TheOldPlatoon) {
             end
         end
         self:SetPrioritizedTargetList('Attack', PrioritizedTargetList)
-        local UnitWithPath, DistanceToTarget
+        local TargetUnit, DistanceToTarget
         local PlatoonPos = self:GetPlatoonPosition()
         -- land and air units are assigned to mainbase
         local GetTargetsFromBase = self.PlatoonData.GetTargetsFromBase
@@ -1354,32 +1339,32 @@ Platoon = Class(TheOldPlatoon) {
             end            
             -- check if we are further away from base then the closest enemy
             if UUtils.CDRRunHomeEnemyNearBase(self,cdr,UnitsInBasePanicZone) then
-                UnitWithPath = false
+                TargetUnit = false
             -- check if we get actual damage, then move home
             elseif UUtils.CDRRunHomeAtDamage(self,cdr) then
-                UnitWithPath = false
+                TargetUnit = false
             -- check how much % health we have and go closer to our base
             elseif UUtils.CDRRunHomeHealthRange(self,cdr,maxRadius) then
-                UnitWithPath = false
+                TargetUnit = false
             -- can we upgrade ?
             elseif self:BuildACUEnhancememnts(cdr) then
                 -- Do nothing if BuildACUEnhancememnts is true. we are upgrading!
             -- only get a new target and make a move command if the target is dead
             else
                 -- ToDo: scann for enemy COM and change target if needed
-                UnitWithPath, _, _, _ = AIUtils.AIFindNearestCategoryTargetInRangeCDR(aiBrain, GetTargetsFrom, maxRadius, PrioritizedTargetList, TargetSearchCategory, false)
+                TargetUnit, _, _, _ = AIUtils.AIFindNearestCategoryTargetInRangeCDR(aiBrain, GetTargetsFrom, maxRadius, PrioritizedTargetList, TargetSearchCategory, false)
                 -- if we have a target, move to the target and attack
-                if UnitWithPath then
-                    if aiBrain:PlatoonExists(self) and UnitWithPath and not UnitWithPath.Dead and not UnitWithPath:BeenDestroyed() then
+                if TargetUnit then
+                    if aiBrain:PlatoonExists(self) and TargetUnit and not TargetUnit.Dead and not TargetUnit:BeenDestroyed() then
                         self:Stop()
                         local cdrNewPos = {}
-                        local targetPos = UnitWithPath:GetPosition()
+                        local targetPos = TargetUnit:GetPosition()
                         cdrNewPos[1] = targetPos[1] + Random(-3, 3)
                         cdrNewPos[2] = targetPos[2]
                         cdrNewPos[3] = targetPos[3] + Random(-3, 3)
                         self:MoveToLocation(cdrNewPos, false)
                         WaitTicks(1)
-                        self:AttackTarget(UnitWithPath)
+                        self:AttackTarget(TargetUnit)
                     end
                 -- if we have no target, move to base. If we are at base, dance. (random moves)
                 elseif UUtils.CDRForceRunHome(self,cdr) then
@@ -2131,7 +2116,6 @@ Platoon = Class(TheOldPlatoon) {
     end,
 
     ArtilleryPlatoonAI = function(self)
-    --NO crash at 002cbc63
         local aiBrain = self:GetBrain()
         local ClosestTarget = nil
         local LastTarget = nil
@@ -2196,7 +2180,6 @@ Platoon = Class(TheOldPlatoon) {
     end,
 
     ShieldRepairAI = function(self)
-    --NO crash at 002cbc63
         local aiBrain = self:GetBrain()
         local BuilderManager = aiBrain.BuilderManagers['MAIN']
         local PlatoonStrength = table.getn(self:GetPlatoonUnits())
@@ -2204,17 +2187,11 @@ Platoon = Class(TheOldPlatoon) {
         local lastSUB = 0
         local numSUB
         local SUBCOMs
+        local platoonUnits
 
         while aiBrain:PlatoonExists(self) do
-            numSUB = 0
-            SUBCOMs = AIUtils.GetOwnUnitsAroundPoint(aiBrain, categories.SUBCOMMANDER, BuilderManager.Position, 256)
-            numSUB = table.getn(SUBCOMs) or 0
-            if numSUB ~= lastSUB and lastSUB ~= 0 and PlatoonStrength < 16then
-                self:PlatoonDisbandNoAssign()
-                return
-            end
-            -- Wait for stopping assist
-            WaitTicks(1)
+            platoonUnits = self:GetPlatoonUnits()
+            numSUB = table.getn(platoonUnits) or 0
             local Shields = AIUtils.GetOwnUnitsAroundPoint(aiBrain, categories.STRUCTURE * categories.SHIELD, BuilderManager.Position, 256)
             local lasthighestHealth
             local highestHealth
@@ -2234,6 +2211,9 @@ Platoon = Class(TheOldPlatoon) {
                 end
             end
             if numSUB ~= lastSUB or numSHIELD ~= lastSHIELD then
+                self:Stop()
+                -- Wait for stopping assist
+                WaitTicks(1)
                 lastSUB = numSUB
                 lastSHIELD = numSHIELD
                 for i,unit in self:GetPlatoonUnits() do
@@ -2309,18 +2289,22 @@ Platoon = Class(TheOldPlatoon) {
     end,
 
     NukePlatoonAI = function(self)
-    --NO crash at 002cbc63
         local aiBrain = self:GetBrain()
         local ECOLoopCounter = 0
         local mapSizeX, mapSizeZ = GetMapSize()
         local platoonUnits
         local LauncherFull
         local LauncherReady
+        local ExperimentalLauncherReady
+        local LauncherCount
         local EnemyAntiMissile
         local EnemyUnits
         local EnemyTargetPositions
         local MissileCount
         local EnemyTarget
+        local NukeSiloAmmoCount
+        local TargetPosition
+
         while aiBrain:PlatoonExists(self) do
             ---------------------------------------------------------------------------------------------------
             -- Count Launchers, set them to automode, count stored missiles
@@ -2328,7 +2312,12 @@ Platoon = Class(TheOldPlatoon) {
             platoonUnits = self:GetPlatoonUnits()
             LauncherFull = {}
             LauncherReady = {}
+            ExperimentalLauncherReady = {}
+            HighMissileCountLauncherReady = {}
             MissileCount = 0
+            LauncherCount = 0
+            HighestMissileCount = 0
+            NukeSiloAmmoCount = 0
             for _, Launcher in platoonUnits do
                 -- We found a dead unit inside this platoon. Disband the platton; It will be reformed
                 -- needs PlatoonDisbandNoAssign, or launcher will stop building nukes if the platton is disbanded
@@ -2336,16 +2325,25 @@ Platoon = Class(TheOldPlatoon) {
                     self:PlatoonDisbandNoAssign()
                     return
                 end
-                local NukeSiloAmmoCount = Launcher:GetNukeSiloAmmoCount() or 0
                 Launcher:SetAutoMode(true)
                 IssueClearCommands({Launcher})
+                NukeSiloAmmoCount = Launcher:GetNukeSiloAmmoCount() or 0
+                if not HighMissileCountLauncherReady.MissileCount or HighMissileCountLauncherReady.MissileCount < NukeSiloAmmoCount then
+                    HighMissileCountLauncherReady = Launcher
+                    HighMissileCountLauncherReady.MissileCount = NukeSiloAmmoCount
+                end
                 if NukeSiloAmmoCount > 4 then
                     table.insert(LauncherFull, Launcher)
                 end
-                if NukeSiloAmmoCount > 0 then
+                if NukeSiloAmmoCount > 0 and EntityCategoryContains(categories.NUKE * categories.EXPERIMENTAL, Launcher) then
+                    table.insert(ExperimentalLauncherReady, Launcher)
+                    MissileCount = MissileCount + NukeSiloAmmoCount
+                elseif NukeSiloAmmoCount > 0 then
                     table.insert(LauncherReady, Launcher)
                     MissileCount = MissileCount + NukeSiloAmmoCount
                 end
+                LauncherCount = LauncherCount + 1
+                -- count experimental launcher seraphim
             end
             EnemyAntiMissile = aiBrain:GetUnitsAroundPoint(categories.STRUCTURE * ((categories.DEFENSE * categories.ANTIMISSILE * categories.TECH3) + (categories.SHIELD * categories.EXPERIMENTAL)), Vector(mapSizeX/2,0,mapSizeZ/2), mapSizeX+mapSizeZ, 'Enemy')
             ---------------------------------------------------------------------------------------------------
@@ -2383,71 +2381,45 @@ Platoon = Class(TheOldPlatoon) {
                     if Launcher:IsPaused() then
                         -- yes, it's off. Turn it on.
                         Launcher:SetPaused( false )
+                        -- now break, we only want do disable one launcher per loop
                         break
                     end
                 end
-
             end
             -- At this point we have only checked the eco for our launchers. Only check targetting and missile launching every 10th loop
             ECOLoopCounter = ECOLoopCounter + 1
             if ECOLoopCounter < 10 then
-                WaitTicks(1)
+                WaitTicks(10)
                 -- start the "while aiBrain:PlatoonExists(self) do" loop from the beginning
                 continue
             end
             ECOLoopCounter = 0
+            LOG('* NukePlatoonAI: Checking for Targets. Launcher:('..LauncherCount..') Ready:('..table.getn(LauncherReady)..') Full:('..table.getn(LauncherFull)..') - Missiles:('..MissileCount..') - EnemyAntiMissile:('..table.getn(EnemyAntiMissile)..')')
             ---------------------------------------------------------------------------------------------------
-            -- If we have a PrimaryTarget, launch nukes
+            -- PrimaryTarget, launch a single nuke on primary targets.
             ---------------------------------------------------------------------------------------------------
-            if 1 == 1 and aiBrain.PrimaryTarget and not aiBrain.PrimaryTarget.Dead and table.getn(LauncherReady) > 0 and EntityCategoryContains(categories.EXPERIMENTAL, aiBrain.PrimaryTarget) then
-                local TargetPos
-                local LauncherPos
-                local dist
-                -- loop over all nuke launcher
-                for k, Launcher in LauncherReady do
-                    if not Launcher or Launcher.Dead or Launcher:BeenDestroyed() then
-                        -- We found a dead unit inside this platoon. Disband the platton; It will be reformed
-                        -- needs PlatoonDisbandNoAssign, or launcher will stop building nukes if the platton is disbanded
-                        self:PlatoonDisbandNoAssign()
-                        return
-                    end
-                    if not aiBrain.PrimaryTarget or aiBrain.PrimaryTarget.Dead then
-                        -- Our Target is dead. break
-                        break
-                    end
-                    -- check if the target is closer then 20000 and farther then 200
-                    TargetPos = aiBrain.PrimaryTarget:GetPosition() or nil
-                    if not TargetPos then
-                        -- Our Target is dead. break
-                        break
-                    end
-                    LauncherPos = Launcher:GetPosition() or nil
-                    if not LauncherPos then
-                        -- Our Launcher is Dead ? failsafe, continue with the next Launcher
-                        continue
-                    end
-                    dist = VDist2(LauncherPos[1],LauncherPos[3],TargetPos[1],TargetPos[3])
-                    if dist < 200 or dist > 20000 then
-                        -- Target is out of range, skip this launcher
-                        continue
-                    end
+            if 1 == 1 and aiBrain.PrimaryTarget and table.getn(LauncherReady) > 0 and EntityCategoryContains(categories.EXPERIMENTAL, aiBrain.PrimaryTarget) then
+                -- Only shoot if the target is not protected by antimissile or experimental shields
+                if not self:IsTargetNukeProtected(aiBrain.PrimaryTarget, EnemyAntiMissile) then
                     -- Lead target function
                     TargetPos = self:LeadNukeTarget(aiBrain.PrimaryTarget)
                     if not TargetPos then
                         -- Our Target is dead. break
                         break
                     end
-                    -- check if we have friendly Buildings in blastradius. If yes don't fire
-                    if aiBrain:GetNumUnitsAroundPoint(categories.STRUCTURE, TargetPos, 50 , 'Ally') > 1 then
-                        break
+                    -- Only shoot if we are not damaging our own structures
+                    if aiBrain:GetNumUnitsAroundPoint(categories.STRUCTURE, TargetPos, 50 , 'Ally') <= 0 then
+                        if not self:NukeSingleAttack(HighMissileCountLauncherReady, TargetPos) then
+                            if self:NukeSingleAttack(LauncherReady, TargetPos) then
+                                WaitTicks(450)-- wait 45 seconds for the missile flight, then get new targets
+                                continue
+                            end
+                        else
+                            WaitTicks(450)-- wait 45 seconds for the missile flight, then get new targets
+                            continue
+                        end
                     end
-                    -- Attack the target
-                    IssueNuke({Launcher}, TargetPos)
-                    table.remove(LauncherReady, k)
-                    MissileCount = MissileCount - 1
-                    WaitTicks(200)-- wait 8 seconds then fire the next missile
                 end
-                WaitTicks(450)-- wait 45 seconds for the missile flight, then get new targets
             end
             ---------------------------------------------------------------------------------------------------
             -- first try to target all targets that are not protected from enemy anti missile
@@ -2471,29 +2443,10 @@ Platoon = Class(TheOldPlatoon) {
                 if ToClose then
                     continue -- Skip this enemytarget and check the next
                 end
-                -- loop over all Enemy anti nuke launchers.
-                for _, AntiMissile in EnemyAntiMissile do
-                    if not AntiMissile or AntiMissile.Dead or AntiMissile:BeenDestroyed() then continue end
-                    -- if the launcher is still in build, don't count it.
-                    local FractionComplete = AntiMissile:GetFractionComplete() or nil
-                    if not FractionComplete then continue end
-                    if FractionComplete < 1 then
-                        continue
-                    end
-                    -- get the location of AntiMissile
-                    local AntiMissilePos = AntiMissile:GetPosition() or nil
-                    if not AntiMissilePos then continue end
-                    -- Check if our target is inside range of an antimissile
-                    if VDist2(EnemyTargetPos[1],EnemyTargetPos[3],AntiMissilePos[1],AntiMissilePos[3]) < 90 then
-                       --LOG('* NukePlatoonAI: (Unprotected) Target in range of Nuke Anti Missile. Skiped')
-                        ToClose = true
-                        break -- break out of the EnemyTargetPositions loop
-                    end
+                -- Check if the target is not protected by an antinuke
+                if not self:IsTargetNukeProtected(EnemyTarget, EnemyAntiMissile) then
+                    table.insert(EnemyTargetPositions, EnemyTargetPos)
                 end
-                if ToClose then
-                    continue -- Skip this enemytarget and check the next
-                end
-                table.insert(EnemyTargetPositions, EnemyTargetPos)
             end
             ---------------------------------------------------------------------------------------------------
             -- Now, if we have unprotected targets, shot at it
@@ -2501,42 +2454,15 @@ Platoon = Class(TheOldPlatoon) {
             --LOG('* NukePlatoonAI: (Unprotected) table.getn(EnemyTargetPositions) '..table.getn(EnemyTargetPositions))
             if 1 == 1 and table.getn(EnemyTargetPositions) > 0 and table.getn(LauncherReady) > 0 then
                 -- loopß over all targets
-                for _, ActualTargetPos in EnemyTargetPositions do
-                    -- loop over all nuke launcher
-                    for k, Launcher in LauncherReady do
-                        if not Launcher or Launcher.Dead or Launcher:BeenDestroyed() then
-                            -- We found a dead unit inside this platoon. Disband the platton; It will be reformed
-                            -- needs PlatoonDisbandNoAssign, or launcher will stop building nukes if the platton is disbanded
-                            self:PlatoonDisbandNoAssign()
-                            return
-                        end
-                        -- check if the target is closer then 20000
-                        LauncherPos = Launcher:GetPosition() or nil
-                        if not LauncherPos then continue end
-                        if VDist2(LauncherPos[1],LauncherPos[3],ActualTargetPos[1],ActualTargetPos[3]) > 20000 then
-                            --LOG('* NukePlatoonAI: (Unprotected) Target out of range. Skiped')
-                            -- Target is out of range, skip this launcher
-                            continue
-                        end
-                        -- Attack the target
-                        --LOG('* NukePlatoonAI: (Unprotected) Attacking Enemy Position!')
-                        IssueNuke({Launcher}, ActualTargetPos)
-                        table.remove(LauncherReady, k)
-                        MissileCount = MissileCount - 1
-                        break -- stop seraching for available launchers and check the next target
-                    end
-                    if table.getn(LauncherReady) < 1 then
-                        --LOG('* NukePlatoonAI: (Unprotected) All Launchers are bussy! Break!')
-                        break  -- stop seraching for targets, we don't hava a launcher ready.
-                    end
-                    WaitTicks(40)-- wait 4 seconds between each Missile shoot
-                end
+                self:NukeJerichoAttack(LauncherReady, EnemyTargetPositions)
                 WaitTicks(450)-- wait 45 seconds for the missile flight, then get new targets
+                continue
             end
             ---------------------------------------------------------------------------------------------------
             -- Try to overwhelm anti nuke, search for targets
             ---------------------------------------------------------------------------------------------------
             EnemyProtectorsNum = 0
+            TargetPosition = false
             --LOG('* NukePlatoonAI: MissileCountB '..MissileCount..' Overwhelm!')
             if 1 == 1 and MissileCount > 8 and table.getn(EnemyAntiMissile) > 0 then
                 --LOG('* NukePlatoonAI: (Overwhelm) MissileCount ('..MissileCount..') > EnemyAntiMissile )'..table.getn(EnemyAntiMissile)..')')
@@ -2563,7 +2489,6 @@ Platoon = Class(TheOldPlatoon) {
                         HighIndex = MissileIndex
                     end
                 end
-                local TargetPosition = false
                 if HighIndex and EnemyAntiMissile[HighIndex] and not EnemyAntiMissile[HighIndex].Dead then
                     --LOG('* NukePlatoonAI: (Overwhelm) Antimissile with highest dinstance to other antimisiiles has HighIndex= '..HighIndex)
                     -- kill the launcher will all missiles we have
@@ -2583,7 +2508,8 @@ Platoon = Class(TheOldPlatoon) {
             ---------------------------------------------------------------------------------------------------
             -- Try to overwhelm anti nuke, search for targets
             ---------------------------------------------------------------------------------------------------
-            if 1 == 1 and EnemyTarget and EnemyProtectorsNum > 0 and MissileCount > EnemyProtectorsNum * 8 then
+            --LOG('* NukePlatoonAI: '..MissileCount..' > '..EnemyProtectorsNum..' * 8 ('..(EnemyProtectorsNum * 8)..')')
+            if 1 == 1 and EnemyTarget and TargetPosition and EnemyProtectorsNum > 0 and MissileCount > EnemyProtectorsNum * 8 then
                 -- Fire as long as the target exists
                 --LOG('* NukePlatoonAI: while EnemyTarget do ')
                 while EnemyTarget and not EnemyTarget.Dead do
@@ -2644,41 +2570,19 @@ Platoon = Class(TheOldPlatoon) {
             ---------------------------------------------------------------------------------------------------
             -- Now, if we have more launchers ready then targets start Jericho bombardment
             ---------------------------------------------------------------------------------------------------
-            if 1 != 1 and table.getn(LauncherReady) >= table.getn(EnemyTargetPositions) and table.getn(EnemyTargetPositions) > 0 and table.getn(LauncherFull) > 0 then
+            --LOG('* NukePlatoonAI: Checking for Jericho. Launcher:('..LauncherCount..') Ready:('..table.getn(LauncherReady)..') Full:('..table.getn(LauncherFull)..') - Missiles:('..MissileCount..')')
+            if 1 == 1 and table.getn(LauncherReady) >= table.getn(EnemyTargetPositions) and table.getn(EnemyTargetPositions) > 0 and table.getn(LauncherFull) > 0 then
+                --LOG('* NukePlatoonAI: Jericho!')
                 -- loopß over all targets
-                for _, ActualTargetPos in EnemyTargetPositions do
-                    -- loop over all nuke launcher
-                    for k, Launcher in LauncherReady do
-                        if not Launcher or Launcher.Dead or Launcher:BeenDestroyed() then
-                            -- We found a dead unit inside this platoon. Disband the platton; It will be reformed
-                            -- needs PlatoonDisbandNoAssign, or launcher will stop building nukes if the platton is disbanded
-                            self:PlatoonDisbandNoAssign()
-                            return
-                        end
-                        -- check if the target is closer then 20000
-                        LauncherPos = Launcher:GetPosition() or nil
-                        if not LauncherPos then continue end
-                        if VDist2(LauncherPos[1],LauncherPos[3],ActualTargetPos[1],ActualTargetPos[3]) > 20000 then
-                            -- Target is out of range, skip this launcher
-                            continue
-                        end
-                        -- Attack the target
-                        IssueNuke({Launcher}, ActualTargetPos)
-                        MissileCount = MissileCount - 1
-                        table.remove(LauncherReady, k)
-                        break -- stop seraching for available launchers and check the next target
-                    end
-                    if table.getn(LauncherReady) < 1 then
-                        break  -- stop seraching for targets, we don't hava a launcher ready.
-                    end
-                    WaitTicks(40)-- wait 4 seconds between each Missile shoot
-                end
+                self:NukeJerichoAttack(LauncherReady, EnemyTargetPositions)
                 WaitTicks(450)-- wait 45 seconds for the missile flight, then get new targets
             end
             ---------------------------------------------------------------------------------------------------
             -- If we have an launcher with 5 missiles fire one.
             ---------------------------------------------------------------------------------------------------
+            --LOG('* NukePlatoonAI: Checking for Full Launchers. Launcher:('..LauncherCount..') Ready:('..table.getn(LauncherReady)..') Full:('..table.getn(LauncherFull)..') - Missiles:('..MissileCount..')')
             if 1 == 1 and table.getn(LauncherFull) > 0 then
+                --LOG('* NukePlatoonAI: launcher full!')
                 EnemyUnits = aiBrain:GetUnitsAroundPoint(categories.STRUCTURE * categories.EXPERIMENTAL, Vector(mapSizeX/2,0,mapSizeZ/2), mapSizeX+mapSizeZ, 'Enemy')
                 if not EnemyUnits then
                     EnemyUnits = aiBrain:GetUnitsAroundPoint(categories.STRUCTURE * categories.TECH3 , Vector(mapSizeX/2,0,mapSizeZ/2), mapSizeX+mapSizeZ, 'Enemy')
@@ -2717,41 +2621,12 @@ Platoon = Class(TheOldPlatoon) {
             ---------------------------------------------------------------------------------------------------
             -- Now, if we have targets, shot at it
             ---------------------------------------------------------------------------------------------------
-            --LOG('* NukePlatoonAI: (Unprotected) table.getn(EnemyTargetPositions) '..table.getn(EnemyTargetPositions))
+            --LOG('* NukePlatoonAI: Attack only with full Launchers. Launcher:('..LauncherCount..') Ready:('..table.getn(LauncherReady)..') Full:('..table.getn(LauncherFull)..') - Missiles:('..MissileCount..')')
             if 1 == 1 and table.getn(EnemyTargetPositions) > 0 and table.getn(LauncherFull) > 0 then
-                -- loopß over all targets
-                for _, ActualTargetPos in EnemyTargetPositions do
-                    -- loop over all nuke launcher
-                    for k, Launcher in LauncherFull do
-                        if not Launcher or Launcher.Dead or Launcher:BeenDestroyed() then
-                            -- We found a dead unit inside this platoon. Disband the platton; It will be reformed
-                            -- needs PlatoonDisbandNoAssign, or launcher will stop building nukes if the platton is disbanded
-                            self:PlatoonDisbandNoAssign()
-                            return
-                        end
-                        -- check if the target is closer then 20000
-                        LauncherPos = Launcher:GetPosition() or nil
-                        if not LauncherPos then continue end
-                        if VDist2(LauncherPos[1],LauncherPos[3],ActualTargetPos[1],ActualTargetPos[3]) > 20000 then
-                            --LOG('* NukePlatoonAI: (Unprotected) Target out of range. Skiped')
-                            -- Target is out of range, skip this launcher
-                            continue
-                        end
-                        -- Attack the target
-                        --LOG('* NukePlatoonAI: (Unprotected) Attacking Enemy Position!')
-                        IssueNuke({Launcher}, ActualTargetPos)
-                        table.remove(LauncherFull, k)
-                        MissileCount = MissileCount - 1
-                        break -- stop seraching for available launchers and check the next target
-                    end
-                    if table.getn(LauncherFull) < 1 then
-                        --LOG('* NukePlatoonAI: (Unprotected) All Launchers are bussy! Break!')
-                        break  -- stop seraching for targets, we don't hava a launcher ready.
-                    end
-                    WaitTicks(40)-- wait 4 seconds between each Missile shoot
-                end
+                self:NukeJerichoAttack(LauncherFull, EnemyTargetPositions)
                 WaitTicks(450)-- wait 45 seconds for the missile flight, then get new targets
             end
+            --LOG('* NukePlatoonAI: END. Launcher:('..LauncherCount..') Ready:('..table.getn(LauncherReady)..') Full:'..table.getn(LauncherFull)..' - Missiles:('..MissileCount..')')
 
         end -- while aiBrain:PlatoonExists(self) do
     end,
@@ -2799,6 +2674,122 @@ Platoon = Class(TheOldPlatoon) {
         return {MissileImpactX, Target2SecPos[2], MissileImpactY}
     end,
 
+    NukeSingleAttack = function(self, Launchers, EnemyTargetPosition)
+        LOG('* NukeSingleAttack: Launcher: '..table.getn(Launchers))
+        if table.getn(Launchers) <= 0 then
+            LOG('* NukeSingleAttack: Launcher empty')
+            return false
+        end
+        -- loop over all nuke launcher
+        for k, Launcher in Launchers do
+            if not Launcher or Launcher.Dead or Launcher:BeenDestroyed() then
+                -- We found a dead unit inside this platoon. Disband the platton; It will be reformed
+                -- needs PlatoonDisbandNoAssign, or launcher will stop building nukes if the platton is disbanded
+                LOG('* NukeSingleAttack: Found destroyed launcher inside platoon. Disbanding...')
+                self:PlatoonDisbandNoAssign()
+                return
+            end
+            -- check if the target is closer then 20000
+            LauncherPos = Launcher:GetPosition() or nil
+            if not LauncherPos then
+                LOG('* NukeSingleAttack: no Launcher Pos. Skiped')
+                continue
+            end
+            if not EnemyTargetPosition then
+                LOG('* NukeSingleAttack: no Target Pos. Skiped')
+                continue
+            end
+            if VDist2(LauncherPos[1],LauncherPos[3],EnemyTargetPosition[1],EnemyTargetPosition[3]) > 20000 then
+                LOG('* NukeSingleAttack: Target out of range. Skiped')
+                -- Target is out of range, skip this launcher
+                continue
+            end
+            -- Attack the target
+            LOG('* NukeSingleAttack: Attacking Enemy Position!')
+            IssueNuke({Launcher}, EnemyTargetPosition)
+            -- stop seraching for available launchers and check the next target
+            break
+        end
+    end,
+
+    NukeJerichoAttack = function(self, Launchers, EnemyTargetPositions)
+        LOG('* NukeJerichoAttack: Launcher: '..table.getn(Launchers))
+        if table.getn(Launchers) <= 0 then
+            LOG('* NukeSingleAttack: Launcher empty')
+            return false
+        end
+        for _, ActualTargetPos in EnemyTargetPositions do
+            -- loop over all nuke launcher
+            for k, Launcher in Launchers do
+                if not Launcher or Launcher.Dead or Launcher:BeenDestroyed() then
+                    -- We found a dead unit inside this platoon. Disband the platton; It will be reformed
+                    -- needs PlatoonDisbandNoAssign, or launcher will stop building nukes if the platton is disbanded
+                    LOG('* NukeJerichoAttack: Found destroyed launcher inside platoon. Disbanding...')
+                    self:PlatoonDisbandNoAssign()
+                    return
+                end
+                -- check if the target is closer then 20000
+                LauncherPos = Launcher:GetPosition() or nil
+                if not LauncherPos then
+                    LOG('* NukeJerichoAttack: no Launcher Pos. Skiped')
+                    continue
+                end
+                if not ActualTargetPos then
+                    LOG('* NukeJerichoAttack: no Target Pos. Skiped')
+                    continue
+                end
+                if VDist2(LauncherPos[1],LauncherPos[3],ActualTargetPos[1],ActualTargetPos[3]) > 20000 then
+                    LOG('* NukeJerichoAttack: Target out of range. Skiped')
+                    -- Target is out of range, skip this launcher
+                    continue
+                end
+                -- Attack the target
+                LOG('* NukeJerichoAttack: Attacking Enemy Position!')
+                IssueNuke({Launcher}, ActualTargetPos)
+                -- remove the launcher from the table, so it can't be used for the next target
+                table.remove(Launchers, k)
+                -- stop seraching for available launchers and check the next target
+                break -- for k, Launcher in Launcher do
+            end
+            LOG('* NukeJerichoAttack: Launcher after shoot: '..table.getn(Launchers))
+            if table.getn(Launchers) < 1 then
+                LOG('* NukeJerichoAttack: All Launchers are bussy! Break!')
+                -- stop seraching for targets, we don't hava a launcher ready.
+                break -- for _, ActualTargetPos in EnemyTargetPositions do
+            end
+        end
+    end,
+
+    IsTargetNukeProtected = function(self, Target, EnemyAntiMissile)
+        TargetPos = Target:GetPosition() or nil
+        if not TargetPos then
+            -- we don't have a target position, so we return ture like we have a protected target.
+            return true
+        end
+        for _, AntiMissile in EnemyAntiMissile do
+            if not AntiMissile or AntiMissile.Dead or AntiMissile:BeenDestroyed() then continue end
+            -- if the launcher is still in build, don't count it.
+            local FractionComplete = AntiMissile:GetFractionComplete() or nil
+            if not FractionComplete then continue end
+            if FractionComplete < 1 then
+                --LOG('* IsTargetNukeProtected: Target TAntiMissile:GetFractionComplete() < 1')
+                continue
+            end
+            -- get the location of AntiMissile
+            local AntiMissilePos = AntiMissile:GetPosition() or nil
+            if not AntiMissilePos then
+               --LOG('* IsTargetNukeProtected: Target AntiMissilePos NIL')
+                continue 
+            end
+            -- Check if our target is inside range of an antimissile
+            if VDist2(TargetPos[1],TargetPos[3],AntiMissilePos[1],AntiMissilePos[3]) < 90 then
+                --LOG('* IsTargetNukeProtected: Target in range of Nuke Anti Missile. Skiped')
+                return true
+            end
+        end
+        return false
+    end,
+
     SACUTeleportAI = function(self)
         local aiBrain = self:GetBrain()
         local platoonUnits = self:GetPlatoonUnits()
@@ -2814,7 +2805,10 @@ Platoon = Class(TheOldPlatoon) {
                 if not unit.Dead then
                     for k, Assister in platoonUnits do
                         if not Assister.Dead and Assister ~= unit then
-                            IssueGuard({Assister}, unit)
+                            -- only assist if we have the energy for it
+                            if aiBrain:GetEconomyTrend('ENERGY')*10 > 5000 or aiBrain.HasParagon then
+                                IssueGuard({Assister}, unit)
+                            end
                         end
                     end
                     if self:BuildSACUEnhancememnts(unit) then
@@ -2841,17 +2835,7 @@ Platoon = Class(TheOldPlatoon) {
         -- search for a target
         local Target
         while not Target do
-            for _, v in PrioritizedTargetList do
-                category = v
-                if type(category) == 'string' then
-                    category = ParseEntityCategory(category)
-                end
-                Target = self:FindClosestUnit('Attack', 'Enemy', true, category)
-                if Target then
-                    break
-                end
-                WaitTicks(1)
-            end
+            Target, _, _, _ = AIUtils.AIFindNearestCategoryTeleportLocation(aiBrain, platoonPosition, maxRadius, PrioritizedTargetList, TargetSearchCategory, false)
             WaitTicks(10)
         end
         if Target and not Target.Dead then
@@ -2885,7 +2869,7 @@ Platoon = Class(TheOldPlatoon) {
         end        
         -- Fight
         WaitTicks(1)
-        self:InterceptorAIUveso()
+        self:AttackPrioritizedLandTargetsAIUveso()
     end,
 
     BuildSACUEnhancememnts = function(platoon,unit)
@@ -2945,8 +2929,6 @@ Platoon = Class(TheOldPlatoon) {
         return false
     end,
 
-    TEST = function(self, EnemyAntiMissile)
-    end,
     RenamePlatoon = function(self, text)
         for k, v in self:GetPlatoonUnits() do
             if v and not v.Dead then

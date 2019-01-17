@@ -56,24 +56,6 @@ BuilderGroup {
          },
         BuilderType = 'All',
     },
--- Mass full ? Build more engineers!
-    Builder {
-        BuilderName = 'U1 Engineer Mass Full',
-        PlatoonTemplate = 'T1BuildEngineer',
-        Priority = 18400,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 50, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
-            -- Do we need additional conditions to build it ?
-            -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.80, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
-            -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers / 3 , '<=', categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
-        },
-        BuilderType = 'All',
-    },
     -- Build more engineers if we don't find idle engineers
     Builder {
         BuilderName = 'U1 Engineer noPool land',
@@ -81,7 +63,6 @@ BuilderGroup {
         Priority = 18400,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 50, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
             { UCBC, 'PoolLessAtLocation', { 'LocationType', 3, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
@@ -97,7 +78,6 @@ BuilderGroup {
         Priority = 18400,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 50, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
             -- Do we need additional conditions to build it ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY } },
             -- Have we the eco to build it ?
@@ -114,8 +94,7 @@ BuilderGroup {
         Priority = 18400,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 50, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
-            { UCBC, 'PoolLessAtLocation', { 'LocationType', 3, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'PoolLessAtLocation', { 'LocationType', 2, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
@@ -150,7 +129,6 @@ BuilderGroup {
         Priority = 18400,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 50, categories.MOBILE * categories.ENGINEER * categories.TECH2 } },
             { UCBC, 'PoolLessAtLocation', { 'LocationType', 2, categories.MOBILE * categories.ENGINEER * categories.TECH2 } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
@@ -187,8 +165,7 @@ BuilderGroup {
         Priority = 18400,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 100, categories.MOBILE * categories.ENGINEER * categories.TECH3 } },
-            { UCBC, 'PoolLessAtLocation', { 'LocationType', 3, categories.MOBILE * categories.ENGINEER * categories.TECH3 } },
+            { UCBC, 'PoolLessAtLocation', { 'LocationType', 3, categories.MOBILE * categories.ENGINEER * categories.TECH3 - categories.SUBCOMMANDER } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
@@ -213,7 +190,6 @@ BuilderGroup {
         Priority = 18400,
         BuilderConditions = {
             -- When do we want to build this ?
---            { UCBC, 'EngineerCapCheck', { 'LocationType', 'SCU' } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.SUBCOMMANDER } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
@@ -231,7 +207,7 @@ BuilderGroup {
         Priority = 18400,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 2, categories.SUBCOMMANDER } },
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 35, categories.SUBCOMMANDER } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income

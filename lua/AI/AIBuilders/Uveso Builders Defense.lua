@@ -404,6 +404,36 @@ BuilderGroup {
             }
         }
     },
+    Builder {
+        BuilderName = 'U3 SML Turbo',
+        PlatoonTemplate = 'T3EngineerBuilder',
+        Priority = 2500,
+        InstanceCount = 3,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HasParagon', {} },
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 100, categories.STRUCTURE * categories.LAND * categories.NUKE * (categories.TECH3 + categories.EXPERIMENTAL) }},
+            { UCBC, 'UnitCapCheckLess', { 0.98 } },
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Construction = {
+                DesiresAssist = true,
+                BuildClose = false,
+                AdjacencyCategory = categories.STRUCTURE * categories.SHIELD,
+                AvoidCategory = categories.STRUCTURE * categories.NUKE,
+                maxUnits = 1,
+                maxRadius = 20,
+                LocationType = 'LocationType',
+                BuildStructures = {
+                    'T3StrategicMissile',
+                },
+            }
+        }
+    },
 }
 BuilderGroup {
     -- Add all nukes to a single nuke-platton

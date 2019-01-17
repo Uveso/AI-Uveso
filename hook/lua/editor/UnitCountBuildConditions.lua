@@ -610,6 +610,25 @@ function UnfinishedUnitsAtLocation(aiBrain, locationType)
     return false
 end
 
+--            { UCBC, 'UnitsLessInPlatoon', {} },
+function UnitsLessInPlatoon(aiBrain,PlatoonPlan, num)
+    local PlatoonList = aiBrain:GetPlatoonsList()
+    local NumPlatoonUnits = 0
+    for _,Platoon in PlatoonList do
+        if Platoon:GetPlan() == PlatoonPlan then
+            NumPlatoonUnits = table.getn(Platoon:GetPlatoonUnits() or 0)
+            break
+        end
+        --LOG('* PlatoonMerger: Found '..repr(Platoon:GetPlan()))
+    end
+    if NumPlatoonUnits < num then
+        --LOG('* UnitsLessInPlatoon: TRUE Units in platoon ('..PlatoonPlan..'): '..NumPlatoonUnits..'/'..num)
+        return true
+    end
+    --LOG('* UnitsLessInPlatoon: FALSE Units in platoon('..PlatoonPlan..'): '..NumPlatoonUnits..'/'..num)
+    return false
+end
+
 -----------------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------------
@@ -687,3 +706,4 @@ function AreShieldsDamaged(aiBrain, locationType)
     end
     return false
 end
+

@@ -175,39 +175,6 @@ BuilderGroup {
         }
     },
 -- ===================================================-======================================================== --
--- ==                                    T3 Strategic Missile LAUNCHER                                       == --
--- ===================================================-======================================================== --
-    Builder {
-        BuilderName = 'Turbo U3 SML',
-        PlatoonTemplate = 'T3EngineerBuilderNoSUB',
-        Priority = 1100,
-        InstanceCount = 6,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HasParagon', {} },
-            -- Do we need additional conditions to build it ?
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 100, categories.STRUCTURE * categories.LAND * categories.NUKE * (categories.TECH3 + categories.EXPERIMENTAL) }},
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
-        },
-        BuilderType = 'Any',
-        BuilderData = {
-            Construction = {
-                DesiresAssist = true,
-                BuildClose = false,
-                AdjacencyCategory = categories.STRUCTURE * categories.SHIELD,
-                AvoidCategory = categories.STRUCTURE * categories.NUKE,
-                maxUnits = 1,
-                maxRadius = 20,
-                LocationType = 'LocationType',
-                BuildStructures = {
-                    'T3StrategicMissile',
-                },
-            }
-        }
-    },
--- ===================================================-======================================================== --
 -- ==                                          T3/T4 Artillery                                               == --
 -- ===================================================-======================================================== --
     Builder {

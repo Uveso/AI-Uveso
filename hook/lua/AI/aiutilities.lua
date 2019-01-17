@@ -320,6 +320,78 @@ function AIFindNearestCategoryTargetInRangeCDR(aiBrain, position, maxRange, Prio
     return TargetUnit
 end
 
+function AIFindNearestCategoryTeleportLocation(aiBrain, position, maxRange, PrioritizedTargetList, TargetSearchCategory, enemyBrain)
+    if type(TargetSearchCategory) == 'string' then
+        TargetSearchCategory = ParseEntityCategory(TargetSearchCategory)
+    end
+    local enemyIndex = false
+    if enemyBrain then
+        enemyIndex = enemyBrain:GetArmyIndex()
+    end
+    local TargetUnit = false
+    local TargetsInRange, TargetPosition, category, distance, targetRange, AntiteleportUnits
+
+    TargetsInRange = aiBrain:GetUnitsAroundPoint(TargetSearchCategory, position, maxRange, 'Enemy')
+    --LOG('* AIFindNearestCategoryTeleportLocation: numTargets '..table.getn(TargetsInRange)..'  ')
+    --DrawCircle(position, range, '0000FF')
+    for _, v in PrioritizedTargetList do
+        category = v
+        if type(category) == 'string' then
+            category = ParseEntityCategory(category)
+        end
+        distance = maxRange
+        for num, Target in TargetsInRange do
+            if Target.Dead or Target:BeenDestroyed() then
+                continue
+            end
+            TargetPosition = Target:GetPosition()
+            -- check if the target is on the same layer then the attacker
+            -- check if we have a special player index as enemy
+            if enemyBrain and enemyIndex and enemyBrain ~= enemyIndex then continue end
+            -- check if the Target is still alive, matches our target priority and can be attacked from our platoon
+            if not Target.Dead and EntityCategoryContains(category, Target) then
+                -- yes... we need to check if we got friendly units with GetUnitsAroundPoint(_, _, _, 'Enemy')
+                if not IsEnemy( aiBrain:GetArmyIndex(), Target:GetAIBrain():GetArmyIndex() ) then continue end
+                targetRange = VDist2(position[1],position[3],TargetPosition[1],TargetPosition[3])
+                -- check if the target is in range of the ACU and in range of the base
+                if targetRange < distance then
+                    -- Check if the target is protected by antiteleporter
+                    if categories.ANTITELEPORT then 
+                        AntiteleportUnits = aiBrain:GetUnitsAroundPoint(categories.ANTITELEPORT, TargetPosition, 60, 'Enemy')
+                        --LOG('* AIFindNearestCategoryTeleportLocation: numAntiteleportUnits '..table.getn(AntiteleportUnits)..'  ')
+                        local scrambled = false
+                        for i, unit in AntiteleportUnits do
+                            -- If it's an ally, then we skip.
+                            if not IsEnemy( aiBrain:GetArmyIndex(), unit:GetAIBrain():GetArmyIndex() ) then continue end
+                            local NoTeleDistance = unit:GetBlueprint().Defense.NoTeleDistance
+                            if NoTeleDistance then
+                                local AntiTeleportTowerPosition = unit:GetPosition()
+                                local dist = VDist2(TargetPosition[1], TargetPosition[3], AntiTeleportTowerPosition[1], AntiTeleportTowerPosition[3])
+                                if dist and NoTeleDistance >= dist then
+                                    --LOG('* AIFindNearestCategoryTeleportLocation: Teleport Destination Scrambled 1 '..repr(TargetPosition)..' - '..repr(AntiTeleportTowerPosition))
+                                    scrambled = true
+                                    break
+                                end
+                            end
+                        end
+                        if scrambled then
+                            continue
+                        end
+                    end
+                    --LOG('* AIFindNearestCategoryTeleportLocation: Found a target that is not Teleport Scrambled')
+                    TargetUnit = Target
+                    distance = targetRange
+                end
+            end
+        end
+        if TargetUnit then
+            return TargetUnit
+        end
+       WaitTicks(10)
+    end
+    return TargetUnit
+end
+
 -- WARNING THIS FUNCTION CAUSED CRASH AT 002cbc63. ONLY LEFT FOR DEBUGGING
 -- Hook for AI-Uveso engineer pathing
 --OLDEngineerMoveWithSafePath = EngineerMoveWithSafePath

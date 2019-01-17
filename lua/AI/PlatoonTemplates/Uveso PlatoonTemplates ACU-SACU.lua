@@ -22,9 +22,9 @@ PlatoonTemplate {
 }
 
 PlatoonTemplate {
-    Name = 'RepairShields 3 16',
-    Plan = 'ShieldRepairAI',
+    Name = 'AddToRepairShieldsPlatoon',
+    Plan = 'PlatoonMerger',
     GlobalSquads = {
-        { categories.SUBCOMMANDER , 3, 16, 'support', 'none' }
+        { categories.SUBCOMMANDER , 1, 1, 'support', 'none' }
     },
 }

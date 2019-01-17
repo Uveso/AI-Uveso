@@ -60,6 +60,10 @@ end
 
 function SetArmyPoolBuff(aiBrain, CheatMult, BuildMult)
     -- Store the new mult inside options, so new builded units get the new mult automatically
+    if tostring(CheatMult) == tostring(ScenarioInfo.Options.CheatMult) and tostring(BuildMult) == tostring(ScenarioInfo.Options.BuildMult) then
+        --LOG('* SetArmyPoolBuff: CheatMult+BuildMult not changed. No buffing needed!')
+        return
+    end
     ScenarioInfo.Options.CheatMult = tostring(CheatMult)
     ScenarioInfo.Options.BuildMult = tostring(BuildMult)
     -- Modify Buildrate buff
@@ -96,12 +100,15 @@ function EcoManager(aiBrain)
     local allyScore
     local enemyScore
     local MyArmyRatio
+    local bussy
     while true do
+        WaitTicks(5)
         Engineers = aiBrain:GetListOfUnits(categories.ENGINEER - categories.COMMAND - categories.SUBCOMMANDER, false, false) -- also gets unbuilded units (planed to build)
         MassFabrikators = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.MASSFABRICATION, false, false) -- also gets unbuilded units (planed to build)
         AntiNuke = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.ANTIMISSILE * categories.SILO * categories.TECH3, false, false) -- also gets unbuilded units (planed to build)
         paragons = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC  * categories.ENERGYPRODUCTION  * categories.MASSPRODUCTION, false, false)
         ParaComplete = 0
+        bussy = false
         for unitNum, unit in paragons do
             if unit:GetFractionComplete() >= 1 then
                 ParaComplete = ParaComplete + 1
@@ -115,7 +122,7 @@ function EcoManager(aiBrain)
         -- Cheatbuffs
         if personality == 'uvesooverwhelm' then
             -- Check every 30 seconds for new armyStats to change ECO
-            if (GetGameTimeSeconds() > 60 * 1) and lastCall+30 < GetGameTimeSeconds() then
+            if (GetGameTimeSeconds() > 60 * 1) and lastCall+10 < GetGameTimeSeconds() then
                 lastCall = GetGameTimeSeconds()
                 --score of all players (unitcount)
                 allyScore = 0
@@ -134,37 +141,56 @@ function EcoManager(aiBrain)
                 else
                     MyArmyRatio = 100
                 end
-                -- Increase ECO if we have less then 50% of the enemy units
-                if MyArmyRatio < 60 then
-                    CheatMult = 6
-                    BuildMult = 6
-                    --LOG('* ECO+++  allyScore('..allyScore..') enemyScore('..enemyScore..') - My Army: '..math.floor(MyArmyRatio)..'% - Build/CheatMult old: '..ScenarioInfo.Options.BuildMult..' '..ScenarioInfo.Options.CheatMult..' - new: '..BuildMult..' '..CheatMult..'')
-                    SetArmyPoolBuff(aiBrain, CheatMult, BuildMult)
-                -- Increase ECO if we have less units or after 35 minutes
-                elseif MyArmyRatio < 85 or GetGameTimeSeconds() > 60 * 35 then
+                if GetGameTimeSeconds() > 60 * 35 then
                     CheatMult = CheatMult + 0.5
                     BuildMult = BuildMult + 0.5
                     if CheatMult < tonumber(CheatMultOption) then CheatMult = tonumber(CheatMultOption) end
                     if BuildMult < tonumber(BuildMultOption) then BuildMult = tonumber(BuildMultOption) end
                     if CheatMult > tonumber(CheatMultOption) + 2 then CheatMult = tonumber(CheatMultOption) + 2 end
                     if BuildMult > tonumber(BuildMultOption) + 2 then BuildMult = tonumber(BuildMultOption) + 2 end
-                    --LOG('* ECO+++  allyScore('..allyScore..') enemyScore('..enemyScore..') - My Army: '..math.floor(MyArmyRatio)..'% - Build/CheatMult old: '..ScenarioInfo.Options.BuildMult..' '..ScenarioInfo.Options.CheatMult..' - new: '..BuildMult..' '..CheatMult..'')
+                    --LOG('* ECO + allyScore('..allyScore..') enemyScore('..enemyScore..') - My Army: '..math.floor(MyArmyRatio)..'% - Build/CheatMult old: '..ScenarioInfo.Options.BuildMult..' '..ScenarioInfo.Options.CheatMult..' - new: '..BuildMult..' '..CheatMult..'')
+                    SetArmyPoolBuff(aiBrain, CheatMult, BuildMult)
+                -- Increase ECO if we have less than 40% of the enemy units
+                elseif MyArmyRatio < 40 then
+                    CheatMult = CheatMult + 0.5
+                    BuildMult = BuildMult + 0.5
+                    if CheatMult > 6 then CheatMult = 6 end
+                    if BuildMult > 6 then BuildMult = 6 end
+                    --LOG('* ECO + allyScore('..allyScore..') enemyScore('..enemyScore..') - My Army: '..math.floor(MyArmyRatio)..'% - Build/CheatMult old: '..ScenarioInfo.Options.BuildMult..' '..ScenarioInfo.Options.CheatMult..' - new: '..BuildMult..' '..CheatMult..'')
+                    SetArmyPoolBuff(aiBrain, CheatMult, BuildMult)
+                -- Increase ECO if we have less than 85% of the enemy units
+                elseif MyArmyRatio < 85 then
+                    CheatMult = CheatMult + 0.5
+                    BuildMult = BuildMult + 0.5
+                    if CheatMult > tonumber(CheatMultOption) + 2 then CheatMult = tonumber(CheatMultOption) + 2 end
+                    if BuildMult > tonumber(BuildMultOption) + 2 then BuildMult = tonumber(BuildMultOption) + 2 end
+                    --LOG('* ECO + allyScore('..allyScore..') enemyScore('..enemyScore..') - My Army: '..math.floor(MyArmyRatio)..'% - Build/CheatMult old: '..ScenarioInfo.Options.BuildMult..' '..ScenarioInfo.Options.CheatMult..' - new: '..BuildMult..' '..CheatMult..'')
                     SetArmyPoolBuff(aiBrain, CheatMult, BuildMult)
                 -- Decrease ECO if we have to much units
-                elseif MyArmyRatio > 100 then
+                elseif MyArmyRatio > 105 then
                     CheatMult = CheatMult - 0.5
                     BuildMult = BuildMult - 0.5
-                    if CheatMult > tonumber(CheatMultOption) then CheatMult = tonumber(CheatMultOption) end
-                    if BuildMult > tonumber(BuildMultOption) then BuildMult = tonumber(BuildMultOption) end
                     if CheatMult < 0.5 then CheatMult = 0.5 end
                     if BuildMult < 0.5 then BuildMult = 0.5 end
-                    --LOG('* ECO---  allyScore('..allyScore..') enemyScore('..enemyScore..') - My Army: '..math.floor(MyArmyRatio)..'% - Build/CheatMult old: '..ScenarioInfo.Options.BuildMult..' '..ScenarioInfo.Options.CheatMult..' - new: '..BuildMult..' '..CheatMult..'')
+                    --LOG('* ECO -- allyScore('..allyScore..') enemyScore('..enemyScore..') - My Army: '..math.floor(MyArmyRatio)..'% - Build/CheatMult old: '..ScenarioInfo.Options.BuildMult..' '..ScenarioInfo.Options.CheatMult..' - new: '..BuildMult..' '..CheatMult..'')
                     SetArmyPoolBuff(aiBrain, CheatMult, BuildMult)
                 -- Normal ECO
-                else
-                    CheatMult = CheatMultOption
-                    BuildMult = BuildMultOption
-                    --LOG('* ECO===  allyScore('..allyScore..') enemyScore('..enemyScore..') - My Army: '..math.floor(MyArmyRatio)..'% - Build/CheatMult old: '..ScenarioInfo.Options.BuildMult..' '..ScenarioInfo.Options.CheatMult..' - new: '..BuildMult..' '..CheatMult..'')
+                else -- MyArmyRatio > 85  MyArmyRatio <= 100
+                    if CheatMult > CheatMultOption then
+                        CheatMult = CheatMult - 0.5
+                        if CheatMult < tonumber(CheatMultOption) then CheatMult = tonumber(CheatMultOption) end
+                    elseif CheatMult < CheatMultOption then
+                        CheatMult = CheatMult + 0.5
+                        if CheatMult > tonumber(CheatMultOption) + 2 then CheatMult = tonumber(CheatMultOption) + 2 end
+                    end
+                    if BuildMult > BuildMultOption then
+                        BuildMult = BuildMult - 0.5
+                        if BuildMult < tonumber(BuildMultOption) then BuildMult = tonumber(BuildMultOption) end
+                    elseif BuildMult < BuildMultOption then
+                        BuildMult = BuildMult + 0.5
+                        if BuildMult > tonumber(BuildMultOption) + 2 then BuildMult = tonumber(BuildMultOption) + 2 end
+                    end
+                    --LOG('* ECO = allyScore('..allyScore..') enemyScore('..enemyScore..') - My Army: '..math.floor(MyArmyRatio)..'% - Build/CheatMult old: '..ScenarioInfo.Options.BuildMult..' '..ScenarioInfo.Options.CheatMult..' - new: '..BuildMult..' '..CheatMult..'')
                     SetArmyPoolBuff(aiBrain, CheatMult, BuildMult)
                 end
             end
@@ -179,15 +205,20 @@ function EcoManager(aiBrain)
                 if aiBrain:GetEconomyTrend('ENERGY') < 0.0 and aiBrain:GetEconomyStoredRatio('ENERGY') < 0.99 then
                     if not unit:IsPaused() then
                         unit:SetPaused( true )
-                        break
+                        bussy = true
+                        break -- for _, unit in MassFabrikators do
                     end
                 elseif aiBrain:GetEconomyTrend('ENERGY') > 150.0 and aiBrain:GetEconomyStoredRatio('ENERGY') > 0.99 then
                     if unit:IsPaused() then
                         unit:SetPaused( false )
-                        break
+                        bussy = true
+                        break -- for _, unit in MassFabrikators do
                     end
                 end
             end
+        end
+        if bussy then
+            continue -- while true do
         end
         -- loop over Antinukes and manage pause / unpause
         for _, unit in AntiNuke do
@@ -198,15 +229,20 @@ function EcoManager(aiBrain)
                 if aiBrain:GetEconomyTrend('ENERGY') < 0.0 and aiBrain:GetEconomyStoredRatio('ENERGY') < 0.50 then
                     if not unit:IsPaused() then
                         unit:SetPaused( true )
-                        break
+                        bussy = true
+                        break -- for _, unit in AntiNuke do
                     end
                 elseif aiBrain:GetEconomyTrend('ENERGY') > 0.0 and aiBrain:GetEconomyStoredRatio('ENERGY') > 0.50 then
                     if unit:IsPaused() then
                         unit:SetPaused( false )
-                        break
+                        bussy = true
+                        break -- for _, unit in AntiNuke do
                     end
                 end
             end
+        end
+        if bussy then
+            continue -- while true do
         end
         -- loop over engineers and manage pause / unpause
         for _, unit in Engineers do
@@ -218,7 +254,8 @@ function EcoManager(aiBrain)
             if aiBrain.HasParagon then
                 if unit:IsPaused() then
                     unit:SetPaused( false )
-                    break
+                    bussy = true
+                    break -- for _, unit in Engineers do
                 end
             -- We have negative eco. Check if we can switch something off
             elseif aiBrain:GetEconomyTrend('MASS') < 0.0 or aiBrain:GetEconomyTrend('ENERGY') < 0.0 then
@@ -230,15 +267,18 @@ function EcoManager(aiBrain)
                     if unit.UnitBeingAssist then
                         if EntityCategoryContains(categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC, unit.UnitBeingAssist) then
                             unit:SetPaused( true )
-                            break
+                            bussy = true
+                            break -- for _, unit in Engineers do
                         elseif EntityCategoryContains(categories.STRUCTURE * categories.ENERGYPRODUCTION, unit.UnitBeingAssist) then
                             unit:SetPaused( true )
-                            break
+                            bussy = true
+                            break -- for _, unit in Engineers do
                         end
                     end
                     -- if we don't assist a paragon, disband the platoon.
                     unit.PlatoonHandle:Stop()
                     unit.PlatoonHandle:PlatoonDisband()
+                    bussy = true
                     break
                 -- Low Eco, disable all engineers exept thosw who are assisting energy buildings
                 elseif aiBrain:GetEconomyStoredRatio('MASS') < 0.40 or aiBrain:GetEconomyStoredRatio('ENERGY') < 0.80 then
@@ -250,7 +290,8 @@ function EcoManager(aiBrain)
                         end
                     end
                     unit:SetPaused( true )
-                    break
+                    bussy = true
+                    break -- for _, unit in Engineers do
                 end
             -- We have positive eco. Check if we can switch something on
             elseif aiBrain:GetEconomyTrend('MASS') >= 0.0 and aiBrain:GetEconomyTrend('ENERGY') >= 0.0 then
@@ -258,12 +299,14 @@ function EcoManager(aiBrain)
                 if not unit:IsPaused() then continue end
                 if aiBrain:GetEconomyStoredRatio('MASS') >= 0.40 and aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.80 then
                     unit:SetPaused( false )
-                    break
+                    bussy = true
+                    break -- for _, unit in Engineers do
                 elseif aiBrain:GetEconomyStoredRatio('MASS') >= 0.15 and aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.15 then
                     if unit.UnitBeingAssist then
                         if EntityCategoryContains(categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.EXPERIMENTAL, unit.UnitBeingAssist) then
                             unit:SetPaused( false )
-                            break
+                            bussy = true
+                            break -- for _, unit in Engineers do
                         end
                     end
                 elseif aiBrain:GetEconomyStoredRatio('MASS') >= 0.20 and aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.60 then
@@ -271,13 +314,16 @@ function EcoManager(aiBrain)
                     if unit.UnitBeingAssist then
                         if EntityCategoryContains(categories.STRUCTURE * categories.ENERGYPRODUCTION, unit.UnitBeingAssist) then
                             unit:SetPaused( false )
-                            break
+                            bussy = true
+                            break -- for _, unit in Engineers do
                         end
                     end
                 end
             end
         end
-        WaitTicks(5)
+        if bussy then
+            continue -- while true do
+        end
     end
 end
 

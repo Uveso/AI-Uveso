@@ -59,11 +59,11 @@ function CanPathToCurrentEnemy(aiBrain, bool)
             -- Check if we have less then 50% water on the map
             if aiBrain:GetMapWaterRatio() < 0.50 then
                 --lets asume we can move on land to the enemy
-                LOG(string.format('* Uveso-AI: CanPathToCurrentEnemy: Water on map: %0.2f%%. Assuming LAND map! - '..OwnIndex..' vs '..EnemyIndex..'',aiBrain:GetMapWaterRatio() ))
+                LOG(string.format('* Uveso-AI: CanPathToCurrentEnemy: Water on map: %0.2f%%. Assuming LAND map! - '..OwnIndex..' vs '..EnemyIndex..'',aiBrain:GetMapWaterRatio()*100 ))
                 CanPathToEnemy[OwnIndex][EnemyIndex] = 'LAND'
             else
                 -- we have more then 50% water on this map. Ity maybe a water map..
-                LOG(string.format('* Uveso-AI: CanPathToCurrentEnemy: Water on map: %0.2f%%. Assuming WATER map! - '..OwnIndex..' vs '..EnemyIndex..'',aiBrain:GetMapWaterRatio() ))
+                LOG(string.format('* Uveso-AI: CanPathToCurrentEnemy: Water on map: %0.2f%%. Assuming WATER map! - '..OwnIndex..' vs '..EnemyIndex..'',aiBrain:GetMapWaterRatio()*100 ))
                 CanPathToEnemy[OwnIndex][EnemyIndex] = 'WATER'
             end
         end

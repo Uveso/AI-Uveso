@@ -1,10 +1,80 @@
 
 -- For AI Patch V3.
+local AntiSpamList = {}
 function AIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder, relative, buildingTemplate, baseTemplate, reference, NearMarkerType)
     local factionIndex = aiBrain:GetFactionIndex()
     local whatToBuild = aiBrain:DecideWhatToBuild(builder, buildingType, buildingTemplate)
     if not whatToBuild then
-        SPEW('*AIExecuteBuildStructure: We cant decide whatToBuild! Building Type: '..repr(buildingType)..' not present as template for faction: '..repr(builder.factionCategory))
+        if AntiSpamList[buildingType] then
+            return
+        end
+        SPEW('*AIExecuteBuildStructure: We cant decide whatToBuild! Building Type: '..repr(buildingType)..', faction: '..repr(builder.factionCategory))
+        --SPEW('*AIExecuteBuildStructure: buildingType='..repr(buildingType)..' - buildingTemplate: '..repr(buildingTemplate))
+        --SPEW('*AIExecuteBuildStructure: builder='..repr(builder:GetBlueprint().CategoriesHash)..' ')
+        --- DEBUG---
+        --- DEBUG---
+        --- DEBUG---
+        -- Get the UnitId for the actual buildingType
+        local BuildUnitWithID
+        for Key, Data in buildingTemplate do
+            if Data[1] and Data[2] and Data[1] == buildingType then
+                --SPEW('*AIExecuteBuildStructure: Found template: '..repr(Data[1])..' - Using UnitID: '..repr(Data[2]))
+                BuildUnitWithID = Data[2]
+                break
+            end
+        end
+        -- If we can't find a template, then return
+        if not BuildUnitWithID then
+            if not AntiSpamList[buildingType] then
+                AntiSpamList[buildingType] = true
+                WARN('*AIExecuteBuildStructure: No '..repr(builder.factionCategory)..' unit found for template: '..repr(buildingType)..'! ')
+            end
+            return
+        end
+        -- get the needed tech level to build buildingType
+        local BBC = __blueprints[BuildUnitWithID].CategoriesHash
+        local NeedTech
+        --LOG('*AIExecuteBuildStructure: BeingBuildCategory: '..repr(BBC))
+        if BBC.BUILTBYCOMMANDER or BBC.BUILTBYTIER1COMMANDER or BBC.BUILTBYTIER1ENGINEER then
+            NeedTech = 1
+        elseif BBC.BUILTBYTIER2COMMANDER or BBC.BUILTBYTIER2ENGINEER then
+            NeedTech = 2
+        elseif BBC.BUILTBYTIER3COMMANDER or BBC.BUILTBYTIER3ENGINEER then
+            NeedTech = 3
+        end
+        -- If we can't find a techlevel for the building we  want to build, return
+        if not NeedTech then
+            WARN('*AIExecuteBuildStructure: Cant find techlevel for BuildUnitWithID: '..repr(BuildUnitWithID))
+            return
+        end
+        --LOG('*AIExecuteBuildStructure: Need TECH'..NeedTech..' to build this building')
+        local BC = builder:GetBlueprint().CategoriesHash
+        if BC.TECH1 or BC.COMMAND then
+            HasTech = 1
+        elseif BC.TECH2 then
+            HasTech = 2
+        elseif BC.TECH3 then
+            HasTech = 3
+        end
+        -- If we can't find a techlevel for the building we  want to build, return
+        if not HasTech then
+            WARN('*AIExecuteBuildStructure: Cant find techlevel for Builder: '..__blueprints[BuildUnitWithID].Description or  "Unknown")
+            return
+        end
+        --LOG('*AIExecuteBuildStructure: We have TECH'..HasTech..' engineer.')
+        if HasTech < NeedTech then
+            WARN('*AIExecuteBuildStructure: TECH'..NeedTech..' Unit "'..BuildUnitWithID..'" is assigned to TECH'..HasTech..' buildplatoon! ('..repr(buildingType)..')')
+            return
+        end
+        local IsRestricted = import('/lua/game.lua').IsRestricted
+        if IsRestricted(BuildUnitWithID, GetFocusArmy()) then
+            WARN('*AIExecuteBuildStructure: Unit is Restricted!!! Building Type: '..repr(buildingType)..', faction: '..repr(builder.factionCategory)..' - Unit:'..BuildUnitWithID)
+            AntiSpamList[buildingType] = true
+            return
+        end
+        --- DEBUG---
+        --- DEBUG---
+        --- DEBUG---
         return
     else
         -- DEBUG. Sometimes the AI is building a unit that is different from the buildingTemplate table. So we validate the unitID here.
