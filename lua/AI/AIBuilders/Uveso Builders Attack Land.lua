@@ -121,7 +121,7 @@ BuilderGroup {
 -- ================= --
 BuilderGroup {
     -- =========================== --
-    --    TECH 1   Panic/Always    --
+    --    TECH 1   Always          --
     -- =========================== --
     BuilderGroupName = 'LandAttackBuilders Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'FactoryBuilder',
@@ -285,7 +285,6 @@ BuilderGroup {
             -- Have we the eco to build it ?
             -- Don't build it if...
             { UCBC, 'HasNotParagon', {} },
-            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 20, categories.ANTIAIR }},
             -- Respect UnitCap
             { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },

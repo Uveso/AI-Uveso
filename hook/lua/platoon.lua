@@ -2667,6 +2667,7 @@ Platoon = Class(TheOldPlatoon) {
             --This can happen if a player try to fool the targetingsystem by circling a unit.
             LoopSaveGuard = LoopSaveGuard + 1
         end
+        if not target or target.Dead then return false end
         local MissileImpactTime = 25
         -- Create missile impact corrdinates based on movePerSec * MissileImpactTime
         local MissileImpactX = Target2SecPos[1] - (XmovePerSec * MissileImpactTime)
@@ -2835,8 +2836,8 @@ Platoon = Class(TheOldPlatoon) {
         -- search for a target
         local Target
         while not Target do
+            WaitTicks(30)
             Target, _, _, _ = AIUtils.AIFindNearestCategoryTeleportLocation(aiBrain, platoonPosition, maxRadius, PrioritizedTargetList, TargetSearchCategory, false)
-            WaitTicks(10)
         end
         if Target and not Target.Dead then
             TargetPosition = Target:GetPosition()

@@ -76,3 +76,15 @@ function CanPathToCurrentEnemy(aiBrain, bool)
     CanPathToEnemy[OwnIndex][EnemyIndex] = 'WATER'
     return false == bool
 end
+
+function IsBrainPersonality(aiBrain, neededPersonality, bool)
+    local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
+    if personality == neededPersonality and bool then
+        --LOG('personality = '..personality..' = true')
+        return true
+    elseif personality ~= neededPersonality and not bool then
+        --LOG('personality not '..neededPersonality..' = true')
+        return true
+    end
+    return false
+end

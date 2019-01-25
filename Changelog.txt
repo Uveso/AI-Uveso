@@ -1,4 +1,14 @@
 *************************************************************************************************************************************
+v52 (25.Jan.2019)
+
+- New: ECO system for AI Overwhelm. It's now a bit less agressive for the first 35 minutes.
+- New: Added new braincondition "IsBrainPersonality". This way we can select Builders for specific AI's.
+- Opt: Nukes restricted to 8 launchers for AI Overwhelm. (All other Sub-AI's can build up to 25 launchers.)
+- Opt: Teleporter now check every 3 seconds for a teleport target not every 1 second.
+- Opt: Added 1 (one) engineer to build massextractors. (sound like nothing but has huge eco impact)
+- Opt: Removed engineers from all attack platoons. (we need them more in our base than in the field)
+
+*************************************************************************************************************************************
 v51 (18.Jan.2019)
 
 - New: Added new AI function to search teleporter targets. (Now respecting antiteleport towers).

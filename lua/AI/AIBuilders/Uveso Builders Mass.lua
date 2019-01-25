@@ -37,7 +37,6 @@ BuilderGroup {
         BuilderData = {
             DesiresAssist = false,
             Construction = {
-                BuildClose = true,
                 BuildStructures = {
                     'T1Resource',
                 },
@@ -61,7 +60,6 @@ BuilderGroup {
         BuilderData = {
             DesiresAssist = false,
             Construction = {
-                BuildClose = true,
                 BuildStructures = {
                     'T1Resource',
                 },
@@ -87,9 +85,6 @@ BuilderGroup {
         },
         BuilderType = 'Any',
         BuilderData = {
-            RequireTransport = false,                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
-            NeedGuard = false,
-            DesiresAssist = false,
             Construction = {
                 BuildStructures = {
                     'T1Resource',
@@ -107,17 +102,13 @@ BuilderGroup {
             { UCBC, 'CanBuildOnMassLessThanLocationDistance', { 'LocationType', 60, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Do we need additional conditions to build it ?
             { UCBC, 'HasNotParagon', {} },
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, 'ENGINEER TECH1' }},
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { -0.00, 0.05}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { -1.00, 0.05}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
         },
         BuilderType = 'Any',
         BuilderData = {
-            RequireTransport = false,                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
-            NeedGuard = false,
-            DesiresAssist = false,
             Construction = {
                 BuildStructures = {
                     'T1Resource',
@@ -135,17 +126,14 @@ BuilderGroup {
             { UCBC, 'CanBuildOnMassLessThanLocationDistance', { 'LocationType', 128, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Do we need additional conditions to build it ?
             { UCBC, 'HasNotParagon', {} },
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, 'ENGINEER TECH1' }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, 'ENGINEER TECH1' }},
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { -0.00, 0.05}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { -1.00, 0.05}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
         },
         BuilderType = 'Any',
         BuilderData = {
-            RequireTransport = false,                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
-            NeedGuard = false,
-            DesiresAssist = false,
             Construction = {
                 BuildStructures = {
                     'T1Resource',
@@ -163,17 +151,14 @@ BuilderGroup {
             { UCBC, 'CanBuildOnMassLessThanLocationDistance', { 'LocationType', 256, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Do we need additional conditions to build it ?
             { UCBC, 'HasNotParagon', {} },
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 3, 'ENGINEER TECH1' }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, 'ENGINEER TECH1' }},
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { -0.00, 0.05}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { -1.00, 0.05}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
         },
         BuilderType = 'Any',
         BuilderData = {
-            RequireTransport = false,                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
-            NeedGuard = false,
-            DesiresAssist = false,
             Construction = {
                 BuildStructures = {
                     'T1Resource',
@@ -191,17 +176,14 @@ BuilderGroup {
             { UCBC, 'CanBuildOnMassLessThanLocationDistance', { 'LocationType', 512, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Do we need additional conditions to build it ?
             { UCBC, 'HasNotParagon', {} },
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 4, 'ENGINEER TECH1' }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, 'ENGINEER TECH1' }},
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { -0.00, 0.05}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { -1.00, 0.05}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
         },
         BuilderType = 'Any',
         BuilderData = {
-            RequireTransport = false,                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
-            NeedGuard = false,
-            DesiresAssist = false,
             Construction = {
                 BuildStructures = {
                     'T1Resource',
@@ -219,17 +201,15 @@ BuilderGroup {
             { UCBC, 'CanBuildOnMassLessThanLocationDistance', { 'LocationType', 1000, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Do we need additional conditions to build it ?
             { UCBC, 'HasNotParagon', {} },
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 4, 'ENGINEER TECH1' }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, 'ENGINEER TECH1' }},
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { -0.00, 0.05}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { -1.00, 0.05}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<=', categories.STRUCTURE * categories.MASSEXTRACTION } },
         },
         BuilderType = 'Any',
         BuilderData = {
             RequireTransport = true,                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
-            NeedGuard = false,
-            DesiresAssist = false,
             Construction = {
                 BuildStructures = {
                     'T1Resource',
@@ -253,8 +233,6 @@ BuilderGroup {
         },
         BuilderType = 'Any',
         BuilderData = {
-            NeedGuard = false,
-            DesiresAssist = false,
             Construction = {
                 BuildStructures = {
                     'T1Resource',
@@ -278,8 +256,6 @@ BuilderGroup {
         },
         BuilderType = 'Any',
         BuilderData = {
-            NeedGuard = false,
-            DesiresAssist = false,
             Construction = {
                 BuildStructures = {
                     'T1Resource',

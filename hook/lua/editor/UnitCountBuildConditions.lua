@@ -278,10 +278,10 @@ function CanBuildOnMassLessThanLocationDistance(aiBrain, locationType, distance,
     local locationPos = aiBrain.BuilderManagers[locationType].EngineerManager.Location
     local markerTable = AIUtils.AIGetSortedMassLocations(aiBrain, maxNum, threatMin, threatMax, threatRings, threatType, locationPos)
     if markerTable[1] and VDist3( markerTable[1], locationPos ) < distance then
-        --LOG('We can build in less than '..VDist3( markerTable[1], locationPos ))
+        --LOG('SearchRadius: '..distance..' - We can build on '..repr(locationType)..' in less than '..VDist3( markerTable[1], locationPos ))
         return true
     else
-        --LOG('Outside range: '..VDist3( markerTable[1], locationPos ))
+        --LOG('SearchRadius: '..distance..' - Outside range on '..repr(locationType)..': '..VDist3( markerTable[1], locationPos ))
     end
     return false
 end
