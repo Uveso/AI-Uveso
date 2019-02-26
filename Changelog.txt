@@ -1,4 +1,17 @@
 *************************************************************************************************************************************
+v53 (23.Feb.2019)
+
+- New: AI is now sending a chat message if AI-markers are missing.
+- New: Added platoons to send units to the enemy on unitcap.
+- Fix: Attackplatoons no longer attack buildings while capture/reclaim is in progress.
+- Opt: Tactical missiles launchers no longer attack underwater targets.
+- Opt: AI will now perform better on low unitcap like 250 or 125 units.
+- Opt: BasePanicZone, BaseMilitaryZone, BaseEnemyZone are now declared in uvesoutilities.lua
+- Opt: Optimized pathing function. Maps with 800 markers are now possible without pathing-lag.
+- Opt: Optimized all AIBuilder files for low unit caps like 250 or 125.
+- Dev: BasePanicZone, BaseMilitaryZone, BaseEnemyZone are now calculated inside uvesoutilities.lua for all AIBuilder files.
+
+*************************************************************************************************************************************
 v52 (25.Jan.2019)
 
 - New: ECO system for AI Overwhelm. It's now a bit less agressive for the first 35 minutes.

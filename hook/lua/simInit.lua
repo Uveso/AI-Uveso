@@ -330,6 +330,9 @@ function DrawAIPatchCache(DrawOnly)
                         -- Display only valid paths
                         if PathNodes.path ~= 'bad' then
                             local LastNode = false
+                            if not PathNodes.path.path then
+                                continue
+                            end
                             -- loop over all path waypoints and draw lines.
                             for NodeIndex, PathNode in PathNodes.path.path do
                                 -- continue if we don't want to draw this graph node

@@ -664,9 +664,9 @@ Platoon = Class(TheOldPlatoon) {
             end
             if reclaimunit and not reclaimunit.Dead then
                 counter = 0
-                IssueReclaim(self:GetPlatoonUnits(), reclaimunit)
                 -- Set ReclaimInProgress to prevent repairing (see RepairAI)
                 reclaimunit.ReclaimInProgress = true
+                IssueReclaim(self:GetPlatoonUnits(), reclaimunit)
                 repeat
                     WaitSeconds(2)
                     if not aiBrain:PlatoonExists(self) then
@@ -722,9 +722,9 @@ Platoon = Class(TheOldPlatoon) {
                 local blip = target:GetBlip(index)
                 if blip then
                     IssueClearCommands(self:GetPlatoonUnits())
-                    IssueCapture(engineers, target)
                     -- Set CaptureInProgress to prevent attacking
                     target.CaptureInProgress = true
+                    IssueCapture(engineers, target)
                     local guardTarget
 
                     for i, unit in engineers do
@@ -2394,7 +2394,7 @@ Platoon = Class(TheOldPlatoon) {
                 continue
             end
             ECOLoopCounter = 0
-            LOG('* NukePlatoonAI: Checking for Targets. Launcher:('..LauncherCount..') Ready:('..table.getn(LauncherReady)..') Full:('..table.getn(LauncherFull)..') - Missiles:('..MissileCount..') - EnemyAntiMissile:('..table.getn(EnemyAntiMissile)..')')
+           --LOG('* NukePlatoonAI: Checking for Targets. Launcher:('..LauncherCount..') Ready:('..table.getn(LauncherReady)..') Full:('..table.getn(LauncherFull)..') - Missiles:('..MissileCount..') - EnemyAntiMissile:('..table.getn(EnemyAntiMissile)..')')
             ---------------------------------------------------------------------------------------------------
             -- PrimaryTarget, launch a single nuke on primary targets.
             ---------------------------------------------------------------------------------------------------
@@ -2676,7 +2676,7 @@ Platoon = Class(TheOldPlatoon) {
     end,
 
     NukeSingleAttack = function(self, Launchers, EnemyTargetPosition)
-        LOG('* NukeSingleAttack: Launcher: '..table.getn(Launchers))
+        --LOG('* NukeSingleAttack: Launcher: '..table.getn(Launchers))
         if table.getn(Launchers) <= 0 then
             LOG('* NukeSingleAttack: Launcher empty')
             return false
@@ -2686,27 +2686,27 @@ Platoon = Class(TheOldPlatoon) {
             if not Launcher or Launcher.Dead or Launcher:BeenDestroyed() then
                 -- We found a dead unit inside this platoon. Disband the platton; It will be reformed
                 -- needs PlatoonDisbandNoAssign, or launcher will stop building nukes if the platton is disbanded
-                LOG('* NukeSingleAttack: Found destroyed launcher inside platoon. Disbanding...')
+                --LOG('* NukeSingleAttack: Found destroyed launcher inside platoon. Disbanding...')
                 self:PlatoonDisbandNoAssign()
                 return
             end
             -- check if the target is closer then 20000
             LauncherPos = Launcher:GetPosition() or nil
             if not LauncherPos then
-                LOG('* NukeSingleAttack: no Launcher Pos. Skiped')
+                --LOG('* NukeSingleAttack: no Launcher Pos. Skiped')
                 continue
             end
             if not EnemyTargetPosition then
-                LOG('* NukeSingleAttack: no Target Pos. Skiped')
+                --LOG('* NukeSingleAttack: no Target Pos. Skiped')
                 continue
             end
             if VDist2(LauncherPos[1],LauncherPos[3],EnemyTargetPosition[1],EnemyTargetPosition[3]) > 20000 then
-                LOG('* NukeSingleAttack: Target out of range. Skiped')
+                --LOG('* NukeSingleAttack: Target out of range. Skiped')
                 -- Target is out of range, skip this launcher
                 continue
             end
             -- Attack the target
-            LOG('* NukeSingleAttack: Attacking Enemy Position!')
+            --LOG('* NukeSingleAttack: Attacking Enemy Position!')
             IssueNuke({Launcher}, EnemyTargetPosition)
             -- stop seraching for available launchers and check the next target
             break
@@ -2714,9 +2714,9 @@ Platoon = Class(TheOldPlatoon) {
     end,
 
     NukeJerichoAttack = function(self, Launchers, EnemyTargetPositions)
-        LOG('* NukeJerichoAttack: Launcher: '..table.getn(Launchers))
+        --LOG('* NukeJerichoAttack: Launcher: '..table.getn(Launchers))
         if table.getn(Launchers) <= 0 then
-            LOG('* NukeSingleAttack: Launcher empty')
+            --LOG('* NukeSingleAttack: Launcher empty')
             return false
         end
         for _, ActualTargetPos in EnemyTargetPositions do
@@ -2725,36 +2725,36 @@ Platoon = Class(TheOldPlatoon) {
                 if not Launcher or Launcher.Dead or Launcher:BeenDestroyed() then
                     -- We found a dead unit inside this platoon. Disband the platton; It will be reformed
                     -- needs PlatoonDisbandNoAssign, or launcher will stop building nukes if the platton is disbanded
-                    LOG('* NukeJerichoAttack: Found destroyed launcher inside platoon. Disbanding...')
+                    --LOG('* NukeJerichoAttack: Found destroyed launcher inside platoon. Disbanding...')
                     self:PlatoonDisbandNoAssign()
                     return
                 end
                 -- check if the target is closer then 20000
                 LauncherPos = Launcher:GetPosition() or nil
                 if not LauncherPos then
-                    LOG('* NukeJerichoAttack: no Launcher Pos. Skiped')
+                    --LOG('* NukeJerichoAttack: no Launcher Pos. Skiped')
                     continue
                 end
                 if not ActualTargetPos then
-                    LOG('* NukeJerichoAttack: no Target Pos. Skiped')
+                    --LOG('* NukeJerichoAttack: no Target Pos. Skiped')
                     continue
                 end
                 if VDist2(LauncherPos[1],LauncherPos[3],ActualTargetPos[1],ActualTargetPos[3]) > 20000 then
-                    LOG('* NukeJerichoAttack: Target out of range. Skiped')
+                    --LOG('* NukeJerichoAttack: Target out of range. Skiped')
                     -- Target is out of range, skip this launcher
                     continue
                 end
                 -- Attack the target
-                LOG('* NukeJerichoAttack: Attacking Enemy Position!')
+                --LOG('* NukeJerichoAttack: Attacking Enemy Position!')
                 IssueNuke({Launcher}, ActualTargetPos)
                 -- remove the launcher from the table, so it can't be used for the next target
                 table.remove(Launchers, k)
                 -- stop seraching for available launchers and check the next target
                 break -- for k, Launcher in Launcher do
             end
-            LOG('* NukeJerichoAttack: Launcher after shoot: '..table.getn(Launchers))
+            --LOG('* NukeJerichoAttack: Launcher after shoot: '..table.getn(Launchers))
             if table.getn(Launchers) < 1 then
-                LOG('* NukeJerichoAttack: All Launchers are bussy! Break!')
+                --LOG('* NukeJerichoAttack: All Launchers are bussy! Break!')
                 -- stop seraching for targets, we don't hava a launcher ready.
                 break -- for _, ActualTargetPos in EnemyTargetPositions do
             end

@@ -454,17 +454,17 @@ function TMLAIThread(platoon,self,aiBrain)
     while aiBrain:PlatoonExists(platoon) and self and not self.Dead do
         local target = false
         while self and not self.Dead and self:GetTacticalSiloAmmoCount() < 2 do
-            WaitSeconds(1)
+            WaitTicks(10)
         end
         while self and not self.Dead and self:IsPaused() do
-            WaitSeconds(1)
+            WaitTicks(10)
         end
         while self and not self.Dead and self:GetTacticalSiloAmmoCount() > 1 and (not target) and (not self:IsPaused()) do
             target = false
             while self and not self.Dead and not target do
-                WaitSeconds(1)
+                WaitTicks(10)
                 while self and not self.Dead and self:IsIdleState() == false do
-                    WaitSeconds(1)
+                    WaitTicks(10)
                 end
                 if self.Dead then return end
                 target = FindTargetUnit(self, minRadius, maxRadius, MaxLoad)
@@ -487,7 +487,7 @@ function TMLAIThread(platoon,self,aiBrain)
                 end
             end
         end
-        WaitSeconds(1)
+        WaitTicks(10)
     end
 end
 function FindTargetUnit(self, minRadius, maxRadius, MaxLoad)
@@ -573,7 +573,7 @@ function LeadTarget(launcher, target)
     -- If x/y and xcheck/ycheck are equal, we can be sure the target is moving straight
     -- in one direction. At least for the last 2 seconds.
     local LoopSaveGuard = 0
-    while (XmovePerSec ~= XmovePerSecCheck or YmovePerSec ~= YmovePerSecCheck) and LoopSaveGuard < 10 do
+    while target and (XmovePerSec ~= XmovePerSecCheck or YmovePerSec ~= YmovePerSecCheck) and LoopSaveGuard < 10 do
         -- 1st position of target
         TargetPos = target:GetPosition()
         TargetStartPosition = {TargetPos[1], 0, TargetPos[3]}
@@ -665,17 +665,17 @@ function LeadTarget(launcher, target)
     return {MissileImpactX, Target2SecPos[2], MissileImpactY}
 end
 function GetEnemyUnitsInSphereOnRadar(aiBrain, position, minRadius, maxRadius)
-    local x1 = (position.x or position[1]) - maxRadius
-    local z1 = (position.z or position[3]) - maxRadius
-    local x2 = (position.x or position[1]) + maxRadius
-    local z2 = (position.z or position[3]) + maxRadius
+    local x1 = position[1] - maxRadius
+    local z1 = position[3] - maxRadius
+    local x2 = position[1] + maxRadius
+    local z2 = position[3] + maxRadius
     local UnitsinRec = GetUnitsInRect( Rect(x1, z1, x2, z2) )
     if not UnitsinRec then
         return UnitsinRec
     end
     local SelfArmyIndex = aiBrain:GetArmyIndex()
     local RadEntities = {}
-    WaitSeconds(0.1)
+    WaitTicks(1)
     local lagstopper = 0
     for Index, EnemyUnit in UnitsinRec do
         lagstopper = lagstopper + 1
@@ -685,6 +685,11 @@ function GetEnemyUnitsInSphereOnRadar(aiBrain, position, minRadius, maxRadius)
         end
         if (not EnemyUnit.Dead) and IsEnemy( SelfArmyIndex, EnemyUnit:GetArmy() ) then
             local EnemyPosition = EnemyUnit:GetPosition()
+            -- check if the target is under water.
+            local SurfaceHeight = GetSurfaceHeight(EnemyPosition[1], EnemyPosition[3])
+            if EnemyPosition[2] < SurfaceHeight - 0.5 then
+                continue
+            end
             local dist = VDist2(position[1], position[3], EnemyPosition[1], EnemyPosition[3])
             if (dist <= maxRadius) and (dist > minRadius) then
                 local blip = EnemyUnit:GetBlip(SelfArmyIndex)
@@ -711,7 +716,7 @@ function IsProtected(self,position)
     if not UnitsinRec then
         return false
     end
-    WaitSeconds(0.1)
+    WaitTicks(1)
     local lagstopper = 0
     local counter = 0
     for _, EnemyUnit in UnitsinRec do
@@ -859,4 +864,23 @@ function RandomizePosition(position)
         Y = GetSurfaceHeight(Posx, Posz)
     end
     return {X, Y, Z}
+end
+
+function GetDangerZoneRadii(bool)
+    -- Military zone is the half the map size (10x10map) or maximal 250.
+    local BaseMilitaryZone = math.max( ScenarioInfo.size[1]-50, ScenarioInfo.size[2]-50 ) / 2
+    BaseMilitaryZone = math.max( 250, BaseMilitaryZone )
+    -- Panic Zone is half the BaseMilitaryZone. That's 1/4 of a 10x10 map
+    local BasePanicZone = BaseMilitaryZone / 2
+    -- Make sure the Panic Zone is not smaller than 60 or greater than 120
+    BasePanicZone = math.max( 60, BasePanicZone )
+    BasePanicZone = math.min( 120, BasePanicZone )
+    -- The whole rest of the map is the enemy zone
+    local BaseEnemyZone = math.max( ScenarioInfo.size[1], ScenarioInfo.size[2] ) * 1.5
+    if bool then
+        LOG('* Uveso-AI: BasePanicZone= '..math.floor( BasePanicZone * 0.01953125 ) ..' Km - ('..BasePanicZone..' units)' )
+        LOG('* Uveso-AI: BaseMilitaryZone= '..math.floor( BaseMilitaryZone * 0.01953125 )..' Km - ('..BaseMilitaryZone..' units)' )
+        LOG('* Uveso-AI: BaseEnemyZone= '..math.floor( BaseEnemyZone * 0.01953125 )..' Km - ('..BaseEnemyZone..' units)' )
+    end
+    return BasePanicZone, BaseMilitaryZone, BaseEnemyZone
 end

@@ -96,7 +96,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconIncome',  { 0.6, 0.0}}, -- Absolut Base income
             -- Don't build it if...
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<=', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
         },
         InstanceCount = 1,
         BuilderType = 'Any',
@@ -133,7 +133,8 @@ BuilderGroup {
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'Energy' }},
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<=', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
+            { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -170,7 +171,8 @@ BuilderGroup {
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'Energy' }},
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<=', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
+            { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -206,7 +208,7 @@ BuilderGroup {
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'Energy' }},
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<=', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -323,7 +325,8 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION * ( categories.TECH2 + categories.TECH3 ) }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.ENERGYPRODUCTION * categories.TECH3 } },
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<=', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
+            { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -429,6 +432,8 @@ BuilderGroup {
             { UCBC, 'CheckBuildPlattonDelay', { 'Energy' }},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 4, categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3}},
             -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
+            { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -465,6 +470,8 @@ BuilderGroup {
             { UCBC, 'CheckBuildPlattonDelay', { 'Energy' }},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 4, categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3}},
             -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
+            { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -498,6 +505,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1,  'ENERGYSTORAGE' }},
+            -- Respect UnitCap
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -550,6 +558,9 @@ BuilderGroup {
             -- Have we the eco to build it ?
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1,  'ENERGYSTORAGE' }},
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
+            { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -576,6 +587,9 @@ BuilderGroup {
             -- Have we the eco to build it ?
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1,  'ENERGYSTORAGE' }},
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -604,7 +618,8 @@ BuilderGroup {
             -- Respect UnitCap
             { UCBC, 'HaveLessThanUnitsWithCategory', { 20, categories.STRUCTURE * categories.ENERGYSTORAGE }},
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<=', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
+            { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -639,10 +654,28 @@ BuilderGroup {
         BuilderType = 'Any',
     },
     Builder {
+        BuilderName = 'U1 Reclaim T1 Pgens cap',
+        PlatoonTemplate = 'EngineerBuilder',
+        PlatoonAIPlan = 'ReclaimStructuresAI',
+        Priority = 790,
+        InstanceCount = 2,
+        BuilderConditions = {
+            { EBC, 'GreaterThanEconTrend', { 0.0, 1.0 } }, -- relative income
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.ENERGYPRODUCTION * (categories.TECH2 + categories.TECH3) }},
+            { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.TECH1 * categories.ENERGYPRODUCTION - categories.HYDROCARBON }},
+            { UCBC, 'UnitCapCheckGreater', { 0.95 } },
+        },
+        BuilderData = {
+            Location = 'LocationType',
+            Reclaim = {categories.STRUCTURE * categories.TECH1 * categories.ENERGYPRODUCTION - categories.HYDROCARBON},
+        },
+        BuilderType = 'Any',
+    },
+    Builder {
         BuilderName = 'U1 Reclaim T2 Pgens',
         PlatoonTemplate = 'EngineerBuilder',
         PlatoonAIPlan = 'ReclaimStructuresAI',
-        Priority = 0,
+        Priority = 790,
         InstanceCount = 2,
         BuilderConditions = {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 3, categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3 }},
@@ -650,7 +683,41 @@ BuilderGroup {
         },
         BuilderData = {
             Location = 'LocationType',
-            Reclaim = {categories.STRUCTURE * categories.TECH2 * categories.ENERGYPRODUCTION},
+            Reclaim = {categories.STRUCTURE * categories.TECH2 * categories.ENERGYPRODUCTION - categories.HYDROCARBON},
+        },
+        BuilderType = 'Any',
+    },
+    Builder {
+        BuilderName = 'U1 Reclaim T2 Pgens cap',
+        PlatoonTemplate = 'EngineerBuilder',
+        PlatoonAIPlan = 'ReclaimStructuresAI',
+        Priority = 790,
+        InstanceCount = 2,
+        BuilderConditions = {
+            { EBC, 'GreaterThanEconTrend', { 0.0, 50.0 } }, -- relative income
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3 }},
+            { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.TECH2 * categories.ENERGYPRODUCTION - categories.HYDROCARBON }},
+            { UCBC, 'UnitCapCheckGreater', { 0.95 } },
+        },
+        BuilderData = {
+            Location = 'LocationType',
+            Reclaim = {categories.STRUCTURE * categories.TECH2 * categories.ENERGYPRODUCTION - categories.HYDROCARBON},
+        },
+        BuilderType = 'Any',
+    },
+    Builder {
+        BuilderName = 'U1 Reclaim E storage cap',
+        PlatoonTemplate = 'EngineerBuilder',
+        PlatoonAIPlan = 'ReclaimStructuresAI',
+        Priority = 790,
+        InstanceCount = 2,
+        BuilderConditions = {
+            { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 3, categories.STRUCTURE * categories.ENERGYSTORAGE }},
+            { UCBC, 'UnitCapCheckGreater', { 0.95 } },
+        },
+        BuilderData = {
+            Location = 'LocationType',
+            Reclaim = {categories.STRUCTURE * categories.ENERGYSTORAGE},
         },
         BuilderType = 'Any',
     },

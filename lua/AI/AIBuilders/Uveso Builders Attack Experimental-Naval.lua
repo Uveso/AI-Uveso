@@ -3,14 +3,7 @@ local EBC = '/lua/editor/EconomyBuildConditions.lua'
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 local SIBC = '/lua/editor/SorianInstantBuildConditions.lua'
 local SBC = '/lua/editor/SorianBuildConditions.lua'
-
-local ExperimentalCount = 3
-local mapSizeX, mapSizeZ = GetMapSize()
-local BaseMilitaryZone = math.max( mapSizeX-50, mapSizeZ-50 ) / 2 -- Half the map
-local BasePanicZone = BaseMilitaryZone / 2
-BasePanicZone = math.max( 60, BasePanicZone )
-BasePanicZone = math.min( 120, BasePanicZone )
-BaseMilitaryZone = math.max( 250, BaseMilitaryZone )
+local BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua').GetDangerZoneRadii()
 
 -- ===================================================-======================================================== --
 -- ==                                 Mobile Experimental Land/Air/Sea                                       == --
@@ -40,7 +33,6 @@ BuilderGroup {
                 DesiresAssist = true,
                 NumAssistees = 10,
                 BuildClose = false,
---                AdjacencyCategory = 'SHIELD STRUCTURE',
                 BuildStructures = {
                     'T4SeaExperimental1',
                 },
@@ -71,7 +63,6 @@ BuilderGroup {
                 DesiresAssist = true,
                 NumAssistees = 10,
                 BuildClose = false,
---                AdjacencyCategory = 'SHIELD STRUCTURE',
                 BuildStructures = {
                     'T4SeaExperimental1',
                 },

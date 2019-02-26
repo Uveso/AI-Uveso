@@ -28,10 +28,10 @@ PlatoonTemplate {
     }
 }
 PlatoonTemplate {
-    Name = 'U123-Fighter-Intercept 40 60', 
+    Name = 'U123-Fighter-Intercept 1 50', 
     Plan = 'InterceptorAIUveso',
     GlobalSquads = {
-        { categories.MOBILE * categories.AIR * categories.ANTIAIR * categories.HIGHALTAIR - categories.GROUNDATTACK - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL - categories.ANTINAVY, 40, 60, 'Attack', 'none' },
+        { categories.MOBILE * categories.AIR * categories.ANTIAIR * categories.HIGHALTAIR - categories.GROUNDATTACK - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL - categories.ANTINAVY, 1, 50, 'Attack', 'none' },
     }
 }
 PlatoonTemplate {
@@ -81,10 +81,10 @@ PlatoonTemplate {
     }
 }
 PlatoonTemplate {
-    Name = 'U123-Gunship+Bomber-Intercept 40 60',
+    Name = 'U123-Gunship+Bomber-Intercept 1 50',
     Plan = 'InterceptorAIUveso',
     GlobalSquads = {
-        { categories.MOBILE * categories.AIR * ( categories.GROUNDATTACK + categories.BOMBER ) - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL - categories.ANTINAVY , 40, 60, 'Attack', 'none' }
+        { categories.MOBILE * categories.AIR * ( categories.GROUNDATTACK + categories.BOMBER ) - categories.EXPERIMENTAL - categories.ANTINAVY , 1, 50, 'Attack', 'none' }
     }
 }
 

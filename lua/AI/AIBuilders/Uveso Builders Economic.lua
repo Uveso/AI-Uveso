@@ -5,15 +5,9 @@ local EBC = '/lua/editor/EconomyBuildConditions.lua'
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 local MABC = '/lua/editor/MarkerBuildConditions.lua'
 local MIBC = '/lua/editor/MiscBuildConditions.lua'
+local BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua').GetDangerZoneRadii()
 
 local MaxCapEngineers = 0.15 -- 15% of all units can be Engineers (categories.MOBILE * categories.ENGINEER)
-
-local mapSizeX, mapSizeZ = GetMapSize()
-local BaseMilitaryZone = math.max( mapSizeX-50, mapSizeZ-50 ) / 2               -- Half the map
-local BasePanicZone = BaseMilitaryZone / 2
-BasePanicZone = math.max( 60, BasePanicZone )
-BasePanicZone = math.min( 120, BasePanicZone )
-BaseMilitaryZone = math.max( 250, BaseMilitaryZone )
 
 -- ===================================================-======================================================== --
 -- ==                                 Build Engineers TECH 1,2,3 and SACU                                    == --
@@ -25,26 +19,10 @@ BuilderGroup {
     -- ============ --
     --    TECH 1    --
     -- ============ --
-    -- Build the minimum number of engineers to fill EngineerCap
-    Builder {
-        BuilderName = 'U1 Engineer Minimum',
-        PlatoonTemplate = 'T1BuildEngineer',
-        Priority = 19000,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
-            -- Do we need additional conditions to build it ?
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'ENGINEER TECH1' } },
-            -- Respect UnitCap
-         },
-        BuilderType = 'All',
-    },
     Builder {
         BuilderName = 'U1 Engineer builder Cap',
         PlatoonTemplate = 'T1BuildEngineer',
-        Priority = 18500,
+        Priority = 19000,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 6, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
@@ -68,7 +46,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             -- Don't build it if...
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers / 3 , '<=', categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers / 3 , '<', categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
         },
         BuilderType = 'Land',
     },
@@ -83,7 +61,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             -- Don't build it if...
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers / 3 , '<=', categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers / 3 , '<', categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
         },
         BuilderType = 'Air',
     },
@@ -99,7 +77,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- Don't build it if...
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers / 3 , '<=', categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers / 3 , '<', categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
         },
         BuilderType = 'Sea',
     },
@@ -135,7 +113,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers / 3 , '<=', categories.MOBILE * categories.ENGINEER * categories.TECH2 } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers / 3 , '<', categories.MOBILE * categories.ENGINEER * categories.TECH2 } },
         },
         BuilderType = 'All',
     },
@@ -171,7 +149,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers / 3 , '<=', categories.MOBILE * categories.ENGINEER * categories.TECH3 } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers / 3 , '<', categories.MOBILE * categories.ENGINEER * categories.TECH3 } },
         },
         BuilderType = 'All',
     },
@@ -213,7 +191,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.75, 0.75}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { 0.03 , '<=', categories.MOBILE * categories.SUBCOMMANDER } },
+            { UCBC, 'HaveUnitRatioVersusCap', { 0.03 , '<', categories.MOBILE * categories.SUBCOMMANDER } },
         },
         BuilderType = 'Gate',
     },
