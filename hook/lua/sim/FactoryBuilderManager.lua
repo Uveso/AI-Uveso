@@ -1,8 +1,8 @@
 -- This hook is for debug Option Platoon-Names. Hook for all AI's
-TheOldFactoryBuilderManager = FactoryBuilderManager
-FactoryBuilderManager = Class(TheOldFactoryBuilderManager) {
+OldFactoryBuilderManagerClass = FactoryBuilderManager
+FactoryBuilderManager = Class(OldFactoryBuilderManagerClass) {
 
-    -- For AI Patch V2. 
+    -- For AI Patch V4. 
     GetFactoryTemplate = function(self, templateName, factory)
         local templateData = PlatoonTemplates[templateName]
         if not templateData then
@@ -60,29 +60,6 @@ FactoryBuilderManager = Class(TheOldFactoryBuilderManager) {
         end
         return template
     end,
-    -- For AI Patch V2. 
-    GetCustomReplacement = function(self, template, templateName, faction)
-        local retTemplate = false
-        local templateData = self.Brain.CustomUnits[templateName]
-        if templateData and templateData[faction] then
-            -- LOG('*AI DEBUG: Replacement for '..templateName..' exists.')
-            local rand = Random(1,100)
-            local possibles = {}
-            for k,v in templateData[faction] do
-                if rand <= v[2] or template[1] == 'NoOriginalUnit' then
-                    -- LOG('*AI DEBUG: Insert possibility.')
-                    table.insert(possibles, v[1])
-                end
-            end
-            if table.getn(possibles) > 0 then
-                rand = Random(1,table.getn(possibles))
-                local customUnitID = possibles[rand]
-                -- LOG('*AI DEBUG: Replaced with '..customUnitID)
-                retTemplate = { customUnitID, template[2], template[3], template[4], template[5] }
-            end
-        end
-        return retTemplate
-    end,
 
     -- Hook for Builder names
     AssignBuildOrder = function(self,factory,bType)
@@ -121,13 +98,13 @@ FactoryBuilderManager = Class(TheOldFactoryBuilderManager) {
     -- Hook for adding factory.LastActive to restart factories.
     DelayBuildOrder = function(self,factory,bType,time)
         factory.LastActive = GetGameTimeSeconds()
-        TheOldFactoryBuilderManager.DelayBuildOrder(self,factory,bType,time)
+        OldFactoryBuilderManagerClass.DelayBuildOrder(self,factory,bType,time)
     end,
 
     RallyPointMonitor = function(self)
         -- Only use this with AI-Uveso
         if not self.Brain.Uveso then
-            return TheOldFactoryBuilderManager.RallyPointMonitor(self)
+            return OldFactoryBuilderManagerClass.RallyPointMonitor(self)
         end
         -- Exit the ForkThread RallyPointMonitor
         --LOG('*UVESO Ending forked thread RallyPointMonitor')
@@ -136,7 +113,7 @@ FactoryBuilderManager = Class(TheOldFactoryBuilderManager) {
     SetRallyPoint = function(self, factory)
         -- Only use this with AI-Uveso
         if not self.Brain.Uveso then
-            return TheOldFactoryBuilderManager.SetRallyPoint(self, factory)
+            return OldFactoryBuilderManagerClass.SetRallyPoint(self, factory)
         end
         -- don't set any rally point, we use units on the fly.
         return true

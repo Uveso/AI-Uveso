@@ -1,16 +1,3 @@
-
--- For AI Patch V2. This is for delaying build platoons
-function CheckBuildPlattonDelay(aiBrain, PlatoonName, DEBUG)
-    if aiBrain.DelayEqualBuildPlattons[PlatoonName] and aiBrain.DelayEqualBuildPlattons[PlatoonName] > GetGameTimeSeconds() then
-        if DEBUG then
-            LOG('Builder, ['..PlatoonName..'] delayed.')
-        end
-        return false
-    end
-    return true
-end
-
-
 -- hook for additional build conditions used from AIBuilders
 
 --{ UCBC, 'ReturnTrue', {} },
@@ -84,14 +71,6 @@ function LessThanGameTimeSeconds(aiBrain, num)
         return true
     end
     return false
-end
-
---            { UCBC, 'BrainLowEnergyMode', {} },
-function BrainLowEnergyMode(aiBrain)
-    if not aiBrain.LowEnergyMode then
-        return false
-    end
-    return true
 end
 
 --            { UCBC, 'LessThanMassTrend', { 50.0 } },
@@ -277,11 +256,11 @@ function CanBuildOnMassLessThanLocationDistance(aiBrain, locationType, distance,
     end
     local locationPos = aiBrain.BuilderManagers[locationType].EngineerManager.Location
     local markerTable = AIUtils.AIGetSortedMassLocations(aiBrain, maxNum, threatMin, threatMax, threatRings, threatType, locationPos)
-    if markerTable[1] and VDist3( markerTable[1], locationPos ) < distance then
-        --LOG('SearchRadius: '..distance..' - We can build on '..repr(locationType)..' in less than '..VDist3( markerTable[1], locationPos ))
+    if markerTable[1] and VDist2(locationPos[1], locationPos[3], markerTable[1][1], markerTable[1][3]) < distance then
+        --LOG('SearchRadius: '..distance..' - We can build on '..repr(locationType)..' in less than '..VDist2(locationPos[1], locationPos[3], markerTable[1][1], markerTable[1][3]))
         return true
     else
-        --LOG('SearchRadius: '..distance..' - Outside range on '..repr(locationType)..': '..VDist3( markerTable[1], locationPos ))
+        --LOG('SearchRadius: '..distance..' - Outside range from '..repr(locationType)..': '..VDist2(locationPos[1], locationPos[3], markerTable[1][1], markerTable[1][3]))
     end
     return false
 end
@@ -293,7 +272,7 @@ function CanNotBuildOnMassLessThanLocationDistance(aiBrain, locationType, distan
     end
     local locationPos = aiBrain.BuilderManagers[locationType].EngineerManager.Location
     local markerTable = AIUtils.AIGetSortedMassLocations(aiBrain, maxNum, threatMin, threatMax, threatRings, threatType, locationPos)
-    if markerTable[1] and VDist3( markerTable[1], locationPos ) < distance then
+    if markerTable[1] and VDist2(locationPos[1], locationPos[3], markerTable[1][1], markerTable[1][3]) < distance then
         return false
     end
     return true
@@ -346,70 +325,6 @@ end
 function UnitsGreaterAtEnemy(aiBrain, unitCount, categoryEnemy, DEBUG)
     return GetEnemyUnits(aiBrain, unitCount, categoryEnemy, '>', DEBUG)
 end
-
--- For debug
---             { UCBC, 'HaveUnitRatio', { 0.75, 'MASSEXTRACTION TECH1', '<=','MASSEXTRACTION TECH2',true } },
-function HaveUnitRatio(aiBrain, ratio, categoryOne, compareType, categoryTwo, DEBUG)
-    local testCatOne = categoryOne
-    if type(testCatOne) == 'string' then
-        testCatOne = ParseEntityCategory(testCatOne)
-    end
-    local numOne = aiBrain:GetCurrentUnits(testCatOne)
-
-    local testCatTwo = categoryTwo
-    if type(testCatTwo) == 'string' then
-        testCatTwo = ParseEntityCategory(testCatTwo)
-    end
-    local numTwo = aiBrain:GetCurrentUnits(testCatTwo)
-    if DEBUG then
-        LOG(aiBrain:GetArmyIndex()..' CompareBody {World} ( '..numOne..' '..compareType..' '..numTwo..' ) -- ['..ratio..'] -- '..categoryOne..' '..compareType..' '..categoryTwo..' ('..(numOne / numTwo)..' '..compareType..' '..ratio..' ?) return '..repr(CompareBody(numOne / numTwo, ratio, compareType)))
-    end
-
-    return CompareBody(numOne / numTwo, ratio, compareType)
-end
-
-function CompareBody(numOne, numTwo, compareType)
-    if compareType == '>' then
-        if numOne > numTwo then
-            return true
-        end
-    elseif compareType == '<' then
-        if numOne < numTwo then
-            return true
-        end
-    elseif compareType == '>=' then
-        if numOne >= numTwo then
-            return true
-        end
-    elseif compareType == '<=' then
-        if numOne <= numTwo then
-            return true
-        end
-    else
-        error('*AI ERROR: Invalid compare type: ' .. compareType)
-        return false
-    end
-    return false
-end
-
--- Print the first Array level with values. Good for things like 'self' etc.
-function debug_PrintArray(Table)
-    for Index, Array in Table do
-        if type(Array) == 'thread' or type(Array) == 'userdata' then
-            LOG('Index['..Index..'] is type('..type(Array)..'). I won\'t print that!')
-        elseif type(Array) == 'table' then
-            LOG('Index['..Index..'] is type('..type(Array)..'). I won\'t print that!')
-        else
-            LOG('Index['..Index..'] is type('..type(Array)..'). "', repr(Array),'".')
-        end
-    end
-end
---    DrawCircle(engineerManager:GetLocationCoords(), radius, '0000FF')
---    DrawCircle(engineerManager:GetLocationCoords(), engineerManager:GetLocationRadius(), 'FF0000')
-
-
-
-
 
 --            { UCBC, 'EngineerManagerUnitsAtLocation', { 'MAIN', '<=', 100,  'ENGINEER TECH3' } },
 function EngineerManagerUnitsAtLocation(aiBrain, LocationType, compareType, numUnits, category, DEBUG)
@@ -665,6 +580,27 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------------
+-- For debug printing
+--             { UCBC, 'HaveUnitRatio', { 0.75, 'MASSEXTRACTION TECH1', '<=','MASSEXTRACTION TECH2',true } },
+function HaveUnitRatio(aiBrain, ratio, categoryOne, compareType, categoryTwo, DEBUG)
+    local testCatOne = categoryOne
+    if type(testCatOne) == 'string' then
+        testCatOne = ParseEntityCategory(testCatOne)
+    end
+    local numOne = aiBrain:GetCurrentUnits(testCatOne)
+
+    local testCatTwo = categoryTwo
+    if type(testCatTwo) == 'string' then
+        testCatTwo = ParseEntityCategory(testCatTwo)
+    end
+    local numTwo = aiBrain:GetCurrentUnits(testCatTwo)
+    if DEBUG then
+        LOG(aiBrain:GetArmyIndex()..' CompareBody {World} ( '..numOne..' '..compareType..' '..numTwo..' ) -- ['..ratio..'] -- '..categoryOne..' '..compareType..' '..categoryTwo..' ('..(numOne / numTwo)..' '..compareType..' '..ratio..' ?) return '..repr(CompareBody(numOne / numTwo, ratio, compareType)))
+    end
+
+    return CompareBody(numOne / numTwo, ratio, compareType)
+end
+
 function HavePoolUnitComparisonAtLocationII(aiBrain, locationType, unitCount, unitCategory, compareType)
     local engineerManager = aiBrain.BuilderManagers[locationType].EngineerManager
     local testCat = unitCategory

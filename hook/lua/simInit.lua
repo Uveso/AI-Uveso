@@ -1,14 +1,14 @@
 -- hooks for map validation on game start and debugstuff for pathfinding and base ranger.
 
-local TheOldSetupSession = SetupSession
+local OldSetupSessionFunction = SetupSession
 function SetupSession()
-    TheOldSetupSession()
+    OldSetupSessionFunction()
     ValidateMapAndMarkers()
 end
 
-local TheOldBeginSession = BeginSession
+local OldBeginSessionFunction = BeginSession
 function BeginSession()
-    TheOldBeginSession()
+    OldBeginSessionFunction()
     if ScenarioInfo.Options.AIPathingDebug ~= 'off' then
         LOG('ForkThread(GraphRender)')
         ForkThread(GraphRender)
@@ -242,11 +242,7 @@ end
 
 function DrawBaseRanger()
     -- get the range of combat zones
-    local mapSizeX, mapSizeZ = GetMapSize()
-    local BaseMilitaryZone = math.max( mapSizeX-50, mapSizeZ-50 ) / 2 -- Half the map
-    local BasePanicZone = BaseMilitaryZone / 2
-    BasePanicZone = math.max( 60, BasePanicZone )
-    BasePanicZone = math.min( 120, BasePanicZone )
+    local BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua').GetDangerZoneRadii()
     -- Render the radius of any base and expansion location
     if Scenario.MasterChain._MASTERCHAIN_.BaseRanger then
         for Index, ArmyRanger in Scenario.MasterChain._MASTERCHAIN_.BaseRanger do

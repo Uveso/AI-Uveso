@@ -7,6 +7,8 @@ local MABC = '/lua/editor/MarkerBuildConditions.lua'
 local MIBC = '/lua/editor/MiscBuildConditions.lua'
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 
+local BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua').GetDangerZoneRadii()
+
 local MaxCapMass = 0.10 -- 10% of all units can be mass extractors (STRUCTURE * MASSEXTRACTION)
 local MaxCapStructure = 0.12                                                    -- 12% of all units can be structures (STRUCTURE -MASSEXTRACTION -DEFENSE -FACTORY)
 
@@ -103,7 +105,6 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { -1.00, 0.05}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<', categories.STRUCTURE * categories.MASSEXTRACTION } },
         },
@@ -128,7 +129,6 @@ BuilderGroup {
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, 'ENGINEER TECH1' }},
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { -1.00, 0.05}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<', categories.STRUCTURE * categories.MASSEXTRACTION } },
         },
@@ -153,7 +153,6 @@ BuilderGroup {
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, 'ENGINEER TECH1' }},
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { -1.00, 0.05}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<', categories.STRUCTURE * categories.MASSEXTRACTION } },
         },
@@ -178,7 +177,6 @@ BuilderGroup {
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, 'ENGINEER TECH1' }},
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { -1.00, 0.05}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<', categories.STRUCTURE * categories.MASSEXTRACTION } },
         },
@@ -203,7 +201,6 @@ BuilderGroup {
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, 'ENGINEER TECH1' }},
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { -1.00, 0.05}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<', categories.STRUCTURE * categories.MASSEXTRACTION } },
         },
@@ -326,9 +323,9 @@ BuilderGroup {
     BuilderGroupName = 'ExtractorUpgrades Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     Builder {
-        BuilderName = 'Extractor upgrade >20 mass',
+        BuilderName = 'Extractor upgrade >40 mass',
         PlatoonTemplate = 'AddToMassExtractorUpgradePlatoon',
-        Priority = 18600,
+        Priority = 18400,
         InstanceCount = 1,
         FormRadius = 10000,
         BuilderConditions = {
@@ -336,7 +333,7 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 0, categories.MASSEXTRACTION} },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconIncome',  { 2.0, -0.0}}, -- Absolut Base income
+            { EBC, 'GreaterThanEconIncome',  { 4.0, -0.0}}, -- Absolut Base income
             -- Don't build it if...
         },
         BuilderData = {
@@ -347,7 +344,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'Extractor upgrade >4 factories',
         PlatoonTemplate = 'AddToMassExtractorUpgradePlatoon',
-        Priority = 18500,
+        Priority = 18400,
         InstanceCount = 1,
         FormRadius = 10000,
         BuilderConditions = {
@@ -356,7 +353,6 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 4, categories.STRUCTURE * categories.FACTORY} },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconIncome',  { 0.1, -0.0}}, -- Absolut Base income
             -- Don't build it if...
         },
         BuilderData = {
@@ -365,7 +361,7 @@ BuilderGroup {
         BuilderType = 'Any',
     },
     Builder {
-        BuilderName = 'Extractor upgrade > 4 minutes',
+        BuilderName = 'Extractor upgrade > 6 minutes',
         PlatoonTemplate = 'AddToMassExtractorUpgradePlatoon',
         Priority = 18400,
         InstanceCount = 1,
@@ -374,9 +370,28 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 0, categories.MASSEXTRACTION} },
             -- Do we need additional conditions to build it ?
-            { UCBC, 'GreaterThanGameTimeSeconds', { 4*60 } },
+            { UCBC, 'GreaterThanGameTimeSeconds', { 6*60 } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconIncome',  { 0.1, -0.0}}, -- Absolut Base income
+            -- Don't build it if...
+        },
+        BuilderData = {
+            AIPlan = 'ExtractorUpgradeAI',
+        },
+        BuilderType = 'Any',
+    },
+    Builder {
+        BuilderName = 'Extractor upgrade no free mex left',
+        PlatoonTemplate = 'AddToMassExtractorUpgradePlatoon',
+        Priority = 18400,
+        InstanceCount = 1,
+        FormRadius = 10000,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'CanNotBuildOnMassLessThanLocationDistance', { 'LocationType', BaseMilitaryZone, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
+            { UCBC, 'GreaterThanGameTimeSeconds', { 4*60 } },
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 0, categories.MASSEXTRACTION} },
+            -- Have we the eco to build it ?
             -- Don't build it if...
         },
         BuilderData = {
@@ -385,6 +400,51 @@ BuilderGroup {
         BuilderType = 'Any',
     },
 }
+BuilderGroup {
+    -- Upgrade MassExtractors from Tech 1 to 2 AND from Tech 2 to 3
+    BuilderGroupName = 'ExtractorUpgradesSwarm',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuildersType = 'PlatoonFormBuilder',
+    Builder {
+        BuilderName = 'Extractor upgrade >40 mass',
+        PlatoonTemplate = 'AddToMassExtractorUpgradePlatoon',
+        Priority = 18400,
+        InstanceCount = 1,
+        FormRadius = 10000,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 0, categories.MASSEXTRACTION} },
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconIncome',  { 4.0, -0.0}}, -- Absolut Base income
+            -- Don't build it if...
+        },
+        BuilderData = {
+            AIPlan = 'ExtractorUpgradeAI',
+        },
+        BuilderType = 'Any',
+    },
+    Builder {
+        BuilderName = 'Extractor enemy > T2',
+        PlatoonTemplate = 'AddToMassExtractorUpgradePlatoon',
+        Priority = 18400,
+        InstanceCount = 1,
+        FormRadius = 10000,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 0, categories.MASSEXTRACTION} },
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.MASSEXTRACTION * (categories.TECH2 + categories.TECH3) } },            -- Don't build it if...
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconIncome',  { 4.0, -0.0}}, -- Absolut Base income
+            -- Don't build it if...
+        },
+        BuilderData = {
+            AIPlan = 'ExtractorUpgradeAI',
+        },
+        BuilderType = 'Any',
+    },
+}
+
 -- ===================================================-======================================================== --
 -- ==                                     Build MassStorage/Adjacency                                        == --
 -- ===================================================-======================================================== --
@@ -399,6 +459,8 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.MASSSTORAGE }},
             -- Do we need additional conditions to build it ?
+            { MIBC, 'IsBrainPersonality', { 'uvesoswarm', false} }, -- Don't let the Overwhelm AI buid this. Would be a fast nuklear game end :)
+            { MIBC, 'IsBrainPersonality', { 'uvesoswarmcheat', false} }, -- Don't let the OverwhelmCheat AI buid this. Would be a fast nuklear game end :)
             { UCBC, 'GreaterThanGameTimeSeconds', { 60 * 5 } },
             -- Have we the eco to build it ?
             -- Don't build it if...
@@ -428,6 +490,8 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 8, categories.STRUCTURE * categories.MASSSTORAGE }},
             { UCBC, 'AdjacencyCheck', { 'LocationType', 'MASSEXTRACTION TECH2, MASSEXTRACTION TECH3', 200, 'ueb1106' } },
             -- Do we need additional conditions to build it ?
+            { MIBC, 'IsBrainPersonality', { 'uvesoswarm', false} }, -- Don't let the Overwhelm AI buid this. Would be a fast nuklear game end :)
+            { MIBC, 'IsBrainPersonality', { 'uvesoswarmcheat', false} }, -- Don't let the OverwhelmCheat AI buid this. Would be a fast nuklear game end :)
             { UCBC, 'GreaterThanGameTimeSeconds', { 60 * 10 } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.95}}, -- Ratio from 0 to 1. (1=100%)

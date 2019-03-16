@@ -1,62 +1,3 @@
--- For AI Patch. Exclude masspoints near the map boder
-OLDAIGetSortedMassLocations = AIGetSortedMassLocations
-function AIGetSortedMassLocations(aiBrain, maxNum, tMin, tMax, tRings, tType, position)
-    local markerList = AIGetMarkerLocations(aiBrain, 'Mass')
-    local newList = {}
-    for _, v in markerList do
-        -- check distance to map border. (game engine can't build mass closer then 8 mapunits to the map border.) 
-        if v.Position[1] <= 8 or v.Position[1] >= ScenarioInfo.size[1] - 8 or v.Position[3] <= 8 or v.Position[3] >= ScenarioInfo.size[2] - 8 then
-            -- mass marker is too close to border, skip it.
-            continue
-        end
-        if aiBrain:CanBuildStructureAt('ueb1103', v.Position) then
-            table.insert(newList, v)
-        end
-    end
-    return AISortMarkersFromLastPos(aiBrain, newList, maxNum, tMin, tMax, tRings, tType, position)
-end
-
--- For AI Patch. reclaim before building mexes etc
-OLDEngineerTryReclaimCaptureArea = EngineerTryReclaimCaptureArea
-function EngineerTryReclaimCaptureArea(aiBrain, eng, pos)
-    if not pos then
-        return false
-    end
-    local Reclaiming = false
-    -- Check if enemy units are at location
-    local checkUnits = aiBrain:GetUnitsAroundPoint( (categories.STRUCTURE + categories.MOBILE) - categories.AIR, pos, 10, 'Enemy')
-    -- reclaim units near our building place.
-    if checkUnits and table.getn(checkUnits) > 0 then
-        for num, unit in checkUnits do
-            if unit.Dead or unit:BeenDestroyed() then
-                continue
-            end
-            if not IsEnemy( aiBrain:GetArmyIndex(), unit:GetAIBrain():GetArmyIndex() ) then
-                continue
-            end
-            if unit:IsCapturable() then 
-                -- if we can capture the unit/building then do so
-                unit.CaptureInProgress = true
-                IssueCapture({eng}, unit)
-            else
-                -- if we can't capture then reclaim
-                unit.ReclaimInProgress = true
-                IssueReclaim({eng}, unit)
-            end
-        end
-        Reclaiming = true
-    end
-    -- reclaim rocks etc or we can't build mexes or hydros
-    local Reclaimables = GetReclaimablesInRect(Rect(pos[1], pos[3], pos[1], pos[3]))
-    if Reclaimables and table.getn( Reclaimables ) > 0 then
-        for k,v in Reclaimables do
-            if v.MaxMassReclaim and v.MaxMassReclaim > 0 or v.MaxEnergyReclaim and v.MaxEnergyReclaim > 0 then
-                IssueReclaim({eng}, v)
-            end
-        end
-    end
-    return Reclaiming
-end
 
 -- Helper function for targeting
 function ValidateLayer(UnitPos,MovementLayer)
@@ -80,7 +21,7 @@ function ValidateLayer(UnitPos,MovementLayer)
 end
 
 -- Target function
-function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, maxRange, PrioritizedTargetList, TargetSearchCategory, enemyBrain)
+function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, maxRange, MoveToCategories, TargetSearchCategory, enemyBrain)
     if not maxRange then
         --LOG('* Uveso-AI: AIFindNearestCategoryTargetInRange: function called with empty "maxRange"' )
         return false, false, false, 'NoRange'
@@ -105,6 +46,7 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
         TargetSearchCategory = ParseEntityCategory(TargetSearchCategory)
     end
     local enemyIndex = false
+    local MyArmyIndex = aiBrain:GetArmyIndex()
     if enemyBrain then
         enemyIndex = enemyBrain:GetArmyIndex()
     end
@@ -145,7 +87,7 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
     for _, range in RangeList do
         TargetsInRange = aiBrain:GetUnitsAroundPoint(TargetSearchCategory, position, range, 'Enemy')
         --DrawCircle(position, range, '0000FF')
-        for _, v in PrioritizedTargetList do
+        for _, v in MoveToCategories do
             category = v
             if type(category) == 'string' then
                 category = ParseEntityCategory(category)
@@ -167,10 +109,7 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
                 --LOG('* AIFindNearestCategoryTargetInRange: canAttack '..repr(canAttack))
                 if not Target.Dead and EntityCategoryContains(category, Target) and canAttack then
                     -- yes... we need to check if we got friendly units with GetUnitsAroundPoint(_, _, _, 'Enemy')
-                    if Target:BeenDestroyed() then
-                        WARN('* AIFindNearestCategoryTargetInRange: Unit destroyed but not .Dead !?!')
-                        continue
-                    end
+                    if not IsEnemy( MyArmyIndex, Target:GetAIBrain():GetArmyIndex() ) then continue end
                     if Target.ReclaimInProgress then
                         --WARN('* AIFindNearestCategoryTargetInRange: ReclaimInProgress !!! Ignoring the target.')
                         continue
@@ -179,7 +118,6 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
                         --WARN('* AIFindNearestCategoryTargetInRange: CaptureInProgress !!! Ignoring the target.')
                         continue
                     end
-                    if not IsEnemy( aiBrain:GetArmyIndex(), Target:GetAIBrain():GetArmyIndex() ) then continue end
                     targetRange = VDist2(position[1],position[3],TargetPosition[1],TargetPosition[3])
                     --LOG('* AIFindNearestCategoryTargetInRange: targetRange '..repr(targetRange))
                     if targetRange < distance then
@@ -251,11 +189,12 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
     return false, false, false, 'NoUnitFound'
 end
 
-function AIFindNearestCategoryTargetInRangeCDR(aiBrain, position, maxRange, PrioritizedTargetList, TargetSearchCategory, enemyBrain)
+function AIFindNearestCategoryTargetInRangeCDR(aiBrain, position, maxRange, MoveToCategories, TargetSearchCategory, enemyBrain)
     if type(TargetSearchCategory) == 'string' then
         TargetSearchCategory = ParseEntityCategory(TargetSearchCategory)
     end
     local enemyIndex = false
+    local MyArmyIndex = aiBrain:GetArmyIndex()
     if enemyBrain then
         enemyIndex = enemyBrain:GetArmyIndex()
     end
@@ -271,7 +210,7 @@ function AIFindNearestCategoryTargetInRangeCDR(aiBrain, position, maxRange, Prio
     for _, range in RangeList do
         TargetsInRange = aiBrain:GetUnitsAroundPoint(TargetSearchCategory, position, range, 'Enemy')
         --DrawCircle(position, range, '0000FF')
-        for _, v in PrioritizedTargetList do
+        for _, v in MoveToCategories do
             category = v
             if type(category) == 'string' then
                 category = ParseEntityCategory(category)
@@ -290,6 +229,7 @@ function AIFindNearestCategoryTargetInRangeCDR(aiBrain, position, maxRange, Prio
                 -- check if the Target is still alive, matches our target priority and can be attacked from our platoon
                 if not Target.Dead and EntityCategoryContains(category, Target) then
                     -- yes... we need to check if we got friendly units with GetUnitsAroundPoint(_, _, _, 'Enemy')
+                    if not IsEnemy( MyArmyIndex, Target:GetAIBrain():GetArmyIndex() ) then continue end
                     if Target.ReclaimInProgress then
                         --WARN('* AIFindNearestCategoryTargetInRange: ReclaimInProgress !!! Ignoring the target.')
                         continue
@@ -298,11 +238,6 @@ function AIFindNearestCategoryTargetInRangeCDR(aiBrain, position, maxRange, Prio
                         --WARN('* AIFindNearestCategoryTargetInRange: CaptureInProgress !!! Ignoring the target.')
                         continue
                     end
-                    if Target.ReclaimInProgress then
-                        --WARN('* AIFindNearestCategoryTargetInRange: ReclaimInProgress !!! Ignoring the target.')
-                        continue
-                    end
-                    if not IsEnemy( aiBrain:GetArmyIndex(), Target:GetAIBrain():GetArmyIndex() ) then continue end
                     targetRange = VDist2(position[1],position[3],TargetPosition[1],TargetPosition[3])
                     baseTargetRange = VDist2(basePostition[1],basePostition[3],TargetPosition[1],TargetPosition[3])
                     -- check if the target is in range of the ACU and in range of the base
@@ -322,7 +257,7 @@ function AIFindNearestCategoryTargetInRangeCDR(aiBrain, position, maxRange, Prio
     return TargetUnit
 end
 
-function AIFindNearestCategoryTeleportLocation(aiBrain, position, maxRange, PrioritizedTargetList, TargetSearchCategory, enemyBrain)
+function AIFindNearestCategoryTeleportLocation(aiBrain, position, maxRange, MoveToCategories, TargetSearchCategory, enemyBrain)
     if type(TargetSearchCategory) == 'string' then
         TargetSearchCategory = ParseEntityCategory(TargetSearchCategory)
     end
@@ -336,7 +271,7 @@ function AIFindNearestCategoryTeleportLocation(aiBrain, position, maxRange, Prio
     TargetsInRange = aiBrain:GetUnitsAroundPoint(TargetSearchCategory, position, maxRange, 'Enemy')
     --LOG('* AIFindNearestCategoryTeleportLocation: numTargets '..table.getn(TargetsInRange)..'  ')
     --DrawCircle(position, range, '0000FF')
-    for _, v in PrioritizedTargetList do
+    for _, v in MoveToCategories do
         category = v
         if type(category) == 'string' then
             category = ParseEntityCategory(category)

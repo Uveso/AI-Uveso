@@ -1,16 +1,4 @@
 
--- For AI Patch V3. Fix for 5 factions
-function FactionIndex(aiBrain, ...)
-    local FactionIndex = aiBrain:GetFactionIndex()
-    for index, faction in arg do
-        if index == 'n' then continue end
-        if faction == FactionIndex then
-            return true
-        end
-    end
-    return false
-end
-
 -- Uveso AI. Function to see if we are on a water map and/or can't send Land units to the enemy
 local CanPathToEnemy = {}
 function CanPathToCurrentEnemy(aiBrain, bool)

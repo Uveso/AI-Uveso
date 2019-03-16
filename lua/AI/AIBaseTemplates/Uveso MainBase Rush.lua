@@ -59,16 +59,15 @@ BaseBuilderTemplate {
         'FactoryBuilders 1st Uveso',
         'FactoryBuilders RUSH Uveso',
         'FactoryBuilders RECOVER Uveso',
-        'GateConstruction Uveso',
+--        'GateConstruction Uveso',
         -- Upgrade Factories TECH1->TECH2 and TECH2->TECH3
         'FactoryUpgradeBuildersRush Uveso',
         -- Build Air Staging Platform to refill and repair air units.
-        'Air Staging Platform Uveso',
+--        'Air Staging Platform Uveso',
 
         -----------------------------------------------------------------------------
         -- ==== Land Units BUILDER ==== --
         -----------------------------------------------------------------------------
-        -- Build Land Units
         'LandAttackBuildersPanic Uveso',
         'LandAttackBuildersRush Uveso',
         'LandAttackBuildersRatio Uveso',
@@ -76,14 +75,31 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== Land Units FORMER==== --
         -----------------------------------------------------------------------------
-        'Land FormBuilders Panic',
+        'Land FormBuilders PanicZone',
         'Land FormBuilders MilitaryZone',
         'Land FormBuilders EnemyZone',
+        'Land FormBuilders Trasher',
+        'Land FormBuilders Guards',
+
+        -----------------------------------------------------------------------------
+        -- ==== Hover Units FORMER==== --
+        -----------------------------------------------------------------------------
+        'Hover FormBuilders PanicZone',
+        'Hover FormBuilders MilitaryZone',
+        'Hover FormBuilders EnemyZone',
+        'Hover FormBuilders Trasher',
+
+        -----------------------------------------------------------------------------
+        -- ==== Amphibious Units FORMER==== --
+        -----------------------------------------------------------------------------
+        'Amphibious FormBuilders PanicZone',
+        'Amphibious FormBuilders MilitaryZone',
+        'Amphibious FormBuilders EnemyZone',
+        'Amphibious FormBuilders Trasher',
 
         -----------------------------------------------------------------------------
         -- ==== Air Units BUILDER ==== --
         -----------------------------------------------------------------------------
-        -- Build Air Units
         'AntiAirBuilders Uveso',
         -- Build Air Transporter
         'Air Transport Builder Uveso',
@@ -91,42 +107,41 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== Air Units FORMER==== --
         -----------------------------------------------------------------------------
-        'Air FormBuilders',
-
-        -----------------------------------------------------------------------------
-        -- ==== Sea Units BUILDER ==== --
-        -----------------------------------------------------------------------------
-        -- Build Naval Units
-        'SeaFactoryBuilders Uveso',
-
-        -----------------------------------------------------------------------------
-        -- ==== Sea Units FORMER ==== --
-        -----------------------------------------------------------------------------
-        'SeaAttack FormBuilders Uveso',
+        'Air FormBuilders PanicZone',
+        'Air FormBuilders MilitaryZone',
+        'Air FormBuilders EnemyZone',
+        'Air FormBuilders Trasher',
 
         -----------------------------------------------------------------------------
         -- ==== EXPERIMENTALS BUILDER ==== --
         -----------------------------------------------------------------------------
-        'Mobile Experimental Builder Uveso',
-        'Economic Experimental Builder Uveso',
-        'Paragon Turbo Builder',
-        'Paragon Turbo Factory',
+        'Mobile Experimental Land Builder Uveso',
+        'Mobile Experimental Air Builder Uveso',
+--        'Paragon Turbo Builder',
+--        'Paragon Turbo Factory',
 
         -----------------------------------------------------------------------------
         -- ==== EXPERIMENTALS FORMER ==== --
         -----------------------------------------------------------------------------
-        'ExperimentalAttackFormBuilders Uveso',
+        'Land Experimental FormBuilders PanicZone',
+        'Land Experimental FormBuilders MilitaryZone',
+        'Land Experimental FormBuilders EnemyZone',
+        'Land Experimental FormBuilders Trasher',
+        'Air Experimental FormBuilders PanicZone',
+        'Air Experimental FormBuilders Military',
+        'Air Experimental FormBuilders EnemyZone',
+        'Air Experimental FormBuilders Trasher',
 
         -----------------------------------------------------------------------------
         -- ==== Structure Shield BUILDER ==== --
         -----------------------------------------------------------------------------
---        'Shields Uveso',
---        'ShieldUpgrades Uveso',
+        'Shields Uveso',
+        'ShieldUpgrades Uveso',
 
         -----------------------------------------------------------------------------
         -- ==== Defenses BUILDER ==== --
         -----------------------------------------------------------------------------
---        'Tactical Missile Launcher minimum Uveso',
+        'Tactical Missile Launcher minimum Uveso',
 --        'Tactical Missile Launcher Maximum Uveso',
 --        'Tactical Missile Launcher Uveso',
         'Tactical Missile Defenses Uveso',
@@ -147,7 +162,7 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== Sniper Former ==== --
         -----------------------------------------------------------------------------
-        'SACU TeleportFormer',
+--        'SACU TeleportFormer',
 
         -- We need this even if we have Omni View to get target informations for experimentals attack.
         -----------------------------------------------------------------------------
@@ -170,7 +185,7 @@ BaseBuilderTemplate {
 
         'CounterIntelBuilders',
 
-        'AeonOptics',
+--        'AeonOptics',
         'CybranOptics',
 
     },

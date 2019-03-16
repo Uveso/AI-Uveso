@@ -40,7 +40,7 @@ BaseBuilderTemplate {
         -- Build MassExtractors / Creators
         'MassBuilders Uveso',                           -- Priority = 1100
         -- Upgrade MassExtractors from Tech 1 to 2 AND from Tech 2 to 3
-        'ExtractorUpgrades Uveso',                      -- Priority = 1100
+--        'ExtractorUpgrades Uveso',                      -- Priority = 1100
         -- Build Mass Storage (Adjacency)
         'MassStorageBuilder Uveso',                     -- Priority = 1100
 
@@ -57,7 +57,6 @@ BaseBuilderTemplate {
         'FactoryBuilders 1st Uveso',
         'FactoryBuildersExperimental Uveso',
         'FactoryBuilders RECOVER Uveso',
-        'GateConstruction Uveso',
         -- Upgrade Factories TECH1->TECH2 and TECH2->TECH3
         'FactoryUpgradeBuildersRush Uveso',
         -- Build Air Staging Platform to refill and repair air units.
@@ -74,12 +73,31 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== Land Units FORMER==== --
         -----------------------------------------------------------------------------
-        'Land FormBuilders Panic',
+        'Land FormBuilders PanicZone',
+--        'Land FormBuilders MilitaryZone',
+--        'Land FormBuilders EnemyZone',
+--        'Land FormBuilders Trasher',
+        'Land FormBuilders Guards',
+
+        -----------------------------------------------------------------------------
+        -- ==== Hover Units FORMER==== --
+        -----------------------------------------------------------------------------
+        'Hover FormBuilders PanicZone',
+--        'Hover FormBuilders MilitaryZone',
+--        'Hover FormBuilders EnemyZone',
+--        'Hover FormBuilders Trasher',
+
+        -----------------------------------------------------------------------------
+        -- ==== Amphibious Units FORMER==== --
+        -----------------------------------------------------------------------------
+        'Amphibious FormBuilders PanicZone',
+--        'Amphibious FormBuilders MilitaryZone',
+--        'Amphibious FormBuilders EnemyZone',
+--        'Amphibious FormBuilders Trasher',
 
         -----------------------------------------------------------------------------
         -- ==== Air Units BUILDER ==== --
         -----------------------------------------------------------------------------
-        -- Build Air Units
         'AntiAirBuilders Uveso',
         -- Build Air Transporter
         'Air Transport Builder Uveso',
@@ -87,20 +105,28 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== Air Units FORMER==== --
         -----------------------------------------------------------------------------
-        'Air FormBuilders',
+        'Air FormBuilders PanicZone',
+        'Air FormBuilders MilitaryZone',
+--        'Air FormBuilders EnemyZone',
+--        'Air FormBuilders Trasher',
 
         -----------------------------------------------------------------------------
         -- ==== EXPERIMENTALS BUILDER ==== --
         -----------------------------------------------------------------------------
-        'Mobile Experimental Builder Uveso',
-        'Economic Experimental Builder Uveso',
-        'Paragon Turbo Builder',
-        'Paragon Turbo Factory',
+        'Mobile Experimental Land Builder Uveso',
+        'Mobile Experimental Air Builder Uveso',
 
         -----------------------------------------------------------------------------
         -- ==== EXPERIMENTALS FORMER ==== --
         -----------------------------------------------------------------------------
-        'ExperimentalAttackFormBuilders Uveso',
+        'Land Experimental FormBuilders PanicZone',
+--        'Land Experimental FormBuilders MilitaryZone',
+--        'Land Experimental FormBuilders EnemyZone',
+--        'Land Experimental FormBuilders Trasher',
+        'Air Experimental FormBuilders PanicZone',
+--        'Air Experimental FormBuilders Military',
+--        'Air Experimental FormBuilders EnemyZone',
+--        'Air Experimental FormBuilders Trasher',
 
         -----------------------------------------------------------------------------
         -- ==== Structure Shield BUILDER ==== --
@@ -115,12 +141,12 @@ BaseBuilderTemplate {
         'Tactical Missile Launcher Maximum Uveso',
         'Tactical Missile Launcher Uveso',
         'Tactical Missile Defenses Uveso',
-        'Strategic Missile Launcher Uveso',
+--        'Strategic Missile Launcher Uveso',
         'Strategic Missile Launcher NukeAI Uveso',
         'Strategic Missile Defense Uveso',
         'Strategic Missile Defense Anti-NukeAI Uveso',
-        'Artillery Builder Uveso',
-        'Artillery Platoon Former',
+--        'Artillery Builder Uveso',
+--        'Artillery Platoon Former',
         -- Build Anti Air near AirFactories
         'Base Anti Air Defense Uveso',
 
@@ -132,7 +158,7 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== Sniper Former ==== --
         -----------------------------------------------------------------------------
-        'SACU TeleportFormer',
+--        'SACU TeleportFormer',
 
         -- We need this even if we have Omni View to get target informations for experimentals attack.
         -----------------------------------------------------------------------------

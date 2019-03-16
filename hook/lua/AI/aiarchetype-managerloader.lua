@@ -2,7 +2,7 @@ local CalculateBrainScore = import('/lua/sim/score.lua').CalculateBrainScore
 local Buff = import('/lua/sim/Buff.lua')
 
 -- This hook is for debug-option Platoon-Names. Hook for all AI's
-TheOldExecutePlan = ExecutePlan
+OldExecutePlanFunction = ExecutePlan
 function ExecutePlan(aiBrain)
     aiBrain:SetConstantEvaluate(false)
     local behaviors = import('/lua/ai/AIBehaviors.lua')
@@ -10,9 +10,11 @@ function ExecutePlan(aiBrain)
     if not aiBrain.BuilderManagers.MAIN.FactoryManager:HasBuilderList() then
         aiBrain:SetResourceSharing(true)
 
+        -- Sorian is using its own triggers
         if aiBrain.Sorian then
             aiBrain:SetupUnderEnergyStatTriggerSorian(0.1)
             aiBrain:SetupUnderMassStatTriggerSorian(0.1)
+        -- Set eco triggers for all AI's exept AI-Uveso.
         elseif not aiBrain.Uveso then
             aiBrain:SetupUnderEnergyStatTrigger(0.1)
             aiBrain:SetupUnderMassStatTrigger(0.1)
@@ -20,7 +22,7 @@ function ExecutePlan(aiBrain)
 
         SetupMainBase(aiBrain)
 
-        # Get units out of pool and assign them to the managers
+        -- Get units out of pool and assign them to the managers
         local mainManagers = aiBrain.BuilderManagers.MAIN
 
         local pool = aiBrain:GetPlatoonUniquelyNamed('ArmyPool')
@@ -32,6 +34,7 @@ function ExecutePlan(aiBrain)
             end
         end
 
+        -- Sorian is using a Thread for watching unitcap and Nukes
         if aiBrain.Sorian then
             ForkThread(UnitCapWatchThreadSorian, aiBrain)
             ForkThread(behaviors.NukeCheck, aiBrain)
@@ -39,6 +42,7 @@ function ExecutePlan(aiBrain)
             if aiBrain[ScenarioInfo.Options.AIPLatoonNameDebug] or ScenarioInfo.Options.AIPLatoonNameDebug == 'all' then
                 ForkThread(LocationRangeManagerThread, aiBrain)
             end
+        -- Uveso is using a locationmanager ecomanager and BaseAlert Thread
         elseif aiBrain.Uveso then
             ForkThread(LocationRangeManagerThread, aiBrain)
             ForkThread(EcoManager, aiBrain)
@@ -85,6 +89,7 @@ function SetArmyPoolBuff(aiBrain, CheatMult, BuildMult)
         Buff.ApplyBuff(unit, 'CheatBuildRate')
     end
 end
+
 function EcoManager(aiBrain)
     local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
     local CheatMultOption = tonumber(ScenarioInfo.Options.CheatMult)
@@ -146,7 +151,7 @@ function EcoManager(aiBrain)
                 else
                     MyArmyRatio = 100
                 end
-                
+
                 -- Increase cheatfactor to +1.5 after 1 hour gametime
                 if GetGameTimeSeconds() > 60 * 60 then
                     CheatMult = CheatMult + 0.1
@@ -364,13 +369,14 @@ end
 
 function LocationRangeManagerThread(aiBrain)
     local unitcounterdelayer = 0
+    local reclaimdelayer = 0
     local ArmyUnits = {}
-
+    -- wait at start of the game for delayed AI message
     WaitTicks(50)
     if not import('/lua/AI/sorianutilities.lua').CheckForMapMarkers(aiBrain) then
         import('/lua/AI/sorianutilities.lua').AISendChat('all', ArmyBrains[aiBrain:GetArmyIndex()].Nickname, 'badmap')
     end
-    
+
     while true do
         -- loop over all location managers
         for baseLocation, managers in aiBrain.BuilderManagers do
@@ -401,7 +407,7 @@ function LocationRangeManagerThread(aiBrain)
 --                end
 --            end
 --        end
-        
+
         -- Check and set the location radius of our main base and expansions
         local BasePositions = BaseRanger(aiBrain)
         -- Check if we have units outside the range of any BaseManager
@@ -510,6 +516,27 @@ function LocationRangeManagerThread(aiBrain)
 --                end
             end
         end
+        -- Destroy reclaimables after 5 minutes for better game performance
+        if 1 == 1 then
+            reclaimdelayer = reclaimdelayer + 1
+            if reclaimdelayer > 12 then
+                reclaimdelayer = 0
+                local count = 0
+                for _, reclaim in GetReclaimablesInRect(Rect(1, 1, ScenarioInfo.size[1], ScenarioInfo.size[2])) do
+                    if reclaim.IsWreckage then
+                        count = count + 1
+                        if not reclaim.expirationTime then
+                            reclaim.expirationTime = GetGameTimeSeconds() + 60*5
+                        elseif GetGameTimeSeconds() > reclaim.expirationTime then
+                            --LOG('Wreck is older then 5 minutes. Deleting it!')
+                            count = count - 1
+                            reclaim:Destroy()
+                        end
+                    end
+                end
+                --LOG('reclaim count:'..count)
+            end
+        end
         WaitTicks(50)
     end
 end
@@ -530,7 +557,7 @@ function BaseRanger(aiBrain)
             for k,v in aiBrain.BuilderManagers do
                 -- Check baselocations sorted by BaseLocations Index
                 if k ~= BaseType and Scenario.MasterChain._MASTERCHAIN_.Markers[v.FactoryManager.LocationType].type ~= BaseType then
-                    -- No BaseLocation. Continue with the next array-key 
+                    -- No BaseLocation. Continue with the next array-key
                     continue
                 end
                 -- We found a BaseLocation
@@ -542,12 +569,12 @@ function BaseRanger(aiBrain)
                 -- Now check against every other baseLocation, and see if we need to reduce our base radius.
                 for k2,v2 in aiBrain.BuilderManagers do
                     local V2Naval = string.find(k2, 'Naval Area')
-                    -- Only check, if start and end marker are not the same.
+                    -- Only check, if base markers are not the same. Exclude compare between land and water locations
                     if v ~= v2 and ((V1Naval and V2Naval) or (not V1Naval and not V2Naval)) then
                         local EndPos = v2.FactoryManager.Location
                         local EndRad = v2.FactoryManager.Radius
                         local dist = VDist2( StartPos[1], StartPos[3], EndPos[1], EndPos[3] )
-                        -- This is true, then we compare MAIN base versus expansion location
+                        -- If this is true, then we compare our MAIN base versus expansion location
                         if k == 'MAIN' then
                             -- Mainbase can use 66% of the distance to the next location (minimum 90). But only if we have enough space for the second base (>=30)
                             if NewMax > dist/3*2 and dist/3*2 > 90 and dist/3 >= 30 then
@@ -566,14 +593,14 @@ function BaseRanger(aiBrain)
                             -- Expansion can use 33% of the distance to the Mainbase.
                             if NewMax > dist - EndRad and dist - EndRad >= 30 then
                                 NewMax = dist - EndRad
-                                --LOG('Distance to mainbase['..k..']->['..k2..']='..dist..' Mainbase radius='..EndRad..' Set Radius to '..dist - EndRad) 
+                                --LOG('Distance to mainbase['..k..']->['..k2..']='..dist..' Mainbase radius='..EndRad..' Set Radius to '..dist - EndRad)
                             end
-                        -- Use as base radius half the way to the next marker. Exclude compare between land and water locations
+                        -- Use as base radius half the way to the next marker.
                         else
                             -- if we dont compare against the mainbase then use 50% of the distance to the next location
                             if NewMax > dist/2 and dist/2 >= 30 then
                                 NewMax = dist/2
-                                --LOG('Distance to location['..k..']->['..k2..']='..dist..' location radius='..StartRad..' Set Radius to '..dist/2) 
+                                --LOG('Distance to location['..k..']->['..k2..']='..dist..' location radius='..StartRad..' Set Radius to '..dist/2)
                             end
                         end
                     end
@@ -597,21 +624,24 @@ function BaseRanger(aiBrain)
                     -- store the TerranHeight inside Factorymanager
                     v.FactoryManager.Location = StartPos
                 end
+                -- Add the position and radius to the BaseRanger table
                 BaseRanger[k] = {Pos = StartPos, Rad = math.floor(NewMax), Type = BaseType}
             end
         end
+        -- store all bases ang radii global inside Scenario.MasterChain
+        -- Wee need this to draw the debug circles
         if aiBrain.Uveso then
-            Scenario.MasterChain._MASTERCHAIN_.BaseRanger = Scenario.MasterChain._MASTERCHAIN_.BaseRanger or {}
-            Scenario.MasterChain._MASTERCHAIN_.BaseRanger[aiBrain:GetArmyIndex()] = BaseRanger
+            if ScenarioInfo.Options.AIPathingDebug == 'all' then
+                Scenario.MasterChain._MASTERCHAIN_.BaseRanger = Scenario.MasterChain._MASTERCHAIN_.BaseRanger or {}
+                Scenario.MasterChain._MASTERCHAIN_.BaseRanger[aiBrain:GetArmyIndex()] = BaseRanger
+            end
         end
     end
     return BaseRanger
 end
 
 function BaseAlertManager(aiBrain)
-    local mapSizeX, mapSizeZ = GetMapSize()
-    local BaseMilitaryZone = math.max( mapSizeX-50, mapSizeZ-50 ) / 2               -- Half the map
-    BaseMilitaryZone = math.max( 250, BaseMilitaryZone )
+    local BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua').GetDangerZoneRadii()
     local targets = {}
     local baseposition, radius
     local ClosestTarget
@@ -635,7 +665,7 @@ function BaseAlertManager(aiBrain)
             end
             if not baseposition then
                 continue
-            end 
+            end
         end
         -- Search for experimentals in BasePanicZone
         targets = aiBrain:GetUnitsAroundPoint(categories.EXPERIMENTAL - categories.AIR - categories.INSIGNIFICANTUNIT, baseposition, 120, 'Enemy')

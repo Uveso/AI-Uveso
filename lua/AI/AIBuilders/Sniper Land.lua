@@ -31,7 +31,7 @@ BuilderGroup {
             AttackEnemyStrength = 50000,                                        -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = 'STRUCTURE',                                 -- Only find targets matching these categories.
-            PrioritizedCategories = {                                           -- Attack these targets.
+            MoveToCategories = {                                                -- Move to targets
                 'STRUCTURE EXPERIMENTAL ECONOMIC',
                 'STRUCTURE EXPERIMENTAL SHIELD',
                 'STRUCTURE EXPERIMENTAL',
@@ -65,7 +65,7 @@ BuilderGroup {
             AttackEnemyStrength = 50000,                                        -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = 'STRUCTURE',                                 -- Only find targets matching these categories.
-            PrioritizedCategories = {                                           -- Attack these targets.
+            MoveToCategories = {                                                -- Move to targets
                 'STRUCTURE EXPERIMENTAL ECONOMIC',
                 'STRUCTURE EXPERIMENTAL SHIELD',
                 'STRUCTURE EXPERIMENTAL',
@@ -99,7 +99,7 @@ BuilderGroup {
             AttackEnemyStrength = 50000,                                        -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = 'STRUCTURE',                                 -- Only find targets matching these categories.
-            PrioritizedCategories = {                                           -- Attack these targets.
+            MoveToCategories = {                                                -- Move to targets
                 'STRUCTURE EXPERIMENTAL ECONOMIC',
                 'STRUCTURE EXPERIMENTAL SHIELD',
                 'STRUCTURE EXPERIMENTAL',

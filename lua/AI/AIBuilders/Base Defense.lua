@@ -90,7 +90,7 @@ BuilderGroup {
     --    Reclaim Shields    --
     -- ===================== --
     Builder {
-        BuilderName = 'U1 Reclaim T123 Shields',
+        BuilderName = 'U1 Reclaim T1-T2 Shields',
         PlatoonTemplate = 'EngineerBuilder',
         PlatoonAIPlan = 'ReclaimStructuresAI',
         Priority = 500,
@@ -100,6 +100,32 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '>', categories.STRUCTURE * categories.DEFENSE } },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 2, 'STRUCTURE SHIELD EXPERIMENTAL' } },
             -- Do we need additional conditions to build it ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 6, categories.STRUCTURE * categories.DEFENSE * categories.SHIELD * categories.TECH3 }},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.DEFENSE * categories.SHIELD * (categories.TECH1 + categories.TECH2) }},
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+        },
+        BuilderData = {
+            Location = 'LocationType',
+            Reclaim = {
+                        categories.STRUCTURE * categories.DEFENSE * categories.TECH1,
+                        categories.STRUCTURE * categories.DEFENSE * categories.TECH2,
+                      },
+        },
+        BuilderType = 'Any',
+    },
+    Builder {
+        BuilderName = 'U1 Reclaim T1-T2-T3 Shields',
+        PlatoonTemplate = 'EngineerBuilder',
+        PlatoonAIPlan = 'ReclaimStructuresAI',
+        Priority = 500,
+        InstanceCount = 1,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '>', categories.STRUCTURE * categories.DEFENSE } },
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 2, 'STRUCTURE SHIELD EXPERIMENTAL' } },
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.DEFENSE * categories.SHIELD * categories.EXPERIMENTAL }},
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.DEFENSE * categories.SHIELD - categories.EXPERIMENTAL }},
             -- Have we the eco to build it ?
             -- Don't build it if...
@@ -109,7 +135,7 @@ BuilderGroup {
             Reclaim = {
                         categories.STRUCTURE * categories.DEFENSE * categories.TECH1,
                         categories.STRUCTURE * categories.DEFENSE * categories.TECH2,
-                        categories.STRUCTURE * categories.DEFENSE * categories.TECH3
+                        categories.STRUCTURE * categories.DEFENSE * categories.TECH3,
                       },
         },
         BuilderType = 'Any',
@@ -509,8 +535,10 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.00, 0.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.STRUCTURE * categories.NUKE } },
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.STRUCTURE * categories.NUKE * categories.SILO } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -535,10 +563,12 @@ BuilderGroup {
         Priority = 18000,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatioAtLocationRadiusVersusEnemy', { 1.20, 'LocationType', 90, 'STRUCTURE DEFENSE ANTIMISSILE TECH3', '<','SILO NUKE TECH3, SILO NUKE EXPERIMENTAL' } },
+            { UCBC, 'HaveUnitRatioAtLocationRadiusVersusEnemy', { 1.20, 'LocationType', 90, 'STRUCTURE DEFENSE ANTIMISSILE TECH3', '<','STRUCTURE SILO NUKE TECH3, STRUCTURE SILO NUKE EXPERIMENTAL' } },
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.00, 0.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
         },
         BuilderType = 'Any',
@@ -911,7 +941,8 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '>', categories.STRUCTURE * categories.DEFENSE } },
             -- Do we need additional conditions to build it ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.DEFENSE * (categories.TECH2 + categories.TECH3) * ( categories.DIRECTFIRE + categories.INDIRECTFIRE ) - categories.ANTIAIR }},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.DEFENSE * categories.TECH3 * ( categories.DIRECTFIRE + categories.INDIRECTFIRE ) - categories.ANTIAIR }},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.DEFENSE * (categories.TECH1 + categories.TECH2) * ( categories.DIRECTFIRE + categories.INDIRECTFIRE ) - categories.ANTIAIR }},
             -- Have we the eco to build it ?
             -- Don't build it if...
         },
@@ -1116,7 +1147,8 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '>', categories.STRUCTURE * categories.DEFENSE } },
             -- Do we need additional conditions to build it ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.DEFENSE * (categories.TECH2 + categories.TECH3) * categories.ANTIAIR }},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.DEFENSE * categories.TECH3 * categories.ANTIAIR }},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.DEFENSE * (categories.TECH1 + categories.TECH2) * categories.ANTIAIR }},
             -- Have we the eco to build it ?
             -- Don't build it if...
         },

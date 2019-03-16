@@ -2,25 +2,30 @@
 Uveso_0001="KI: Uveso Adaptiv"
 Uveso_0002="Eine ausbalancierte KI. Gut für 5x5, 10x10 und 20x20 Karten."
 Uveso_0003="KIx: Uveso Adaptiv"
-Uveso_0004="Eine ausbalancierte Cheat KI. Gut für 5x5, 10x10 und 20x20 Karten."
+Uveso_0004="Eine ausbalancierte KI, Einstellbar über Cheat-Optionen. Gut für 5x5, 10x10 und 20x20 Karten."
 
 Uveso_0005="KI: Uveso Sturm"
 Uveso_0006="Eine Sturm KI. Gut für 5x5 und 10x10 Karten."
 Uveso_0007="KIx: Uveso Sturm"
-Uveso_0008="Eine Sturm Cheat KI. Gut für 5x5 und 10x10 Karten."
+Uveso_0008="Eine Sturm KI, Einstellbar über Cheat-Optionen. Gut für 5x5 und 10x10 Karten."
+
+Uveso_0019="AI: Uveso Swarm"
+Uveso_0020="Eine AI die massenweise Einheiten produziert. Gut für 5x5 und 10x10 Karten."
+Uveso_0021="AIx: Uveso Swarm"
+Uveso_0022="Eine AI die massenweise Einheiten produziert, Einstellbar über Cheat-Optionen. Gut für 5x5 und 10x10 Karten."
 
 Uveso_0009="KI: Uveso Experimentals"
 Uveso_0010="Eine KI die auf Experimentals fokussiert ist. Gut für 10x10 und 20x20 Karten."
 Uveso_0011="KIx: Uveso Experimentals"
-Uveso_0012="Eine Cheat KI die auf Experimentals fokussiert ist. Gut für 10x10 und 20x20 Karten."
+Uveso_0012="Eine KI die auf Experimentals fokussiert ist, Einstellbar über Cheat-Optionen. Gut für 10x10 und 20x20 Karten."
 
 Uveso_0017="AIx: Uveso Brecher"
-Uveso_0018="Eine Cheat KI die ab der 35. Minute den Gegner überrennt. Gut für 5x5, 10x10 und 20x20 maps."
+Uveso_0018="Eine KI die ab der 35. mit variablen Baugeschwindikeiten arbeitet, Einstellbar über Cheat-Optionen. Gut für 5x5, 10x10 und 20x20 maps."
 
 Uveso_0013="KI: Uveso Einfach"
 Uveso_0014="Eine einfache KI. Gut für 5x5, 10x10 und 20x20 Karten"
 Uveso_0015="KIx: Uveso Einfach"
-Uveso_0016="Eine einfache Cheat KI. Gut für 5x5, 10x10 und 20x20 Karten"
+Uveso_0016="Eine einfache KI, Einstellbar über Cheat-Optionen. Gut für 5x5, 10x10 und 20x20 Karten"
 
 aisettings_0153="KI Wegfindung"
 aisettings_0154="Zeigt Wegfindung, Wegpunkte und Standort Radien (nur KI-Uveso)"

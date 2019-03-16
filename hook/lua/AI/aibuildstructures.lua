@@ -1,19 +1,15 @@
 
--- For AI Patch V3.
+-- For AI Patch V4. validation of building tempaltes, better search for build locations. support for modded units.
 local AntiSpamList = {}
 function AIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder, relative, buildingTemplate, baseTemplate, reference, NearMarkerType)
     local factionIndex = aiBrain:GetFactionIndex()
     local whatToBuild = aiBrain:DecideWhatToBuild(builder, buildingType, buildingTemplate)
+    -- If the c-engine can't decide what to build, then search the build template manually.
     if not whatToBuild then
         if AntiSpamList[buildingType] then
-            return
+            return false
         end
         SPEW('*AIExecuteBuildStructure: We cant decide whatToBuild! Building Type: '..repr(buildingType)..', faction: '..repr(builder.factionCategory))
-        --SPEW('*AIExecuteBuildStructure: buildingType='..repr(buildingType)..' - buildingTemplate: '..repr(buildingTemplate))
-        --SPEW('*AIExecuteBuildStructure: builder='..repr(builder:GetBlueprint().CategoriesHash)..' ')
-        --- DEBUG---
-        --- DEBUG---
-        --- DEBUG---
         -- Get the UnitId for the actual buildingType
         local BuildUnitWithID
         for Key, Data in buildingTemplate do
@@ -25,16 +21,13 @@ function AIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder,
         end
         -- If we can't find a template, then return
         if not BuildUnitWithID then
-            if not AntiSpamList[buildingType] then
-                AntiSpamList[buildingType] = true
-                WARN('*AIExecuteBuildStructure: No '..repr(builder.factionCategory)..' unit found for template: '..repr(buildingType)..'! ')
-            end
-            return
+            AntiSpamList[buildingType] = true
+            WARN('*AIExecuteBuildStructure: No '..repr(builder.factionCategory)..' unit found for template: '..repr(buildingType)..'! ')
+            return false
         end
         -- get the needed tech level to build buildingType
         local BBC = __blueprints[BuildUnitWithID].CategoriesHash
         local NeedTech
-        --LOG('*AIExecuteBuildStructure: BeingBuildCategory: '..repr(BBC))
         if BBC.BUILTBYCOMMANDER or BBC.BUILTBYTIER1COMMANDER or BBC.BUILTBYTIER1ENGINEER then
             NeedTech = 1
         elseif BBC.BUILTBYTIER2COMMANDER or BBC.BUILTBYTIER2ENGINEER then
@@ -42,12 +35,12 @@ function AIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder,
         elseif BBC.BUILTBYTIER3COMMANDER or BBC.BUILTBYTIER3ENGINEER then
             NeedTech = 3
         end
-        -- If we can't find a techlevel for the building we  want to build, return
+        -- If we can't find a techlevel for the building we want to build, then return
         if not NeedTech then
             WARN('*AIExecuteBuildStructure: Cant find techlevel for BuildUnitWithID: '..repr(BuildUnitWithID))
-            return
+            return false
         end
-        --LOG('*AIExecuteBuildStructure: Need TECH'..NeedTech..' to build this building')
+        -- get the actual tech level from the builder
         local BC = builder:GetBlueprint().CategoriesHash
         if BC.TECH1 or BC.COMMAND then
             HasTech = 1
@@ -59,29 +52,24 @@ function AIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder,
         -- If we can't find a techlevel for the building we  want to build, return
         if not HasTech then
             WARN('*AIExecuteBuildStructure: Cant find techlevel for Builder: '..__blueprints[BuildUnitWithID].Description or  "Unknown")
-            return
+            return false
         end
         --LOG('*AIExecuteBuildStructure: We have TECH'..HasTech..' engineer.')
         if HasTech < NeedTech then
             WARN('*AIExecuteBuildStructure: TECH'..NeedTech..' Unit "'..BuildUnitWithID..'" is assigned to TECH'..HasTech..' buildplatoon! ('..repr(buildingType)..')')
-            return
+            return false
         end
         local IsRestricted = import('/lua/game.lua').IsRestricted
         if IsRestricted(BuildUnitWithID, GetFocusArmy()) then
             WARN('*AIExecuteBuildStructure: Unit is Restricted!!! Building Type: '..repr(buildingType)..', faction: '..repr(builder.factionCategory)..' - Unit:'..BuildUnitWithID)
             AntiSpamList[buildingType] = true
-            return
+            return false
         end
-        --- DEBUG---
-        --- DEBUG---
-        --- DEBUG---
-        return
+        return false
     else
-        -- DEBUG. Sometimes the AI is building a unit that is different from the buildingTemplate table. So we validate the unitID here.
+        -- Sometimes the AI is building a unit that is different from the buildingTemplate table. So we validate the unitID here.
         for Key, Data in buildingTemplate do
-            --LOG('*AIExecuteBuildStructure: Searching Template: '..repr(Data[1]))
             if Data[1] and Data[2] and Data[1] == buildingType then
-                --LOG('*AIExecuteBuildStructure: Found Template: '..repr(Data[1])..' - Using UnitID: '..repr(Data[2]))
                 if whatToBuild ~= Data[2] then
                     WARN('*AIExecuteBuildStructure: Missmatch whatToBuild: '..whatToBuild..' ~= buildingTemplate.Data[2]: '..repr(Data[2]))
                 end
@@ -89,7 +77,6 @@ function AIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder,
             end
         end
     end
-
     -- find a place to build it (ignore enemy locations if it's a resource)
     -- build near the base the engineer is part of, rather than the engineer location
     local relativeTo
@@ -146,16 +133,15 @@ function AIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder,
         if relative then
             relativeLoc = {relativeLoc[1] + relativeTo[1], relativeLoc[2] + relativeTo[2], relativeLoc[3] + relativeTo[3]}
         end
-        -- LOG('Build '..repr(buildingType)..' at location: '..repr(NormalToBuildLocation(relativeLoc)) )
         -- put in build queue.. but will be removed afterwards... just so that it can iteratively find new spots to build
         AddToBuildQueue(aiBrain, builder, whatToBuild, NormalToBuildLocation(relativeLoc), false)
-        return
+        return true
     end
-    --otherwise, we're SOL, so move on to the next thing
-    --SPEW('*AIExecuteBuildStructure: Find no place to Build! - buildingType '..repr(buildingType)..' - UnitID: '..whatToBuild..'')
+    -- At this point we're out of options, so move on to the next thing
+    return false
 end
 
--- For AI Patch V3. don't build to close to the border
+-- For AI Patch V4. don't build to close to the border
 function AIBuildAdjacency(aiBrain, builder, buildingType , closeToBuilder, relative, buildingTemplate, baseTemplate, reference, NearMarkerType)
     local whatToBuild = aiBrain:DecideWhatToBuild(builder, buildingType, buildingTemplate)
     if whatToBuild then
@@ -169,7 +155,7 @@ function AIBuildAdjacency(aiBrain, builder, buildingType , closeToBuilder, relat
                 local targetPos = v:GetPosition()
                 targetPos[1] = targetPos[1] - (targetSize.SkirtSizeX/2)
                 targetPos[3] = targetPos[3] - (targetSize.SkirtSizeZ/2)
-                # Top/bottom of unit
+                -- Top/bottom of unit
                 for i=0,((targetSize.SkirtSizeX/2)-1) do
                     local testPos = { targetPos[1] + 1 + (i * 2), targetPos[3]-(unitSize.SkirtSizeZ/2), 0 }
                     local testPos2 = { targetPos[1] + 1 + (i * 2), targetPos[3]+targetSize.SkirtSizeZ+(unitSize.SkirtSizeZ/2), 0 }
@@ -181,7 +167,7 @@ function AIBuildAdjacency(aiBrain, builder, buildingType , closeToBuilder, relat
                         table.insert(template[1], testPos2)
                     end
                 end
-                # Sides of unit
+                -- Sides of unit
                 for i=0,((targetSize.SkirtSizeZ/2)-1) do
                     local testPos = { targetPos[1]+targetSize.SkirtSizeX + (unitSize.SkirtSizeX/2), targetPos[3] + 1 + (i * 2), 0 }
                     local testPos2 = { targetPos[1]-(unitSize.SkirtSizeX/2), targetPos[3] + 1 + (i*2), 0 }
@@ -194,7 +180,7 @@ function AIBuildAdjacency(aiBrain, builder, buildingType , closeToBuilder, relat
                 end
             end
         end
-        # build near the base the engineer is part of, rather than the engineer location
+        -- build near the base the engineer is part of, rather than the engineer location
         local baseLocation = {nil, nil, nil}
         if builder.BuildManagerData and builder.BuildManagerData.EngineerManager then
             baseLocation = builder.BuildManagerdata.EngineerManager.Location
@@ -205,13 +191,10 @@ function AIBuildAdjacency(aiBrain, builder, buildingType , closeToBuilder, relat
                 --LOG('Build '..repr(buildingType)..' at adjacency: '..repr(location) )
                 AddToBuildQueue(aiBrain, builder, whatToBuild, location, false)
                 return true
-            else
-                LOG('FAIL '..repr(buildingType)..' at adjacency: '..repr(location) )
-                LOG(repr(template))
             end
         end
-        ## Build in a regular spot if adjacency not found
+        -- Build in a regular spot if adjacency not found
         return AIExecuteBuildStructure(aiBrain, builder, buildingType, builder, true,  buildingTemplate, baseTemplate)
     end
-    return false, false
+    return false
 end

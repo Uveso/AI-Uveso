@@ -71,14 +71,31 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== Land Units FORMER==== --
         -----------------------------------------------------------------------------
-        'Land FormBuilders Panic',
+        'Land FormBuilders PanicZone',
         'Land FormBuilders MilitaryZone',
         'Land FormBuilders EnemyZone',
+        'Land FormBuilders Trasher',
+        'Land FormBuilders Guards',
+
+        -----------------------------------------------------------------------------
+        -- ==== Hover Units FORMER==== --
+        -----------------------------------------------------------------------------
+        'Hover FormBuilders PanicZone',
+        'Hover FormBuilders MilitaryZone',
+        'Hover FormBuilders EnemyZone',
+        'Hover FormBuilders Trasher',
+
+        -----------------------------------------------------------------------------
+        -- ==== Amphibious Units FORMER==== --
+        -----------------------------------------------------------------------------
+        'Amphibious FormBuilders PanicZone',
+        'Amphibious FormBuilders MilitaryZone',
+        'Amphibious FormBuilders EnemyZone',
+        'Amphibious FormBuilders Trasher',
 
         -----------------------------------------------------------------------------
         -- ==== Air Units BUILDER ==== --
         -----------------------------------------------------------------------------
-        -- Build Air Units
 --        'AntiAirBuilders Uveso',
         -- Build Air Transporter
         'Air Transport Builder Uveso',
@@ -86,20 +103,30 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== Air Units FORMER==== --
         -----------------------------------------------------------------------------
-        'Air FormBuilders',
+        'Air FormBuilders PanicZone',
+        'Air FormBuilders MilitaryZone',
+        'Air FormBuilders EnemyZone',
+        'Air FormBuilders Trasher',
 
         -----------------------------------------------------------------------------
         -- ==== EXPERIMENTALS BUILDER ==== --
         -----------------------------------------------------------------------------
-        'Mobile Experimental Builder Uveso',
-        'Economic Experimental Builder Uveso',
+        'Mobile Experimental Land Builder Uveso',
+        'Mobile Experimental Air Builder Uveso',
         'Paragon Turbo Builder',
         'Paragon Turbo Factory',
 
         -----------------------------------------------------------------------------
         -- ==== EXPERIMENTALS FORMER ==== --
         -----------------------------------------------------------------------------
-        'ExperimentalAttackFormBuilders Uveso',
+        'Land Experimental FormBuilders PanicZone',
+        'Land Experimental FormBuilders MilitaryZone',
+        'Land Experimental FormBuilders EnemyZone',
+        'Land Experimental FormBuilders Trasher',
+        'Air Experimental FormBuilders PanicZone',
+        'Air Experimental FormBuilders Military',
+        'Air Experimental FormBuilders EnemyZone',
+        'Air Experimental FormBuilders Trasher',
 
         -----------------------------------------------------------------------------
         -- ==== Structure Shield BUILDER ==== --

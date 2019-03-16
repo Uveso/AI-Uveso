@@ -1,12 +1,28 @@
 *************************************************************************************************************************************
-v53 (23.Feb.2019)
+v54 (16.Mar.2019)
+
+- New: Added Sub AI "Swarm". New AI is focussing on building units (t1,t2,t3) and some experimentals and sends them directly to the enemy (you!).
+- New: ACU will now leave the attack platton to help building or recover the base in case nothing is left.
+- New: Reclaimables will be destroyed after 5 minutes for better sim speed. (Testing; maybe for another mod...)
+- New: Added "Changeable Target Priorities". (Platoons can now change the weaponpriority undependend from the "move-at" priority).
+- New: New Unit-Categories. Blueprint.lua is now adding categories for 2 new unitgroups: 'AMPHIBIOUS' and 'HOVER'. (works with mods)
+- New: Added first platoons for Hover and Amphibious units.
+- New: Added special platoons for attacking unprotected targets like massextractiors. (Land and Air)
+- Fix: Bomber now leave the AI pathing when closer then 60 units to a target to drop a bomb on the 1st pass.
+- Opt: Changed and added land/air/sea attack platoons for better early attacks.
+- Dev: Removed 3 forked threads that ar not used by AI-Uveso: SetupAttackVectorsThread, ExpansionHelpThread, ParseIntelThread
+- Dev: changed hook inside EconomyBuildConditions.lua to non destructive hooks. (If paragon present, then override eco return values)
+- Dev: Removed function hooks for patches that are already patched to the game.
+- Dev: Renamed hook names in almost every file.
+
+*************************************************************************************************************************************
+v53 (26.Feb.2019)
 
 - New: AI is now sending a chat message if AI-markers are missing.
 - New: Added platoons to send units to the enemy on unitcap.
 - Fix: Attackplatoons no longer attack buildings while capture/reclaim is in progress.
 - Opt: Tactical missiles launchers no longer attack underwater targets.
 - Opt: AI will now perform better on low unitcap like 250 or 125 units.
-- Opt: BasePanicZone, BaseMilitaryZone, BaseEnemyZone are now declared in uvesoutilities.lua
 - Opt: Optimized pathing function. Maps with 800 markers are now possible without pathing-lag.
 - Opt: Optimized all AIBuilder files for low unit caps like 250 or 125.
 - Dev: BasePanicZone, BaseMilitaryZone, BaseEnemyZone are now calculated inside uvesoutilities.lua for all AIBuilder files.

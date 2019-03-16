@@ -35,17 +35,23 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== Sea Units FORMER ==== --
         -----------------------------------------------------------------------------
-        'SeaAttack FormBuilders Uveso',
+        'Sea FormBuilders PanicZone',
+        'Sea FormBuilders MilitaryZone',
+        'Sea FormBuilders EnemyZone',
+        'Sea FormBuilders Trasher',
 
         -----------------------------------------------------------------------------
         -- ==== EXPERIMENTALS BUILDER ==== --
         -----------------------------------------------------------------------------
-        'Mobile Experimental Builder Naval Uveso',
+        'Mobile Experimental Naval Builder Uveso',
         
         -----------------------------------------------------------------------------
         -- ==== EXPERIMENTALS FORMER ==== --
         -----------------------------------------------------------------------------
-        'ExperimentalAttackFormBuildersNaval Uveso',
+        'Sea Experimental FormBuilders Panic',
+        'Sea Experimental FormBuilders Military',
+        'Sea Experimental FormBuilders EnemyZone',
+        'Sea Experimental FormBuilders Trasher',
 
         -----------------------------------------------------------------------------
         -- ==== Defenses BUILDER ==== --

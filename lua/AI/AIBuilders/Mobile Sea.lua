@@ -56,9 +56,10 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 30,  categories.MOBILE * categories.NAVAL } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.70 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.STRUCTURE * categories.FACTORY * categories.NAVAL } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
@@ -77,9 +78,10 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 30,  categories.MOBILE * categories.NAVAL } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.30, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.STRUCTURE * categories.FACTORY * categories.NAVAL } },
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'MOBILE NAVAL TECH2' } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
@@ -96,9 +98,10 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 30,  categories.MOBILE * categories.NAVAL } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.30, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.STRUCTURE * categories.FACTORY * categories.NAVAL } },
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'MOBILE NAVAL TECH2' } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
@@ -115,9 +118,10 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 30,  categories.MOBILE * categories.NAVAL } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.30, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.STRUCTURE * categories.FACTORY * categories.NAVAL } },
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'MOBILE NAVAL TECH2' } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
@@ -134,9 +138,10 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 30,  categories.MOBILE * categories.NAVAL } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.30, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.STRUCTURE * categories.FACTORY * categories.NAVAL } },
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'MOBILE NAVAL TECH2' } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
@@ -153,9 +158,10 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 30,  categories.MOBILE * categories.NAVAL } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.30, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.STRUCTURE * categories.FACTORY * categories.NAVAL } },
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'MOBILE NAVAL TECH2' } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
@@ -175,8 +181,9 @@ BuilderGroup {
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 35,  categories.MOBILE * categories.NAVAL } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 2.0, 30.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.STRUCTURE * categories.FACTORY * categories.NAVAL } },
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'MOBILE NAVAL TECH3' } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
@@ -193,8 +200,9 @@ BuilderGroup {
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 35,  categories.MOBILE * categories.NAVAL } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 2.0, 30.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.STRUCTURE * categories.FACTORY * categories.NAVAL } },
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'MOBILE NAVAL TECH3' } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
@@ -211,8 +219,9 @@ BuilderGroup {
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 35,  categories.MOBILE * categories.NAVAL } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 2.0, 30.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.STRUCTURE * categories.FACTORY * categories.NAVAL } },
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'MOBILE NAVAL TECH3' } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
@@ -229,8 +238,9 @@ BuilderGroup {
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 35,  categories.MOBILE * categories.NAVAL } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 2.0, 30.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.STRUCTURE * categories.FACTORY * categories.NAVAL } },
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'MOBILE NAVAL TECH3' } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
@@ -247,8 +257,9 @@ BuilderGroup {
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 35,  categories.MOBILE * categories.NAVAL } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 2.0, 30.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.STRUCTURE * categories.FACTORY * categories.NAVAL } },
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'MOBILE NAVAL TECH3' } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
@@ -355,178 +366,135 @@ BuilderGroup {
 -- ===================================================-======================================================== --
 -- ==                                      NAVAL T1 T2 T3 Formbuilder                                        == --
 -- ===================================================-======================================================== --
+-- =============== --
+--    PanicZone    --
+-- =============== --
 BuilderGroup {
-    BuilderGroupName = 'SeaAttack FormBuilders Uveso',                          -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
-    BuildersType = 'PlatoonFormBuilder',
-    -- =============== --
-    --    PanicZone    --
-    -- =============== --
+    BuilderGroupName = 'Sea FormBuilders PanicZone',                            -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuildersType = 'PlatoonFormBuilder',                                        -- BuilderTypes are: EngineerBuilder, FactoryBuilder, PlatoonFormBuilder.
     Builder {
-        BuilderName = 'U123 PANIC AntiSea',
-        PlatoonTemplate = 'U123 Panic AntiSea 1 500',
-        Priority = 90,                                        -- Priority. 1000 is normal.
-        InstanceCount = 5,                                      -- Number of plattons that will be formed.
+        BuilderName = 'U123 PANIC AntiSea',                                     -- Random Builder Name.
+        PlatoonTemplate = 'U123 Panic AntiSea 1 500',                           -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates"
+        Priority = 90,                                                          -- Priority. 1000 is normal.
+        InstanceCount = 5,                                                      -- Number of plattons that will be formed.
         BuilderData = {
-            SearchRadius = BasePanicZone,                       -- Searchradius for new target.
-            AggressiveMove = false,                              -- If true, the unit will attack everything while moving to the target.
-            AttackEnemyStrength = 100000,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            TargetSearchCategory = (categories.MOBILE + categories.STRUCTURE) * categories.NAVAL, -- Only find targets matching these categories.
-            PrioritizedCategories = {
-                'STRUCTURE NAVAL DEFENSE',
-                'MOBILE NAVAL',
-                'STRUCTURE NAVAL',
-                'ALLUNITS',
+            SearchRadius = BasePanicZone,                                       -- Searchradius for new target.
+            AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
+            AttackEnemyStrength = 100000000,                                    -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            TargetSearchCategory = categories.MOBILE - categories.SCOUT,        -- Only find targets matching these categories.
+            MoveToCategories = {                                                -- Move to targets
+                categories.EXPERIMENTAL,
+                categories.MOBILE,
             },
         },
-        BuilderConditions = {                                   -- platoon will be formed if all conditions are true
-            -- When do we want to build this ?
-            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 0, (categories.MOBILE + categories.STRUCTURE) * categories.NAVAL }}, -- radius, LocationType, unitCount, categoryEnemy
-            -- Do we need additional conditions to build it ?
-            -- Have we the eco to build it ?
-            -- Don't build it if...
+        BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
+            -- When do we want to form this ?
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.MOBILE }}, -- radius, LocationType, unitCount, categoryEnemy
         },
-        BuilderType = 'Any',                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
+        BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
-    -- ================== --
-    --    MilitaryZone    --
-    -- ================== --
+}
+-- ================== --
+--    MilitaryZone    --
+-- ================== --
+BuilderGroup {
+    BuilderGroupName = 'Sea FormBuilders MilitaryZone',                         -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuildersType = 'PlatoonFormBuilder',                                        -- BuilderTypes are: EngineerBuilder, FactoryBuilder, PlatoonFormBuilder.
     Builder {
-        BuilderName = 'U123 Military AntiSea',
-        PlatoonTemplate = 'U123 Military AntiSea 5 5',
-        Priority = 80,                                        -- Priority. 1000 is normal.
-        InstanceCount = 6,                                      -- Number of plattons that will be formed.
+        BuilderName = 'U123 Military AntiSea',                                  -- Random Builder Name.
+        PlatoonTemplate = 'U123 Military AntiSea 5 5',                          -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates"
+        Priority = 80,                                                          -- Priority. 1000 is normal.
+        InstanceCount = 6,                                                      -- Number of plattons that will be formed.
         BuilderData = {
-            SearchRadius = BaseMilitaryZone,                    -- Searchradius for new target.
-            AggressiveMove = false,                             -- If true, the unit will attack everything while moving to the target.
+            SearchRadius = BaseMilitaryZone,                                    -- Searchradius for new target.
+            AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 150,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            TargetSearchCategory = (categories.MOBILE + categories.STRUCTURE) * categories.NAVAL, -- Only find targets matching these categories.
-            PrioritizedCategories = {
-                'STRUCTURE NAVAL DEFENSE',
+            TargetSearchCategory = categories.MOBILE,                           -- Only find targets matching these categories.
+            MoveToCategories = {                                                -- Move to targets
+                'NAVAL DEFENSE',
                 'MOBILE NAVAL',
-                'STRUCTURE NAVAL',
                 'ALLUNITS',
             },
         },
-        BuilderConditions = {                                   -- platoon will be formed if all conditions are true
-            -- When do we want to build this ?
-            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 0, (categories.MOBILE + categories.STRUCTURE) * categories.NAVAL }}, -- radius, LocationType, unitCount, categoryEnemy
+        BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
+            -- When do we want to form this ?
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 0, categories.MOBILE }}, -- radius, LocationType, unitCount, categoryEnemy
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 6, categories.MOBILE * categories.NAVAL } },
-            -- Do we need additional conditions to build it ?
-            -- Have we the eco to build it ?
-            -- Don't build it if...
         },
-        BuilderType = 'Any',                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
+        BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
-    -- =============== --
-    --    EnemyZone    --
-    -- =============== --
+}
+-- =============== --
+--    EnemyZone    --
+-- =============== --
+BuilderGroup {
+    BuilderGroupName = 'Sea FormBuilders EnemyZone',                          -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuildersType = 'PlatoonFormBuilder',
     Builder {
         BuilderName = 'U123 Kill early',
         PlatoonTemplate = 'U123 Enemy Dual 2 2',
-        Priority = 10000,
+        Priority = 70,
         InstanceCount = 1,
         BuilderData = {
             SearchRadius = BaseEnemyZone,                               -- Searchradius for new target.
             AggressiveMove = true,                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 200,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.MOBILE + categories.STRUCTURE, -- Only find targets matching these categories.
-            PrioritizedCategories = {
+            MoveToCategories = {                                                -- Move to targets
                 'STRUCTURE',
                 'MOBILE',
                 'ALLUNITS',
             },
         },
         BuilderConditions = {                                   -- platoon will be formed if all conditions are true
-            -- When do we want to build this ?
+            -- When do we want to form this ?
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 5, categories.MOBILE * categories.NAVAL } },
-            -- Do we need additional conditions to build it ?
-            -- Have we the eco to build it ?
-            -- Don't build it if...
         },
         BuilderType = 'Any',
     },
     Builder {
         BuilderName = 'U123 Enemy AntiStructure',
         PlatoonTemplate = 'U123 Enemy AntiSea 10 10',
-        Priority = 60,
+        Priority = 70,
         InstanceCount = 2,
         BuilderData = {
             SearchRadius = BaseEnemyZone,                               -- Searchradius for new target.
-            AggressiveMove = false,                              -- If true, the unit will attack everything while moving to the target.
+            AggressiveMove = true,                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.STRUCTURE * categories.NAVAL, -- Only find targets matching these categories.
-            PrioritizedCategories = {
+            MoveToCategories = {                                                -- Move to targets
                 'STRUCTURE NAVAL DEFENSE',
                 'STRUCTURE NAVAL',
             },
         },
         BuilderConditions = {                                   -- platoon will be formed if all conditions are true
-            -- When do we want to build this ?
+            -- When do we want to form this ?
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 15, categories.MOBILE * categories.NAVAL } },
-            -- Do we need additional conditions to build it ?
             { UCBC, 'UnitsGreaterAtEnemy', { 1 , 'STRUCTURE NAVAL' } },
-            -- Have we the eco to build it ?
-            -- Don't build it if...
         },
         BuilderType = 'Any',
     },
     Builder {
         BuilderName = 'U123 Enemy AntiMobile',
         PlatoonTemplate = 'U123 Enemy AntiSea 10 10',
-        Priority = 50,
+        Priority = 70,
         InstanceCount = 2,
         BuilderData = {
             SearchRadius = BaseEnemyZone,                               -- Searchradius for new target.
-            AggressiveMove = false,                              -- If true, the unit will attack everything while moving to the target.
+            AggressiveMove = true,                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.MOBILE * categories.NAVAL, -- Only find targets matching these categories.
-            PrioritizedCategories = {
+            MoveToCategories = {                                                -- Move to targets
                 'MOBILE NAVAL',
             },
         },
         BuilderConditions = {                                   -- platoon will be formed if all conditions are true
-            -- When do we want to build this ?
+            -- When do we want to form this ?
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 15, categories.MOBILE * categories.NAVAL } },
-            -- Do we need additional conditions to build it ?
             { UCBC, 'UnitsGreaterAtEnemy', { 1 , 'MOBILE NAVAL' } },
-            -- Have we the eco to build it ?
-            -- Don't build it if...
         },
         BuilderType = 'Any',
     },
-    -- ================= --
-    --    Finish him!    --
-    -- ================= --
-    Builder {
-        BuilderName = 'U123 Sea Finish him!',
-        PlatoonTemplate = 'U123 Panic AntiSea 1 500',
-        Priority = 50,
-        InstanceCount = 10,
-        BuilderData = {
-            SearchRadius = BaseEnemyZone,                               -- Searchradius for new target.
-            AggressiveMove = true,                              -- If true, the unit will attack everything while moving to the target.
-            AttackEnemyStrength = 500,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            TargetSearchCategory = (categories.MOBILE + categories.STRUCTURE) * categories.NAVAL, -- Only find targets matching these categories.
-            PrioritizedCategories = {
-                'MOBILE NAVAL',
-                'STRUCTURE NAVAL DEFENSE',
-                'STRUCTURE NAVAL',
-            },
-        },
-        BuilderConditions = {                                   -- platoon will be formed if all conditions are true
-            -- When do we want to build this ?
-            { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 20, categories.MOBILE * categories.NAVAL } },
-            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.5, 'MOBILE NAVAL', '>', 'MOBILE NAVAL' } },
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'UnitsGreaterAtEnemy', { 1 , 'MOBILE NAVAL' } },
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-        },
-        BuilderType = 'Any',
-    },
-    -- ==================== --
-    --    Kill Them All!    --
-    -- ==================== --
     Builder {
         BuilderName = 'U123 Anti NavalFactories',
         PlatoonTemplate = 'U123 Enemy AntiSea 10 10',
@@ -534,46 +502,45 @@ BuilderGroup {
         InstanceCount = 1,
         BuilderData = {
             SearchRadius = BaseEnemyZone,                               -- Searchradius for new target.
-            AggressiveMove = false,                              -- If true, the unit will attack everything while moving to the target.
+            AggressiveMove = true,                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 1000000,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.STRUCTURE * categories.FACTORY * categories.NAVAL, -- Only find targets matching these categories.
-            PrioritizedCategories = {
+            MoveToCategories = {                                                -- Move to targets
                 'ALLUNITS',
             },
         },
         BuilderConditions = {                                   -- platoon will be formed if all conditions are true
-            -- When do we want to build this ?
+            -- When do we want to form this ?
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 10, categories.MOBILE * categories.NAVAL } },
-            -- Do we need additional conditions to build it ?
             { UCBC, 'UnitsGreaterAtEnemy', { 1 , 'STRUCTURE FACTORY NAVAL' } },
-            -- Have we the eco to build it ?
-            -- Don't build it if...
         },
         BuilderType = 'Any',
     },
-    -- ==================== --
-    --    Unit Cap Trasher  --
-    -- ==================== --
+}
+-- ==================== --
+--    Unit Cap Trasher  --
+-- ==================== --
+BuilderGroup {
+    BuilderGroupName = 'Sea FormBuilders Trasher',                          -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuildersType = 'PlatoonFormBuilder',
     Builder {
         BuilderName = 'U123 Anti Naval cap',
         PlatoonTemplate = 'U123 Panic AntiSea 1 500',
-        Priority = 1,
+        Priority = 60,
         InstanceCount = 1,
         BuilderData = {
             SearchRadius = BaseEnemyZone,                               -- Searchradius for new target.
-            AggressiveMove = false,                              -- If true, the unit will attack everything while moving to the target.
+            AggressiveMove = true,                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 10000,                                        -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.ALLUNITS,                         -- Only find targets matching these categories.
-            PrioritizedCategories = {                                           -- Attack these targets.
+            MoveToCategories = {                                                -- Move to targets
                 'ALLUNITS',
             },
         },
         BuilderConditions = {                                   -- platoon will be formed if all conditions are true
-            -- When do we want to build this ?
+            -- When do we want to form this ?
             { UCBC, 'UnitCapCheckGreater', { 0.95 } },
-            -- Do we need additional conditions to build it ?
-            -- Have we the eco to build it ?
-            -- Don't build it if...
+            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.ALLUNITS - categories.SCOUT }}, -- radius, LocationType, unitCount, categoryEnemy
         },
         BuilderType = 'Any',
     },

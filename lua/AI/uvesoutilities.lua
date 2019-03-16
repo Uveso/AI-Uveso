@@ -443,7 +443,6 @@ end
 --   Tactical Missile Launcher AI Thread   --
 ---------------------------------------------
 local MissileTimer = 0
-local HotTarget = nil
 function TMLAIThread(platoon,self,aiBrain)
     local bp = self:GetBlueprint()
     local weapon = bp.Weapon[1]
@@ -459,19 +458,19 @@ function TMLAIThread(platoon,self,aiBrain)
         while self and not self.Dead and self:IsPaused() do
             WaitTicks(10)
         end
-        while self and not self.Dead and self:GetTacticalSiloAmmoCount() > 1 and (not target) and (not self:IsPaused()) do
+        while self and not self.Dead and self:GetTacticalSiloAmmoCount() > 1 and not target and not self:IsPaused() do
             target = false
             while self and not self.Dead and not target do
                 WaitTicks(10)
-                while self and not self.Dead and self:IsIdleState() == false do
+                while self and not self.Dead and not self:IsIdleState() do
                     WaitTicks(10)
                 end
                 if self.Dead then return end
                 target = FindTargetUnit(self, minRadius, maxRadius, MaxLoad)
             end
         end
-        if target and (not target.Dead) and MissileTimer < GetGameTimeSeconds() then
-            MissileTimer = GetGameTimeSeconds() + 0.5
+        if self and not self.Dead and target and not target.Dead and MissileTimer < GetGameTimeSeconds() then
+            MissileTimer = GetGameTimeSeconds() + 1
             if EntityCategoryContains(categories.STRUCTURE, target) then
                 if self:GetTacticalSiloAmmoCount() >= MaxLoad then
                     IssueTactical({self}, target)
@@ -866,6 +865,8 @@ function RandomizePosition(position)
     return {X, Y, Z}
 end
 
+-- Please don't change any range here!!!
+-- Called from AIBuilders/*.*, simInit.lua, aiarchetype-managerloader.lua
 function GetDangerZoneRadii(bool)
     -- Military zone is the half the map size (10x10map) or maximal 250.
     local BaseMilitaryZone = math.max( ScenarioInfo.size[1]-50, ScenarioInfo.size[2]-50 ) / 2
@@ -875,8 +876,9 @@ function GetDangerZoneRadii(bool)
     -- Make sure the Panic Zone is not smaller than 60 or greater than 120
     BasePanicZone = math.max( 60, BasePanicZone )
     BasePanicZone = math.min( 120, BasePanicZone )
-    -- The whole rest of the map is the enemy zone
+    -- The rest of the map is enemy zone
     local BaseEnemyZone = math.max( ScenarioInfo.size[1], ScenarioInfo.size[2] ) * 1.5
+    -- bool is only true if called from "AIBuilders/Mobile Land.lua", so we only print this once.
     if bool then
         LOG('* Uveso-AI: BasePanicZone= '..math.floor( BasePanicZone * 0.01953125 ) ..' Km - ('..BasePanicZone..' units)' )
         LOG('* Uveso-AI: BaseMilitaryZone= '..math.floor( BaseMilitaryZone * 0.01953125 )..' Km - ('..BaseMilitaryZone..' units)' )

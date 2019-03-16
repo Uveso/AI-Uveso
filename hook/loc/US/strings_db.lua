@@ -2,25 +2,30 @@
 Uveso_0001="AI: Uveso Adaptive"
 Uveso_0002="A balanced AI. Good for 5x5, 10x10 and 20x20 maps."
 Uveso_0003="AIx: Uveso Adaptive"
-Uveso_0004="A cheating balanced AI. Good for 5x5, 10x10 and 20x20 maps."
+Uveso_0004="A balanced AI using cheat options. Good for 5x5, 10x10 and 20x20 maps."
 
 Uveso_0005="AI: Uveso Rush"
 Uveso_0006="A rushing AI. Good for 5x5 and 10x10 maps."
 Uveso_0007="AIx: Uveso Rush"
-Uveso_0008="A cheating rushing AI. Good for 5x5 and 10x10 maps."
+Uveso_0008="A rushing AI using cheat options. Good for 5x5 and 10x10 maps."
+
+Uveso_0019="AI: Uveso Swarm"
+Uveso_0020="A spaming AI. Good for 5x5 and 10x10 maps."
+Uveso_0021="AIx: Uveso Swarm"
+Uveso_0022="A spaming AI using cheat options. Good for 5x5 and 10x10 maps."
 
 Uveso_0009="AI: Uveso Experimentals"
 Uveso_0010="A experimental AI. Good for 10x10 and 20x20 maps."
 Uveso_0011="AIx: Uveso Experimentals"
-Uveso_0012="A cheating experimental AI. Good for 10x10 and 20x20 maps."
+Uveso_0012="A experimental AI using cheat options. Good for 10x10 and 20x20 maps."
 
 Uveso_0017="AIx: Uveso Overwhelm"
-Uveso_0018="A cheating AI that start to overwhelm the enemy after 35 minutes. Good for 5x5, 10x10 and 20x20 maps."
+Uveso_0018="A cheating AI with variable buildfactor, that start to overwhelm the enemy after 35 minutes. Good for 5x5, 10x10 and 20x20 maps."
 
 Uveso_0013="AI: Uveso Easy"
 Uveso_0014="An easy AI. Good for 5x5, 10x10 and 20x20 maps."
 Uveso_0015="AIx: Uveso Easy"
-Uveso_0016="A cheating easy AI. Good for 5x5, 10x10 and 20x20 maps."
+Uveso_0016="A easy AI using cheat options. Good for 5x5, 10x10 and 20x20 maps."
 
 aisettings_0153="AI pathfinding"
 aisettings_0154="Displays pathfinding, waypoints and location radii (only AI-Uveso)"

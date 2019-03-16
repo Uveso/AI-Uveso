@@ -116,7 +116,7 @@ BuilderGroup {
         BuilderName = 'U1 Power MassRatio 5',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17870,
-        InstanceCount = 1,                                                      -- Number of plattons that will be formed with this template.
+        InstanceCount = 3,                                                      -- Number of plattons that will be formed with this template.
         DelayEqualBuildPlattons = {'Energy', 3},
         BuilderConditions = {
             -- When do we want to build this ?
@@ -124,8 +124,6 @@ BuilderGroup {
             { UCBC, 'EnergyToMassRatioIncome', { 5.0, '<=' } },  -- True if we have less than 10 times more Energy then Mass income ( 100 <= 10 = true )
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
             -- Do we need additional conditions to build it ?
-            { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 1, 'MOBILE ENGINEER TECH1' }},
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, 'MOBILE ENGINEER TECH1' }},
             { UCBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}}, -- Absolut Base income
@@ -154,7 +152,7 @@ BuilderGroup {
         BuilderName = 'U1 Power MassRatio 10',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17870,
-        InstanceCount = 1,                                                      -- Number of plattons that will be formed with this template.
+        InstanceCount = 2,                                                      -- Number of plattons that will be formed with this template.
         DelayEqualBuildPlattons = {'Energy', 3},
         BuilderConditions = {
             -- When do we want to build this ?
@@ -163,7 +161,42 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
             -- Do we need additional conditions to build it ?
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 1, 'MOBILE ENGINEER TECH1' }},
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, 'MOBILE ENGINEER TECH1' }},
+            { UCBC, 'HasNotParagon', {} },
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}}, -- Absolut Base income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.00 } },             -- Ratio from 0 to 1. (1=100%)
+            -- Don't build it if...
+            { UCBC, 'CheckBuildPlattonDelay', { 'Energy' }},
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
+            { UCBC, 'UnitCapCheckLess', { 0.99 } },
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            NumAssistees = 1,
+            Construction = {
+                AdjacencyCategory = categories.FACTORY * categories.STRUCTURE * (categories.AIR + categories.LAND),
+                AdjacencyDistance = 50,
+                BuildClose = true,
+                LocationType = 'LocationType',
+                BuildStructures = {
+                    'T1EnergyProduction',
+                },
+            }
+        }
+    },
+    Builder {
+        BuilderName = 'U1 Power MassRatio 15',
+        PlatoonTemplate = 'EngineerBuilder',
+        Priority = 17870,
+        InstanceCount = 1,                                                      -- Number of plattons that will be formed with this template.
+        DelayEqualBuildPlattons = {'Energy', 3},
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'GreaterThanGameTimeSeconds', { 180 } },
+            { UCBC, 'EnergyToMassRatioIncome', { 15.0, '<=' } },  -- True if we have less than 10 times more Energy then Mass income ( 100 <= 10 = true )
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
+            -- Do we need additional conditions to build it ?
             { UCBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}}, -- Absolut Base income
@@ -276,7 +309,7 @@ BuilderGroup {
         BuilderName = 'U2 Power minimum',
         PlatoonTemplate = 'T2EngineerBuilder',
         Priority = 17000,
-        DelayEqualBuildPlattons = {'Energy', 10},
+        DelayEqualBuildPlattons = {'Energy', 20},
         InstanceCount = 2,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -309,7 +342,7 @@ BuilderGroup {
         BuilderName = 'U2 Power Push 1000',
         PlatoonTemplate = 'T2EngineerBuilder',
         Priority = 16900,
-        DelayEqualBuildPlattons = {'Energy', 10},
+        DelayEqualBuildPlattons = {'Energy', 20},
         InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -528,6 +561,8 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.STRUCTURE * categories.ENERGYSTORAGE }},
             -- Do we need additional conditions to build it ?
+            { MIBC, 'IsBrainPersonality', { 'uvesoswarm', false} }, -- Don't let the Overwhelm AI buid this. Would be a fast nuklear game end :)
+            { MIBC, 'IsBrainPersonality', { 'uvesoswarmcheat', false} }, -- Don't let the OverwhelmCheat AI buid this. Would be a fast nuklear game end :)
             { UCBC, 'GreaterThanGameTimeSeconds', { 60 * 7 } },
             -- Have we the eco to build it ?
             -- Don't build it if...
@@ -554,6 +589,8 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.STRUCTURE * categories.ENERGYSTORAGE }},
             -- Do we need additional conditions to build it ?
+            { MIBC, 'IsBrainPersonality', { 'uvesoswarm', false} }, -- Don't let the Overwhelm AI buid this. Would be a fast nuklear game end :)
+            { MIBC, 'IsBrainPersonality', { 'uvesoswarmcheat', false} }, -- Don't let the OverwhelmCheat AI buid this. Would be a fast nuklear game end :)
             { UCBC, 'GreaterThanGameTimeSeconds', { 60 * 10 } },
             -- Have we the eco to build it ?
             -- Don't build it if...
@@ -583,6 +620,8 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 5, categories.STRUCTURE * categories.ENERGYSTORAGE }},
             -- Do we need additional conditions to build it ?
+            { MIBC, 'IsBrainPersonality', { 'uvesoswarm', false} }, -- Don't let the Overwhelm AI buid this. Would be a fast nuklear game end :)
+            { MIBC, 'IsBrainPersonality', { 'uvesoswarmcheat', false} }, -- Don't let the OverwhelmCheat AI buid this. Would be a fast nuklear game end :)
             { UCBC, 'GreaterThanGameTimeSeconds', { 60 * 15 } },
             -- Have we the eco to build it ?
             -- Don't build it if...
@@ -612,6 +651,8 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatio', { 1.0, 'STRUCTURE ENERGYSTORAGE', '<','STRUCTURE ENERGYPRODUCTION TECH3' } },
             -- Do we need additional conditions to build it ?
+            { MIBC, 'IsBrainPersonality', { 'uvesoswarm', false} }, -- Don't let the Overwhelm AI buid this. Would be a fast nuklear game end :)
+            { MIBC, 'IsBrainPersonality', { 'uvesoswarmcheat', false} }, -- Don't let the OverwhelmCheat AI buid this. Would be a fast nuklear game end :)
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.30, 0.95}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
