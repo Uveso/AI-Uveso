@@ -113,6 +113,7 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         'Mobile Experimental Land Builder Uveso',
         'Mobile Experimental Air Builder Uveso',
+        'Economic Experimental Builder Uveso',
         'Paragon Turbo Builder',
         'Paragon Turbo Factory',
 

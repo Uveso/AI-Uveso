@@ -74,7 +74,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Mass 30',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 17900,
+        Priority = 0,
         InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -97,7 +97,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Mass 60',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 17890,
+        Priority = 0,
         InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -120,7 +120,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Mass 128',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 17880,
+        Priority = 0,
         InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -144,8 +144,8 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Mass 256',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 17870,
-        InstanceCount = 1,
+        Priority = 0,
+        InstanceCount = 2,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'CanBuildOnMassLessThanLocationDistance', { 'LocationType', 256, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
@@ -168,8 +168,8 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Mass 512',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 17860,
-        InstanceCount = 1,
+        Priority = 0,
+        InstanceCount = 4,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'CanBuildOnMassLessThanLocationDistance', { 'LocationType', 512, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
@@ -193,7 +193,7 @@ BuilderGroup {
         BuilderName = 'U1 Mass 1000',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17850,
-        InstanceCount = 10,
+        InstanceCount = 8,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'CanBuildOnMassLessThanLocationDistance', { 'LocationType', 1000, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum

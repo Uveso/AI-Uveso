@@ -741,6 +741,9 @@ Platoon = Class(OldPlatoonClass) {
                         --LOG('* InterceptorAIUveso: Switching RULEUTC_CloakToggle')
                         v:SetScriptBit('RULEUTC_CloakToggle', false)
                     end
+                    -- prevent units from reclaiming while attack moving
+                    v:RemoveCommandCap('RULEUCC_Reclaim')
+                    v:RemoveCommandCap('RULEUCC_Repair')
                 end
             end
         end
@@ -876,6 +879,9 @@ Platoon = Class(OldPlatoonClass) {
                 if EntityCategoryContains(categories.EXPERIMENTAL, v) then
                     ExperimentalInPlatoon = true
                 end
+                -- prevent units from reclaiming while attack moving
+                v:RemoveCommandCap('RULEUCC_Reclaim')
+                v:RemoveCommandCap('RULEUCC_Repair')
             end
         end
         local MoveToCategories = {}
@@ -987,6 +993,9 @@ Platoon = Class(OldPlatoonClass) {
                 if EntityCategoryContains(categories.EXPERIMENTAL, v) then
                     ExperimentalInPlatoon = true
                 end
+                -- prevent units from reclaiming while attack moving
+                v:RemoveCommandCap('RULEUCC_Reclaim')
+                v:RemoveCommandCap('RULEUCC_Repair')
             end
         end
         local MoveToCategories = {}
@@ -1090,6 +1099,9 @@ Platoon = Class(OldPlatoonClass) {
             end
         end
         self:SetPrioritizedTargetList('Attack', WeaponTargetCategories)
+        -- prevent ACU from reclaiming while attack moving
+        cdr:RemoveCommandCap('RULEUCC_Reclaim')
+        cdr:RemoveCommandCap('RULEUCC_Repair')
         local TargetUnit, DistanceToTarget
         local PlatoonPos = self:GetPlatoonPosition()
         -- land and air units are assigned to mainbase

@@ -87,6 +87,7 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         'Mobile Experimental Land Builder Uveso',
         'Mobile Experimental Air Builder Uveso',
+        'Economic Experimental Builder Uveso',
         
         -----------------------------------------------------------------------------
         -- ==== EXPERIMENTALS FORMER ==== --

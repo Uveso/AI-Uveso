@@ -341,18 +341,18 @@ function EcoManager(aiBrain)
                     unit:SetPaused( false )
                     bussy = true
                     break -- for _, unit in Engineers do
-                elseif aiBrain:GetEconomyStoredRatio('MASS') >= 0.15 and aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.15 then
+                elseif aiBrain:GetEconomyStoredRatio('MASS') >= 0.20 and aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.60 then
                     if unit.UnitBeingAssist then
-                        if EntityCategoryContains(categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.EXPERIMENTAL, unit.UnitBeingAssist) then
+                        if EntityCategoryContains(categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.EXPERIMENTAL, unit.UnitBeingAssist) then
                             unit:SetPaused( false )
                             bussy = true
                             break -- for _, unit in Engineers do
                         end
                     end
-                elseif aiBrain:GetEconomyStoredRatio('MASS') >= 0.20 and aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.60 then
+                elseif aiBrain:GetEconomyStoredRatio('MASS') >= 0.15 and aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.20 then
                     -- If we assist energy structure unpause the unit
                     if unit.UnitBeingAssist then
-                        if EntityCategoryContains(categories.STRUCTURE * categories.ENERGYPRODUCTION, unit.UnitBeingAssist) then
+                        if EntityCategoryContains(categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.EXPERIMENTAL, unit.UnitBeingAssist) then
                             unit:SetPaused( false )
                             bussy = true
                             break -- for _, unit in Engineers do

@@ -173,10 +173,10 @@ BuilderGroup {
     BuilderGroupName = 'Economic Experimental Builder Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
-        BuilderName = 'U3 Paragon 1st mass40',
+        BuilderName = 'U4 Paragon 1st mass40',
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 2000,
-        DelayEqualBuildPlattons = {'Paragon', 30},
+        DelayEqualBuildPlattons = {'Paragon', 60},
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HasNotParagon', {} },
@@ -209,14 +209,14 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'U3 Paragon 1st 40min',
+        BuilderName = 'U4 Paragon 1st 35min',
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 2000,
-        DelayEqualBuildPlattons = {'Paragon', 30},
+        DelayEqualBuildPlattons = {'Paragon', 60},
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HasNotParagon', {} },
-            { UCBC, 'GreaterThanGameTimeSeconds', { 60*40 } },
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60*35 } },
             -- Do we need additional conditions to build it ?
             { UCBC, 'CanBuildCategory', { categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC } },
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
@@ -243,10 +243,10 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'U3 Paragon 1st HighTrend',
+        BuilderName = 'U4 Paragon 1st HighTrend',
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 2000,
-        DelayEqualBuildPlattons = {'Paragon', 30},
+        DelayEqualBuildPlattons = {'Paragon', 60},
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HasNotParagon', {} },
@@ -278,7 +278,7 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'U3 Paragon 2nd',
+        BuilderName = 'U4 Paragon 2nd',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 2000,
         BuilderConditions = {
@@ -311,7 +311,7 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'U3 Paragon 3nd',
+        BuilderName = 'U4 Paragon 3nd',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 2000,
         BuilderConditions = {
