@@ -1,8 +1,6 @@
--- Default economic builders for skirmish
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 local EBC = '/lua/editor/EconomyBuildConditions.lua'
-local IBC = '/lua/editor/InstantBuildConditions.lua'
-local MIBC = '/lua/editor/MiscBuildConditions.lua'
+
 local BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua').GetDangerZoneRadii()
 
 local MaxCapFactory = 0.024 -- 2.4% of all units can be factories (STRUCTURE * FACTORY)
@@ -15,7 +13,7 @@ local MaxCapStructure = 0.12                                                    
 --    TECH 1 2nd    --
 -- ================ --
 BuilderGroup {
-    BuilderGroupName = 'FactoryBuilders 1st Uveso',                             -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U1 Factory Builders 1st',                             -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'UC Land Factory 2nd',
@@ -138,7 +136,7 @@ BuilderGroup {
 --    TECH 1 RECOVER    --
 -- ==================== --
 BuilderGroup {
-    BuilderGroupName = 'FactoryBuilders RECOVER Uveso',                             -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U1 Factory Builders RECOVER',                             -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'U1 Land Factory RECOVER',
@@ -280,7 +278,7 @@ BuilderGroup {
 --    AI-RUSH    --
 -- ============= --
 BuilderGroup {
-    BuilderGroupName = 'FactoryBuilders RUSH Uveso',                             -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U1 Factory Builders RUSH',                             -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'UC Land Factory Mass > 15%',
@@ -519,7 +517,7 @@ BuilderGroup {
 --    AI-EXPERIMENTALS    --
 -- ====================== --
 BuilderGroup {
-    BuilderGroupName = 'FactoryBuildersExperimental Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U1 Factory Builders EXPERIMENTAL',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'UC Land Factory CapCheck',
@@ -643,7 +641,7 @@ BuilderGroup {
 --    AI-ADAPTIVE    --
 -- ================= --
 BuilderGroup {
-    BuilderGroupName = 'FactoryBuilders ADAPTIVE Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U1 Factory Builders ADAPTIVE',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     -- ================== --
     --    TECH 1 Enemy    --
@@ -916,7 +914,7 @@ BuilderGroup {
 --    Builder for Expansions    --
 -- ============================ --
 BuilderGroup {
-    BuilderGroupName = 'FactoryBuildersExpansions',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U1 Factory Builders Expansions',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'U1 Land Factory Expansions',
@@ -979,7 +977,7 @@ BuilderGroup {
 -- ==                             Upgrade Factories Land/Air/Sea                                             == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'FactoryUpgradeBuildersRush Uveso',                      -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U123 Factory Upgrader Rush',                      -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     --------------------
     -- LAND Factories --
@@ -1430,7 +1428,7 @@ BuilderGroup {
 -- ==                                        Build Quantum Gate                                              == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'GateConstruction Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U1 Gate Builders',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'U-T3 Gate Cap',
@@ -1492,7 +1490,7 @@ BuilderGroup {
 -- ==                                   Build T2 Air Staging Platform                                        == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'Air Staging Platform Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U2 Air Staging Platform Builders',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'U-T2 Air Staging 1st',

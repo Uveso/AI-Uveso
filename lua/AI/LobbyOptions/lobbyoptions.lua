@@ -2,6 +2,23 @@
 AIOpts = {
     {
         default = 1,
+        label = "<LOC aisettings_0187>AI Unit Cap",
+        help = "<LOC aisettings_0188>Set an AI unit cap independently from player unit cap.",
+        key = 'AIUnitCap',
+        value_text = "%s",
+        value_help = "<LOC aisettings_0189>%s units per AI may be in play",
+        values = {
+            {
+                text = "<LOC aisettings_0190>Same as Player Cap",
+                help = "<LOC aisettings_0191>AI uses player unit cap.",
+                key = '0',
+            },
+            '125', '150', '175', '200', '250', '300', '350', '400', '450', '500', '600', '700', '800', '900',
+            '1000', '1100', '1200', '1300', '1400', '1500', '1600', '1700', '1800', '1900', '2000'
+        },
+    },
+    {
+        default = 1,
         label = "<LOC aisettings_0153>AI pathfinding",
         help = "<LOC aisettings_0154>Displays pathfinding, waypoints and location radii (only AI-Uveso)",
         key = 'AIPathingDebug',

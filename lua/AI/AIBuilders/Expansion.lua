@@ -6,7 +6,7 @@ local MaxCapFactory = 0.024                                                     
 local MaxCapStructure = 0.12                                                    -- 12% of all units can be structures (STRUCTURE -MASSEXTRACTION -DEFENSE -FACTORY)
 
 BuilderGroup {
-    BuilderGroupName = 'U1 Expansion Builder Uveso',                            -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U1 Expansion Builder',                            -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',                                           -- BuilderTypes are: EngineerBuilder, FactoryBuilder, PlatoonFormBuilder.
     Builder {
         BuilderName = 'U1 Vacant Start Location',                               -- Random Builder Name.

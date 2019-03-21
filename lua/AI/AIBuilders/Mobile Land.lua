@@ -1,6 +1,5 @@
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 local EBC = '/lua/editor/EconomyBuildConditions.lua'
-local IBC = '/lua/editor/InstantBuildConditions.lua'
 local MIBC = '/lua/editor/MiscBuildConditions.lua'
 local BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua').GetDangerZoneRadii(true)
 
@@ -10,7 +9,7 @@ local MaxAttackForce = 0.45                                                     
 --                                           LAND Scouts Builder                                                --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'LandScoutBuilder Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U1 Land Scout Builders',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'FactoryBuilder',
     Builder {
         BuilderName = 'U1R Land Scout',
@@ -40,7 +39,7 @@ BuilderGroup {
 --    AI-RUSH    --
 -- ============= --
 BuilderGroup {
-    BuilderGroupName = 'LandAttackBuildersRush Uveso',                           -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U123 Land Formers RUSH',                           -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'FactoryBuilder',
     -- =========================== --
     --    TECH 1   Always          --
@@ -153,7 +152,7 @@ BuilderGroup {
     -- =========================== --
     --    TECH 1   Always          --
     -- =========================== --
-    BuilderGroupName = 'LandAttackBuilders Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U123 Land Builders',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'FactoryBuilder',
     Builder {
         BuilderName = 'U1 Early Arty Always',
@@ -212,24 +211,6 @@ BuilderGroup {
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
-        },
-        BuilderType = 'Land',
-    },
-    -- ======================= --
-    --    TECH 1   ECO FULL    --
-    -- ======================= --
-    Builder {
-        BuilderName = 'U1A ECOFULL Arty',
-        PlatoonTemplate = 'T1LandArtillery',
-        Priority = 150,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            -- Do we need additional conditions to build it ?
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
-            -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.85, 0.85 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
-            -- Respect UnitCap
         },
         BuilderType = 'Land',
     },
@@ -318,7 +299,7 @@ BuilderGroup {
 --    TECH 1   PanicZone Main Base    --
 -- ================================== --
 BuilderGroup {
-    BuilderGroupName = 'LandAttackBuildersPanic Uveso',                         -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U123 Land Builders Panic',                         -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'FactoryBuilder',
     Builder {
         BuilderName = 'U1 PanicZone Arty',
@@ -411,7 +392,7 @@ BuilderGroup {
 -- ==                                         Land ratio builder                                             == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'LandAttackBuildersRatio Uveso',                         -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U123 Land Builders Ratio',                         -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'FactoryBuilder',
     -- ============ --
     --    TECH 1    --
@@ -645,7 +626,7 @@ BuilderGroup {
 --                                         Land Scouts Formbuilder                                              --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'LandScoutFormer Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U1 Land Scout Formers',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     Builder {
         BuilderName = 'U1 Land Scout',
@@ -667,7 +648,7 @@ BuilderGroup {
 --    PanicZone    --
 -- =============== --
 BuilderGroup {
-    BuilderGroupName = 'Land FormBuilders PanicZone',                           -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U123 Land Formers PanicZone',                           -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',                                        -- BuilderTypes are: EngineerBuilder, FactoryBuilder, PlatoonFormBuilder.
     Builder {
         BuilderName = 'U123 AntiCDR PANIC',                                     -- Random Builder Name.
@@ -724,7 +705,7 @@ BuilderGroup {
 --    MilitaryZone    --
 -- ================== --
 BuilderGroup {
-    BuilderGroupName = 'Land FormBuilders MilitaryZone',                        -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U123 Land Formers MilitaryZone',                        -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',                                        -- BuilderTypes are: EngineerBuilder, FactoryBuilder, PlatoonFormBuilder.
     Builder {
         BuilderName = 'U123 Military Mobile 8 30',                              -- Random Builder Name.
@@ -799,7 +780,7 @@ BuilderGroup {
 --    EnemyZone    --
 -- =============== --
 BuilderGroup {
-    BuilderGroupName = 'Land FormBuilders EnemyZone',                           -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U123 Land Formers EnemyZone',                           -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',                                        -- BuilderTypes are: EngineerBuilder, FactoryBuilder, PlatoonFormBuilder.
     Builder {
         BuilderName = 'U123 Unprotected Land 1 2',                              -- Random Builder Name.
@@ -948,7 +929,7 @@ BuilderGroup {
 --    Unit Cap Trasher  --
 -- ==================== --
 BuilderGroup {
-    BuilderGroupName = 'Land FormBuilders Trasher',                             -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U123 Land Formers Trasher',                             -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',                                        -- BuilderTypes are: EngineerBuilder, FactoryBuilder, PlatoonFormBuilder.
     Builder {
         BuilderName = 'U1234 Unit > 50',
@@ -995,7 +976,6 @@ BuilderGroup {
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to form this ?
             { UCBC, 'UnitCapCheckGreater', { 0.95 } },
-            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.ALLUNITS - categories.SCOUT }}, -- radius, LocationType, unitCount, categoryEnemy
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
@@ -1018,7 +998,6 @@ BuilderGroup {
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to form this ?
             { UCBC, 'UnitCapCheckGreater', { 0.95 } },
-            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.ALLUNITS - categories.SCOUT }}, -- radius, LocationType, unitCount, categoryEnemy
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
@@ -1045,7 +1024,6 @@ BuilderGroup {
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to form this ?
             { UCBC, 'UnitCapCheckGreater', { 0.95 } },
-            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.ALLUNITS - categories.SCOUT }}, -- radius, LocationType, unitCount, categoryEnemy
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
@@ -1055,7 +1033,7 @@ BuilderGroup {
 --    Guards   --
 -- =========== --
 BuilderGroup {
-    BuilderGroupName = 'Land FormBuilders Guards',                              -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U123 Land Formers Guards',                              -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',                                        -- BuilderTypes are: EngineerBuilder, FactoryBuilder, PlatoonFormBuilder.
     Builder {
         BuilderName = 'LandExperimentalGuard Uveso',

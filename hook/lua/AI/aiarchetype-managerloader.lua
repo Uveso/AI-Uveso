@@ -46,7 +46,7 @@ function ExecutePlan(aiBrain)
         elseif aiBrain.Uveso then
             ForkThread(LocationRangeManagerThread, aiBrain)
             ForkThread(EcoManager, aiBrain)
-            ForkThread(BaseAlertManager, aiBrain)
+            ForkThread(BaseTargetManager, aiBrain)
         -- Debug for Platoon names
         elseif aiBrain[ScenarioInfo.Options.AIPLatoonNameDebug] or ScenarioInfo.Options.AIPLatoonNameDebug == 'all' then
             ForkThread(LocationRangeManagerThread, aiBrain)
@@ -640,7 +640,7 @@ function BaseRanger(aiBrain)
     return BaseRanger
 end
 
-function BaseAlertManager(aiBrain)
+function BaseTargetManager(aiBrain)
     local BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua').GetDangerZoneRadii()
     local targets = {}
     local baseposition, radius
@@ -697,9 +697,39 @@ function BaseAlertManager(aiBrain)
             end
         end
         WaitTicks(1)
+        -- Search for Paragons in EnemyZone
+        if not ClosestTarget then
+            targets = aiBrain:GetUnitsAroundPoint(categories.EXPERIMENTAL * categories.ECONOMIC, baseposition, BaseEnemyZone, 'Enemy')
+            for _, unit in targets do
+                if not unit.Dead then
+                    if not IsEnemy( aiBrain:GetArmyIndex(), unit:GetAIBrain():GetArmyIndex() ) then continue end
+                    local TargetPosition = unit:GetPosition()
+                    local targetRange = VDist2(baseposition[1], baseposition[3], TargetPosition[1], TargetPosition[3])
+                    if targetRange < distance then
+                        distance = targetRange
+                        ClosestTarget = unit
+                    end
+                end
+            end
+        end
         -- Search for experimentals in EnemyZone
         if not ClosestTarget then
-            targets = aiBrain:GetUnitsAroundPoint(categories.EXPERIMENTAL - categories.AIR - categories.INSIGNIFICANTUNIT, baseposition, 1024, 'Enemy')
+            targets = aiBrain:GetUnitsAroundPoint(categories.EXPERIMENTAL - categories.AIR - categories.INSIGNIFICANTUNIT, baseposition, BaseEnemyZone, 'Enemy')
+            for _, unit in targets do
+                if not unit.Dead then
+                    if not IsEnemy( aiBrain:GetArmyIndex(), unit:GetAIBrain():GetArmyIndex() ) then continue end
+                    local TargetPosition = unit:GetPosition()
+                    local targetRange = VDist2(baseposition[1], baseposition[3], TargetPosition[1], TargetPosition[3])
+                    if targetRange < distance then
+                        distance = targetRange
+                        ClosestTarget = unit
+                    end
+                end
+            end
+        end
+        -- Search for T3 Factories / Gates in EnemyZone
+        if not ClosestTarget then
+            targets = aiBrain:GetUnitsAroundPoint((categories.STRUCTURE * categories.GATE) + (categories.STRUCTURE * categories.FACTORY * categories.TECH3 - categories.SUPPORTFACTORY), baseposition, BaseEnemyZone, 'Enemy')
             for _, unit in targets do
                 if not unit.Dead then
                     if not IsEnemy( aiBrain:GetArmyIndex(), unit:GetAIBrain():GetArmyIndex() ) then continue end

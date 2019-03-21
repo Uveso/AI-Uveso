@@ -1,7 +1,7 @@
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 
 BuilderGroup {
-    BuilderGroupName = 'RepairLowShields',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U234 Repair Shields Former',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     Builder {
         BuilderName = 'RepairLowShield 12',

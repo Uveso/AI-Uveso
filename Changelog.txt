@@ -1,4 +1,26 @@
 *************************************************************************************************************************************
+v56 (21.Mar.2019)
+
+- New: You can now set an AI unit cap independently from players unit cap.
+- Opt: BaseTargetManager now prioritize EXPERIMENTAL * ECONOMIC. (was EXPERIMENTAL)
+- Fix: Unneded engineers in expansions will now return to base
+- Dev: Changed BuilderGroupNames in all files.
+- Dev: Changed some names from platoon attack functions.
+- Dev: Removed all unneded locals from AIBuilders
+
+*************************************************************************************************************************************
+v55 (20.Mar.2019)
+
+- Fix: Ecomanager will unpause engineers on building energybuildings if mass storage is over 20% (15% before)
+- Fix: Removed commandcaps "Reclaim" and "Repair" from all units inside an attack platoon. (prevents reclaim and repair while attack move)
+- Fix: Added paragon builder to all sub AI's. (was removed for testing, i just forgot to reimplement it)
+- Fix: Factories will only be reclaimed if unitcap is over 95%.
+- Opt: Changed mass storage value for assisters. They will now assist until mass storage is under 25% (30% before)
+- Opt: Rush, overwhelm and swarm AI can now use the full unitcap for units. (was limited to 45% of max cap)
+- Opt: Building a Paragon should now start at least after 40 minutes on maps with low mass income.
+- Dev: Changed Mass extractor builder platoons for testing. (Should almost have no effect for the AI mass income)
+
+*************************************************************************************************************************************
 v54 (16.Mar.2019)
 
 - New: Added Sub AI "Swarm". New AI is focussing on building units (t1,t2,t3) and some experimentals and sends them directly to the enemy (you!).

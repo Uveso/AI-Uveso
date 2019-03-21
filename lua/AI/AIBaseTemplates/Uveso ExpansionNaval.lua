@@ -14,55 +14,57 @@ BaseBuilderTemplate {
         -- ==== Engineer ==== --
         -----------------------------------------------------------------------------
         -- Build Engineers Tech 1,2,3 and SACU
-        'EngineerFactoryBuilders Uveso',            -- Priority = 900
+        'U123 Engineer Builders',            -- Priority = 900
         -- Assistees
-        'Assistees Uveso',
+        'UC123 Assistees',
+        -- Return engineers back to base
+        'U123 Engineer Transfer To MainBase',
 
         -----------------------------------------------------------------------------
         -- ==== Factory ==== --
         -----------------------------------------------------------------------------
         -- Build Naval Factories
-        'FactoryBuildersNaval Uveso',
+        'U1 Factory Builders Naval',
         -- Upgrade Naval Factories TECH1->TECH2 and TECH2->TECH3
-        'FactoryUpgradeBuildersNaval Uveso',
+        'U123 Factory Upgrader Naval',
 
         -----------------------------------------------------------------------------
         -- ==== Sea Units BUILDER ==== --
         -----------------------------------------------------------------------------
         -- Build Naval Units
-        'SeaFactoryBuilders Uveso',
+        'U123 Naval Builders',
 
         -----------------------------------------------------------------------------
         -- ==== Sea Units FORMER ==== --
         -----------------------------------------------------------------------------
-        'Sea FormBuilders PanicZone',
-        'Sea FormBuilders MilitaryZone',
-        'Sea FormBuilders EnemyZone',
-        'Sea FormBuilders Trasher',
+        'U123 Naval Formers PanicZone',
+        'U123 Naval Formers MilitaryZone',
+        'U123 Naval Formers EnemyZone',
+        'U123 Naval Formers Trasher',
 
         -----------------------------------------------------------------------------
         -- ==== EXPERIMENTALS BUILDER ==== --
         -----------------------------------------------------------------------------
-        'Mobile Experimental Naval Builder Uveso',
+        'U4 Naval Experimental Builders',
         
         -----------------------------------------------------------------------------
         -- ==== EXPERIMENTALS FORMER ==== --
         -----------------------------------------------------------------------------
-        'Sea Experimental FormBuilders Panic',
-        'Sea Experimental FormBuilders Military',
-        'Sea Experimental FormBuilders EnemyZone',
-        'Sea Experimental FormBuilders Trasher',
+        'U4 Naval Experimental Formers PanicZone',
+        'U4 Naval Experimental Formers MilitaryZone',
+        'U4 Naval Experimental Formers EnemyZone',
+        'U4 Naval Experimental Formers Trasher',
 
         -----------------------------------------------------------------------------
         -- ==== Defenses BUILDER ==== --
         -----------------------------------------------------------------------------
-        'Tactical Missile Defenses Uveso',
+        'U2 Tactical Missile Defenses Builder',
 
         -----------------------------------------------------------------------------
         -- ==== Intel/CounterIntel BUILDER ==== --
         -----------------------------------------------------------------------------
-        'SonarBuilders Uveso',
-        'SonarUpgrade Uveso', 
+        'U1 Sonar Builders',
+        'U1 Sonar Upgraders', 
 
     },
 

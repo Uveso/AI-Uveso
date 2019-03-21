@@ -1,7 +1,5 @@
-
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 local MABC = '/lua/editor/MarkerBuildConditions.lua'
-local EBC = '/lua/editor/EconomyBuildConditions.lua'
 
 local MaxDefense = 0.15 -- 15% of all units can be defenses (categories.STRUCTURE * categories.DEFENSE)
 

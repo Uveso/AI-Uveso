@@ -1,5 +1,4 @@
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
-local IBC = '/lua/editor/InstantBuildConditions.lua'
 local EBC = '/lua/editor/EconomyBuildConditions.lua'
 
 local MaxCapStructure = 0.12                                                    -- 12% of all units can be structures (STRUCTURE -MASSEXTRACTION -DEFENSE -FACTORY)
@@ -8,7 +7,7 @@ local MaxCapStructure = 0.12                                                    
 -- ==                                        Radar T1 T3 builder                                             == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'RadarBuilders Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U1 Land Radar Builders',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'U1 Radar',
@@ -91,7 +90,7 @@ BuilderGroup {
 -- ==                                    Radar T1 Upgrade Land+Air                                           == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'RadarUpgrade Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U1 Land Radar Upgrader',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     Builder {
         BuilderName = 'U1 Radar Upgrade',

@@ -14,7 +14,7 @@ BaseBuilderTemplate {
         -- ==== ACU ==== --
         -----------------------------------------------------------------------------
         -- Build Main Base (only once). Land/Air factory and basic Energy
-        'ACU Former Uveso',
+        'UC ACU Attack Former',
         
         -----------------------------------------------------------------------------
         -- ==== Expansion Builders ==== --
@@ -28,127 +28,127 @@ BaseBuilderTemplate {
         -- ==== Engineer ==== --
         -----------------------------------------------------------------------------
         -- Build Engineers Tech 1,2,3 and SACU
-        'EngineerFactoryBuilders Uveso',            -- Priority = 900
+        'U123 Engineer Builders',            -- Priority = 900
         -- Assistees
-        'Assistees Uveso',
+        'UC123 Assistees',
         -- Reclaim mass
-        'Engineer Reclaim Uveso',
+        'U1 Engineer Reclaim',
 
         -----------------------------------------------------------------------------
         -- ==== Mass ==== --
         -----------------------------------------------------------------------------
         -- Build MassExtractors / Creators
-        'MassBuilders Uveso',                           -- Priority = 1100
+        'U1 MassBuilders',                           -- Priority = 1100
         -- Upgrade MassExtractors from Tech 1 to 2 AND from Tech 2 to 3
---        'ExtractorUpgrades Uveso',                      -- Priority = 1100
+--        'U123 ExtractorUpgrades',                      -- Priority = 1100
         -- Build Mass Storage (Adjacency)
-        'MassStorageBuilder Uveso',                     -- Priority = 1100
+        'U1 MassStorage Builder',                     -- Priority = 1100
 
         -----------------------------------------------------------------------------
         -- ==== Energy ==== --
         -----------------------------------------------------------------------------
         -- Build Power Tech 1,2,3
-        'EnergyBuilders Uveso',                       -- Priority = 1100
+        'U123 Energy Builders',                       -- Priority = 1100
 
         -----------------------------------------------------------------------------
         -- ==== Factory ==== --
         -----------------------------------------------------------------------------
         -- Build Land/Air Factories
-        'FactoryBuilders 1st Uveso',
-        'FactoryBuildersExperimental Uveso',
-        'FactoryBuilders RECOVER Uveso',
+        'U1 Factory Builders 1st',
+        'U1 Factory Builders EXPERIMENTAL',
+        'U1 Factory Builders RECOVER',
         -- Upgrade Factories TECH1->TECH2 and TECH2->TECH3
-        'FactoryUpgradeBuildersRush Uveso',
+        'U123 Factory Upgrader Rush',
         -- Build Air Staging Platform to refill and repair air units.
-        'Air Staging Platform Uveso',
+        'U2 Air Staging Platform Builders',
 
         -----------------------------------------------------------------------------
         -- ==== Land Units BUILDER ==== --
         -----------------------------------------------------------------------------
         -- Build Land Units
-        'LandAttackBuildersPanic Uveso',
-        'LandAttackBuilders Uveso',
-        'LandAttackBuildersRatio Uveso',
+        'U123 Land Builders Panic',
+        'U123 Land Builders',
+        'U123 Land Builders Ratio',
 
         -----------------------------------------------------------------------------
         -- ==== Land Units FORMER==== --
         -----------------------------------------------------------------------------
-        'Land FormBuilders PanicZone',
---        'Land FormBuilders MilitaryZone',
---        'Land FormBuilders EnemyZone',
---        'Land FormBuilders Trasher',
-        'Land FormBuilders Guards',
+        'U123 Land Formers PanicZone',
+--        'U123 Land Formers MilitaryZone',
+--        'U123 Land Formers EnemyZone',
+--        'U123 Land Formers Trasher',
+        'U123 Land Formers Guards',
 
         -----------------------------------------------------------------------------
         -- ==== Hover Units FORMER==== --
         -----------------------------------------------------------------------------
-        'Hover FormBuilders PanicZone',
---        'Hover FormBuilders MilitaryZone',
---        'Hover FormBuilders EnemyZone',
---        'Hover FormBuilders Trasher',
+        'U123 Hover Formers PanicZone',
+--        'U123 Hover Formers MilitaryZone',
+--        'U123 Hover Formers EnemyZone',
+--        'U123 Hover Formers Trasher',
 
         -----------------------------------------------------------------------------
         -- ==== Amphibious Units FORMER==== --
         -----------------------------------------------------------------------------
-        'Amphibious FormBuilders PanicZone',
---        'Amphibious FormBuilders MilitaryZone',
---        'Amphibious FormBuilders EnemyZone',
---        'Amphibious FormBuilders Trasher',
+        'U123 Amphibious Formers PanicZone',
+--        'U123 Amphibious Formers MilitaryZone',
+--        'U123 Amphibious Formers EnemyZone',
+--        'U123 Amphibious Formers Trasher',
 
         -----------------------------------------------------------------------------
         -- ==== Air Units BUILDER ==== --
         -----------------------------------------------------------------------------
-        'AntiAirBuilders Uveso',
+        'U123 Air Builders',
         -- Build Air Transporter
-        'Air Transport Builder Uveso',
+        'U123 Air Transport Builders',
 
         -----------------------------------------------------------------------------
         -- ==== Air Units FORMER==== --
         -----------------------------------------------------------------------------
-        'Air FormBuilders PanicZone',
-        'Air FormBuilders MilitaryZone',
---        'Air FormBuilders EnemyZone',
---        'Air FormBuilders Trasher',
+        'U123 Air Formers PanicZone',
+        'U123 Air Formers MilitaryZone',
+--        'U123 Air Formers EnemyZone',
+--        'U123 Air Formers Trasher',
 
         -----------------------------------------------------------------------------
         -- ==== EXPERIMENTALS BUILDER ==== --
         -----------------------------------------------------------------------------
-        'Mobile Experimental Land Builder Uveso',
-        'Mobile Experimental Air Builder Uveso',
+        'U4 Land Experimental Builders',
+        'U4 Air Experimental Builders',
 
         -----------------------------------------------------------------------------
         -- ==== EXPERIMENTALS FORMER ==== --
         -----------------------------------------------------------------------------
-        'Land Experimental FormBuilders PanicZone',
---        'Land Experimental FormBuilders MilitaryZone',
---        'Land Experimental FormBuilders EnemyZone',
---        'Land Experimental FormBuilders Trasher',
-        'Air Experimental FormBuilders PanicZone',
---        'Air Experimental FormBuilders Military',
---        'Air Experimental FormBuilders EnemyZone',
---        'Air Experimental FormBuilders Trasher',
+        'U4 Land Experimental Formers PanicZone',
+--        'U4 Land Experimental Formers MilitaryZone',
+--        'U4 Land Experimental Formers EnemyZone',
+--        'U4 Land Experimental Formers Trasher',
+        'U4 Air Experimental Formers PanicZone',
+--        'U4 Air Experimental Formers MilitaryZone',
+--        'U4 Air Experimental Formers EnemyZone',
+--        'U4 Air Experimental Formers Trasher',
 
         -----------------------------------------------------------------------------
         -- ==== Structure Shield BUILDER ==== --
         -----------------------------------------------------------------------------
-        'Shields Uveso',
-        'ShieldUpgrades Uveso',
+        'U23 Shields Builder',
+        'U23 Shields Upgrader',
 
         -----------------------------------------------------------------------------
         -- ==== Defenses BUILDER ==== --
         -----------------------------------------------------------------------------
-        'Tactical Missile Launcher minimum Uveso',
-        'Tactical Missile Launcher Maximum Uveso',
-        'Tactical Missile Launcher Uveso',
-        'Tactical Missile Defenses Uveso',
---        'Strategic Missile Launcher Uveso',
-        'Strategic Missile Launcher NukeAI Uveso',
-        'Strategic Missile Defense Uveso',
-        'Strategic Missile Defense Anti-NukeAI Uveso',
---        'Artillery Builder Uveso',
---        'Artillery Platoon Former',
+        'U2 Tactical Missile Launcher minimum',
+        'U2 Tactical Missile Launcher maximum',
+        'U2 Tactical Missile Launcher Builder',
+        'U2 Tactical Missile Defenses Builder',
+--        'U3 Strategic Missile Launcher Builder',
+        'U4 Strategic Missile Launcher NukeAI',
+        'U4 Strategic Missile Defense Builders',
+        'U4 Strategic Missile Defense Anti-NukeAI',
+--        'U4 Artillery Builders',
+--        'U4 Artillery Formers',
         -- Build Anti Air near AirFactories
-        'Base Anti Air Defense Uveso',
+        'U123 Defense Anti Air Builders',
 
         -----------------------------------------------------------------------------
         -- ==== FireBase BUILDER ==== --
@@ -158,26 +158,26 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== Sniper Former ==== --
         -----------------------------------------------------------------------------
---        'SACU TeleportFormer',
+--        'U3 SACU Teleport Formers',
 
         -- We need this even if we have Omni View to get target informations for experimentals attack.
         -----------------------------------------------------------------------------
         -- ==== Scout BUILDER ==== --
         -----------------------------------------------------------------------------
-        'LandScoutBuilder Uveso',
-        'AirScoutBuilder Uveso',
+        'U1 Land Scout Builders',
+        'U1 Air Scout Builders',
 
         -----------------------------------------------------------------------------
         -- ==== Scout FORMER ==== --
         -----------------------------------------------------------------------------
-        'LandScoutFormer Uveso',
-        'AirScoutFormer Uveso', 
+        'U1 Land Scout Formers',
+        'U13 Air Scout Formers', 
 
         -----------------------------------------------------------------------------
         -- ==== Intel/CounterIntel BUILDER ==== --
         -----------------------------------------------------------------------------
-        'RadarBuilders Uveso',
-        'RadarUpgrade Uveso',
+        'U1 Land Radar Builders',
+        'U1 Land Radar Upgrader',
 
         'CounterIntelBuilders',
 

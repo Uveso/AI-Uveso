@@ -1,5 +1,4 @@
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
-local IBC = '/lua/editor/InstantBuildConditions.lua'
 local EBC = '/lua/editor/EconomyBuildConditions.lua'
 local MIBC = '/lua/editor/MiscBuildConditions.lua'
 
@@ -11,7 +10,7 @@ local MaxCapStructure = 0.12                                                    
 -- ==                                       Build T2 & T3 Shields                                            == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'Shields Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U23 Shields Builder',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'U2 Shield Ratio',
@@ -145,7 +144,7 @@ BuilderGroup {
 -- ==                                      Upgrade T1 & T2 Shields                                           == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'ShieldUpgrades Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U23 Shields Upgrader',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     Builder {
         BuilderName = 'U2 Shield Cybran 1',
@@ -227,7 +226,7 @@ BuilderGroup {
 -- ==                                    T2 Tactical Missile Launcher                                        == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'Tactical Missile Launcher minimum Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U2 Tactical Missile Launcher minimum',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'U2 TML Minimum',
@@ -258,7 +257,7 @@ BuilderGroup {
     },
 }
 BuilderGroup {
-    BuilderGroupName = 'Tactical Missile Launcher Maximum Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U2 Tactical Missile Launcher maximum',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'U2 TML Maximum',
@@ -287,7 +286,7 @@ BuilderGroup {
     },
 }
 BuilderGroup {
-    BuilderGroupName = 'Tactical Missile Launcher Uveso',                       -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U2 Tactical Missile Launcher Builder',                       -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     Builder {
         BuilderName = 'U2 TML AI',
@@ -313,7 +312,7 @@ BuilderGroup {
 -- ==                                     T2 Tactical Missile Defenses                                       == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'Tactical Missile Defenses Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U2 Tactical Missile Defenses Builder',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'U2 TMD Panic 1',
@@ -429,7 +428,7 @@ BuilderGroup {
 -- ==                                    T3 Strategic Missile LAUNCHER                                       == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'Strategic Missile Launcher Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U3 Strategic Missile Launcher Builder',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'U3 SML',
@@ -498,7 +497,7 @@ BuilderGroup {
 }
 BuilderGroup {
     -- Add all nukes to a single nuke-platton
-    BuilderGroupName = 'Strategic Missile Launcher NukeAI Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U4 Strategic Missile Launcher NukeAI',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     Builder {
         BuilderName = 'NukePlatoonAI',
@@ -523,7 +522,7 @@ BuilderGroup {
 -- ==                                    T3 Strategic Missile Defense                                        == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'Strategic Missile Defense Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U4 Strategic Missile Defense Builders',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'U3 SMD 1st Main',
@@ -624,10 +623,10 @@ BuilderGroup {
 }
 BuilderGroup {
     -- Add all anti-nukes to a single nuke-platton
-    BuilderGroupName = 'Strategic Missile Defense Anti-NukeAI Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U4 Strategic Missile Defense Anti-NukeAI',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     Builder {
-        BuilderName = 'AntiNukePlatoonAI',
+        BuilderName = 'U3AntiNukeAI',
         PlatoonTemplate = 'AddToAntiNukePlatoon',
         Priority = 4000,
         FormRadius = 10000,
@@ -639,7 +638,7 @@ BuilderGroup {
             -- Don't build it if...
         },
         BuilderData = {
-            AIPlan = 'AntiNukePlatoonAI',
+            AIPlan = 'U3AntiNukeAI',
         },
         BuilderType = 'Any',
     },
@@ -648,7 +647,7 @@ BuilderGroup {
 -- ==                                        T2 T3 T4 Artillery                                              == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'Artillery Builder Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U4 Artillery Builders',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'U2 Artillery',
@@ -782,10 +781,10 @@ BuilderGroup {
 }
 BuilderGroup {
     -- Add all Artilleries to a single platton
-    BuilderGroupName = 'Artillery Platoon Former',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U4 Artillery Formers',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     Builder {
-        BuilderName = 'ArtilleryPlatoonAI',
+        BuilderName = 'U34ArtilleryAI',
         PlatoonTemplate = 'AddToArtilleryPlatoon',
         Priority = 4000,
         InstanceCount = 1,
@@ -798,7 +797,7 @@ BuilderGroup {
             -- Don't build it if...
         },
         BuilderData = {
-            AIPlan = 'ArtilleryPlatoonAI',
+            AIPlan = 'U34ArtilleryAI',
         },
         BuilderType = 'Any',
     },
@@ -809,7 +808,7 @@ BuilderGroup {
 -- ===================================================-======================================================== --
 
 BuilderGroup {
-    BuilderGroupName = 'Base Anti Ground Defense Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U123 Defense Anti Ground Builders',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'U1 Ground Defense always',
@@ -962,7 +961,7 @@ BuilderGroup {
 -- ===================================================-======================================================== --
 
 BuilderGroup {
-    BuilderGroupName = 'Base Anti Air Defense Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U123 Defense Anti Air Builders',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'U1 AirFactory AA',

@@ -1,8 +1,6 @@
--- Default economic builders for skirmish
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 local EBC = '/lua/editor/EconomyBuildConditions.lua'
-local IBC = '/lua/editor/InstantBuildConditions.lua'
-local MIBC = '/lua/editor/MiscBuildConditions.lua'
+
 local BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua').GetDangerZoneRadii()
 
 local MaxCapFactory = 0.075 -- 2.4% of all units can be factories (STRUCTURE * FACTORY)
@@ -12,7 +10,7 @@ local MaxCapStructure = 0.12                                                    
 -- ==                             Build Factories Land/Air/Sea/Quantumgate                                   == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'FactoryBuildersNaval Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U1 Factory Builders Naval',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'U1 Sea Factory 1st',
@@ -145,7 +143,7 @@ BuilderGroup {
 -- ==                             Upgrade Factories Land/Air/Sea                                             == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'FactoryUpgradeBuildersNaval Uveso',                      -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U123 Factory Upgrader Naval',                      -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     ---------------------
     -- NAVAL Factories --

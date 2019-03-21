@@ -1,10 +1,9 @@
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
-local MIBC = '/lua/editor/MiscBuildConditions.lua'
 
 local BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua').GetDangerZoneRadii()
 
 BuilderGroup {
-    BuilderGroupName = 'ACU Former Uveso',                                      -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'UC ACU Attack Former',                                      -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
 -- ================ --
 --    ACU Former    --

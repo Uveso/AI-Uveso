@@ -1,10 +1,7 @@
-local IBC = '/lua/editor/InstantBuildConditions.lua'
 local EBC = '/lua/editor/EconomyBuildConditions.lua'
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
-local SIBC = '/lua/editor/SorianInstantBuildConditions.lua'
 local MIBC = '/lua/editor/MiscBuildConditions.lua'
 local SBC = '/lua/editor/SorianBuildConditions.lua'
-local BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua').GetDangerZoneRadii()
 
 local MaxDefense = 0.12 -- 12% of all units can be defenses (categories.STRUCTURE * categories.DEFENSE)
 local MaxAttackForce = 0.45                                                     -- 45% of all units can be attacking units (categories.MOBILE - categories.ENGINEER)

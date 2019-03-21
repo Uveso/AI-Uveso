@@ -14,45 +14,45 @@ BaseBuilderTemplate {
         -- ==== ACU ==== --
         -----------------------------------------------------------------------------
         -- Build Main Base (only once). Land/Air factory and basic Energy
-        'ACU Former Uveso',
+        'UC ACU Attack Former',
 
-        'EngineerFactoryBuilders Uveso',            -- Priority = 900
-        'Assistees Uveso',
+        'U123 Engineer Builders',            -- Priority = 900
+        'UC123 Assistees',
 
-        'MassBuilders Uveso',                           -- Priority = 1100
-        'ExtractorUpgrades Uveso',                      -- Priority = 1100
+        'U1 MassBuilders',                           -- Priority = 1100
+        'U123 ExtractorUpgrades',                      -- Priority = 1100
 
-        'EnergyBuilders Uveso',                       -- Priority = 1100
+        'U123 Energy Builders',                       -- Priority = 1100
 
-        'FactoryBuilders 1st Uveso',
-        'FactoryBuildersExperimental Uveso',
-        'FactoryBuilders RECOVER Uveso',
+        'U1 Factory Builders 1st',
+        'U1 Factory Builders EXPERIMENTAL',
+        'U1 Factory Builders RECOVER',
 
-        'FactoryUpgradeBuildersRush Uveso',
-        'GateConstruction Uveso',
-        'GateFactoryBuilders Uveso',
+        'U123 Factory Upgrader Rush',
+        'U1 Gate Builders',
+        'U3 SACU Builder',
 
---        'Air Transport Builder Uveso',
+--        'U123 Air Transport Builders',
 
---        'Strategic Missile Launcher Uveso',
---        'Strategic Missile Launcher NukeAI Uveso',
---        'Strategic Missile Defense Uveso',
---        'Strategic Missile Defense Anti-NukeAI Uveso',
+--        'U3 Strategic Missile Launcher Builder',
+--        'U4 Strategic Missile Launcher NukeAI',
+--        'U4 Strategic Missile Defense Builders',
+--        'U4 Strategic Missile Defense Anti-NukeAI',
 
-        'RepairLowShields',
+        'U234 Repair Shields Former',
 
         -----------------------------------------------------------------------------
         -- ==== Factory ==== --
         -----------------------------------------------------------------------------
         -- Build Land/Air Factories
---        'FactoryBuilders RUSH Uveso',
+--        'U1 Factory Builders RUSH',
         -- Upgrade Factories TECH1->TECH2 and TECH2->TECH3
---        'FactoryUpgradeBuildersRush Uveso',
+--        'U123 Factory Upgrader Rush',
 
         -----------------------------------------------------------------------------
         -- ==== Sniper Former ==== --
         -----------------------------------------------------------------------------
-        'SACU TeleportFormer',
+        'U3 SACU Teleport Formers',
 
     },
     -- Not used by Uveso's AI. We always need intel in case the commander is dead.

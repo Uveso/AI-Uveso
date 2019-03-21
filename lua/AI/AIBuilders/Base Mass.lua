@@ -1,9 +1,5 @@
--- Default economic builders for skirmish
-local IBC = '/lua/editor/InstantBuildConditions.lua'
-local SAI = '/lua/ScenarioPlatoonAI.lua'
 local EBC = '/lua/editor/EconomyBuildConditions.lua'
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
-local MABC = '/lua/editor/MarkerBuildConditions.lua'
 local MIBC = '/lua/editor/MiscBuildConditions.lua'
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 
@@ -17,7 +13,7 @@ local MaxCapStructure = 0.12                                                    
 -- ============================================================================================================ --
 BuilderGroup {
     -- Build MassExtractors / Creators 
-    BuilderGroupName = 'MassBuilders Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U1 MassBuilders',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     -- ================== --
     --    TECH 1 - CDR    --
@@ -320,7 +316,7 @@ BuilderGroup {
 -- ============================================================================================================ --
 BuilderGroup {
     -- Upgrade MassExtractors from Tech 1 to 2 AND from Tech 2 to 3
-    BuilderGroupName = 'ExtractorUpgrades Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U123 ExtractorUpgrades',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     Builder {
         BuilderName = 'Extractor upgrade >40 mass',
@@ -402,7 +398,7 @@ BuilderGroup {
 }
 BuilderGroup {
     -- Upgrade MassExtractors from Tech 1 to 2 AND from Tech 2 to 3
-    BuilderGroupName = 'ExtractorUpgradesSwarm',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U123 ExtractorUpgrades SWARM',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     Builder {
         BuilderName = 'Extractor upgrade >40 mass',
@@ -449,7 +445,7 @@ BuilderGroup {
 -- ==                                     Build MassStorage/Adjacency                                        == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'MassStorageBuilder Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U1 MassStorage Builder',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'U1 Mass Storage 1st',

@@ -1,7 +1,5 @@
-local IBC = '/lua/editor/InstantBuildConditions.lua'
 local EBC = '/lua/editor/EconomyBuildConditions.lua'
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
-local SIBC = '/lua/editor/SorianInstantBuildConditions.lua'
 local SBC = '/lua/editor/SorianBuildConditions.lua'
 local BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua').GetDangerZoneRadii()
 
@@ -9,7 +7,7 @@ local BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lu
 -- ==                                 Mobile Experimental Land/Air/Sea                                       == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'Mobile Experimental Naval Builder Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U4 Naval Experimental Builders',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'U4 NavalExp1 Minimum',
@@ -81,7 +79,7 @@ BuilderGroup {
 --    PanicZone    --
 -- =============== --
 BuilderGroup {
-    BuilderGroupName = 'Sea Experimental FormBuilders Panic',                   -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U4 Naval Experimental Formers PanicZone',                   -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     Builder {
         BuilderName = 'U4 BasePanicZone SEA',                                   -- Random Builder Name.
@@ -112,7 +110,7 @@ BuilderGroup {
 --    MilitaryZone    --
 -- ================== --
 BuilderGroup {
-    BuilderGroupName = 'Sea Experimental FormBuilders Military',                -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U4 Naval Experimental Formers MilitaryZone',                -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     Builder {
         BuilderName = 'U4 BaseMilitaryZone Sea',                                -- Random Builder Name.
@@ -143,7 +141,7 @@ BuilderGroup {
 --    EnemyZone    --
 -- =============== --
 BuilderGroup {
-    BuilderGroupName = 'Sea Experimental FormBuilders EnemyZone',              -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U4 Naval Experimental Formers EnemyZone',              -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     Builder {
         BuilderName = 'U4 EnemyZone Sea',                                       -- Random Builder Name.
@@ -180,7 +178,7 @@ BuilderGroup {
 --    Unit Cap Trasher  --
 -- ==================== --
 BuilderGroup {
-    BuilderGroupName = 'Sea Experimental FormBuilders Trasher',                           -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U4 Naval Experimental Formers Trasher',                           -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',                                        -- BuilderTypes are: EngineerBuilder, FactoryBuilder, PlatoonFormBuilder.
     Builder {
         BuilderName = 'U4 SEA Trasher',                                         -- Random Builder Name.

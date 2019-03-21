@@ -15,6 +15,19 @@ function BeginSession()
     end
 end
 
+local OldOnCreateArmyBrainFunction = OnCreateArmyBrain
+function OnCreateArmyBrain(index, brain, name, nickname)
+    OldOnCreateArmyBrainFunction(index, brain, name, nickname)
+    -- check if we have an Ai brain that is not a civilian army
+    if brain.BrainType == 'AI' and nickname ~= 'civilian' then
+        -- check if we need to set a new unitcap for the AI. (0 = we are using the player unit cap)
+        if tonumber(ScenarioInfo.Options.AIUnitCap) > 0 then
+            LOG('* Uveso-AI: OnCreateArmyBrain: Setting AI unit cap to '..ScenarioInfo.Options.AIUnitCap..' ('..nickname..')')
+            SetArmyUnitCap(index,tonumber(ScenarioInfo.Options.AIUnitCap))
+        end
+    end
+end
+
 local KnownMarkerTypes = {
     ['Air Path Node']=true,
     ['Amphibious Path Node']=true,

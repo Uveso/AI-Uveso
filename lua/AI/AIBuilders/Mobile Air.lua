@@ -1,8 +1,6 @@
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 local EBC = '/lua/editor/EconomyBuildConditions.lua'
-local IBC = '/lua/editor/InstantBuildConditions.lua'
 local MIBC = '/lua/editor/MiscBuildConditions.lua'
-local TBC = '/lua/editor/ThreatBuildConditions.lua'
 local BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua').GetDangerZoneRadii()
 
 local MaxAttackForce = 0.45                                                     -- 45% of all units can be attacking units (categories.MOBILE - categories.ENGINEER)
@@ -11,7 +9,7 @@ local MaxAttackForce = 0.45                                                     
 -- ==                                 Air Fighter/Bomber T1 T2 T3 Builder                                    == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'AntiAirBuilders Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U123 Air Builders',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'FactoryBuilder',
     -- =========================== --
     --    TECH 1   MilitaryZone    --
@@ -370,7 +368,7 @@ BuilderGroup {
 -- ==                                   AirTransport T1 T2 T3 Builder                                        == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'Air Transport Builder Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U123 Air Transport Builders',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'FactoryBuilder',
     -- ============= --
     --    AllMaps    --
@@ -455,7 +453,7 @@ BuilderGroup {
 --                                            Air Scouts Builder                                                --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'AirScoutBuilder Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U1 Air Scout Builders',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'FactoryBuilder',
     Builder {
         BuilderName = 'U1 Air Scout',
@@ -497,7 +495,7 @@ BuilderGroup {
 --                                          Air Scouts Formbuilder                                              --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'AirScoutFormer Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U13 Air Scout Formers',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     Builder {
         BuilderName = 'U1 Air Scout Form',
@@ -530,7 +528,7 @@ BuilderGroup {
 --    PanicZone    --
 -- =============== --
 BuilderGroup {
-    BuilderGroupName = 'Air FormBuilders PanicZone',                            -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U123 Air Formers PanicZone',                            -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',                                        -- BuilderTypes are: EngineerBuilder, FactoryBuilder, PlatoonFormBuilder.
     Builder {
         BuilderName = 'U123 PANIC AntiGround',                                  -- Random Builder Name.
@@ -595,7 +593,7 @@ BuilderGroup {
 --    MilitaryZone    --
 -- ================== --
 BuilderGroup {
-    BuilderGroupName = 'Air FormBuilders MilitaryZone',                         -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U123 Air Formers MilitaryZone',                         -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',                                        -- BuilderTypes are: EngineerBuilder, FactoryBuilder, PlatoonFormBuilder.
     Builder {
         BuilderName = 'U123 Military AntiAir 10',
@@ -845,7 +843,7 @@ BuilderGroup {
 --    EnemyZone    --
 -- =============== --
 BuilderGroup {
-    BuilderGroupName = 'Air FormBuilders EnemyZone',                            -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U123 Air Formers EnemyZone',                            -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     Builder {
         BuilderName = 'U123 Unprotected Gunship 1 2',                           -- Random Builder Name.
@@ -1087,7 +1085,7 @@ BuilderGroup {
 --    Unit Cap Trasher  --
 -- ==================== --
 BuilderGroup {
-    BuilderGroupName = 'Air FormBuilders Trasher',                              -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U123 Air Formers Trasher',                              -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     Builder {
         BuilderName = 'U1234 Gunship+Bomber > 50',
@@ -1136,7 +1134,6 @@ BuilderGroup {
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to form this ?
             { UCBC, 'UnitCapCheckGreater', { 0.95 } },
-            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.ALLUNITS - categories.SCOUT }}, -- radius, LocationType, unitCount, categoryEnemy
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
@@ -1160,7 +1157,6 @@ BuilderGroup {
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to form this ?
             { UCBC, 'UnitCapCheckGreater', { 0.95 } },
-            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.ALLUNITS - categories.SCOUT }}, -- radius, LocationType, unitCount, categoryEnemy
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
@@ -1183,7 +1179,6 @@ BuilderGroup {
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to form this ?
             { UCBC, 'UnitCapCheckGreater', { 0.95 } },
-            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.ALLUNITS - categories.SCOUT }}, -- radius, LocationType, unitCount, categoryEnemy
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
@@ -1206,7 +1201,6 @@ BuilderGroup {
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to form this ?
             { UCBC, 'UnitCapCheckGreater', { 0.95 } },
-            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.ALLUNITS - categories.SCOUT }}, -- radius, LocationType, unitCount, categoryEnemy
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
@@ -1229,7 +1223,6 @@ BuilderGroup {
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to form this ?
             { UCBC, 'UnitCapCheckGreater', { 0.95 } },
-            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.ALLUNITS - categories.SCOUT }}, -- radius, LocationType, unitCount, categoryEnemy
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },

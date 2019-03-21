@@ -753,7 +753,7 @@ function CDRRunHomeEnemyNearBase(platoon,cdr,UnitsInBasePanicZone)
     for _, EnemyUnit in UnitsInBasePanicZone do
         if not EnemyUnit.Dead and not EnemyUnit:BeenDestroyed() then
             if EntityCategoryContains(categories.MOBILE * categories.EXPERIMENTAL, EnemyUnit) then
-                --LOG('* CommanderAIUveso: CDRRunHomeEnemyNearBase EXPERIMENTAL!!!! RUN HOME:')
+                --LOG('* ACUAttackAIUveso: CDRRunHomeEnemyNearBase EXPERIMENTAL!!!! RUN HOME:')
                 minEnemyDist = 40
                 break
             end

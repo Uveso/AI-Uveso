@@ -1,9 +1,5 @@
--- Default economic builders for skirmish
-local IBC = '/lua/editor/InstantBuildConditions.lua'
-local SAI = '/lua/ScenarioPlatoonAI.lua'
 local EBC = '/lua/editor/EconomyBuildConditions.lua'
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
-local MABC = '/lua/editor/MarkerBuildConditions.lua'
 local MIBC = '/lua/editor/MiscBuildConditions.lua'
 
 local MaxCapStructure = 0.12                                                    -- 12% of all units can be structures (STRUCTURE -MASSEXTRACTION -DEFENSE -FACTORY)
@@ -13,7 +9,7 @@ local MaxCapStructure = 0.12                                                    
 -- ===================================================-======================================================== --
 BuilderGroup {
     -- Build Power TECH 1,2,3
-    BuilderGroupName = 'EnergyBuilders Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U123 Energy Builders',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     -- ============ --
     --    TECH 1    --
@@ -313,7 +309,7 @@ BuilderGroup {
         InstanceCount = 2,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 4, categories.ENERGYPRODUCTION * ( categories.TECH2 + categories.TECH3 + categories.EXPERIMENTAL ) } },
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.ENERGYPRODUCTION * ( categories.TECH2 + categories.TECH3 + categories.EXPERIMENTAL ) } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             -- Don't build it if...

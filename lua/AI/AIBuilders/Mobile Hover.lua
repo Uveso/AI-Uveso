@@ -1,7 +1,4 @@
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
-local EBC = '/lua/editor/EconomyBuildConditions.lua'
-local IBC = '/lua/editor/InstantBuildConditions.lua'
-local MIBC = '/lua/editor/MiscBuildConditions.lua'
 local BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua').GetDangerZoneRadii()
 
 local MaxAttackForce = 0.45                                                     -- 45% of all units can be attacking units (categories.MOBILE - categories.ENGINEER)
@@ -13,7 +10,7 @@ local MaxAttackForce = 0.45                                                     
 --    PanicZone    --
 -- =============== --
 BuilderGroup {
-    BuilderGroupName = 'Hover FormBuilders PanicZone',                          -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U123 Hover Formers PanicZone',                          -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',                                        -- BuilderTypes are: EngineerBuilder, FactoryBuilder, PlatoonFormBuilder.
     Builder {
         BuilderName = 'U123 Hover PANIC 1 10',                                  -- Random Builder Name.
@@ -44,7 +41,7 @@ BuilderGroup {
 --    MilitaryZone    --
 -- ================== --
 BuilderGroup {
-    BuilderGroupName = 'Hover FormBuilders MilitaryZone',                       -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U123 Hover Formers MilitaryZone',                       -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',                                        -- BuilderTypes are: EngineerBuilder, FactoryBuilder, PlatoonFormBuilder.
     Builder {
         BuilderName = 'U123 Hover Military 1 100',                              -- Random Builder Name.
@@ -79,7 +76,7 @@ BuilderGroup {
 --    EnemyZone    --
 -- =============== --
 BuilderGroup {
-    BuilderGroupName = 'Hover FormBuilders EnemyZone',                          -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U123 Hover Formers EnemyZone',                          -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',                                        -- BuilderTypes are: EngineerBuilder, FactoryBuilder, PlatoonFormBuilder.
     Builder {
         BuilderName = 'U123 Hover Enemy 1 100',                                 -- Random Builder Name.
@@ -113,7 +110,7 @@ BuilderGroup {
 --    Unit Cap Trasher  --
 -- ==================== --
 BuilderGroup {
-    BuilderGroupName = 'Hover FormBuilders Trasher',                            -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U123 Hover Formers Trasher',                            -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',                                        -- BuilderTypes are: EngineerBuilder, FactoryBuilder, PlatoonFormBuilder.
     Builder {
         BuilderName = 'U123 Hover Trasher 1 100',                               -- Random Builder Name.

@@ -1,10 +1,6 @@
--- Default economic builders for skirmish
-local IBC = '/lua/editor/InstantBuildConditions.lua'
-local SAI = '/lua/ScenarioPlatoonAI.lua'
 local EBC = '/lua/editor/EconomyBuildConditions.lua'
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
-local MABC = '/lua/editor/MarkerBuildConditions.lua'
-local MIBC = '/lua/editor/MiscBuildConditions.lua'
+
 local BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua').GetDangerZoneRadii()
 
 local MaxCapEngineers = 0.15 -- 15% of all units can be Engineers (categories.MOBILE * categories.ENGINEER)
@@ -14,7 +10,7 @@ local MaxCapEngineers = 0.15 -- 15% of all units can be Engineers (categories.MO
 -- ===================================================-======================================================== --
 BuilderGroup {
     -- Build Engineers TECH 1,2,3 and SACU
-    BuilderGroupName = 'EngineerFactoryBuilders Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U123 Engineer Builders',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'FactoryBuilder',
     -- ============ --
     --    TECH 1    --
@@ -29,22 +25,41 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             -- Don't build it if...
-            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'ENGINEER TECH1' } },
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'ENGINEER TECH1' } },
             -- Respect UnitCap
          },
         BuilderType = 'All',
     },
     -- Build more engineers if we don't find idle engineers
     Builder {
-        BuilderName = 'U1 Engineer noPool land',
+        BuilderName = 'U1 Engineer noPool land 1',
         PlatoonTemplate = 'T1BuildEngineer',
-        Priority = 18400,
+        Priority = 18700,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'PoolLessAtLocation', { 'LocationType', 2, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'PoolLessAtLocation', { 'LocationType', 3, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
             -- Do we need additional conditions to build it ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.STRUCTURE * categories.FACTORY * categories.LAND } },
             -- Have we the eco to build it ?
             -- Don't build it if...
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'ENGINEER TECH1' } },
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers / 3 , '<', categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
+        },
+        BuilderType = 'Land',
+    },
+    Builder {
+        BuilderName = 'U1 Engineer noPool land 2',
+        PlatoonTemplate = 'T1BuildEngineer',
+        Priority = 18500,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'PoolLessAtLocation', { 'LocationType', 5, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND } },
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'ENGINEER TECH1' } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers / 3 , '<', categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
         },
@@ -156,7 +171,7 @@ BuilderGroup {
 }
 BuilderGroup {
     -- Build Engineers TECH 1,2,3 and SACU
-    BuilderGroupName = 'GateFactoryBuilders Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U3 SACU Builder',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'FactoryBuilder',
     -- ==================== --
     --    SUB COMMANDERS    --
@@ -201,7 +216,7 @@ BuilderGroup {
 -- ==                                          Engineer Transfers                                            == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'Engineer Transfer To MainBase',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U123 Engineer Transfer To MainBase',                    -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     -- ============================================ --
     --    Transfer from LocationType to MainBase    --

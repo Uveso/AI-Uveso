@@ -1,13 +1,11 @@
-local IBC = '/lua/editor/InstantBuildConditions.lua'
 local EBC = '/lua/editor/EconomyBuildConditions.lua'
-local MIBC = '/lua/editor/MiscBuildConditions.lua'
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 
 -- ===================================================-======================================================== --
 -- ==                                             Assistees                                                  == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'Assistees Uveso',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'UC123 Assistees',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     -- =============== --
     --    Factories    --
@@ -491,7 +489,7 @@ BuilderGroup {
 --    Reclaim     --
 -- ============== --
 BuilderGroup {
-    BuilderGroupName = 'Engineer Reclaim Uveso',                                -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U1 Engineer Reclaim',                                -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     Builder {
         BuilderName = 'U1 Reclaim RECOVER mass',

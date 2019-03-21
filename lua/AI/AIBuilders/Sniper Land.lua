@@ -1,7 +1,7 @@
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 local EBC = '/lua/editor/EconomyBuildConditions.lua'
-local IBC = '/lua/editor/InstantBuildConditions.lua'
 local MIBC = '/lua/editor/MiscBuildConditions.lua'
+
 local BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua').GetDangerZoneRadii()
 
 local MaxAttackForce = 0.45                                                     -- 45% of all units can be attacking units (categories.MOBILE - categories.ENGINEER)
@@ -13,7 +13,7 @@ local MaxAttackForce = 0.45                                                     
 --    SACU Teleporter   --
 -- ==================== --
 BuilderGroup {
-    BuilderGroupName = 'SACU TeleportFormer',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U3 SACU Teleport Formers',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
 -- ================= --
 --    SACU Former    --

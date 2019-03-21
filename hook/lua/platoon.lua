@@ -860,7 +860,7 @@ Platoon = Class(OldPlatoonClass) {
         end
     end,
 
-    AttackPrioritizedLandTargetsAIUveso = function(self)
+    LandAttackAIUveso = function(self)
         AIAttackUtils.GetMostRestrictiveLayer(self) -- this will set self.MovementLayer to the platoon
         -- Search all platoon units and activate Stealth and Cloak (mostly Modded units)
         local platoonUnits = self:GetPlatoonUnits()
@@ -904,7 +904,12 @@ Platoon = Class(OldPlatoonClass) {
         local target
         local bAggroMove = self.PlatoonData.AggressiveMove
         local WantsTransport = self.PlatoonData.RequireTransport
-        local maxRadius = self.PlatoonData.SearchRadius or 250
+        -- Never change the maxradius here. Different platoons needs different maxrange.
+        -- Some platoons starts only if enemy units are closer then x range to the base, with special attack priorities.
+        -- If we send those units directly to the enemy it's wasted because they have wrong target priorities.
+        -- To change maxrange for experimentals see file "Mobile Experimental-Land.lua", search for "FormRadius"
+        -- and don't replace it with 1024. Please use the variable "BaseEnemyZone" for max range.
+        local maxRadius = self.PlatoonData.SearchRadius
         local TargetSearchCategory = self.PlatoonData.TargetSearchCategory or 'ALLUNITS'
         local PlatoonPos = self:GetPlatoonPosition()
         local LastTargetPos = PlatoonPos
@@ -971,7 +976,7 @@ Platoon = Class(OldPlatoonClass) {
         end
     end,
 
-    AttackPrioritizedSeaTargetsAIUveso = function(self)
+    NavalAttackAIUveso = function(self)
         AIAttackUtils.GetMostRestrictiveLayer(self) -- this will set self.MovementLayer to the platoon
         -- Search all platoon units and activate Stealth and Cloak (mostly Modded units)
         local platoonUnits = self:GetPlatoonUnits()
@@ -1070,13 +1075,13 @@ Platoon = Class(OldPlatoonClass) {
         end
     end,
     
-    CommanderAIUveso = function(self)
-        --LOG('* CommanderAIUveso: START '..self.BuilderName)
+    ACUAttackAIUveso = function(self)
+        --LOG('* ACUAttackAIUveso: START '..self.BuilderName)
         AIAttackUtils.GetMostRestrictiveLayer(self) -- this will set self.MovementLayer to the platoon
         local aiBrain = self:GetBrain()
         local cdr = self:GetPlatoonUnits()[1]
         if not cdr then
-            WARN('* CommanderAIUveso: Platoon formed but Commander unit not found!')
+            WARN('* ACUAttackAIUveso: Platoon formed but Commander unit not found!')
             self:PlatoonDisband()
             return
         end
@@ -1121,7 +1126,7 @@ Platoon = Class(OldPlatoonClass) {
             cdr.position = self:GetPlatoonPosition()
             -- leave the loop and disband this platton in time
             if ReturnToBaseAfterGameTime and ReturnToBaseAfterGameTime < GetGameTimeSeconds()/60 then
-                --LOG('* CommanderAIUveso: ReturnToBaseAfterGameTime:'..ReturnToBaseAfterGameTime..' >= '..GetGameTimeSeconds()/60)
+                --LOG('* ACUAttackAIUveso: ReturnToBaseAfterGameTime:'..ReturnToBaseAfterGameTime..' >= '..GetGameTimeSeconds()/60)
                 UUtils.CDRParkingHome(self,cdr)
                 break
             end
@@ -1150,33 +1155,33 @@ Platoon = Class(OldPlatoonClass) {
             end            
             -- in case we have no Factory left, recover!
             if not aiBrain:GetListOfUnits(categories.STRUCTURE * categories.FACTORY * categories.LAND - categories.SUPPORTFACTORY, false) then
-                --LOG('* CommanderAIUveso: exiting attack function. RECOVER')
+                --LOG('* ACUAttackAIUveso: exiting attack function. RECOVER')
                 self:PlatoonDisband()
                 return
             -- check if we are further away from base then the closest enemy
             elseif UUtils.CDRRunHomeEnemyNearBase(self,cdr,UnitsInACUBaseRange) then
-                --LOG('* CommanderAIUveso: CDRRunHomeEnemyNearBase')
+                --LOG('* ACUAttackAIUveso: CDRRunHomeEnemyNearBase')
                 TargetUnit = false
             -- check if we get actual damage, then move home
             elseif UUtils.CDRRunHomeAtDamage(self,cdr) then
-                --LOG('* CommanderAIUveso: CDRRunHomeAtDamage')
+                --LOG('* ACUAttackAIUveso: CDRRunHomeAtDamage')
                 TargetUnit = false
             -- check how much % health we have and go closer to our base
             elseif UUtils.CDRRunHomeHealthRange(self,cdr,maxRadius) then
-                --LOG('* CommanderAIUveso: CDRRunHomeHealthRange')
+                --LOG('* ACUAttackAIUveso: CDRRunHomeHealthRange')
                 TargetUnit = false
             -- can we upgrade ?
             elseif personality ~= 'uvesoswarm' and personality ~= 'uvesoswarmcheat' and VDist2(cdr.position[1], cdr.position[3], cdr.CDRHome[1], cdr.CDRHome[3]) > 50 and self:BuildACUEnhancememnts(cdr) then
-                --LOG('* CommanderAIUveso: BuildACUEnhancememnts')
+                --LOG('* ACUAttackAIUveso: BuildACUEnhancememnts')
                 -- Do nothing if BuildACUEnhancememnts is true. we are upgrading!
             -- only get a new target and make a move command if the target is dead
             else
-               --LOG('* CommanderAIUveso: ATTACK')
+               --LOG('* ACUAttackAIUveso: ATTACK')
                 -- ToDo: scann for enemy COM and change target if needed
                 TargetUnit, _, _, _ = AIUtils.AIFindNearestCategoryTargetInRangeCDR(aiBrain, GetTargetsFrom, maxRadius, MoveToCategories, TargetSearchCategory, false)
                 -- if we have a target, move to the target and attack
                 if TargetUnit then
-                    --LOG('* CommanderAIUveso: ATTACK TargetUnit')
+                    --LOG('* ACUAttackAIUveso: ATTACK TargetUnit')
                     if aiBrain:PlatoonExists(self) and TargetUnit and not TargetUnit.Dead and not TargetUnit:BeenDestroyed() then
                         self:Stop()
                         local cdrNewPos = {}
@@ -1190,12 +1195,12 @@ Platoon = Class(OldPlatoonClass) {
                     end
                 -- if we have no target, move to base. If we are at base, dance. (random moves)
                 elseif UUtils.CDRForceRunHome(self,cdr) then
-                    --LOG('* CommanderAIUveso: CDRForceRunHome true. we are running home')
+                    --LOG('* ACUAttackAIUveso: CDRForceRunHome true. we are running home')
                 -- we are at home, dance if we have nothing to do.
                 else
                     -- There is nothing to fight; so we left the attack function and see if we can build something
-                    --LOG('* CommanderAIUveso:We are at home and dancing')
-                    --LOG('* CommanderAIUveso: exiting attack function')
+                    --LOG('* ACUAttackAIUveso:We are at home and dancing')
+                    --LOG('* ACUAttackAIUveso: exiting attack function')
                     self:PlatoonDisband()
                     return
                 end
@@ -1206,7 +1211,7 @@ Platoon = Class(OldPlatoonClass) {
             --- This is the end of the main ACU loop ---
             --------------------------------------------
         end
-        --LOG('* CommanderAIUveso: END '..self.BuilderName)
+        --LOG('* ACUAttackAIUveso: END '..self.BuilderName)
         self:PlatoonDisband()
     end,
     
@@ -1243,32 +1248,32 @@ Platoon = Class(OldPlatoonClass) {
             --LOG('wantedEnhancementBP '..repr(wantedEnhancementBP))
             if cdr:HasEnhancement(enhancement) then
                 NextEnhancement = false
-                --LOG('* CommanderAIUveso: BuildACUEnhancememnts: Enhancement is already installed: '..enhancement)
+                --LOG('* ACUAttackAIUveso: BuildACUEnhancememnts: Enhancement is already installed: '..enhancement)
             elseif platoon:EcoGoodForUpgrade(cdr, wantedEnhancementBP) then
-                --LOG('* CommanderAIUveso: BuildACUEnhancememnts: Eco is good for '..enhancement)
+                --LOG('* ACUAttackAIUveso: BuildACUEnhancememnts: Eco is good for '..enhancement)
                 if not NextEnhancement then
                     NextEnhancement = enhancement
                     HaveEcoForEnhancement = true
-                    --LOG('* CommanderAIUveso: *** Set as Enhancememnt: '..NextEnhancement)
+                    --LOG('* ACUAttackAIUveso: *** Set as Enhancememnt: '..NextEnhancement)
                 end
             else
-                --LOG('* CommanderAIUveso: BuildACUEnhancememnts: Eco is bad for '..enhancement)
+                --LOG('* ACUAttackAIUveso: BuildACUEnhancememnts: Eco is bad for '..enhancement)
                 if not NextEnhancement then
                     NextEnhancement = enhancement
                     HaveEcoForEnhancement = false
                     -- if we don't have the eco for this ugrade, stop the search
-                    --LOG('* CommanderAIUveso: canceled search. no eco available')
+                    --LOG('* ACUAttackAIUveso: canceled search. no eco available')
                     break
                 end
             end
         end
         if NextEnhancement and HaveEcoForEnhancement then
-            --LOG('* CommanderAIUveso: BuildACUEnhancememnts Building '..NextEnhancement)
+            --LOG('* ACUAttackAIUveso: BuildACUEnhancememnts Building '..NextEnhancement)
             if platoon:BuildEnhancememnt(cdr, NextEnhancement) then
-                --LOG('* CommanderAIUveso: BuildACUEnhancememnts returned true'..NextEnhancement)
+                --LOG('* ACUAttackAIUveso: BuildACUEnhancememnts returned true'..NextEnhancement)
                 return true
             else
-                --LOG('* CommanderAIUveso: BuildACUEnhancememnts returned false'..NextEnhancement)
+                --LOG('* ACUAttackAIUveso: BuildACUEnhancememnts returned false'..NextEnhancement)
                 return false
             end
         end
@@ -1293,7 +1298,7 @@ Platoon = Class(OldPlatoonClass) {
     end,
     
     BuildEnhancememnt = function(platoon,cdr,enhancement)
-        --LOG('* CommanderAIUveso: BuildEnhancememnt '..enhancement)
+        --LOG('* ACUAttackAIUveso: BuildEnhancememnt '..enhancement)
         local aiBrain = platoon:GetBrain()
 
         IssueStop({cdr})
@@ -1301,19 +1306,19 @@ Platoon = Class(OldPlatoonClass) {
         
         if not cdr:HasEnhancement(enhancement) then
             local order = { TaskName = "EnhanceTask", Enhancement = enhancement }
-            --LOG('* CommanderAIUveso: BuildEnhancememnt: '..platoon:GetBrain().Nickname..' IssueScript: '..enhancement)
+            --LOG('* ACUAttackAIUveso: BuildEnhancememnt: '..platoon:GetBrain().Nickname..' IssueScript: '..enhancement)
             IssueScript({cdr}, order)
         end
         while not cdr.Dead and not cdr:HasEnhancement(enhancement) do
             if UUtils.ComHealth(cdr) < 60 then
-                --LOG('* CommanderAIUveso: BuildEnhancememnt: '..platoon:GetBrain().Nickname..' Emergency!!! low health, canceling Enhancement '..enhancement)
+                --LOG('* ACUAttackAIUveso: BuildEnhancememnt: '..platoon:GetBrain().Nickname..' Emergency!!! low health, canceling Enhancement '..enhancement)
                 IssueStop({cdr})
                 IssueClearCommands({cdr})
                 return false
             end
             WaitTicks(10)
         end
-        --LOG('* CommanderAIUveso: BuildEnhancememnt: '..platoon:GetBrain().Nickname..' Upgrade finished '..enhancement)
+        --LOG('* ACUAttackAIUveso: BuildEnhancememnt: '..platoon:GetBrain().Nickname..' Upgrade finished '..enhancement)
         return true
     end,
 
@@ -1920,7 +1925,7 @@ Platoon = Class(OldPlatoonClass) {
         self:PlatoonDisband()
     end,
 
-    AntiNukePlatoonAI = function(self)
+    U3AntiNukeAI = function(self)
         local aiBrain = self:GetBrain()
         while aiBrain:PlatoonExists(self) do
             local platoonUnits = self:GetPlatoonUnits()
@@ -1930,7 +1935,7 @@ Platoon = Class(OldPlatoonClass) {
                     -- We found a dead unit inside this platoon. Disband the platton; It will be reformed
                     -- needs PlatoonDisbandNoAssign, or launcher will stop building nukes if the platton is disbanded
                     self:PlatoonDisbandNoAssign()
-                    --LOG('* AntiNukePlatoonAI: PlatoonDisband')
+                    --LOG('* U3AntiNukeAI: PlatoonDisband')
                     return
                 else
                     unit:SetAutoMode(true)
@@ -1940,41 +1945,30 @@ Platoon = Class(OldPlatoonClass) {
         end
     end,
 
-    ArtilleryPlatoonAI = function(self)
+    U34ArtilleryAI = function(self)
         local aiBrain = self:GetBrain()
         local ClosestTarget = nil
         local LastTarget = nil
         while aiBrain:PlatoonExists(self) do
             -- Primary Target
             ClosestTarget = nil
+            -- We always use the PrimaryTarget from the targetmanager first:
             if aiBrain.PrimaryTarget and not aiBrain.PrimaryTarget.Dead then
                 ClosestTarget = aiBrain.PrimaryTarget
             else
-                local basePosition = aiBrain.BuilderManagers['MAIN'].Position or nil
-                if not basePosition then continue end
-                local TargetsInBaseRange = aiBrain:GetUnitsAroundPoint( categories.MOBILE * categories.EXPERIMENTAL - categories.AIR, basePosition, 512, 'Enemy')
-                local distance = 512
-                for num, Target in TargetsInBaseRange do
-                    if Target and not Target.Dead then
-                        local TargetPosition = Target:GetPosition() or nil
-                        if TargetPosition then
-                            local targetRange = VDist2(basePosition[1],basePosition[3],TargetPosition[1],TargetPosition[3])
-                            if targetRange < distance then
-                                distance = targetRange
-                                ClosestTarget = Target
-                            end
-                        end
-                    end
-                end
+                -- We have no PrimaryTarget from the tagetmanager.
+                -- That means there is no paragon, no experimental and no Tech3 Factories left as target.
+                -- No need to search for any of this here.
             end
-            
+            -- in case we found a target, attack it until it's dead or we have another Primary Target
             if ClosestTarget == LastTarget then
-                --LOG('* ArtilleryPlatoonAI: ClosestTarget == LastTarget')
+                --LOG('* U34ArtilleryAI: ClosestTarget == LastTarget')
             elseif ClosestTarget and not ClosestTarget.Dead then
                 local BlueprintID = ClosestTarget:GetBlueprint().BlueprintId
                 LastTarget = ClosestTarget
                 -- Wait until the target is dead
                 while ClosestTarget and not ClosestTarget.Dead do
+                    -- leave the loop if the primary target has changed
                     if aiBrain.PrimaryTarget and aiBrain.PrimaryTarget ~= ClosestTarget then
                         break
                     end
@@ -1999,8 +1993,9 @@ Platoon = Class(OldPlatoonClass) {
                     WaitSeconds(5)
                 end
             end
+            -- Reaching this point means we have no special target and our arty is using it's own weapon target priorities.
+            -- So we are still attacking targets at this point.
             WaitSeconds(5)
-            -- find dead units inside the platoon and disband if we find one
         end
     end,
 
@@ -2703,7 +2698,7 @@ Platoon = Class(OldPlatoonClass) {
         end        
         -- Fight
         WaitTicks(1)
-        self:AttackPrioritizedLandTargetsAIUveso()
+        self:LandAttackAIUveso()
     end,
 
     BuildSACUEnhancememnts = function(platoon,unit)
@@ -2730,36 +2725,36 @@ Platoon = Class(OldPlatoonClass) {
             --LOG('wantedEnhancementBP '..repr(wantedEnhancementBP))
             if unit:HasEnhancement(enhancement) then
                 NextEnhancement = false
-                --LOG('* CommanderAIUveso: BuildACUEnhancememnts: Enhancement is already installed: '..enhancement)
+                --LOG('* ACUAttackAIUveso: BuildACUEnhancememnts: Enhancement is already installed: '..enhancement)
             elseif platoon:EcoGoodForUpgrade(unit, wantedEnhancementBP) then
-                --LOG('* CommanderAIUveso: BuildACUEnhancememnts: Eco is good for '..enhancement)
+                --LOG('* ACUAttackAIUveso: BuildACUEnhancememnts: Eco is good for '..enhancement)
                 if not NextEnhancement then
                     NextEnhancement = enhancement
                     HaveEcoForEnhancement = true
-                    --LOG('* CommanderAIUveso: *** Set as Enhancememnt: '..NextEnhancement)
+                    --LOG('* ACUAttackAIUveso: *** Set as Enhancememnt: '..NextEnhancement)
                 end
             else
-                --LOG('* CommanderAIUveso: BuildACUEnhancememnts: Eco is bad for '..enhancement)
+                --LOG('* ACUAttackAIUveso: BuildACUEnhancememnts: Eco is bad for '..enhancement)
                 if not NextEnhancement then
                     NextEnhancement = enhancement
                     HaveEcoForEnhancement = false
                     -- if we don't have the eco for this ugrade, stop the search
-                    --LOG('* CommanderAIUveso: canceled search. no eco available')
+                    --LOG('* ACUAttackAIUveso: canceled search. no eco available')
                     break
                 end
             end
         end
         if NextEnhancement and HaveEcoForEnhancement then
-            --LOG('* CommanderAIUveso: BuildACUEnhancememnts Building '..NextEnhancement)
+            --LOG('* ACUAttackAIUveso: BuildACUEnhancememnts Building '..NextEnhancement)
             if platoon:BuildEnhancememnt(unit, NextEnhancement) then
-                --LOG('* CommanderAIUveso: BuildACUEnhancememnts returned true'..NextEnhancement)
+                --LOG('* ACUAttackAIUveso: BuildACUEnhancememnts returned true'..NextEnhancement)
                 return true
             else
-                --LOG('* CommanderAIUveso: BuildACUEnhancememnts returned false'..NextEnhancement)
+                --LOG('* ACUAttackAIUveso: BuildACUEnhancememnts returned false'..NextEnhancement)
                 return false
             end
         end
-        --LOG('* CommanderAIUveso: BuildACUEnhancememnts returned false END')
+        --LOG('* ACUAttackAIUveso: BuildACUEnhancememnts returned false END')
         return false
     end,
 
