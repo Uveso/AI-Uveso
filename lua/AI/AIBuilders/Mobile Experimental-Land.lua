@@ -251,6 +251,7 @@ BuilderGroup {
             AttackEnemyStrength = 100000,                                       -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = 'ALLUNITS',                                  -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
+                'STRUCTURE EXPERIMENTAL ECONOMIC',
                 'STRUCTURE EXPERIMENTAL SHIELD',
                 'STRUCTURE ARTILLERY',
                 'STRUCTURE NUKE',
@@ -294,6 +295,7 @@ BuilderGroup {
             AttackEnemyStrength = 100000,                                       -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = 'STRUCTURE, MOBILE',                         -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
+                'STRUCTURE EXPERIMENTAL ECONOMIC',
                 'STRUCTURE ANTIAIR TECH3',
                 'STRUCTURE FACTORY TECH3',
                 'STRUCTURE DEFENSE ANTIMISSILE TECH3',

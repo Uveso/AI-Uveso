@@ -1,4 +1,15 @@
 *************************************************************************************************************************************
+v57 (not released)
+
+- New: Added builder+former for amphibious units. incl Nomads. (water maps)
+- New: Added builder+former for torpedo bombers (water maps)
+- Fix: Removed subcommander from paragon T3EngineerAssist platoon
+- Fix: Sub AI Adaptive is now building less units. (equal to the enemy)
+- Opt: Changed build priority for mass builders
+- Opt: Changed target priority for Experimentals. (added paragon)
+- Opt: Changed build and target priorities for all naval platoons
+
+*************************************************************************************************************************************
 v56 (21.Mar.2019)
 
 - New: You can now set an AI unit cap independently from players unit cap.

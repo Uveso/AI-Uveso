@@ -164,14 +164,15 @@ BuilderGroup {
             AttackEnemyStrength = 0,                                            -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = 'STRUCTURE',                                 -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                'STRUCTURE EXPERIMENTAL SHIELD',
-                'STRUCTURE ARTILLERY',
-                'STRUCTURE NUKE',
-                'STRUCTURE ENERGYPRODUCTION',
+                'STRUCTURE EXPERIMENTAL ECONOMIC',
                 'STRUCTURE EXPERIMENTAL',
-                'STRUCTURE ANTIMISSILE TECH3',
+                'STRUCTURE NUKE',
+                'STRUCTURE FACTORY TECH3',
+                'STRUCTURE ENERGYPRODUCTION TECH3',
                 'STRUCTURE DEFENSE TECH3',
-                'FACTORY TECH3',
+                'STRUCTURE DEFENSE TECH2',
+                'STRUCTURE DEFENSE',
+                'STRUCTURE',
                 'ALLUNITS',
             },
         },
@@ -194,16 +195,17 @@ BuilderGroup {
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100000,                                       -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            TargetSearchCategory = 'ALLUNITS',                                  -- Only find targets matching these categories.
+            TargetSearchCategory = categories.ALLUNITS,                         -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                'STRUCTURE EXPERIMENTAL SHIELD',
-                'STRUCTURE ARTILLERY',
-                'STRUCTURE NUKE',
-                'STRUCTURE ENERGYPRODUCTION',
+                'STRUCTURE EXPERIMENTAL ECONOMIC',
                 'STRUCTURE EXPERIMENTAL',
-                'STRUCTURE ANTIMISSILE TECH3',
+                'STRUCTURE NUKE',
+                'STRUCTURE FACTORY TECH3',
+                'STRUCTURE ENERGYPRODUCTION TECH3',
                 'STRUCTURE DEFENSE TECH3',
-                'FACTORY TECH3',
+                'STRUCTURE DEFENSE TECH2',
+                'STRUCTURE DEFENSE',
+                'STRUCTURE',
                 'ALLUNITS',
             },
         },
@@ -235,11 +237,19 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
-            AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
+            AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100000,                                       -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.ALLUNITS,                         -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                'EXPERIMENTAL',
+                'STRUCTURE EXPERIMENTAL ECONOMIC',
+                'STRUCTURE EXPERIMENTAL',
+                'STRUCTURE NUKE',
+                'STRUCTURE FACTORY TECH3',
+                'STRUCTURE ENERGYPRODUCTION TECH3',
+                'STRUCTURE DEFENSE TECH3',
+                'STRUCTURE DEFENSE TECH2',
+                'STRUCTURE DEFENSE',
+                'STRUCTURE',
                 'ALLUNITS',
             },
         },

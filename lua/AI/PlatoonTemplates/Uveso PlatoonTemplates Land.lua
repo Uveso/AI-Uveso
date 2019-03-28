@@ -16,17 +16,17 @@ PlatoonTemplate {
     }
 }
 PlatoonTemplate {
-    Name = 'LandAttackHuntUveso Arty 1 100',
+    Name = 'LandAttackHuntUveso Arty 1 20',
     Plan = 'LandAttackAIUveso',
     GlobalSquads = {
-        { categories.MOBILE * categories.LAND * categories.INDIRECTFIRE - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND - categories.SUBCOMMANDER, 1, 100, 'Attack', 'none' },
+        { categories.MOBILE * categories.LAND * categories.INDIRECTFIRE - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND - categories.SUBCOMMANDER, 1, 20, 'Attack', 'none' },
     }
 }
 PlatoonTemplate {
-    Name = 'LandAttackHuntUveso Tank 1 100',
+    Name = 'LandAttackHuntUveso Tank 1 20',
     Plan = 'LandAttackAIUveso',
     GlobalSquads = {
-        { categories.MOBILE * categories.LAND * categories.DIRECTFIRE - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND - categories.SUBCOMMANDER, 1, 100, 'Attack', 'none' },
+        { categories.MOBILE * categories.LAND * categories.DIRECTFIRE - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND - categories.SUBCOMMANDER, 1, 20, 'Attack', 'none' },
     }
 }
 PlatoonTemplate {
@@ -79,10 +79,10 @@ PlatoonTemplate {
     }
 }
 PlatoonTemplate {
-    Name = 'LandAttackHuntUveso 10 100',
+    Name = 'LandAttackHuntUveso 10 50',
     Plan = 'LandAttackAIUveso',
     GlobalSquads = {
-        { categories.MOBILE * categories.LAND - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND - categories.SUBCOMMANDER, 10, 100, 'Attack', 'none' },
+        { categories.MOBILE * categories.LAND - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND - categories.SUBCOMMANDER, 10, 50, 'Attack', 'none' },
     }
 }
 PlatoonTemplate {
@@ -204,10 +204,65 @@ PlatoonTemplate {
         { categories.MOBILE * categories.LAND - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND - categories.SUBCOMMANDER, 1, 50, 'Attack', 'none' }
     },
 }
+
 PlatoonTemplate {
-    Name = 'U1234-Trash All 1 1000',
-    Plan = 'LandAttackAIUveso',
-    GlobalSquads = {
-        { categories.MOBILE - categories.TRANSPORTFOCUS - categories.SCOUT - categories.ENGINEER - categories.COMMAND - categories.SUBCOMMANDER, 1, 1000, 'attack', 'None' }
-    },
+    Name = 'U1 LandSquads Amphibious',
+    FactionSquads = {
+        UEF = {
+--            { 'abc0000', 1, 1, 'attack', 'none' }
+        },
+        Aeon = {
+            { 'ual0201', 1, 1, 'attack', 'none' }
+        },
+        Cybran = {
+--            { 'abc0000', 1, 1, 'attack', 'none' }
+        },
+        Seraphim = {
+            { 'xsl0103', 1, 1, 'attack', 'none' }
+        },
+        Nomads = {
+            { 'inu1004', 1, 1, 'attack', 'none' }
+        },
+    }
+}
+PlatoonTemplate {
+    Name = 'U2 LandSquads Amphibious',
+    FactionSquads = {
+        UEF = {
+            { 'uel0203', 1, 1, 'attack', 'none' }
+        },
+        Aeon = {
+            { 'xal0203', 1, 1, 'attack', 'none' }
+        },
+        Cybran = {
+            { 'url0203', 1, 1, 'attack', 'none' }
+        },
+        Seraphim = {
+            { 'xsl0203', 1, 1, 'attack', 'none' }
+        },
+        Nomads = {
+            { 'inu2002', 1, 1, 'attack', 'none' },
+            { 'inu2003', 1, 1, 'attack', 'none' }
+        },
+    }
+}
+PlatoonTemplate {
+    Name = 'U3 LandSquads Amphibious',
+    FactionSquads = {
+        UEF = {
+            { 'xel0305', 1, 1, 'attack', 'none' }
+        },
+        Aeon = {
+            { 'dal0310', 1, 1, 'attack', 'none' }
+        },
+        Cybran = {
+            { 'xrl0305', 1, 1, 'attack', 'none' }
+        },
+        Seraphim = {
+            { 'xsl0303', 1, 1, 'attack', 'none' }
+        },
+        Nomads = {
+            { 'inu3002', 1, 1, 'attack', 'none' }
+        },
+    }
 }

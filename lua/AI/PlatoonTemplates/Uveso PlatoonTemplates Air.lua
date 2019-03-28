@@ -68,21 +68,21 @@ PlatoonTemplate {
     Name = 'U123-Bomber-Intercept 1 2', 
     Plan = 'InterceptorAIUveso',
     GlobalSquads = {
-        { categories.MOBILE * categories.AIR * categories.BOMBER - categories.EXPERIMENTAL, 1, 2, 'Attack', 'none' },
+        { categories.MOBILE * categories.AIR * categories.BOMBER - categories.EXPERIMENTAL - categories.ANTINAVY, 1, 2, 'Attack', 'none' },
     }
 }
 PlatoonTemplate {
     Name = 'U123-Bomber-Intercept 3 5', 
     Plan = 'InterceptorAIUveso',
     GlobalSquads = {
-        { categories.MOBILE * categories.AIR * categories.BOMBER - categories.EXPERIMENTAL, 3, 5, 'Attack', 'none' },
+        { categories.MOBILE * categories.AIR * categories.BOMBER - categories.EXPERIMENTAL - categories.ANTINAVY, 3, 5, 'Attack', 'none' },
     }
 }
 PlatoonTemplate {
     Name = 'U123-Bomber-Intercept 15 20', 
     Plan = 'InterceptorAIUveso',
     GlobalSquads = {
-        { categories.MOBILE * categories.AIR * categories.BOMBER - categories.EXPERIMENTAL, 15, 20, 'Attack', 'none' },
+        { categories.MOBILE * categories.AIR * categories.BOMBER - categories.EXPERIMENTAL - categories.ANTINAVY, 15, 20, 'Attack', 'none' },
     }
 }
 -- Torpedo Bomber
@@ -119,7 +119,7 @@ PlatoonTemplate {
     Name = 'U123-PanicGround 1 500', 
     Plan = 'InterceptorAIUveso',
     GlobalSquads = {
-        { categories.MOBILE * categories.AIR * ( categories.GROUNDATTACK + categories.BOMBER ) - categories.EXPERIMENTAL, 1, 500, 'Attack', 'none' },
+        { categories.MOBILE * categories.AIR * ( categories.GROUNDATTACK + categories.BOMBER ) - categories.EXPERIMENTAL - categories.ANTINAVY, 1, 500, 'Attack', 'none' },
     }
 }
 PlatoonTemplate {
@@ -219,14 +219,14 @@ PlatoonTemplate {
     Name = 'U12-AntiGroundCap 1 500', 
     Plan = 'InterceptorAIUveso',
     GlobalSquads = {
-        { categories.MOBILE * categories.AIR * ( categories.GROUNDATTACK + categories.BOMBER ) * ( categories.TECH1 + categories.TECH2 ), 1, 500, 'Attack', 'AttackFormation' },
+        { categories.MOBILE * categories.AIR * ( categories.GROUNDATTACK + categories.BOMBER ) * ( categories.TECH1 + categories.TECH2 ) - categories.ANTINAVY, 1, 500, 'Attack', 'AttackFormation' },
     }
 }
 PlatoonTemplate {
     Name = 'U12-AntiGroundCap 30 40', 
     Plan = 'InterceptorAIUveso',
     GlobalSquads = {
-        { categories.MOBILE * categories.AIR * ( categories.GROUNDATTACK + categories.BOMBER ) * ( categories.TECH1 + categories.TECH2 ), 30, 40, 'Attack', 'none' },
+        { categories.MOBILE * categories.AIR * ( categories.GROUNDATTACK + categories.BOMBER ) * ( categories.TECH1 + categories.TECH2 ) - categories.ANTINAVY, 30, 40, 'Attack', 'none' },
     }
 }
 PlatoonTemplate {

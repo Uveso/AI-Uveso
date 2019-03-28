@@ -90,6 +90,11 @@ BaseBuilderTemplate {
         'U123 Hover Formers Trasher',
 
         -----------------------------------------------------------------------------
+        -- ==== Amphibious Units BUILDER ==== --
+        -----------------------------------------------------------------------------
+        'U123 Amphibious Builders',
+
+        -----------------------------------------------------------------------------
         -- ==== Amphibious Units FORMER==== --
         -----------------------------------------------------------------------------
         'U123 Amphibious Formers PanicZone',
@@ -111,6 +116,7 @@ BaseBuilderTemplate {
         'U123 Air Formers MilitaryZone',
         'U123 Air Formers EnemyZone',
         'U123 Air Formers Trasher',
+        'U123 TorpedoBomber Formers',
 
         -----------------------------------------------------------------------------
         -- ==== EXPERIMENTALS BUILDER ==== --

@@ -70,7 +70,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Mass 30',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 0,
+        Priority = 17900,
         InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -93,7 +93,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Mass 60',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 0,
+        Priority = 17880,
         InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -123,7 +123,7 @@ BuilderGroup {
             { UCBC, 'CanBuildOnMassLessThanLocationDistance', { 'LocationType', 128, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Do we need additional conditions to build it ?
             { UCBC, 'HasNotParagon', {} },
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, 'ENGINEER TECH1' }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, 'ENGINEER TECH1' }},
             -- Have we the eco to build it ?
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<', categories.STRUCTURE * categories.MASSEXTRACTION } },
@@ -147,7 +147,7 @@ BuilderGroup {
             { UCBC, 'CanBuildOnMassLessThanLocationDistance', { 'LocationType', 256, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Do we need additional conditions to build it ?
             { UCBC, 'HasNotParagon', {} },
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, 'ENGINEER TECH1' }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, 'ENGINEER TECH1' }},
             -- Have we the eco to build it ?
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<', categories.STRUCTURE * categories.MASSEXTRACTION } },
@@ -171,7 +171,7 @@ BuilderGroup {
             { UCBC, 'CanBuildOnMassLessThanLocationDistance', { 'LocationType', 512, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Do we need additional conditions to build it ?
             { UCBC, 'HasNotParagon', {} },
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, 'ENGINEER TECH1' }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, 'ENGINEER TECH1' }},
             -- Have we the eco to build it ?
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<', categories.STRUCTURE * categories.MASSEXTRACTION } },
@@ -195,7 +195,7 @@ BuilderGroup {
             { UCBC, 'CanBuildOnMassLessThanLocationDistance', { 'LocationType', 1000, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Do we need additional conditions to build it ?
             { UCBC, 'HasNotParagon', {} },
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, 'ENGINEER TECH1' }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, 'ENGINEER TECH1' }},
             -- Have we the eco to build it ?
             -- Don't build it if...
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<', categories.STRUCTURE * categories.MASSEXTRACTION } },

@@ -16,7 +16,7 @@ BuilderGroup {
         BuilderName = 'U123 Hover PANIC 1 10',                                  -- Random Builder Name.
         PlatoonTemplate = 'U123 Hover 1 10',                                    -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
         Priority = 90,                                                          -- Priority. Higher priotity will be build more often then lower priotity.
-        InstanceCount = 2,                                                      -- Number of plattons that will be formed with this template.
+        InstanceCount = 4,                                                      -- Number of plattons that will be formed with this template.
         BuilderData = {
             SearchRadius = BasePanicZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
@@ -47,7 +47,7 @@ BuilderGroup {
         BuilderName = 'U123 Hover Military 1 100',                              -- Random Builder Name.
         PlatoonTemplate = 'U123 Hover 1 10',                                    -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
         Priority = 80,                                                        -- Priority. 1000 is normal.
-        InstanceCount = 2,                                                      -- Number of plattons that will be formed.
+        InstanceCount = 4,                                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                                    -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
@@ -82,7 +82,7 @@ BuilderGroup {
         BuilderName = 'U123 Hover Enemy 1 100',                                 -- Random Builder Name.
         PlatoonTemplate = 'U123 Hover 1 10',                                    -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
         Priority = 70,                                                        -- Priority. 1000 is normal.
-        InstanceCount = 2,                                                      -- Number of plattons that will be formed.
+        InstanceCount = 4,                                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)

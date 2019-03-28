@@ -43,4 +43,13 @@ PlatoonTemplate {
     },
 }
 
+-- Fix: This Template is missing in Nomads Mod
+PlatoonTemplate {
+    Name = 'T3SubKiller',
+    FactionSquads = {
+        Seraphim = {
+            { 'xss0304', 1, 1, 'attack', 'None' },
+        },
+    },
+}
 
