@@ -1131,7 +1131,7 @@ Platoon = Class(OldPlatoonClass) {
                 break
             end
             -- the maximum radis that the ACU can be away from base
-            maxRadius = (UUtils.ComHealth(cdr)-50)*5 -- If the comanders health is 100% then we have a maxtange of ~250 = (100-50)*5
+            maxRadius = (UUtils.ComHealth(cdr)-65)*7 -- If the comanders health is 100% then we have a maxtange of ~250 = (100-65)*7
             maxTimeRadius = 240 - GetGameTimeSeconds()/60*6 -- reduce the radius by 6 map units per minute. After 30 minutes it's (240-180) = 60
             if maxRadius > maxTimeRadius then 
                 maxRadius = math.max( 60, maxTimeRadius ) -- IF maxTimeRadius < 60 THEN maxTimeRadius = 60
@@ -1171,7 +1171,7 @@ Platoon = Class(OldPlatoonClass) {
                 --LOG('* ACUAttackAIUveso: CDRRunHomeHealthRange')
                 TargetUnit = false
             -- can we upgrade ?
-            elseif personality ~= 'uvesoswarm' and personality ~= 'uvesoswarmcheat' and VDist2(cdr.position[1], cdr.position[3], cdr.CDRHome[1], cdr.CDRHome[3]) > 50 and self:BuildACUEnhancememnts(cdr) then
+            elseif personality ~= 'uvesoswarm' and personality ~= 'uvesoswarmcheat' and VDist2(cdr.position[1], cdr.position[3], cdr.CDRHome[1], cdr.CDRHome[3]) > 40 and self:BuildACUEnhancememnts(cdr) then
                 --LOG('* ACUAttackAIUveso: BuildACUEnhancememnts')
                 -- Do nothing if BuildACUEnhancememnts is true. we are upgrading!
             -- only get a new target and make a move command if the target is dead

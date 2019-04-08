@@ -266,3 +266,24 @@ PlatoonTemplate {
         },
     }
 }
+PlatoonTemplate {
+    Name = 'U1 LandDFBot',
+    FactionSquads = {
+        UEF = {
+            { 'uel0106', 1, 1, 'attack', 'None' }
+        },
+        Aeon = {
+            { 'ual0106', 1, 1, 'attack', 'None' }
+        },
+        Cybran = {
+            { 'url0106', 1, 1, 'attack', 'None' }
+        },
+        Seraphim = {
+            --{ 'xsl0101', 1, 1, 'attack', 'none' }
+            { 'xsl0201', 1, 1, 'attack', 'none' }
+        },
+        Nomads = {
+            { 'inu0107', 1, 1, 'attack', 'none' }
+        },
+    }
+}

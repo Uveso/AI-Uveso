@@ -1,5 +1,15 @@
 *************************************************************************************************************************************
-v57 (not released)
+v58 (08.Apr.2019)
+
+- New: Added function to automatically generate AI Path markers. They can be printed to the game log for copy&paste (into map_save.lua)
+- New: Added platoon for early LABs attacks
+- Fix: Changed "HOVER" category to "FLOATING". (torpedos now working like before)
+- Opt: Changed techlevel to build  units. AI will now build higher tech units as fast as possible.
+- Opt: Decreased ACU-health/distance ratio from (ACUHealth-50)*5 to (ACUHealth-65)*7 (ACU will return earlier to the base on low health)
+- Opt: Changed max ACU attackradius to 250 (was 150)
+
+*************************************************************************************************************************************
+v57 (21.Mar.2019)
 
 - New: Added builder+former for amphibious units. incl Nomads. (water maps)
 - New: Added builder+former for torpedo bombers (water maps)

@@ -107,7 +107,6 @@ FactoryBuilderManager = Class(OldFactoryBuilderManagerClass) {
             return OldFactoryBuilderManagerClass.RallyPointMonitor(self)
         end
         -- Exit the ForkThread RallyPointMonitor
-        --LOG('*UVESO Ending forked thread RallyPointMonitor')
     end,
 
     SetRallyPoint = function(self, factory)
@@ -118,6 +117,5 @@ FactoryBuilderManager = Class(OldFactoryBuilderManagerClass) {
         -- don't set any rally point, we use units on the fly.
         return true
     end,
-    -- For AI Patch V2. 
 
 }

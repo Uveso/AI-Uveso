@@ -23,7 +23,7 @@ BuilderManager = Class(TheOldBuilderManager) {
             if not DEBUGBUILDER[ScenarioInfo.Options.AIBuilderNameDebug] then
                 DEBUGBUILDER[ScenarioInfo.Options.AIBuilderNameDebug] = true
                 for k,v in self.BuilderData[bType].Builders do
-                    LOG('* AI ('..ScenarioInfo.Options.AIBuilderNameDebug..') DEBUG: Builder ['..bType..']: Priority = '..v.Priority..' - possibleBuilders = '..repr(v.BuilderName))
+                    LOG('* '..ScenarioInfo.Options.AIBuilderNameDebug..'-AI: Builder ['..bType..']: Priority = '..v.Priority..' - possibleBuilders = '..repr(v.BuilderName))
                 end
             end
         end

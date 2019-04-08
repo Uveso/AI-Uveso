@@ -18,8 +18,41 @@ AIOpts = {
         },
     },
     {
+        default = 2,
+        label = "<LOC aisettings_0192>AI Map Marker generator",
+        help = "<LOC aisettings_0193>Autogenerate map markers for AI pathfinding on 5x5 and 10x10 maps",
+        key = 'AIMapMarker',
+        values = {
+            {
+                text = "<LOC aisettings_0194>Original Map markers",
+                help = "<LOC aisettings_0195>Use map markers done by the mapauthor",
+                key = 'map',
+            },
+            {
+                text = "<LOC aisettings_0196>Autogenerate when needed",
+                help = "<LOC aisettings_0197>Autogenerate map markers if no original markers are present",
+                key = 'miss',
+            },
+            {
+                text = "<LOC aisettings_0198>Autogenerate Always",
+                help = "<LOC aisettings_0199>Autogenerate map markers always (ignore original markers if present)",
+                key = 'all',
+            },
+            {
+                text = "<LOC aisettings_0200>No Marker",
+                help = "<LOC aisettings_0201>Use the c-engine to path the way (20%% slower)",
+                key = 'off',
+            },
+            {
+                text = "<LOC aisettings_0202>Print to game.log",
+                help = "<LOC aisettings_0203>Print the marker masterchain to the game.log for copy&paste",
+                key = 'print',
+            },
+        },
+    },
+    {
         default = 1,
-        label = "<LOC aisettings_0153>AI pathfinding",
+        label = "<LOC aisettings_0153>DEBUG: AI pathfinding",
         help = "<LOC aisettings_0154>Displays pathfinding, waypoints and location radii (only AI-Uveso)",
         key = 'AIPathingDebug',
         values = {
@@ -62,7 +95,7 @@ AIOpts = {
     },
     {
         default = 1,
-        label = "<LOC aisettings_0167>AI Platoon names",
+        label = "<LOC aisettings_0167>DEBUG: AI Platoon names",
         help = "<LOC aisettings_0168>Displays Platoon and AI plan name",
         key = 'AIPLatoonNameDebug',
         values = {
@@ -95,7 +128,7 @@ AIOpts = {
     },
     {
         default = 1,
-        label = "<LOC aisettings_0178>AI BuilderManager",
+        label = "<LOC aisettings_0178>DEBUG: AI BuilderManager",
         help = "<LOC aisettings_0179>Print platoon builder names into the game.log",
         key = 'AIBuilderNameDebug',
         values = {

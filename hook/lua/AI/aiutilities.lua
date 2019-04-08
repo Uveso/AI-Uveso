@@ -173,10 +173,15 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
                     end
                 end
                 count = count + 1
-                if count > 300 then
+                if count > 300 then -- 300 
                     WaitTicks(1)
                     count = 0
                 end
+                -- DEBUG; use the first target if we can path to it.
+                if UnitWithPath then
+                    return UnitWithPath, UnitNoPath, path, reason
+                end
+                -- DEBUG; use the first target if we can path to it.
             end
             if UnitWithPath then
                 return UnitWithPath, UnitNoPath, path, reason

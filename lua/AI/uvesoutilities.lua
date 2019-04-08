@@ -878,7 +878,7 @@ function GetDangerZoneRadii(bool)
     BasePanicZone = math.min( 120, BasePanicZone )
     -- The rest of the map is enemy zone
     local BaseEnemyZone = math.max( ScenarioInfo.size[1], ScenarioInfo.size[2] ) * 1.5
-    -- bool is only true if called from "AIBuilders/Mobile Land.lua", so we only print this once.
+    -- "bool" is only true if called from "AIBuilders/Mobile Land.lua", so we only print this once.
     if bool then
         LOG('* Uveso-AI: BasePanicZone= '..math.floor( BasePanicZone * 0.01953125 ) ..' Km - ('..BasePanicZone..' units)' )
         LOG('* Uveso-AI: BaseMilitaryZone= '..math.floor( BaseMilitaryZone * 0.01953125 )..' Km - ('..BaseMilitaryZone..' units)' )

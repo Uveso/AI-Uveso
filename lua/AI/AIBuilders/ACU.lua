@@ -14,7 +14,7 @@ BuilderGroup {
         Priority = 19250,                                                       -- Priority. Higher priotity will be build more often then lower priotity.
         InstanceCount = 5,                                                      -- Number of plattons that will be formed with this template.
         BuilderData = {
-            SearchRadius = BasePanicZone,                                       -- Searchradius from main base for new target. (A 5x5 Map is 256 high)
+            SearchRadius = 250,                                       -- Searchradius from main base for new target. (A 5x5 Map is 256 high)
 --            ReturnToBaseAfterGameTime = 30,                                   -- Use this platoon only for the first 60 miutes.
             GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
@@ -31,7 +31,7 @@ BuilderGroup {
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to build this ?
             -- Do we need additional conditions to build it ?
-            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.ALLUNITS - (categories.ENGINEER * categories.TECH1 * categories.TECH2) - categories.AIR - categories.SCOUT }}, -- radius, LocationType, unitCount, categoryEnemy
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  250, 'LocationType', 0, categories.ALLUNITS - (categories.ENGINEER * categories.TECH1 * categories.TECH2) - categories.AIR - categories.SCOUT }}, -- radius, LocationType, unitCount, categoryEnemy
             -- Don't build it if...
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.FACTORY * categories.LAND - categories.SUPPORTFACTORY } },
         },
