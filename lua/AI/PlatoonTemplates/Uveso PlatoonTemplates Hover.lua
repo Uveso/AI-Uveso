@@ -1,5 +1,6 @@
 
 -- ==== Global Form platoons ==== --
+if not categories.FLOATING then categories.FLOATING = categories.HOVER end
 
 PlatoonTemplate {
     Name = 'U123 Hover 1 10',
