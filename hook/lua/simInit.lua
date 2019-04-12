@@ -2,15 +2,23 @@ WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'.
 
 -- hooks for map validation on game start and debugstuff for pathfinding and base ranger.
 local CREATEAIMARKERS = true
-local MaxPassableElevation = 62
+local MaxPassableElevation = 48
+local MaxSlope = 0.36 -- 36
+local MaxAngle = 0.18 -- 18
 local CREATEDMARKERS = {}
 local MarkerCountX = 30
 local MarkerCountY = 30
+local ScanResolution = 0.4
+local FootprintSize = 0.20
 
 --local DebugMarker = 'Marker0-9' -- TKP Lakes
 --local DebugMarker = 'Marker1-0' -- Twin Rivers
 local DebugMarker = 'Marker00-00'
 local DebugValidMarkerPosition = false
+local TraceEast = false
+local TraceSouth = false
+local TraceSouthEast = false
+local TraceSouthWest = false
 
 local OldSetupSessionFunction = SetupSession
 function SetupSession()
@@ -30,8 +38,19 @@ function BeginSession()
         ForkThread(RenderMarkerCreator)
     end
     if CREATEAIMARKERS then
-        LOG('ForkThread(CreateAIMarkers)')
-        ForkThread(CreateAIMarkers)
+        -- In case we are debugging with linedraw and waits we need to fork this function
+        if DebugValidMarkerPosition then
+            LOG('* Uveso-AI: Debug: ForkThread(CreateAIMarkers)')
+            ForkThread(CreateAIMarkers)
+        -- Fist calculate markers, then continue with the game start sequence.
+        else
+            LOG('* Uveso-AI: Function CreateAIMarkers() started!')
+            local START = GetSystemTimeSecondsOnlyForProfileUse()
+            CreateAIMarkers()
+            local END = GetSystemTimeSecondsOnlyForProfileUse()
+            LOG(string.format('* Uveso-AI: Function CreateAIMarkers() finished, runtime: %.2f seconds.', END - START  ))
+
+        end
     end
 end
 
@@ -437,7 +456,7 @@ function RenderMarkerCreator()
             end
         end
         WaitTicks(2)
-        if GetGameTimeSeconds() > 5 then
+        if GetGameTimeSeconds() > 5 and not DebugValidMarkerPosition then
             return
         end
     end
@@ -445,10 +464,10 @@ end
 
 function CreateAIMarkers()
     if ScenarioInfo.Options.AIMapMarker == 'map' then
-        LOG('* Uveso-AI: Using the original marker from the map')
+        LOG('* Uveso-AI: Using the original marker from the map.')
         return
     elseif ScenarioInfo.Options.AIMapMarker == 'off' then
-        LOG('* Uveso-AI: No markers, deleting original marker...')
+        LOG('* Uveso-AI: Running without markers, deleting map marker.')
         CREATEDMARKERS = {}
         CopyMarkerToMASTERCHAIN('Land')
         CopyMarkerToMASTERCHAIN('Water')
@@ -463,13 +482,13 @@ function CreateAIMarkers()
             end
         end
         if count > 1 then
-            LOG('* Uveso-AI: Map has '..count..' markers, no autogenerating.')
+            LOG('* Uveso-AI: No autogenerating. Map has '..count..' marker.')
             return
         else
-            LOG('* Uveso-AI: Map has no markers; autogenerating!')
+            LOG('* Uveso-AI: Map has no markers; Generating marker, please wait...')
         end
     elseif ScenarioInfo.Options.AIMapMarker == 'all' then
-        LOG('* Uveso-AI: Generating markers always')
+        LOG('* Uveso-AI: Generating marker, please wait...')
     end
     -- Create Air Marker
     CREATEDMARKERS = {}
@@ -487,7 +506,9 @@ function CreateAIMarkers()
     -- connect air markers
     for Y = 0, MarkerCountY/2 - 1 do
         for X = 0, MarkerCountX/2 - 1 do
-            ConnectMarker(X,Y)
+            if not DebugValidMarkerPosition then
+                ConnectMarker(X,Y)
+            end
         end
     end
     -- Copy Markers to the Scenario.MasterChain._MASTERCHAIN
@@ -636,53 +657,55 @@ function CheckValidMarkerPosition(MarkerIndex)
     if GetTerrainHeight(CREATEDMARKERS[MarkerIndex].position[1], CREATEDMARKERS[MarkerIndex].position[3]) < GetSurfaceHeight(CREATEDMARKERS[MarkerIndex].position[1], CREATEDMARKERS[MarkerIndex].position[3]) then
         MarkerLayer = 'DefaultWater'
     end
-    local NewLine
-    local LastSHigh
-    local LastTHigh
-    local SHigh
-    local THigh
-    local Elevation
+    local UHigh, DHigh, LHigh, RHigh = 0,0,0,0
+    local LUHigh, RUHigh, LDHigh, RDHigh = 0,0,0,0
+    local Elevation1, Elevation2, Elevation3, RDHigh = 0,0,0
     local FAIL = 0
-    local MaxFails = 5
+    local MaxFails = 8 * 1/ScanResolution
     local MarkerPos = CREATEDMARKERS[MarkerIndex].position
     local ASCIIGFX = ''
     ------------------
     -- Check X Axis --
     ------------------
-    FAIL = 0
-    for Y = -4, 4, 0.5 do
-        NewLine = true
+    for Y = -4, 4, ScanResolution do
+        FAIL = 0
         ASCIIGFX = ''
-        for X = -4, 4, 0.5 do
+        for X = -4, 4, ScanResolution do
             if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
-                DrawLine( {MarkerPos[1] -4, MarkerPos[2], MarkerPos[3] + Y}, {MarkerPos[1] + X, MarkerPos[2], MarkerPos[3] + Y}, 'ffFFE0E0' )
-                WaitTicks(1)
+                --DrawLine( {MarkerPos[1] -4, MarkerPos[2], MarkerPos[3] + Y}, {MarkerPos[1] + X, MarkerPos[2], MarkerPos[3] + Y}, 'ffFFE0E0' )
+                --WaitTicks(1)
             end
-            if NewLine then
-                NewLine = false
-                LastSHigh = GetSurfaceHeight( MarkerPos[1] + X, MarkerPos[3] + Y )
-                LastTHigh = GetTerrainHeight( MarkerPos[1] + X, MarkerPos[3] + Y )
-            end
-            -- Elevation between checkpoints
-            SHigh = GetSurfaceHeight( MarkerPos[1] + X, MarkerPos[3] + Y )
-            THigh = GetTerrainHeight( MarkerPos[1] + X, MarkerPos[3] + Y )
-            Elevation = math.abs(math.floor(LastSHigh*100 - SHigh*100))
+            -- Check a square with FootprintSize if it has less then MaxPassableElevation ((circle 16:20  1:20*16 = 0.8))
+            High = GetSurfaceHeight( MarkerPos[1] + X, MarkerPos[3] + Y )
+            UHigh = GetSurfaceHeight( MarkerPos[1] + X, MarkerPos[3] + Y-FootprintSize )
+            DHigh = GetSurfaceHeight( MarkerPos[1] + X, MarkerPos[3] + Y-FootprintSize )
+            LHigh = GetSurfaceHeight( MarkerPos[1] + X-FootprintSize, MarkerPos[3] + Y )
+            RHigh = GetSurfaceHeight( MarkerPos[1] + X+FootprintSize, MarkerPos[3] + Y )
+            LUHigh = GetSurfaceHeight( MarkerPos[1] + X-FootprintSize*0.8, MarkerPos[3] + Y-FootprintSize*0.8 )
+            RUHigh = GetSurfaceHeight( MarkerPos[1] + X+FootprintSize*0.8, MarkerPos[3] + Y-FootprintSize*0.8 )
+            LDHigh = GetSurfaceHeight( MarkerPos[1] + X-FootprintSize*0.8, MarkerPos[3] + Y+FootprintSize*0.8 )
+            RDHigh = GetSurfaceHeight( MarkerPos[1] + X+FootprintSize*0.8, MarkerPos[3] + Y+FootprintSize*0.8 )
+            ElevationUD = math.abs(math.floor( ((High - UHigh) - (High - DHigh)) * 100 ))
+            ElevationLR = math.abs(math.floor( ((High - LHigh) - (High - RHigh)) * 100 ))
+            ElevationLU = math.abs(math.floor( ((High - LUHigh) - (High - RDHigh)) * 100 ))
+            ElevationRU = math.abs(math.floor( ((High - RUHigh) - (High - LDHigh)) * 100 ))
             if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
-                if Elevation ~= 0 then
-                    --LOG('*CheckValidMarkerPosition MaxPassableElevation : '..Elevation )
+                if ElevationUD ~= 0 or ElevationLR ~= 0 or ElevationLU ~= 0 or ElevationRU ~= 0 then
+                    --LOG('*CheckValidMarkerPosition Elevation : '..ElevationUD..' '..ElevationLR..' '..ElevationLU..' '..ElevationRU..'' )
                 end
             end
-            if Elevation > MaxPassableElevation then
-                if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
-                    --WARN('*CheckValidMarkerPosition MaxPassableElevation Blocked!!! '..Elevation )
-                end
+            if ElevationUD > MaxPassableElevation or ElevationLR > MaxPassableElevation or ElevationLU > MaxPassableElevation or ElevationRU > MaxPassableElevation then
                 FAIL = FAIL + 1
                 ASCIIGFX = ASCIIGFX..'----'
-                break
+                if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
+                    WARN('*CheckValidMarkerPosition Elevation  : '..ElevationUD..' '..ElevationLR..' '..ElevationLU..' '..ElevationRU..' BLOCKED ('..FAIL..'/'..MaxFails..')' )
+                end
             else
                 ASCIIGFX = ASCIIGFX..'....'
             end
             -- check Land / Water passage
+            SHigh = GetSurfaceHeight( MarkerPos[1] + X, MarkerPos[3] + Y )
+            THigh = GetTerrainHeight( MarkerPos[1] + X, MarkerPos[3] + Y )
             if MarkerLayer ~= 'DefaultAmphibious' then
                 if THigh < SHigh then
                     if MarkerLayer ~= 'DefaultWater' then
@@ -700,56 +723,62 @@ function CheckValidMarkerPosition(MarkerIndex)
                     end
                 end
             end
-            LastSHigh = SHigh
-            LastTHigh = THigh
         end
         if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
             LOG(ASCIIGFX)
         end
+        if FAIL >= MaxFails then
+            if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
+                WARN('*CheckValidMarkerPosition X Axis ('..FAIL..') Failed')
+            end
+            return 'Blocked'
+        end
     end
     if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
-        WARN('*CheckValidMarkerPosition X Axis ('..FAIL..') Fails')
-    end
-    if FAIL >= MaxFails then
-        return 'Blocked'
+        LOG('*CheckValidMarkerPosition X Axis ('..FAIL..')')
     end
     ------------------
     -- Check Y Axis --
     ------------------
-    FAIL = 0
-    for X = -4, 4, 0.5 do
-        NewLine = true
+    for X = -4, 4, ScanResolution do
+        FAIL = 0
         ASCIIGFX = ''
-        for Y = -4, 4, 0.5 do
+        for Y = -4, 4, ScanResolution do
             if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
-                DrawLine( {MarkerPos[1] + X , MarkerPos[2], MarkerPos[3] -4}, {MarkerPos[1] + X, MarkerPos[2], MarkerPos[3] + Y}, 'ffFFE0E0' )
-                WaitTicks(1)
+                --DrawLine( {MarkerPos[1] + X , MarkerPos[2], MarkerPos[3] -4}, {MarkerPos[1] + X, MarkerPos[2], MarkerPos[3] + Y}, 'ffFFE0E0' )
+                --WaitTicks(1)
             end
-            if NewLine then
-                NewLine = false
-                LastSHigh = GetSurfaceHeight( MarkerPos[1] + X, MarkerPos[3] + Y )
-                LastTHigh = GetTerrainHeight( MarkerPos[1] + X, MarkerPos[3] + Y )
-            end
-            -- Elevation between checkpoints
-            SHigh = GetSurfaceHeight( MarkerPos[1] + X, MarkerPos[3] + Y )
-            THigh = GetTerrainHeight( MarkerPos[1] + X, MarkerPos[3] + Y )
-            Elevation = math.abs(math.floor(LastSHigh*100 - SHigh*100))
+            -- Check a square with FootprintSize if it has less then MaxPassableElevation ((circle 16:20  1:20*16 = 0.8))
+            High = GetSurfaceHeight( MarkerPos[1] + X, MarkerPos[3] + Y )
+            UHigh = GetSurfaceHeight( MarkerPos[1] + X, MarkerPos[3] + Y-FootprintSize )
+            DHigh = GetSurfaceHeight( MarkerPos[1] + X, MarkerPos[3] + Y-FootprintSize )
+            LHigh = GetSurfaceHeight( MarkerPos[1] + X-FootprintSize, MarkerPos[3] + Y )
+            RHigh = GetSurfaceHeight( MarkerPos[1] + X+FootprintSize, MarkerPos[3] + Y )
+            LUHigh = GetSurfaceHeight( MarkerPos[1] + X-FootprintSize*0.8, MarkerPos[3] + Y-FootprintSize*0.8 )
+            RUHigh = GetSurfaceHeight( MarkerPos[1] + X+FootprintSize*0.8, MarkerPos[3] + Y-FootprintSize*0.8 )
+            LDHigh = GetSurfaceHeight( MarkerPos[1] + X-FootprintSize*0.8, MarkerPos[3] + Y+FootprintSize*0.8 )
+            RDHigh = GetSurfaceHeight( MarkerPos[1] + X+FootprintSize*0.8, MarkerPos[3] + Y+FootprintSize*0.8 )
+            ElevationUD = math.abs(math.floor( ((High - UHigh) - (High - DHigh)) * 100 ))
+            ElevationLR = math.abs(math.floor( ((High - LHigh) - (High - RHigh)) * 100 ))
+            ElevationLU = math.abs(math.floor( ((High - LUHigh) - (High - RDHigh)) * 100 ))
+            ElevationRU = math.abs(math.floor( ((High - RUHigh) - (High - LDHigh)) * 100 ))
             if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
-                if Elevation ~= 0 then
-                    --LOG('*CheckValidMarkerPosition MaxPassableElevation : '..Elevation )
+                if ElevationUD ~= 0 or ElevationLR ~= 0 or ElevationLU ~= 0 or ElevationRU ~= 0 then
+                    --LOG('*CheckValidMarkerPosition Elevation : '..ElevationUD..' '..ElevationLR..' '..ElevationLU..' '..ElevationRU..'' )
                 end
             end
-            if Elevation > MaxPassableElevation then
-                if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
-                    --WARN('*CheckValidMarkerPosition MaxPassableElevation Blocked!!! '..Elevation )
-                end
+            if ElevationUD > MaxPassableElevation or ElevationLR > MaxPassableElevation or ElevationLU > MaxPassableElevation or ElevationRU > MaxPassableElevation then
                 FAIL = FAIL + 1
                 ASCIIGFX = ASCIIGFX..'----'
-                break
+                if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
+                    WARN('*CheckValidMarkerPosition Elevation  : '..ElevationUD..' '..ElevationLR..' '..ElevationLU..' '..ElevationRU..' BLOCKED ('..FAIL..'/'..MaxFails..')' )
+                end
             else
                 ASCIIGFX = ASCIIGFX..'....'
             end
             -- check Land / Water passage
+            SHigh = GetSurfaceHeight( MarkerPos[1] + X, MarkerPos[3] + Y )
+            THigh = GetTerrainHeight( MarkerPos[1] + X, MarkerPos[3] + Y )
             if MarkerLayer ~= 'DefaultAmphibious' then
                 if THigh < SHigh then
                     if MarkerLayer ~= 'DefaultWater' then
@@ -767,18 +796,19 @@ function CheckValidMarkerPosition(MarkerIndex)
                     end
                 end
             end
-            LastSHigh = SHigh
-            LastTHigh = THigh
         end
         if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
             LOG(ASCIIGFX)
         end
+        if FAIL >= MaxFails then
+            if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
+                WARN('*CheckValidMarkerPosition Y Axis ('..FAIL..') Failed')
+            end
+            return 'Blocked'
+        end
     end
     if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
-        WARN('*CheckValidMarkerPosition Y Axis ('..FAIL..') Fails')
-    end
-    if FAIL >= MaxFails then
-        return 'Blocked'
+        LOG('*CheckValidMarkerPosition Y Axis ('..FAIL..')')
     end
     return MarkerLayer
 end
@@ -786,10 +816,11 @@ end
 function ConnectMarker(X,Y)
     local MarkerIndex = 'Marker'..X..'-'..Y
     -- First check a path to East Marker
-    local MaxFails = 8
-    local SHigh
-    local LastSHigh
-    local NewLine
+    local MaxFails = 9
+    local UHigh, DHigh, LHigh, RHigh = 0,0,0,0
+    local LUHigh, RUHigh, LDHigh, RDHigh = 0,0,0,0
+    local LUHigh, RUHigh, LDHigh, RDHigh = 0,0,0,0
+    local ElevationUD, ElevationLR, ElevationLU, ElevationRU = 0,0,0
     local MarkerPos = CREATEDMARKERS[MarkerIndex].position
     local ASCIIGFX = ''
     -----------------------------------------
@@ -798,76 +829,47 @@ function ConnectMarker(X,Y)
     FAIL = 0
     local LastElevation
     local EastMarkerIndex = 'Marker'..(X+1)..'-'..Y
-    for Y = -3, 3, 0.5 do
-        NewLine = true
+    for Y = -3, 3, ScanResolution do
         ASCIIGFX = ''
         if not CREATEDMARKERS[EastMarkerIndex] then continue end
-        for X = MarkerPos[1], CREATEDMARKERS[EastMarkerIndex].position[1], 0.5 do
-            if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
+        for X = MarkerPos[1], CREATEDMARKERS[EastMarkerIndex].position[1], ScanResolution do
+            if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceEast then
                 DrawLine( {MarkerPos[1], MarkerPos[2], MarkerPos[3] + Y}, { X, MarkerPos[2], MarkerPos[3] + Y}, 'ffFFE0E0' )
                 WaitTicks(1)
             end
-            if NewLine then
-                NewLine = false
-                LastSHigh = GetSurfaceHeight( X, MarkerPos[3] + Y )
-                LastElevation = false
-            end
-            -- Elevation between checkpoints
             local Block = false
-            SHigh = GetSurfaceHeight( X, MarkerPos[3] + Y )
-            Elevation = math.abs(math.floor(LastSHigh*100 - SHigh*100))
-            if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
-                if Elevation ~= 0 then
-                    --LOG('*ConnectMarker MaxPassableElevation : '..Elevation )
-                end
+            -- Check a square with FootprintSize if it has less then MaxSlope/MaxAngle ((circle 16:20  1:20*16 = 0.8))
+            High = GetSurfaceHeight( X, MarkerPos[3] + Y )
+            UHigh = High - GetSurfaceHeight( X, MarkerPos[3] + Y-FootprintSize )
+            DHigh = High - GetSurfaceHeight( X, MarkerPos[3] + Y-FootprintSize )
+            LHigh = High - GetSurfaceHeight( X-FootprintSize, MarkerPos[3] + Y )
+            RHigh = High - GetSurfaceHeight( X+FootprintSize, MarkerPos[3] + Y )
+            LUHigh = High - GetSurfaceHeight( X-FootprintSize*0.8, MarkerPos[3] + Y-FootprintSize*0.8 )
+            RUHigh = High - GetSurfaceHeight( X+FootprintSize*0.8, MarkerPos[3] + Y-FootprintSize*0.8 )
+            LDHigh = High - GetSurfaceHeight( X-FootprintSize*0.8, MarkerPos[3] + Y+FootprintSize*0.8 )
+            RDHigh = High - GetSurfaceHeight( X+FootprintSize*0.8, MarkerPos[3] + Y+FootprintSize*0.8 )
+            if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceEast then
+                LOG('*ConnectMarker slope  : '..string.format("slope:  %.2f  %.2f  %.2f  %.2f   angle:  %.2f  %.2f  %.2f  %.2f ... %.2f  %.2f  %.2f  %.2f", math.abs(UHigh - DHigh), math.abs(LHigh - RHigh), math.abs(LUHigh - RDHigh), math.abs(RUHigh - LDHigh), math.abs(UHigh), math.abs(DHigh), math.abs(LHigh), math.abs(RHigh), math.abs(LUHigh), math.abs(RUHigh), math.abs(LDHigh), math.abs(RDHigh) ) )
             end
-            if Elevation > MaxPassableElevation then
-                if DebugMarker == MarkerIndex then
-                    --WARN('*ConnectMarker MaxPassableElevation Blocked!!! '..Elevation )
-                end
-                Block = true
-            end
-            -- Up
-            SHigh = GetSurfaceHeight( X - 0.5, MarkerPos[3] + Y - 1)
-            Elevation = math.abs(math.floor(LastSHigh*100 - SHigh*100))
-            if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
-                if Elevation ~= 0 then
-                    --LOG('*ConnectMarker MaxPassableElevation U : '..Elevation )
-                end
-            end
-            if Elevation > MaxPassableElevation then
-                if DebugMarker == MarkerIndex then
-                    --WARN('*ConnectMarker MaxPassableElevation U Blocked!!! '..Elevation )
+            if math.abs(UHigh - DHigh) > MaxSlope or math.abs(LHigh - RHigh) > MaxSlope or math.abs(LUHigh - RDHigh) > MaxSlope or math.abs(RUHigh - LDHigh) > MaxSlope then
+                if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceSouth then
+                    WARN('*ConnectMarker slope  : '..string.format("%.2f %.2f %.2f %.2f", math.abs(UHigh - DHigh), math.abs(LHigh - RHigh), math.abs(LUHigh - RDHigh), math.abs(RUHigh - LDHigh) ) )
                 end
                 Block = true
             end
-            -- Down
-            SHigh = GetSurfaceHeight( X - 0.5, MarkerPos[3] + Y + 1)
-            Elevation = math.abs(math.floor(LastSHigh*100 - SHigh*100))
-            if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
-                if Elevation ~= 0 then
-                    --LOG('*ConnectMarker MaxPassableElevation D : '..Elevation )
-                end
-            end
-            if Elevation > MaxPassableElevation then
-                if DebugMarker == MarkerIndex then
-                    --WARN('*ConnectMarker MaxPassableElevation D Blocked!!! '..Elevation )
+            if math.abs(UHigh) > MaxAngle or math.abs(DHigh) > MaxAngle or math.abs(LHigh) > MaxAngle or math.abs(RHigh) > MaxAngle or math.abs(LUHigh) > MaxAngle or math.abs(RUHigh) > MaxAngle or math.abs(LDHigh) > MaxAngle or math.abs(RDHigh) > MaxAngle then
+                if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceSouth then
+                    WARN('*ConnectMarker angle  : '..string.format("%.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f", math.abs(UHigh), math.abs(DHigh), math.abs(LHigh), math.abs(RHigh), math.abs(LUHigh), math.abs(RUHigh), math.abs(LDHigh), math.abs(RDHigh) ) )
                 end
                 Block = true
             end
-
-
             if Block == true then
-                if DebugMarker == MarkerIndex then
-                    --WARN('*ConnectMarker MaxPassableElevation Blocked!!! '..Elevation )
-                end
                 FAIL = FAIL + 1
                 ASCIIGFX = ASCIIGFX..'----'
                 break
             else
                 ASCIIGFX = ASCIIGFX..'....'
             end
-            LastSHigh = SHigh
         end
         if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
             LOG(ASCIIGFX)
@@ -894,106 +896,67 @@ function ConnectMarker(X,Y)
                 CREATEDMARKERS[EastMarkerIndex].adjacentTo = CREATEDMARKERS[EastMarkerIndex].adjacentTo..' '..MarkerIndex
             end
         end
-        if DebugMarker == MarkerIndex then
+        if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
             LOG('*ConnectMarker Terrain Free -> Connecting ('..MarkerIndex..') with ('..EastMarkerIndex..')')
         end
     else
-        if DebugMarker == MarkerIndex then
+        if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
             WARN('*ConnectMarker Terrain Blocked. Cant connect ('..MarkerIndex..') with ('..EastMarkerIndex..')')
         end
     end
-
     ------------------------------------------
     -- Search for a connection to S (South) --
     ------------------------------------------
     FAIL = 0
     local SouthMarkerIndex = 'Marker'..X..'-'..(Y+1)
-    for X = -3, 3, 0.5 do
-        NewLine = true
+    for X = -3, 3, ScanResolution do
         ASCIIGFX = ''
-        MaxElevation = 0
         if not CREATEDMARKERS[SouthMarkerIndex] then continue end
-        for Y = MarkerPos[3], CREATEDMARKERS[SouthMarkerIndex].position[3], 0.5 do
-            if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
+        for Y = MarkerPos[3], CREATEDMARKERS[SouthMarkerIndex].position[3], ScanResolution do
+            if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceSouth then
                 DrawLine( {MarkerPos[1] + X, MarkerPos[2], MarkerPos[3]}, { MarkerPos[1] + X, MarkerPos[2], Y}, 'ffFFE0E0' )
                 WaitTicks(1)
             end
-            if NewLine then
-                NewLine = false
-                LastSHigh = GetSurfaceHeight( MarkerPos[1] + X, Y )
-            end
-            -- Elevation between checkpoints
             local Block = false
-            SHigh = GetSurfaceHeight( MarkerPos[1] + X, Y )
-            Elevation = math.abs(math.floor(LastSHigh*100 - SHigh*100))
-            if Elevation > MaxElevation then
-                MaxElevation = Elevation
+            -- Check a square with FootprintSize if it has less then MaxSlope/MaxAngle ((circle 16:20  1:20*16 = 0.8))
+            High = GetSurfaceHeight( MarkerPos[1] + X, Y )
+            UHigh = High - GetSurfaceHeight( MarkerPos[1] + X, Y-FootprintSize )
+            DHigh = High - GetSurfaceHeight( MarkerPos[1] + X, Y-FootprintSize )
+            LHigh = High - GetSurfaceHeight( MarkerPos[1] + X-FootprintSize, Y )
+            RHigh = High - GetSurfaceHeight( MarkerPos[1] + X+FootprintSize, Y )
+            LUHigh = High - GetSurfaceHeight( MarkerPos[1] + X-FootprintSize*0.8, Y-FootprintSize*0.8 )
+            RUHigh = High - GetSurfaceHeight( MarkerPos[1] + X+FootprintSize*0.8, Y-FootprintSize*0.8 )
+            LDHigh = High - GetSurfaceHeight( MarkerPos[1] + X-FootprintSize*0.8, Y+FootprintSize*0.8 )
+            RDHigh = High - GetSurfaceHeight( MarkerPos[1] + X+FootprintSize*0.8, Y+FootprintSize*0.8 )
+            if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceSouth then
+                LOG('*ConnectMarker slope  : '..string.format("slope:  %.2f  %.2f  %.2f  %.2f   angle:  %.2f  %.2f  %.2f  %.2f ... %.2f  %.2f  %.2f  %.2f", math.abs(UHigh - DHigh), math.abs(LHigh - RHigh), math.abs(LUHigh - RDHigh), math.abs(RUHigh - LDHigh), math.abs(UHigh), math.abs(DHigh), math.abs(LHigh), math.abs(RHigh), math.abs(LUHigh), math.abs(RUHigh), math.abs(LDHigh), math.abs(RDHigh) ) )
             end
-            if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
-                if Elevation ~= 0 then
-                    --LOG('*ConnectMarker MaxPassableElevation : '..Elevation )
-                end
-            end
-            if Elevation > MaxPassableElevation then
-                if DebugMarker == MarkerIndex then
-                    --WARN('*ConnectMarker MaxPassableElevation Blocked!!! '..Elevation )
-                end
-                Block = true
-            end
-            -- left
-            SHigh = GetSurfaceHeight( MarkerPos[1] + X -1 , Y -0.5 )
-            Elevation = math.abs(math.floor(LastSHigh*100 - SHigh*100))
-            if Elevation > MaxElevation then
-                MaxElevation = Elevation
-            end
-            if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
-                if Elevation ~= 0 then
-                    --LOG('*ConnectMarker MaxPassableElevation L : '..Elevation )
-                end
-            end
-            if Elevation > MaxPassableElevation then
-                if DebugMarker == MarkerIndex then
-                    --WARN('*ConnectMarker MaxPassableElevation L Blocked!!! '..Elevation )
+            if math.abs(UHigh - DHigh) > MaxSlope or math.abs(LHigh - RHigh) > MaxSlope or math.abs(LUHigh - RDHigh) > MaxSlope or math.abs(RUHigh - LDHigh) > MaxSlope then
+                if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceSouth then
+                    WARN('*ConnectMarker slope  : '..string.format("%.2f %.2f %.2f %.2f", math.abs(UHigh - DHigh), math.abs(LHigh - RHigh), math.abs(LUHigh - RDHigh), math.abs(RUHigh - LDHigh) ) )
                 end
                 Block = true
             end
-            -- right
-            SHigh = GetSurfaceHeight( MarkerPos[1] + X +1, Y -0.5)
-            Elevation = math.abs(math.floor(LastSHigh*100 - SHigh*100))
-            if Elevation > MaxElevation then
-                MaxElevation = Elevation
-            end
-            if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
-                if Elevation ~= 0 then
-                    --LOG('*ConnectMarker MaxPassableElevation R : '..Elevation )
-                end
-            end
-            if Elevation > MaxPassableElevation then
-                if DebugMarker == MarkerIndex then
-                    --WARN('*ConnectMarker MaxPassableElevation R Blocked!!! '..Elevation )
+            if math.abs(UHigh) > MaxAngle or math.abs(DHigh) > MaxAngle or math.abs(LHigh) > MaxAngle or math.abs(RHigh) > MaxAngle or math.abs(LUHigh) > MaxAngle or math.abs(RUHigh) > MaxAngle or math.abs(LDHigh) > MaxAngle or math.abs(RDHigh) > MaxAngle then
+                if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceSouth then
+                    WARN('*ConnectMarker angle  : '..string.format("%.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f", math.abs(UHigh), math.abs(DHigh), math.abs(LHigh), math.abs(RHigh), math.abs(LUHigh), math.abs(RUHigh), math.abs(LDHigh), math.abs(RDHigh) ) )
                 end
                 Block = true
             end
-
-
             if Block == true then
-                if DebugMarker == MarkerIndex then
-                    --WARN('*ConnectMarker MaxPassableElevation Blocked!!! '..Elevation )
-                end
                 FAIL = FAIL + 1
                 ASCIIGFX = ASCIIGFX..'----'
                 break
             else
                 ASCIIGFX = ASCIIGFX..'....'
             end
-            LastSHigh = SHigh
         end
-        if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
+        if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceSouth then
             LOG(ASCIIGFX)
         end
     end
     if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
-        WARN('*CheckValidMarkerPosition South ('..FAIL..') Fails - Max Elevation= '..MaxElevation)
+        WARN('*ConnectMarker South ('..FAIL..') Fails')
     end
     -- Check if we have failed to find pathable Terrain
     if FAIL < MaxFails or CREATEDMARKERS[MarkerIndex]['graph'] == 'DefaultAir' then
@@ -1013,11 +976,11 @@ function ConnectMarker(X,Y)
                 CREATEDMARKERS[SouthMarkerIndex].adjacentTo = CREATEDMARKERS[SouthMarkerIndex].adjacentTo..' '..MarkerIndex
             end
         end
-        if DebugMarker == MarkerIndex then
+        if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
             LOG('*ConnectMarker Terrain Free -> Connecting ('..MarkerIndex..') with ('..SouthMarkerIndex..')')
         end
     else
-        if DebugMarker == MarkerIndex then
+        if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
             WARN('*ConnectMarker Terrain Blocked. Cant connect ('..MarkerIndex..') with ('..SouthMarkerIndex..')')
         end
     end
@@ -1028,74 +991,46 @@ function ConnectMarker(X,Y)
     FAIL = 0
     local SouthEastMarkerIndex = 'Marker'..(X+1)..'-'..(Y+1)
     if CREATEDMARKERS[SouthEastMarkerIndex] then
-        for X = -3, 3, 0.5 do
-            NewLine = true
+        for X = -3, 3, ScanResolution do
             ASCIIGFX = ''
-            for XY = 0, CREATEDMARKERS[SouthEastMarkerIndex].position[3] - MarkerPos[3] , 0.5 do
+            for XY = 0, CREATEDMARKERS[SouthEastMarkerIndex].position[3] - MarkerPos[3] , ScanResolution do
                 if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
-                    DrawLine( {MarkerPos[1] + X, MarkerPos[2], MarkerPos[3] - X}, { MarkerPos[1] + X+XY, MarkerPos[2], MarkerPos[3] + XY - X}, 'ffFFE0E0' )
-                    WaitTicks(1)
+                    --DrawLine( {MarkerPos[1] + X, MarkerPos[2], MarkerPos[3] - X}, { MarkerPos[1] + X+XY, MarkerPos[2], MarkerPos[3] + XY - X}, 'ffFFE0E0' )
+                    --WaitTicks(1)
                 end
-                if NewLine then
-                    NewLine = false
-                    LastSHigh = GetSurfaceHeight( MarkerPos[1] + X+XY, MarkerPos[3] + XY -X )
-                end
-                -- Elevation between checkpoints
                 local Block = false
-                SHigh = GetSurfaceHeight( MarkerPos[1] + X+XY, MarkerPos[3] + XY -X )
-                Elevation = math.abs(math.floor(LastSHigh*100 - SHigh*100))
-                if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
-                    if Elevation ~= 0 then
-                        --LOG('*ConnectMarker MaxPassableElevation : '..Elevation )
-                    end
+                -- Check a square with FootprintSize if it has less then MaxPassableElevation ((circle 16:20  1:20*16 = 0.8))
+                High = GetSurfaceHeight( MarkerPos[1] + X+XY, MarkerPos[3] + XY-X )
+                UHigh = High - GetSurfaceHeight( MarkerPos[1] + X+XY, MarkerPos[3] + XY-X-FootprintSize )
+                DHigh = High - GetSurfaceHeight( MarkerPos[1] + X+XY, MarkerPos[3] + XY-X-FootprintSize )
+                LHigh = High - GetSurfaceHeight( MarkerPos[1] + X+XY-FootprintSize, MarkerPos[3] + XY-X )
+                RHigh = High - GetSurfaceHeight( MarkerPos[1] + X+XY+FootprintSize, MarkerPos[3] + XY-X )
+                LUHigh = High - GetSurfaceHeight( MarkerPos[1] + X+XY-FootprintSize*0.8, MarkerPos[3] + XY-X-FootprintSize*0.8 )
+                RUHigh = High - GetSurfaceHeight( MarkerPos[1] + X+XY+FootprintSize*0.8, MarkerPos[3] + XY-X-FootprintSize*0.8 )
+                LDHigh = High - GetSurfaceHeight( MarkerPos[1] + X+XY-FootprintSize*0.8, MarkerPos[3] + XY-X+FootprintSize*0.8 )
+                RDHigh = High - GetSurfaceHeight( MarkerPos[1] + X+XY+FootprintSize*0.8, MarkerPos[3] + XY-X+FootprintSize*0.8 )
+                if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceSouthEast then
+                    LOG('*ConnectMarker slope  : '..string.format("slope:  %.2f  %.2f  %.2f  %.2f   angle:  %.2f  %.2f  %.2f  %.2f ... %.2f  %.2f  %.2f  %.2f", math.abs(UHigh - DHigh), math.abs(LHigh - RHigh), math.abs(LUHigh - RDHigh), math.abs(RUHigh - LDHigh), math.abs(UHigh), math.abs(DHigh), math.abs(LHigh), math.abs(RHigh), math.abs(LUHigh), math.abs(RUHigh), math.abs(LDHigh), math.abs(RDHigh) ) )
                 end
-                if Elevation > MaxPassableElevation then
-                    if DebugMarker == MarkerIndex then
-                        --WARN('*ConnectMarker MaxPassableElevation Blocked!!! '..Elevation )
-                    end
-                    Block = true
-                end
-                -- Up
-                SHigh = GetSurfaceHeight( MarkerPos[1] + X+XY, MarkerPos[3] + XY -X -1)
-                Elevation = math.abs(math.floor(LastSHigh*100 - SHigh*100))
-                if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
-                    if Elevation ~= 0 then
-                        --LOG('*ConnectMarker MaxPassableElevation U : '..Elevation )
-                    end
-                end
-                if Elevation > MaxPassableElevation then
-                    if DebugMarker == MarkerIndex then
-                        --WARN('*ConnectMarker MaxPassableElevation U Blocked!!! '..Elevation )
+                if math.abs(UHigh - DHigh) > MaxSlope or math.abs(LHigh - RHigh) > MaxSlope or math.abs(LUHigh - RDHigh) > MaxSlope or math.abs(RUHigh - LDHigh) > MaxSlope then
+                    if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceSouthEast then
+                        WARN('*ConnectMarker slope  : '..string.format("%.2f %.2f %.2f %.2f", math.abs(UHigh - DHigh), math.abs(LHigh - RHigh), math.abs(LUHigh - RDHigh), math.abs(RUHigh - LDHigh) ) )
                     end
                     Block = true
                 end
-                -- left
-                SHigh = GetSurfaceHeight( MarkerPos[1] + X+XY-1, MarkerPos[3] + XY -X )
-                Elevation = math.abs(math.floor(LastSHigh*100 - SHigh*100))
-                if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
-                    if Elevation ~= 0 then
-                        --LOG('*ConnectMarker MaxPassableElevation D : '..Elevation )
-                    end 
-                end 
-                if Elevation > MaxPassableElevation then
-                    if DebugMarker == MarkerIndex then
-                        --WARN('*ConnectMarker MaxPassableElevation D Blocked!!! '..Elevation )
+                if math.abs(UHigh) > MaxAngle or math.abs(DHigh) > MaxAngle or math.abs(LHigh) > MaxAngle or math.abs(RHigh) > MaxAngle or math.abs(LUHigh) > MaxAngle or math.abs(RUHigh) > MaxAngle or math.abs(LDHigh) > MaxAngle or math.abs(RDHigh) > MaxAngle then
+                    if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceSouthEast then
+                        WARN('*ConnectMarker angle  : '..string.format("%.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f", math.abs(UHigh), math.abs(DHigh), math.abs(LHigh), math.abs(RHigh), math.abs(LUHigh), math.abs(RUHigh), math.abs(LDHigh), math.abs(RDHigh) ) )
                     end
                     Block = true
                 end
-
-
                 if Block == true then
-                    if DebugMarker == MarkerIndex then
-                        --WARN('*ConnectMarker MaxPassableElevation Blocked!!! '..Elevation )
-                    end
                     FAIL = FAIL + 1
                     ASCIIGFX = ASCIIGFX..'----'
                     break
                 else
                     ASCIIGFX = ASCIIGFX..'....'
                 end
-                LastSHigh = SHigh
             end
             if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
                 LOG(ASCIIGFX)
@@ -1137,63 +1072,39 @@ function ConnectMarker(X,Y)
     FAIL = 0
     local SouthWestMarkerIndex = 'Marker'..(X-1)..'-'..(Y+1)
     if CREATEDMARKERS[SouthWestMarkerIndex] then
-        for X = -3, 3, 0.5 do
-            NewLine = true
+        for X = -3, 3, ScanResolution do
             ASCIIGFX = ''
-            for XY = 0, CREATEDMARKERS[SouthWestMarkerIndex].position[3] - MarkerPos[3] , 0.5 do
+            for XY = 0, CREATEDMARKERS[SouthWestMarkerIndex].position[3] - MarkerPos[3] , ScanResolution do
                 if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
-                    DrawLine( {MarkerPos[1] + X, MarkerPos[2], MarkerPos[3] + X}, { MarkerPos[1] + X-XY, MarkerPos[2], MarkerPos[3] + XY + X}, 'ffFFE0E0' )
-                    WaitTicks(1)
+                    --DrawLine( {MarkerPos[1] + X, MarkerPos[2], MarkerPos[3] + X}, { MarkerPos[1] + X-XY, MarkerPos[2], MarkerPos[3] + XY + X}, 'ffFFE0E0' )
+                    --WaitTicks(1)
                 end
-                if NewLine then
-                    NewLine = false
-                    LastSHigh = GetSurfaceHeight( MarkerPos[1] + X-XY, MarkerPos[3] + XY + X )
-                end
-                -- Elevation between checkpoints
                 local Block = false
-                SHigh = GetSurfaceHeight( MarkerPos[1] + X-XY, MarkerPos[3] + XY + X )
-                Elevation = math.abs(math.floor(LastSHigh*100 - SHigh*100))
-                if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
-                    if Elevation ~= 0 then
-                        --LOG('*ConnectMarker MaxPassableElevation : '..Elevation )
-                    end
+                -- Check a square with FootprintSize if it has less then MaxPassableElevation ((circle 16:20  1:20*16 = 0.8))
+                High = GetSurfaceHeight( MarkerPos[1] + X-XY, MarkerPos[3] + XY+X )
+                UHigh = High - GetSurfaceHeight( MarkerPos[1] + X-XY, MarkerPos[3] + XY+X-FootprintSize )
+                DHigh = High - GetSurfaceHeight( MarkerPos[1] + X-XY, MarkerPos[3] + XY+X-FootprintSize )
+                LHigh = High - GetSurfaceHeight( MarkerPos[1] + X-XY-FootprintSize, MarkerPos[3] + XY+X )
+                RHigh = High - GetSurfaceHeight( MarkerPos[1] + X-XY+FootprintSize, MarkerPos[3] + XY+X )
+                LUHigh = High - GetSurfaceHeight( MarkerPos[1] + X-XY-FootprintSize*0.8, MarkerPos[3] + XY+X-FootprintSize*0.8 )
+                RUHigh = High - GetSurfaceHeight( MarkerPos[1] + X-XY+FootprintSize*0.8, MarkerPos[3] + XY+X-FootprintSize*0.8 )
+                LDHigh = High - GetSurfaceHeight( MarkerPos[1] + X-XY-FootprintSize*0.8, MarkerPos[3] + XY+X+FootprintSize*0.8 )
+                RDHigh = High - GetSurfaceHeight( MarkerPos[1] + X-XY+FootprintSize*0.8, MarkerPos[3] + XY+X+FootprintSize*0.8 )
+                if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceSouthWest then
+                    LOG('*ConnectMarker slope  : '..string.format("slope:  %.2f  %.2f  %.2f  %.2f   angle:  %.2f  %.2f  %.2f  %.2f ... %.2f  %.2f  %.2f  %.2f", math.abs(UHigh - DHigh), math.abs(LHigh - RHigh), math.abs(LUHigh - RDHigh), math.abs(RUHigh - LDHigh), math.abs(UHigh), math.abs(DHigh), math.abs(LHigh), math.abs(RHigh), math.abs(LUHigh), math.abs(RUHigh), math.abs(LDHigh), math.abs(RDHigh) ) )
                 end
-                if Elevation > MaxPassableElevation then
-                    if DebugMarker == MarkerIndex then
-                        --WARN('*ConnectMarker MaxPassableElevation Blocked!!! '..Elevation )
-                    end
-                    Block = true
-                end
-                -- right
-                SHigh = GetSurfaceHeight( MarkerPos[1] + X-XY +1, MarkerPos[3] + XY + X )
-                Elevation = math.abs(math.floor(LastSHigh*100 - SHigh*100))
-                if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
-                    if Elevation ~= 0 then
-                        --LOG('*ConnectMarker MaxPassableElevation U : '..Elevation )
-                    end
-                end
-                if Elevation > MaxPassableElevation then
-                    if DebugMarker == MarkerIndex then
-                        --WARN('*ConnectMarker MaxPassableElevation U Blocked!!! '..Elevation )
+                if math.abs(UHigh - DHigh) > MaxSlope or math.abs(LHigh - RHigh) > MaxSlope or math.abs(LUHigh - RDHigh) > MaxSlope or math.abs(RUHigh - LDHigh) > MaxSlope then
+                    if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceSouthWest then
+                        WARN('*ConnectMarker slope  : '..string.format("%.2f %.2f %.2f %.2f", math.abs(UHigh - DHigh), math.abs(LHigh - RHigh), math.abs(LUHigh - RDHigh), math.abs(RUHigh - LDHigh) ) )
                     end
                     Block = true
                 end
-                -- up
-                SHigh = GetSurfaceHeight( MarkerPos[1] + X-XY, MarkerPos[3] + XY + X -1)
-                Elevation = math.abs(math.floor(LastSHigh*100 - SHigh*100))
-                if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
-                    if Elevation ~= 0 then
-                        --LOG('*ConnectMarker MaxPassableElevation U : '..Elevation )
-                    end 
-                end 
-                if Elevation > MaxPassableElevation then
-                    if DebugMarker == MarkerIndex then
-                        --WARN('*ConnectMarker MaxPassableElevation U Blocked!!! '..Elevation )
+                if math.abs(UHigh) > MaxAngle or math.abs(DHigh) > MaxAngle or math.abs(LHigh) > MaxAngle or math.abs(RHigh) > MaxAngle or math.abs(LUHigh) > MaxAngle or math.abs(RUHigh) > MaxAngle or math.abs(LDHigh) > MaxAngle or math.abs(RDHigh) > MaxAngle then
+                    if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceSouthWest then
+                        WARN('*ConnectMarker angle  : '..string.format("%.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f", math.abs(UHigh), math.abs(DHigh), math.abs(LHigh), math.abs(RHigh), math.abs(LUHigh), math.abs(RUHigh), math.abs(LDHigh), math.abs(RDHigh) ) )
                     end
                     Block = true
                 end
-
-
                 if Block == true then
                     if DebugMarker == MarkerIndex then
                         --WARN('*ConnectMarker MaxPassableElevation Blocked!!! '..Elevation )
@@ -1204,7 +1115,6 @@ function ConnectMarker(X,Y)
                 else
                     ASCIIGFX = ASCIIGFX..'....'
                 end
-                LastSHigh = SHigh
             end
             if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
                 LOG(ASCIIGFX)

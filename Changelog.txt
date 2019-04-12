@@ -1,4 +1,10 @@
 *************************************************************************************************************************************
+v60 (13.Apr.2019)
+
+- Opt: Automatic AI marker generatior optimized.
+- Opt: Changed land builder to build more T1 and T2 units, even if Tech3 is available.
+
+*************************************************************************************************************************************
 v59 (09.Apr.2019)
 
 - Fix: Added Safeguard in case categories.FLOATING is missing.
