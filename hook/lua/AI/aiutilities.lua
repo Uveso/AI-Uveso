@@ -23,19 +23,19 @@ end
 -- Target function
 function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, maxRange, MoveToCategories, TargetSearchCategory, enemyBrain)
     if not maxRange then
-        --LOG('* Uveso-AI: AIFindNearestCategoryTargetInRange: function called with empty "maxRange"' )
+        --LOG('* AI-Uveso: AIFindNearestCategoryTargetInRange: function called with empty "maxRange"' )
         return false, false, false, 'NoRange'
     end
     if not TargetSearchCategory then
-        --LOG('* Uveso-AI: AIFindNearestCategoryTargetInRange: function called with empty "TargetSearchCategory"' )
+        --LOG('* AI-Uveso: AIFindNearestCategoryTargetInRange: function called with empty "TargetSearchCategory"' )
         return false, false, false, 'NoCat'
     end
     if not position then
-        --LOG('* Uveso-AI: AIFindNearestCategoryTargetInRange: function called with empty "position"' )
+        --LOG('* AI-Uveso: AIFindNearestCategoryTargetInRange: function called with empty "position"' )
         return false, false, false, 'NoPos'
     end
     if not platoon then
-        LOG('* Uveso-AI: AIFindNearestCategoryTargetInRange: function called with no "platoon"' )
+        LOG('* AI-Uveso: AIFindNearestCategoryTargetInRange: function called with no "platoon"' )
         return false, false, false, 'NoPos'
     end
     local AttackEnemyStrength = platoon.PlatoonData.AttackEnemyStrength or 300

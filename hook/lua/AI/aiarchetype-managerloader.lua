@@ -388,7 +388,7 @@ function LocationRangeManagerThread(aiBrain)
                 if factory and not factory.Dead and not factory:BeenDestroyed() and factory:IsUnitState('Building') == false and factory:IsUnitState('Upgrading') == false then
                     -- check if our factory is more then 30 seconds inactice
                     if factory.LastActive and GetGameTimeSeconds() - factory.LastActive > 30 then
-                        SPEW('* Uveso-AI: LocationRangeManagerThread: "Factory '..k..'" at location "'..baseLocation..'" is not working. Last activity "'.. math.floor(GetGameTimeSeconds() - factory.LastActive) ..'" seconds ago. Reforking FactoryManager.')
+                        SPEW('* AI-Uveso: LocationRangeManagerThread: "Factory '..k..'" at location "'..baseLocation..'" is not working. Last activity "'.. math.floor(GetGameTimeSeconds() - factory.LastActive) ..'" seconds ago. Reforking FactoryManager.')
                         -- fork a new build thread for our factory
                         managers.FactoryManager:ForkThread(managers.FactoryManager.DelayBuildOrder, factory, factory.BuilderManagerData.BuilderType, 1)
                     end
@@ -403,7 +403,7 @@ function LocationRangeManagerThread(aiBrain)
 --                local LastActive = GetGameTimeSeconds() - engineer.LastActive
 --                engineer:SetCustomName(LastActive)
 --                if LastActive > 70 then
---                    WARN('* Uveso-AI: LocationRangeManagerThread: "engineer '..k..'" at location "'..'X'..'" is not working. Last activity "'.. math.floor(LastActive) ..'" seconds ago.')
+--                    WARN('* AI-Uveso: LocationRangeManagerThread: "engineer '..k..'" at location "'..'X'..'" is not working. Last activity "'.. math.floor(LastActive) ..'" seconds ago.')
 --                end
 --            end
 --        end

@@ -105,7 +105,7 @@ function GeneratePathUveso(aiBrain, startNode, endNode, threatType, threatWeight
                 for ThreatWeight, PathNodes in ThreatWeightedPaths do
                     -- check if the path is older then 30 seconds.
                     if GameTime - 30 > PathNodes.settime then
-                        --LOG('* Uveso-AI: GeneratePathUveso() Found old path: storetime: '..PathNodes.settime..' store+60sec: '..(PathNodes.settime + 60)..' actual time: '..GameTime..' timediff= '..(PathNodes.settime + 60 - GameTime) )
+                        --LOG('* AI-Uveso: GeneratePathUveso() Found old path: storetime: '..PathNodes.settime..' store+60sec: '..(PathNodes.settime + 60)..' actual time: '..GameTime..' timediff= '..(PathNodes.settime + 60 - GameTime) )
                         -- delete the old path from the cache.
                         aiBrain.PathCache[StartNodeName][EndNodeName][ThreatWeight] = nil
                     end

@@ -70,7 +70,7 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         'U123 Land Builders Panic',
         'U123 Land Formers RUSH',
-        'U123 Land Builders Ratio',
+        'U123 Land Builders Ratio RUSH',
 
         -----------------------------------------------------------------------------
         -- ==== Land Units FORMER==== --

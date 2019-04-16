@@ -100,6 +100,54 @@ BuilderGroup {
             },
         }
     },
+    -- Permanent assist
+    Builder {
+        BuilderName = 'T1 Assist Factory unit build',
+        PlatoonTemplate = 'EngineerAssist',
+        Priority = 600,
+        InstanceCount = 6,
+        BuilderConditions = {
+            { UCBC, 'LocationFactoriesBuildingGreater', { 'LocationType', 0, 'MOBILE' } },
+            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.80}}, -- Ratio from 0 to 1. (1=100%)
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60*15 } },
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Assist = {
+                AssistLocation = 'LocationType',
+                AssisteeType = 'Factory',
+                AssistRange = 120,
+                BeingBuiltCategories = {'STRUCTURE FACTORY'},
+                AssistClosestUnit = false,                                       -- Assist the closest unit instead unit with the least number of assisters
+                AssistUntilFinished = true,
+                Time = 0,
+            },
+        }
+    },
+    Builder {
+        BuilderName = 'T2 Assist Factory unit build',
+        PlatoonTemplate = 'T2EngineerAssist',
+        Priority = 600,
+        InstanceCount = 6,
+        BuilderConditions = {
+            { UCBC, 'LocationFactoriesBuildingGreater', { 'LocationType', 0, 'MOBILE' } },
+            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.80}}, -- Ratio from 0 to 1. (1=100%)
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60*15 } },
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Assist = {
+                AssistLocation = 'LocationType',
+                AssisteeType = 'Factory',
+                AssistRange = 120,
+                BeingBuiltCategories = {'STRUCTURE FACTORY'},
+                AssistClosestUnit = true,                                       -- Assist the closest unit instead unit with the least number of assisters
+                AssistUntilFinished = true,
+                Time = 0,
+            },
+        }
+    },
+
     -- ============ --
     --    ENERGY    --
     -- ============ --

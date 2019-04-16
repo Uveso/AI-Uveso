@@ -33,25 +33,25 @@ function CanPathToCurrentEnemy(aiBrain, bool)
     local path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, 'Land', {startX,0,startZ}, {enemyX,0,enemyZ}, 1000)
     -- if we have a path generated with AI path markers then....
     if path then
-        LOG('* Uveso-AI: CanPathToCurrentEnemy: Land path to the enemy found! LAND map! - '..OwnIndex..' vs '..EnemyIndex..'')
+        LOG('* AI-Uveso: CanPathToCurrentEnemy: Land path to the enemy found! LAND map! - '..OwnIndex..' vs '..EnemyIndex..'')
         CanPathToEnemy[OwnIndex][EnemyIndex] = 'LAND'
     -- if we not have a path
     else
         -- "NoPath" means we have AI markers but can't find a path to the enemy - There is no path!
         if reason == 'NoPath' then
-            LOG('* Uveso-AI: CanPathToCurrentEnemy: No land path to the enemy found! WATER map! - '..OwnIndex..' vs '..EnemyIndex..'')
+            LOG('* AI-Uveso: CanPathToCurrentEnemy: No land path to the enemy found! WATER map! - '..OwnIndex..' vs '..EnemyIndex..'')
             CanPathToEnemy[OwnIndex][EnemyIndex] = 'WATER'
         -- "NoGraph" means we have no AI markers and cant graph to the enemy. We can't search for a path - No markers
         elseif reason == 'NoGraph' then
-            LOG('* Uveso-AI: CanPathToCurrentEnemy: No AI markers found! Using land/water ratio instead')
+            LOG('* AI-Uveso: CanPathToCurrentEnemy: No AI markers found! Using land/water ratio instead')
             -- Check if we have less then 50% water on the map
             if aiBrain:GetMapWaterRatio() < 0.50 then
                 --lets asume we can move on land to the enemy
-                LOG(string.format('* Uveso-AI: CanPathToCurrentEnemy: Water on map: %0.2f%%. Assuming LAND map! - '..OwnIndex..' vs '..EnemyIndex..'',aiBrain:GetMapWaterRatio()*100 ))
+                LOG(string.format('* AI-Uveso: CanPathToCurrentEnemy: Water on map: %0.2f%%. Assuming LAND map! - '..OwnIndex..' vs '..EnemyIndex..'',aiBrain:GetMapWaterRatio()*100 ))
                 CanPathToEnemy[OwnIndex][EnemyIndex] = 'LAND'
             else
                 -- we have more then 50% water on this map. Ity maybe a water map..
-                LOG(string.format('* Uveso-AI: CanPathToCurrentEnemy: Water on map: %0.2f%%. Assuming WATER map! - '..OwnIndex..' vs '..EnemyIndex..'',aiBrain:GetMapWaterRatio()*100 ))
+                LOG(string.format('* AI-Uveso: CanPathToCurrentEnemy: Water on map: %0.2f%%. Assuming WATER map! - '..OwnIndex..' vs '..EnemyIndex..'',aiBrain:GetMapWaterRatio()*100 ))
                 CanPathToEnemy[OwnIndex][EnemyIndex] = 'WATER'
             end
         end

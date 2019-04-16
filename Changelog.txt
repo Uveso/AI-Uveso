@@ -1,7 +1,14 @@
 *************************************************************************************************************************************
+v61 (16.Apr.2019)
+
+- New: AI marker generator is now able to create naval expansions.
+- New: Added platoons for permanent assist factories in late game.
+- Opt: Changed priorities and eco for air builder to match the new land builder
+
+*************************************************************************************************************************************
 v60 (13.Apr.2019)
 
-- Opt: Automatic AI marker generatior optimized.
+- Opt: Automatic AI marker generator optimized.
 - Opt: Changed land builder to build more T1 and T2 units, even if Tech3 is available.
 
 *************************************************************************************************************************************
