@@ -1198,7 +1198,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1234 Gunship+Bomber > 50',
         PlatoonTemplate = 'U123-Gunship+Bomber-Intercept 1 50',
-        Priority = 50,                                                          -- Priority. 1000 is normal.
+        Priority = 1000,                                                        -- Priority. 1000 is normal.
         InstanceCount = 5,                                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
@@ -1226,8 +1226,8 @@ BuilderGroup {
     Builder {
         BuilderName = 'U12 UnitCap AntiAir',
         PlatoonTemplate = 'U12-AntiAirCap 1 500',
-        Priority = 60,                                                          -- Priority. 1000 is normal.
-        InstanceCount = 1,                                                      -- Number of plattons that will be formed.
+        Priority = 1000,                                                        -- Priority. 1000 is normal.
+        InstanceCount = 3,                                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
@@ -1249,7 +1249,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U12 UnitCap AntiGround',
         PlatoonTemplate = 'U12-AntiGroundCap 1 500',
-        Priority = 60,                                                          -- Priority. 1000 is normal.
+        Priority = 1000,                                                        -- Priority. 1000 is normal.
         InstanceCount = 3,                                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
@@ -1273,8 +1273,8 @@ BuilderGroup {
     Builder {
         BuilderName = 'U123 Fighter Cap',
         PlatoonTemplate = 'U123-Fighter-Intercept 1 50',
-        Priority = 50,                                                          -- Priority. 1000 is normal.
-        InstanceCount = 1,                                                      -- Number of plattons that will be formed.
+        Priority = 1000,                                                        -- Priority. 1000 is normal.
+        InstanceCount = 3,                                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
@@ -1295,8 +1295,8 @@ BuilderGroup {
     Builder {
         BuilderName = 'U123 Gunship+Bomber Cap',
         PlatoonTemplate = 'U123-Gunship+Bomber-Intercept 1 50',
-        Priority = 50,                                                          -- Priority. 1000 is normal.
-        InstanceCount = 1,                                                      -- Number of plattons that will be formed.
+        Priority = 1000,                                                        -- Priority. 1000 is normal.
+        InstanceCount = 3,                                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)

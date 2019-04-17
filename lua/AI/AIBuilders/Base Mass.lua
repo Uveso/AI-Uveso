@@ -401,7 +401,7 @@ BuilderGroup {
     BuilderGroupName = 'U123 ExtractorUpgrades SWARM',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     Builder {
-        BuilderName = 'Extractor upgrade >40 mass',
+        BuilderName = 'U1S Extractor upgrade >40 mass',
         PlatoonTemplate = 'AddToMassExtractorUpgradePlatoon',
         Priority = 18400,
         InstanceCount = 1,
@@ -420,7 +420,7 @@ BuilderGroup {
         BuilderType = 'Any',
     },
     Builder {
-        BuilderName = 'Extractor enemy > T2',
+        BuilderName = 'U1S Extractor enemy > T2',
         PlatoonTemplate = 'AddToMassExtractorUpgradePlatoon',
         Priority = 18400,
         InstanceCount = 1,

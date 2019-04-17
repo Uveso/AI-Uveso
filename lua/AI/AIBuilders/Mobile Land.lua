@@ -411,7 +411,7 @@ BuilderGroup {
     --    TECH 1    --
     -- ============ --
     Builder {
-        BuilderName = 'U1 Ratio Tank',
+        BuilderName = 'U1R Ratio Tank',
         PlatoonTemplate = 'T1LandDFTank',
         Priority = 160,
         BuilderConditions = {
@@ -430,7 +430,7 @@ BuilderGroup {
         BuilderType = 'Land',
     },
     Builder {
-        BuilderName = 'U1 Ratio Bot',
+        BuilderName = 'U1R Ratio Bot',
         PlatoonTemplate = 'T1LandDFBot',
         Priority = 160,
         BuilderConditions = {
@@ -450,7 +450,7 @@ BuilderGroup {
         BuilderType = 'Land',
     },
     Builder {
-        BuilderName = 'U1 Ratio AA',
+        BuilderName = 'U1R Ratio AA',
         PlatoonTemplate = 'T1LandAA',
         Priority = 160,
         BuilderConditions = {
@@ -472,7 +472,7 @@ BuilderGroup {
     --    TECH 2    --
     -- ============ --
     Builder {
-        BuilderName = 'U2 DFTank',
+        BuilderName = 'U2R DFTank',
         PlatoonTemplate = 'T2LandDFTank',
         Priority = 260,
         BuilderConditions = {
@@ -491,7 +491,7 @@ BuilderGroup {
         BuilderType = 'Land',
     },
     Builder {
-        BuilderName = 'U2 AttackTank',
+        BuilderName = 'U2R AttackTank',
         PlatoonTemplate = 'T2AttackTank',
         Priority = 260,
         BuilderConditions = {
@@ -510,7 +510,7 @@ BuilderGroup {
         BuilderType = 'Land',
     },
     Builder {
-        BuilderName = 'U2 Mobile AA',
+        BuilderName = 'U2R Mobile AA',
         PlatoonTemplate = 'T2LandAA',
         Priority = 260,
         BuilderConditions = {
@@ -532,7 +532,7 @@ BuilderGroup {
     --    TECH 3    --
     -- ============ --
     Builder {
-        BuilderName = 'U3 Siege Assault Bot',
+        BuilderName = 'U3R Siege Assault Bot',
         PlatoonTemplate = 'T3LandBot',
         Priority = 350,
         BuilderConditions = {
@@ -550,7 +550,7 @@ BuilderGroup {
         BuilderType = 'Land',
     },
     Builder {
-        BuilderName = 'U3 SniperBots',
+        BuilderName = 'U3R SniperBots',
         PlatoonTemplate = 'T3SniperBots',
         Priority = 350,
         BuilderConditions = {
@@ -568,7 +568,7 @@ BuilderGroup {
         BuilderType = 'Land',
     },
     Builder {
-        BuilderName = 'U3 ArmoredAssault',
+        BuilderName = 'U3R ArmoredAssault',
         PlatoonTemplate = 'T3ArmoredAssault',
         Priority = 350,
         BuilderConditions = {
@@ -586,7 +586,7 @@ BuilderGroup {
         BuilderType = 'Land',
     },
     Builder {
-        BuilderName = 'U3 Mobile AA',
+        BuilderName = 'U3R Mobile AA',
         PlatoonTemplate = 'T3LandAA',
         Priority = 350,
         BuilderConditions = {
@@ -604,7 +604,7 @@ BuilderGroup {
         BuilderType = 'Land',
     },
     Builder {
-        BuilderName = 'U3 MobileShields',
+        BuilderName = 'U3R MobileShields',
         PlatoonTemplate = 'T3MobileShields',
         Priority = 350,
         BuilderConditions = {

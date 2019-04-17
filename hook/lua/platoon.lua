@@ -478,7 +478,7 @@ Platoon = Class(OldPlatoonClass) {
         self:PlatoonDisband()
     end,
 
--- For AI Patch V4. exit with retunr on disband, set ReclaimInProgress flag before start reclaiming
+-- For AI Patch V4. exit with return on disband, set ReclaimInProgress flag before start reclaiming
     ReclaimStructuresAI = function(self)
         self:Stop()
         local aiBrain = self:GetBrain()
@@ -836,7 +836,16 @@ Platoon = Class(OldPlatoonClass) {
                             end
                         end
                     else
-                        self:SimpleReturnToBase(basePosition)
+                        if not self.SuicideMode then
+                            self.SuicideMode = true
+                            self.PlatoonData.AttackEnemyStrength = 1000
+                            self.PlatoonData.GetTargetsFromBase = false
+                            self.PlatoonData.MoveToCategories = { categories.EXPERIMENTAL, categories.TECH3, categories.TECH2, categories.ALLUNITS }
+                            self.PlatoonData.WeaponTargetCategories = { categories.EXPERIMENTAL, categories.TECH3, categories.TECH2, categories.ALLUNITS }
+                            self:InterceptorAIUveso()
+                        else
+                            self:SimpleReturnToBase(basePosition)
+                        end
                     end
                 end
             -- targed exists and is not dead
@@ -869,19 +878,25 @@ Platoon = Class(OldPlatoonClass) {
         if platoonUnits and PlatoonStrength > 0 then
             for k, v in platoonUnits do
                 if not v.Dead then
+                    if IsDestroyed(v) then
+                        WARN('Unit is not Dead but DESTROYED')
+                    end
+                    if v:BeenDestroyed() then
+                        WARN('Unit is not Dead but DESTROYED')
+                    end
                     if v:TestToggleCaps('RULEUTC_StealthToggle') then
                         v:SetScriptBit('RULEUTC_StealthToggle', false)
                     end
                     if v:TestToggleCaps('RULEUTC_CloakToggle') then
                         v:SetScriptBit('RULEUTC_CloakToggle', false)
                     end
+                    if EntityCategoryContains(categories.EXPERIMENTAL, v) then
+                        ExperimentalInPlatoon = true
+                    end
+                    -- prevent units from reclaiming while attack moving
+                    v:RemoveCommandCap('RULEUCC_Reclaim')
+                    v:RemoveCommandCap('RULEUCC_Repair')
                 end
-                if EntityCategoryContains(categories.EXPERIMENTAL, v) then
-                    ExperimentalInPlatoon = true
-                end
-                -- prevent units from reclaiming while attack moving
-                v:RemoveCommandCap('RULEUCC_Reclaim')
-                v:RemoveCommandCap('RULEUCC_Repair')
             end
         end
         local MoveToCategories = {}
@@ -960,9 +975,20 @@ Platoon = Class(OldPlatoonClass) {
                     -- we have no target return to main base
                     losttargetnum = losttargetnum + 1
                     if losttargetnum > 2 then
-                        self:Stop()
-                        self:SetPlatoonFormationOverride('NoFormation')
-                        self:ForceReturnToNearestBaseAIUveso()
+                        if not self.SuicideMode then
+                            self.SuicideMode = true
+                            self.PlatoonData.AttackEnemyStrength = 1000
+                            self.PlatoonData.GetTargetsFromBase = false
+                            self.PlatoonData.MoveToCategories = { categories.EXPERIMENTAL, categories.TECH3, categories.TECH2, categories.ALLUNITS }
+                            self.PlatoonData.WeaponTargetCategories = { categories.EXPERIMENTAL, categories.TECH3, categories.TECH2, categories.ALLUNITS }
+                            self:Stop()
+                            self:SetPlatoonFormationOverride('NoFormation')
+                            self:LandAttackAIUveso()
+                        else
+                            self:Stop()
+                            self:SetPlatoonFormationOverride('NoFormation')
+                            self:ForceReturnToNearestBaseAIUveso()
+                        end
                     end
                 end
             else
@@ -994,13 +1020,13 @@ Platoon = Class(OldPlatoonClass) {
                     if v:TestToggleCaps('RULEUTC_JammingToggle') then
                         v:SetScriptBit('RULEUTC_JammingToggle', false)
                     end
+                    if EntityCategoryContains(categories.EXPERIMENTAL, v) then
+                        ExperimentalInPlatoon = true
+                    end
+                    -- prevent units from reclaiming while attack moving
+                    v:RemoveCommandCap('RULEUCC_Reclaim')
+                    v:RemoveCommandCap('RULEUCC_Repair')
                 end
-                if EntityCategoryContains(categories.EXPERIMENTAL, v) then
-                    ExperimentalInPlatoon = true
-                end
-                -- prevent units from reclaiming while attack moving
-                v:RemoveCommandCap('RULEUCC_Reclaim')
-                v:RemoveCommandCap('RULEUCC_Repair')
             end
         end
         local MoveToCategories = {}
@@ -1061,8 +1087,20 @@ Platoon = Class(OldPlatoonClass) {
                     -- we have no target return to main base
                     losttargetnum = losttargetnum + 1
                     if losttargetnum > 2 then
-                        self:Stop()
-                        self:ForceReturnToNavalBaseAIUveso(aiBrain, basePosition)
+                        if not self.SuicideMode then
+                            self.SuicideMode = true
+                            self.PlatoonData.AttackEnemyStrength = 1000
+                            self.PlatoonData.GetTargetsFromBase = false
+                            self.PlatoonData.MoveToCategories = { categories.EXPERIMENTAL, categories.TECH3, categories.TECH2, categories.ALLUNITS }
+                            self.PlatoonData.WeaponTargetCategories = { categories.EXPERIMENTAL, categories.TECH3, categories.TECH2, categories.ALLUNITS }
+                            self:Stop()
+                            self:SetPlatoonFormationOverride('NoFormation')
+                            self:NavalAttackAIUveso()
+                        else
+                            self:Stop()
+                            self:SetPlatoonFormationOverride('NoFormation')
+                            self:ForceReturnToNavalBaseAIUveso(aiBrain, basePosition)
+                        end
                     end
                 end
             else
@@ -1079,11 +1117,24 @@ Platoon = Class(OldPlatoonClass) {
         --LOG('* ACUAttackAIUveso: START '..self.BuilderName)
         AIAttackUtils.GetMostRestrictiveLayer(self) -- this will set self.MovementLayer to the platoon
         local aiBrain = self:GetBrain()
-        local cdr = self:GetPlatoonUnits()[1]
+        local PlatoonUnits = self:GetPlatoonUnits()
+        local cdr = PlatoonUnits[1]
+        -- There should be only the commander inside this platoon. Check it.
         if not cdr then
             WARN('* ACUAttackAIUveso: Platoon formed but Commander unit not found!')
-            self:PlatoonDisband()
-            return
+            WaitTicks(1)
+            for k,v in self:GetPlatoonUnits() or {} do
+                if EntityCategoryContains(categories.COMMAND, v) then
+                    WARN('* ACUAttackAIUveso: Commander found in platoon on index: '..k)
+                    cdr = v
+                else
+                    WARN('* ACUAttackAIUveso: Platoon unit Index '..k..' is not a commander!')
+                end
+            end
+            if not cdr then
+                self:PlatoonDisband()
+                return
+            end
         end
         local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
         cdr.HealthOLD = 100

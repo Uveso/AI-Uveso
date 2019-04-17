@@ -26,7 +26,7 @@ BuilderGroup {
             { MIBC, 'CanPathToCurrentEnemy', { false } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.30, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'MOBILE INDIRECTFIRE' } },
             -- Respect UnitCap
@@ -49,7 +49,7 @@ BuilderGroup {
             { MIBC, 'CanPathToCurrentEnemy', { false } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.30, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
@@ -68,8 +68,8 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { false } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 2.0, 30.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.30, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },

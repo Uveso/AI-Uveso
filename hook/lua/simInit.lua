@@ -497,6 +497,12 @@ function CreateAIMarkers()
     elseif ScenarioInfo.Options.AIMapMarker == 'all' then
         LOG('* AI-Uveso: Generating marker, please wait...')
     end
+    -- Map size like 20x10 and 10x20
+    if ScenarioInfo.size[1] > ScenarioInfo.size[2] then
+        MarkerCountY = MarkerCountY / 2
+    elseif ScenarioInfo.size[1] < ScenarioInfo.size[2] then
+        MarkerCountX = MarkerCountX / 2
+    end
     -- Create Air Marker
     CREATEDMARKERS = {}
     local DistanceBetweenMarkers = ScenarioInfo.size[1] / ( MarkerCountX/2 )
@@ -1420,7 +1426,7 @@ function CreateNavalExpansions()
                                             local adjancents = STR_GetTokens(markerInfoAdja.adjacentTo or '', ' ')
                                             if adjancents[0] then
                                                 for i, node in adjancents do
-                                                    --chacking nod, if its inside our area
+                                                    -- checking node, if it has a conection from land to water.
                                                     for YA = -1, 1 do
                                                         for XA = -1, 1 do
                                                             if node == 'Amphibious'..(X+XA)..'-'..(Y+YA) then
@@ -1435,15 +1441,16 @@ function CreateNavalExpansions()
                                 end
                             end
                             local adjancents = STR_GetTokens(markerInfo.adjacentTo or '', ' ')
+                            -- if we have a marker with less than 8 (0-7) adjancents or it has no passable connection to land then don't use it.
                             if not adjancents[7] or adjancentsAmp < 1 then
                                 Blocked = true
                                 continue
                             end
-                            -- check if we have a naval marker close to this are
+                            -- check if we have a naval marker close to this area
                             for index, NAVALpostition in NavalMarker do
                                 local dist = VDist2( markerInfo['position'][1], markerInfo['position'][3], NAVALpostition[1], NAVALpostition[3])
-                                -- is this marker farther away than 80 
-                                if dist < 80 then
+                                -- is this marker farther away than 60 
+                                if dist < 60 then
                                     Blocked = true
                                     break
                                 end 

@@ -1,4 +1,12 @@
 *************************************************************************************************************************************
+v62 (17.Apr.2019)
+
+- Opt: Attack platoons will no longer return to base of no special target is available. They will attack the enemy base instead.
+- Opt: AI marker generation is now also working on 10x5 or 5x10 maps.
+- Opt: Balanced eco for land / air / naval / amphibious
+- Opt: Naval factories will be built earlier with small defense.
+
+*************************************************************************************************************************************
 v61 (16.Apr.2019)
 
 - New: AI marker generator is now able to create naval expansions.
@@ -154,7 +162,7 @@ v47 (10.Dec.2018)
 - Fix: Tech3 sonar buildings will lo longer move away from their buildlocation
 - Fix: Changed logic for buildconditions and mass storage ratio in case a paragon is present.
 - Fix: some minor fixes in case a unit is destroyed inside nukeAI function
-- Opt: Splitted factorybuilder in land+air and naval. Saves sim speed and navalbases no longer build land or air factories. 
+- Opt: Splitted factorybuilder in land+air and naval. Saves sim speed and navalbases no longer build land or air factories.
 - Opt: Ecomanager will now also pause engineers that are building a paragon
 - Opt: New cache for the scanresult of "is water map or not" for every AI versus every AI
 

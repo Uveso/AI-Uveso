@@ -213,6 +213,7 @@ BuilderGroup {
                 BuildStructures = {
                     'T1AADefense',
                     'T1SeaFactory',
+                    'T1NavalDefense',
                 }
             }
         }
@@ -250,6 +251,7 @@ BuilderGroup {
                 BuildStructures = {
                     'T1AADefense',
                     'T1SeaFactory',
+                    'T1NavalDefense',
                 }
             }
         }
@@ -289,6 +291,7 @@ BuilderGroup {
                 BuildStructures = {
                     'T1AADefense',
                     'T1SeaFactory',
+                    'T1NavalDefense',
                 }
             }
         }
@@ -327,6 +330,7 @@ BuilderGroup {
                 BuildStructures = {
                     'T1AADefense',
                     'T1SeaFactory',
+                    'T1NavalDefense',
                 }
             }
         }

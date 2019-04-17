@@ -41,7 +41,7 @@ BuilderGroup {
     --    TECH 1 Enemy    --
     -- ================== --
     Builder {
-        BuilderName = 'U1 Sea Factory Enemy',
+        BuilderName = 'U1 Naval Factory Enemy',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 15500,
         DelayEqualBuildPlattons = {'Factories', 3},
@@ -52,7 +52,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'HaveUnitRatio', { 1.0, 'STRUCTURE FACTORY NAVAL', '<','STRUCTURE FACTORY LAND' } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.40, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},

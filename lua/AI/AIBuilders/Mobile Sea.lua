@@ -22,9 +22,10 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.MOBILE * categories.NAVAL }}, -- radius, LocationType, unitCount, categoryEnemy
             -- Do we need additional conditions to build it ?
-            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 30,  categories.MOBILE * categories.NAVAL } },
+            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 40,  categories.MOBILE * categories.NAVAL } },
             -- Have we the eco to build it ?
             -- Don't build it if...
+            { UCBC, 'UnitsGreaterAtEnemy', { 2 , categories.NAVAL * categories.FACTORY } },
         },
         BuilderType = 'Sea',
     },
@@ -36,9 +37,10 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.MOBILE * categories.AIR * ( categories.BOMBER + categories.GROUNDATTACK + categories.ANTINAVY ) }}, -- radius, LocationType, unitCount, categoryEnemy
             -- Do we need additional conditions to build it ?
-            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 30,  categories.MOBILE * categories.NAVAL } },
+            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 40,  categories.MOBILE * categories.NAVAL } },
             -- Have we the eco to build it ?
             -- Don't build it if...
+            { UCBC, 'UnitsGreaterAtEnemy', { 2 , categories.NAVAL * categories.FACTORY } },
         },
         BuilderType = 'Sea',
     },
@@ -55,10 +57,10 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 30,  categories.MOBILE * categories.NAVAL } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.70 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.26, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.STRUCTURE * categories.FACTORY * categories.NAVAL } },
+            { UCBC, 'UnitsGreaterAtEnemy', { 2 , categories.NAVAL * categories.FACTORY } },
             -- Respect UnitCap
             { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
@@ -77,10 +79,10 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 30,  categories.MOBILE * categories.NAVAL } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.26, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.STRUCTURE * categories.FACTORY * categories.NAVAL } },
+            { UCBC, 'UnitsGreaterAtEnemy', { 2 , categories.NAVAL * categories.FACTORY } },
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'MOBILE NAVAL TECH2' } },
             -- Respect UnitCap
             { UCBC, 'UnitCapCheckLess', { 0.98 } },
@@ -97,10 +99,10 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 30,  categories.MOBILE * categories.NAVAL } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.26, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.STRUCTURE * categories.FACTORY * categories.NAVAL } },
+            { UCBC, 'UnitsGreaterAtEnemy', { 2 , categories.NAVAL * categories.FACTORY } },
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'MOBILE NAVAL TECH2' } },
             -- Respect UnitCap
             { UCBC, 'UnitCapCheckLess', { 0.98 } },
@@ -117,10 +119,10 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 30,  categories.MOBILE * categories.NAVAL } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.26, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.STRUCTURE * categories.FACTORY * categories.NAVAL } },
+            { UCBC, 'UnitsGreaterAtEnemy', { 2 , categories.NAVAL * categories.FACTORY } },
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'MOBILE NAVAL TECH2' } },
             -- Respect UnitCap
             { UCBC, 'UnitCapCheckLess', { 0.98 } },
@@ -137,10 +139,10 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 30,  categories.MOBILE * categories.NAVAL } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.26, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.STRUCTURE * categories.FACTORY * categories.NAVAL } },
+            { UCBC, 'UnitsGreaterAtEnemy', { 2 , categories.NAVAL * categories.FACTORY } },
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'MOBILE NAVAL TECH2' } },
             -- Respect UnitCap
             { UCBC, 'UnitCapCheckLess', { 0.98 } },
@@ -157,10 +159,10 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 30,  categories.MOBILE * categories.NAVAL } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.80 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.26, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.STRUCTURE * categories.FACTORY * categories.NAVAL } },
+            { UCBC, 'UnitsGreaterAtEnemy', { 2 , categories.NAVAL * categories.FACTORY } },
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'MOBILE NAVAL TECH2' } },
             -- Respect UnitCap
             { UCBC, 'UnitCapCheckLess', { 0.98 } },
@@ -179,10 +181,10 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 35,  categories.MOBILE * categories.NAVAL } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 2.0, 30.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.27, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.STRUCTURE * categories.FACTORY * categories.NAVAL } },
+            { UCBC, 'UnitsGreaterAtEnemy', { 2 , categories.NAVAL * categories.FACTORY } },
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'MOBILE NAVAL TECH3' } },
             -- Respect UnitCap
             { UCBC, 'UnitCapCheckLess', { 0.98 } },
@@ -199,9 +201,9 @@ BuilderGroup {
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 35,  categories.MOBILE * categories.NAVAL } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 2.0, 30.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.27, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.STRUCTURE * categories.FACTORY * categories.NAVAL } },
+            { UCBC, 'UnitsGreaterAtEnemy', { 2 , categories.NAVAL * categories.FACTORY } },
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'MOBILE NAVAL TECH3' } },
             -- Respect UnitCap
             { UCBC, 'UnitCapCheckLess', { 0.98 } },
@@ -217,10 +219,10 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 35,  categories.MOBILE * categories.NAVAL } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 2.0, 30.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.27, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.STRUCTURE * categories.FACTORY * categories.NAVAL } },
+            { UCBC, 'UnitsGreaterAtEnemy', { 2 , categories.NAVAL * categories.FACTORY } },
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'MOBILE NAVAL TECH3' } },
             -- Respect UnitCap
             { UCBC, 'UnitCapCheckLess', { 0.98 } },
@@ -236,10 +238,10 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 35,  categories.MOBILE * categories.NAVAL } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 2.0, 30.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.27, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.STRUCTURE * categories.FACTORY * categories.NAVAL } },
+            { UCBC, 'UnitsGreaterAtEnemy', { 2 , categories.NAVAL * categories.FACTORY } },
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'MOBILE NAVAL TECH3' } },
             -- Respect UnitCap
             { UCBC, 'UnitCapCheckLess', { 0.98 } },
@@ -255,10 +257,10 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 35,  categories.MOBILE * categories.NAVAL } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 2.0, 30.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.27, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.STRUCTURE * categories.FACTORY * categories.NAVAL } },
+            { UCBC, 'UnitsGreaterAtEnemy', { 2 , categories.NAVAL * categories.FACTORY } },
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'MOBILE NAVAL TECH3' } },
             -- Respect UnitCap
             { UCBC, 'UnitCapCheckLess', { 0.98 } },
@@ -285,6 +287,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'UnitsGreaterAtEnemy', { 2 , categories.NAVAL * categories.FACTORY } },
             { UCBC, 'HasNotParagon', {} },
             -- Respect UnitCap
             { UCBC, 'UnitCapCheckLess', { 0.98 } },
