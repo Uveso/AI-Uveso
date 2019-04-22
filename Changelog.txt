@@ -1,7 +1,14 @@
 *************************************************************************************************************************************
+v63 (22.Apr.2019)
+
+- Fix: AI Marker generator now supports maps where the playable area differs from map size. ( like "Isis" )
+- Fix: Reduced the numbers of Navalfactories. (3 factories per 125 units)
+- Opt: Balanced eco for rush and swarm AI
+
+*************************************************************************************************************************************
 v62 (17.Apr.2019)
 
-- Opt: Attack platoons will no longer return to base of no special target is available. They will attack the enemy base instead.
+- Opt: Attack platoons will no longer return to base if no special target is available. They will attack the enemy base instead.
 - Opt: AI marker generation is now also working on 10x5 or 5x10 maps.
 - Opt: Balanced eco for land / air / naval / amphibious
 - Opt: Naval factories will be built earlier with small defense.

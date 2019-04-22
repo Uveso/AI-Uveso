@@ -503,6 +503,13 @@ function CreateAIMarkers()
     elseif ScenarioInfo.size[1] < ScenarioInfo.size[2] then
         MarkerCountX = MarkerCountX / 2
     end
+    -- Playable area
+    if  ScenarioInfo.MapData.PlayableRect then
+        playablearea = ScenarioInfo.MapData.PlayableRect
+    else
+        playablearea = {0, 0, ScenarioInfo.size[1], ScenarioInfo.size[2]}
+    end
+    LOG('* AI-Uveso: playable area coordinates are ' .. repr(playablearea))
     -- Create Air Marker
     CREATEDMARKERS = {}
     local DistanceBetweenMarkers = ScenarioInfo.size[1] / ( MarkerCountX/2 )
@@ -510,10 +517,13 @@ function CreateAIMarkers()
         for X = 0, MarkerCountX/2 - 1 do
             local PosX = X * DistanceBetweenMarkers + DistanceBetweenMarkers / 2
             local PosY = Y * DistanceBetweenMarkers + DistanceBetweenMarkers / 2
-            CREATEDMARKERS['Marker'..X..'-'..Y] = {
-                ['position'] = VECTOR3( PosX, GetSurfaceHeight(PosX,PosY), PosY ),
-                ['graph'] = 'DefaultAir',
-            }
+                CREATEDMARKERS['Marker'..X..'-'..Y] = {
+                    ['position'] = VECTOR3( PosX, GetSurfaceHeight(PosX,PosY), PosY ),
+                    ['graph'] = 'DefaultAir',
+                }
+            if PosX < playablearea[1] or PosX > playablearea[3] or PosY < playablearea[2] or PosY > playablearea[4] then
+                CREATEDMARKERS['Marker'..X..'-'..Y].graph = 'Blocked'
+            end
         end
     end
     -- connect air markers
@@ -534,17 +544,22 @@ function CreateAIMarkers()
         for X = 0, MarkerCountX - 1 do
             local PosX = X * DistanceBetweenMarkers + DistanceBetweenMarkers / 2
             local PosY = Y * DistanceBetweenMarkers + DistanceBetweenMarkers / 2
-            CREATEDMARKERS['Marker'..X..'-'..Y] = {
-                ['position'] = VECTOR3( PosX, GetSurfaceHeight(PosX,PosY), PosY ),
-            }
+                CREATEDMARKERS['Marker'..X..'-'..Y] = {
+                    ['position'] = VECTOR3( PosX, GetSurfaceHeight(PosX,PosY), PosY ),
+                }
         end
     end
     -- define marker as land, amp, water
     for Y = 0, MarkerCountY - 1 do
         for X = 0, MarkerCountX - 1 do
+            local ReturnGraph
             local MarkerIndex = 'Marker'..X..'-'..Y
             local MarkerPosition = CREATEDMARKERS[MarkerIndex].position
-            local ReturnGraph = CheckValidMarkerPosition(MarkerIndex)
+            if MarkerPosition[1] > playablearea[1] and MarkerPosition[1] < playablearea[3] and MarkerPosition[3] > playablearea[2] and MarkerPosition[3] < playablearea[4] then
+                ReturnGraph = CheckValidMarkerPosition(MarkerIndex)
+            else
+                ReturnGraph = 'Blocked'
+            end
             if DebugMarker == MarkerIndex then
                 ReturnGraph = 'DefaultAir'
             end
@@ -1480,4 +1495,3 @@ function CreateNavalExpansions()
         Scenario.MasterChain._MASTERCHAIN_.Markers['Naval Area '..index].position = NAVALpostition
     end
 end
-
