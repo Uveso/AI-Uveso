@@ -86,7 +86,7 @@ BuilderGroup {
     --    TECH 1   Early          --
     -- =========================== --
     Builder {
-        BuilderName = 'U1A LABs Early',
+        BuilderName = 'U1R LABs Early',
         PlatoonTemplate = 'U1 LandDFBot',
         Priority = 19000,
         BuilderConditions = {
@@ -107,7 +107,7 @@ BuilderGroup {
         BuilderType = 'Land',
     },
     Builder {
-        BuilderName = 'U1A Artillery Early',
+        BuilderName = 'U1R Artillery Early',
         PlatoonTemplate = 'T1LandArtillery',
         Priority = 18000,
         BuilderConditions = {
@@ -131,7 +131,7 @@ BuilderGroup {
     --    TECH 1    --
     -- ============ --
     Builder {
-        BuilderName = 'U1A Artillery',
+        BuilderName = 'U1R Artillery',
         PlatoonTemplate = 'T1LandArtillery',
         Priority = 150,
         BuilderConditions = {
@@ -150,7 +150,7 @@ BuilderGroup {
         BuilderType = 'Land',
     },
     Builder {
-        BuilderName = 'U1A Artillery 1~2',
+        BuilderName = 'U1R Artillery 1~2',
         PlatoonTemplate = 'T1LandArtillery',
         Priority = 550,
         BuilderConditions = {
@@ -173,7 +173,7 @@ BuilderGroup {
     --    TECH 2    --
     -- ============ --
     Builder {
-        BuilderName = 'U2A Artillery',
+        BuilderName = 'U2R Artillery',
         PlatoonTemplate = 'T2LandArtillery',
         Priority = 250,
         BuilderConditions = {
@@ -193,7 +193,7 @@ BuilderGroup {
         BuilderType = 'Land',
     },
     Builder {
-        BuilderName = 'U2A Artillery 2~3',
+        BuilderName = 'U2R Artillery 2~3',
         PlatoonTemplate = 'T2LandArtillery',
         Priority = 450,
         BuilderConditions = {
@@ -217,7 +217,7 @@ BuilderGroup {
     --    TECH 3    --
     -- ============ --
     Builder {
-        BuilderName = 'U3A Mobile Artillery',
+        BuilderName = 'U3R Mobile Artillery',
         PlatoonTemplate = 'T3LandArtillery',
         Priority = 350,
         BuilderConditions = {

@@ -11,6 +11,12 @@ BaseBuilderTemplate {
     BaseTemplateName = 'UvesoStartArea',
     Builders = {
         -----------------------------------------------------------------------------
+        -- ==== Expansion Builders ==== --
+        -----------------------------------------------------------------------------
+        -- Build an Expansion
+        'U1 Expansion Builder',
+
+        -----------------------------------------------------------------------------
         -- ==== Engineer ==== --
         -----------------------------------------------------------------------------
         -- Build Engineers Tech 1,2,3 and SACU
@@ -23,6 +29,14 @@ BaseBuilderTemplate {
         'U123 Engineer Transfer To MainBase',
 
         -----------------------------------------------------------------------------
+        -- ==== Mass ==== --
+        -----------------------------------------------------------------------------
+        -- Build MassExtractors / Creators
+        'U1 MassBuilders',
+        -- Build Mass Storage (Adjacency)
+        'U1 MassStorage Builder',
+
+        -----------------------------------------------------------------------------
         -- ==== Energy ==== --
         -----------------------------------------------------------------------------
         -- Build Power Tech 1,2,3
@@ -32,7 +46,7 @@ BaseBuilderTemplate {
         -- ==== Factory ==== --
         -----------------------------------------------------------------------------
         -- Build Land/Air Factories
-        'U1 Factory Builders Expansions',
+        'U1 Factory Builders ADAPTIVE',
         -- Upgrade Factories TECH1->TECH2 and TECH2->TECH3
         'U123 Factory Upgrader Rush',
 
@@ -42,7 +56,6 @@ BaseBuilderTemplate {
         'U123 Land Builders Panic',
         'U123 Land Builders ADAPTIVE',
         'U123 Land Builders Ratio',
-        'U3 SACU Builder',
 
         -----------------------------------------------------------------------------
         -- ==== Land Units FORMER==== --
@@ -114,7 +127,6 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         'U23 Shields Builder',
         'U23 Shields Upgrader',
-        'U234 Repair Shields Former',
 
         -----------------------------------------------------------------------------
         -- ==== Defenses BUILDER ==== --
@@ -127,18 +139,13 @@ BaseBuilderTemplate {
         -- ==== FireBase BUILDER ==== --
         -----------------------------------------------------------------------------
 
-        -- We need this even if we have Omni View to get target informations for experimentals attack.
         -----------------------------------------------------------------------------
         -- ==== Scout BUILDER ==== --
         -----------------------------------------------------------------------------
-        'U1 Land Scout Builders',
-        'U1 Air Scout Builders',
 
         -----------------------------------------------------------------------------
         -- ==== Scout FORMER ==== --
         -----------------------------------------------------------------------------
-        'U1 Land Scout Formers',
-        'U13 Air Scout Formers', 
 
     },
     -- We need intel in case the commander is dead.

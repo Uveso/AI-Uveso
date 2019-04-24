@@ -1,4 +1,11 @@
 *************************************************************************************************************************************
+v64 (24.Apr.2019)
+
+- Fix: AI adaptive and overwhelm are back to normal unit build instead of rush platoons.
+- Opt: Reclaimables will now be destroyed after 10 minutes. initial reclaim (from map) will last 30 minutes.
+- Opt: Start area expansions will now build more factories and units.
+
+*************************************************************************************************************************************
 v63 (22.Apr.2019)
 
 - Fix: AI Marker generator now supports maps where the playable area differs from map size. ( like "Isis" )

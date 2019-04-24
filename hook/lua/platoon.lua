@@ -661,7 +661,7 @@ Platoon = Class(OldPlatoonClass) {
                     -- in case the unit can't upgrade with OverideUpgradeBlueprint, warn the programmer
                     -- this can happen if the AI relcaimed a factory and tries to upgrade to a support factory without having a HQ factory from the reclaimed factory faction.
                     -- in this case we fall back to HQ upgrade template and upgrade to a HQ factory instead of support.
-                    -- Output: WARNING: [platoon.lua, line:xxx] *UnitUpgradeAI WARNING: OverideUpgradeBlueprint UnitId:CanBuild(tempUpgradeID) failed!
+                    -- Output: WARNING: [platoon.lua, line:xxx] *UnitUpgradeAI WARNING: OverideUpgradeBlueprint UnitId:CanBuild(tempUpgradeID) failed. (Override tree not available, upgrading to default instead.)
                     WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI WARNING: OverideUpgradeBlueprint ' .. repr(v:GetUnitId()) .. ':CanBuild( '..tempUpgradeID..' ) failed. (Override tree not available, upgrading to default instead.)' )
                 end
             end
@@ -682,7 +682,7 @@ Platoon = Class(OldPlatoonClass) {
             end
             if upgradeID and EntityCategoryContains(categories.STRUCTURE, v) and not v:CanBuild(upgradeID) then
                 -- in case the unit can't upgrade with upgradeID, warn the programmer
-                -- Output: WARNING: [platoon.lua, line:xxx] *UnitUpgradeAI ERROR: UnitId:CanBuild(upgradeID) failed!
+                -- Output: WARNING: [platoon.lua, line:xxx] *UnitUpgradeAI ERROR: ABC1234:CanBuild(upgradeID) failed!
                 WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI ERROR: ' .. repr(v:GetUnitId()) .. ':CanBuild( '..upgradeID..' ) failed!' )
                 continue
             end
@@ -753,7 +753,7 @@ Platoon = Class(OldPlatoonClass) {
                 table.insert(MoveToCategories, v )
             end
         else
-            LOG('*: MoveToCategories missing in platoon '..self.BuilderName)
+            LOG('* InterceptorAIUveso: MoveToCategories missing in platoon '..self.BuilderName)
         end
         local WeaponTargetCategories = {}
         if self.PlatoonData.WeaponTargetCategories then
@@ -905,7 +905,7 @@ Platoon = Class(OldPlatoonClass) {
                 table.insert(MoveToCategories, v )
             end
         else
-            LOG('*: MoveToCategories missing in platoon '..self.BuilderName)
+            LOG('* LandAttackAIUveso: MoveToCategories missing in platoon '..self.BuilderName)
         end
         -- Set the target list to all platoon units
         local WeaponTargetCategories = {}
@@ -919,11 +919,6 @@ Platoon = Class(OldPlatoonClass) {
         local target
         local bAggroMove = self.PlatoonData.AggressiveMove
         local WantsTransport = self.PlatoonData.RequireTransport
-        -- Never change the maxradius here. Different platoons needs different maxrange.
-        -- Some platoons starts only if enemy units are closer then x range to the base, with special attack priorities.
-        -- If we send those units directly to the enemy it's wasted because they have wrong target priorities.
-        -- To change maxrange for experimentals see file "Mobile Experimental-Land.lua", search for "FormRadius"
-        -- and don't replace it with 1024. Please use the variable "BaseEnemyZone" for max range.
         local maxRadius = self.PlatoonData.SearchRadius
         local TargetSearchCategory = self.PlatoonData.TargetSearchCategory or 'ALLUNITS'
         local PlatoonPos = self:GetPlatoonPosition()
@@ -1035,7 +1030,7 @@ Platoon = Class(OldPlatoonClass) {
                 table.insert(MoveToCategories, v )
             end
         else
-            LOG('*: MoveToCategories missing in platoon '..self.BuilderName)
+            LOG('* NavalAttackAIUveso: MoveToCategories missing in platoon '..self.BuilderName)
         end
         -- Set the target list to all platoon units
         local WeaponTargetCategories = {}
@@ -1146,7 +1141,7 @@ Platoon = Class(OldPlatoonClass) {
                 table.insert(MoveToCategories, v )
             end
         else
-            LOG('*: MoveToCategories missing in platoon '..self.BuilderName)
+            LOG('* ACUAttackAIUveso: MoveToCategories missing in platoon '..self.BuilderName)
         end
         local WeaponTargetCategories = {}
         if self.PlatoonData.WeaponTargetCategories then
@@ -2701,7 +2696,7 @@ Platoon = Class(OldPlatoonClass) {
                 table.insert(MoveToCategories, v )
             end
         else
-            LOG('*: MoveToCategories missing in platoon '..self.BuilderName)
+            LOG('* SACUTeleportAI: MoveToCategories missing in platoon '..self.BuilderName)
         end
         local WeaponTargetCategories = {}
         if self.PlatoonData.WeaponTargetCategories then

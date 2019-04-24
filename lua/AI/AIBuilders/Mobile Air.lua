@@ -876,7 +876,7 @@ BuilderGroup {
             GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 300,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            IgnorePathing = false,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
+            IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = categories.MOBILE * categories.AIR  * categories.TRANSPORTFOCUS,          -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 'MOBILE AIR TRANSPORTFOCUS',
@@ -903,7 +903,7 @@ BuilderGroup {
             GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 300,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            IgnorePathing = false,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
+            IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = categories.MOBILE * categories.AIR * categories.BOMBER, -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 'MOBILE AIR BOMBER',

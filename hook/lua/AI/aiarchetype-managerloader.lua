@@ -369,7 +369,8 @@ end
 
 function LocationRangeManagerThread(aiBrain)
     local unitcounterdelayer = 0
-    local reclaimdelayer = 0
+    local reclaimdelayer = 1000 -- This value must be high so we will scan the wrecks at gamestart
+    local InitialWrecks
     local ArmyUnits = {}
     -- wait at start of the game for delayed AI message
     WaitTicks(50)
@@ -519,17 +520,20 @@ function LocationRangeManagerThread(aiBrain)
         -- Destroy reclaimables after 5 minutes for better game performance
         if 1 == 1 then
             reclaimdelayer = reclaimdelayer + 1
-            if reclaimdelayer > 12 then
+            if reclaimdelayer > 12*6 then -- 12*50 ticks = 60 seconds = 1 minutes (12*6 = 12*6*50 ticks = 360 seconds = 6 minutes
                 reclaimdelayer = 0
-                local count = 0
+                --local count = 0
                 for _, reclaim in GetReclaimablesInRect(Rect(1, 1, ScenarioInfo.size[1], ScenarioInfo.size[2])) do
                     if reclaim.IsWreckage then
-                        count = count + 1
-                        if not reclaim.expirationTime then
-                            reclaim.expirationTime = GetGameTimeSeconds() + 60*5
+                        --count = count + 1
+                        if not InitialWrecks then
+                            reclaim.expirationTime = GetGameTimeSeconds() + 60*25
+                            InitialWrecks = true
+                        elseif not reclaim.expirationTime then
+                            reclaim.expirationTime = GetGameTimeSeconds() + 60*10
                         elseif GetGameTimeSeconds() > reclaim.expirationTime then
-                            --LOG('Wreck is older then 5 minutes. Deleting it!')
-                            count = count - 1
+                            --LOG('# RECLAIM: Wreck is older then 10 minutes ('..math.floor((GetGameTimeSeconds() - (reclaim.expirationTime - 60*10))/60)..' min.). Deleting it!')
+                            --count = count - 1
                             reclaim:Destroy()
                         end
                     end
