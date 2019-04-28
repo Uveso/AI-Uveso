@@ -30,6 +30,7 @@ BuilderGroup {
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to build this ?
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60*3 } },
             -- Do we need additional conditions to build it ?
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  250, 'LocationType', 0, categories.ALLUNITS - (categories.ENGINEER * categories.TECH1 * categories.TECH2) - categories.AIR - categories.SCOUT }}, -- radius, LocationType, unitCount, categoryEnemy
             -- Don't build it if...

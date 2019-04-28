@@ -1,4 +1,16 @@
 *************************************************************************************************************************************
+v65 (28.Apr.2019)
+
+- Fix: A bug inside buildconditions was preventing the GPG AI from upgrading extractors.
+- Opt: Added an additional strategic missile defense in case Seraphim enemy has build a Yolona Oss (experimental nuke)
+- Opt: Added builder to surround extractors with mass storage.
+- Opt: Added builder for Tech3 Massfabricators.
+- Opt: ACU will go closer to main base, before starting any enhancements.
+- Opt: Engineers will return earlier from expansions to the mainbase.
+- Opt: Tech2 land and air factories will no longer upgrade to tech3 at the same time. (first land, then air)
+- Opt: Reduced the amount of SACUs for the shieldrepair platoon. So the AI can use teleport SACUs earlier.
+
+*************************************************************************************************************************************
 v64 (24.Apr.2019)
 
 - Fix: AI adaptive and overwhelm are back to normal unit build instead of rush platoons.

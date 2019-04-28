@@ -1,5 +1,4 @@
 
-
 OldGreaterThanEconStorageRatioFunction = GreaterThanEconStorageRatio
 function GreaterThanEconStorageRatio(aiBrain, mStorageRatio, eStorageRatio)
    -- Only use this with AI-Uveso
@@ -16,7 +15,7 @@ function GreaterThanEconStorageRatio(aiBrain, mStorageRatio, eStorageRatio)
     return false
 end
 
-OldGreaterThanEconTrendFunction = GreaterThanEconStorageRatio
+OldGreaterThanEconTrendFunction = GreaterThanEconTrend
 function GreaterThanEconTrend(aiBrain, MassTrend, EnergyTrend)
    -- Only use this with AI-Uveso
     if not aiBrain.Uveso then
@@ -32,7 +31,7 @@ function GreaterThanEconTrend(aiBrain, MassTrend, EnergyTrend)
     return false
 end
 
-OldGreaterThanEconIncomeFunction = GreaterThanEconStorageRatio
+OldGreaterThanEconIncomeFunction = GreaterThanEconIncome
 function GreaterThanEconIncome(aiBrain, MassIncome, EnergyIncome)
    -- Only use this with AI-Uveso
     if not aiBrain.Uveso then
@@ -48,5 +47,3 @@ function GreaterThanEconIncome(aiBrain, MassIncome, EnergyIncome)
     end
     return false
 end
-
-

@@ -1,5 +1,12 @@
 
 PlatoonTemplate {
+    Name = 'SACU Teleport 1 1',
+    Plan = 'SACUTeleportAI',
+    GlobalSquads = {
+        { categories.SUBCOMMANDER, 1, 1, 'Attack', 'None' }
+    },        
+}
+PlatoonTemplate {
     Name = 'SACU Teleport 3 3',
     Plan = 'SACUTeleportAI',
     GlobalSquads = {

@@ -517,7 +517,7 @@ function LocationRangeManagerThread(aiBrain)
 --                end
             end
         end
-        -- Destroy reclaimables after 5 minutes for better game performance
+        -- Destroy reclaimables after 10 minutes for better game performance
         if 1 == 1 then
             reclaimdelayer = reclaimdelayer + 1
             if reclaimdelayer > 12*6 then -- 12*50 ticks = 60 seconds = 1 minutes (12*6 = 12*6*50 ticks = 360 seconds = 6 minutes

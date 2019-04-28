@@ -107,7 +107,4 @@ EngineerManager = Class(TheOldEngineerManager) {
         self.AssigningTask = false
         self:ForkThread(self.EngineerWaiting, unit)
     end,
-
-    
 }
-

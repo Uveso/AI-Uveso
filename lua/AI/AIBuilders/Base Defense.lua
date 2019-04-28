@@ -16,7 +16,6 @@ BuilderGroup {
         BuilderName = 'U2 Shield Ratio',
         PlatoonTemplate = 'T2EngineerBuilder',
         Priority = 15000,
-        DelayEqualBuildPlattons = {'Shield', 3},
         InstanceCount = 2,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -563,6 +562,37 @@ BuilderGroup {
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioAtLocationRadiusVersusEnemy', { 1.20, 'LocationType', 90, 'STRUCTURE DEFENSE ANTIMISSILE TECH3', '<','STRUCTURE SILO NUKE TECH3, STRUCTURE SILO NUKE EXPERIMENTAL' } },
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.00, 0.00 } },             -- Ratio from 0 to 1. (1=100%)
+            -- Don't build it if...
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            NumAssistees = 5,
+            Construction = {
+                BuildClose = false,
+                AdjacencyCategory = categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
+                AdjacencyDistance = 50,
+                AvoidCategory = categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * categories.TECH3,
+                maxUnits = 1,
+                maxRadius = 20,
+                BuildStructures = {
+                    'T3StrategicMissileDefense',
+                },
+                Location = 'LocationType',
+            }
+        }
+    },
+    Builder {
+        BuilderName = 'U3 SMD Enemy Yolona Oss',
+        PlatoonTemplate = 'T3EngineerBuilderNoSUB',
+        Priority = 18000,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatioAtLocationRadiusVersusEnemy', { 3.00, 'LocationType', 90, 'STRUCTURE DEFENSE ANTIMISSILE TECH3', '<','STRUCTURE SILO NUKE EXPERIMENTAL SERAPHIM' } },
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
