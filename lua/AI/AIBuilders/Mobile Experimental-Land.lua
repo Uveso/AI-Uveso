@@ -270,6 +270,39 @@ BuilderGroup {
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
+    Builder {
+        BuilderName = 'U4 EnemyBase Land Quinto',                                  -- Random Builder Name.
+        --PlatoonAddPlans = {'NameUnitsSorian'},
+        PlatoonTemplate = 'T4ExperimentalLandGroupUveso 3 5',                   -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates"
+        Priority = 70,                                                          -- Priority. 1000 is normal.
+        InstanceCount = 10,                                                      -- Number of plattons that will be formed.
+        FormRadius = 10000,
+        BuilderData = {
+            SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
+            GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
+            AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
+            AttackEnemyStrength = 100000,                                       -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            TargetSearchCategory = 'ALLUNITS',                                  -- Only find targets matching these categories.
+            MoveToCategories = {                                                -- Move to targets
+                'STRUCTURE EXPERIMENTAL ECONOMIC',
+                'STRUCTURE EXPERIMENTAL SHIELD',
+                'STRUCTURE ARTILLERY',
+                'STRUCTURE NUKE',
+                'STRUCTURE ENERGYPRODUCTION',
+                'STRUCTURE EXPERIMENTAL',
+                'STRUCTURE ANTIMISSILE TECH3',
+                'STRUCTURE DEFENSE TECH3',
+                'FACTORY TECH3',
+                'ALLUNITS',
+            },
+        },
+        BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
+            -- When do we want to form this ?
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60*30 } },
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 3, categories.EXPERIMENTAL * categories.MOBILE * categories.LAND } },
+        },
+        BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
+    },
 }
 -- ============ --
 --    Sniper    --

@@ -20,7 +20,6 @@ BaseBuilderTemplate {
         -- ==== Expansion Builders ==== --
         -----------------------------------------------------------------------------
         -- Build an Expansion
-        'U1 Expansion Builder',
 
         -----------------------------------------------------------------------------
         -- ==== Engineer ==== --
@@ -94,7 +93,7 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== Air Units BUILDER ==== --
         -----------------------------------------------------------------------------
-        'U123 Air Builders',
+        'U123 Air Builders EXPERIMENTAL',
         -- Build Air Transporter
         'U123 Air Transport Builders',
 

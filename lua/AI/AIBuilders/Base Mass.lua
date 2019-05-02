@@ -197,7 +197,6 @@ BuilderGroup {
         Priority = 16200,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 20, categories.STRUCTURE * categories.MASSEXTRACTION } },
             -- Do we need additional conditions to build it ?
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'HaveUnitRatio', { 0.3, 'MASSFABRICATION', '<=','ENERGYPRODUCTION TECH3' } },
@@ -207,7 +206,8 @@ BuilderGroup {
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, 'STRUCTURE MASSFABRICATION' } },
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<', categories.STRUCTURE * categories.MASSEXTRACTION } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<', categories.STRUCTURE * (categories.MASSEXTRACTION + categories.MASSFABRICATION) } },
+
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -242,6 +242,7 @@ BuilderGroup {
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, 'STRUCTURE MASSFABRICATION' } },
             -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<', categories.STRUCTURE * (categories.MASSEXTRACTION + categories.MASSFABRICATION) } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -461,6 +462,7 @@ BuilderGroup {
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1,  'MASSSTORAGE' }},
             -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<', categories.STRUCTURE * (categories.MASSEXTRACTION + categories.MASSFABRICATION + categories.MASSSTORAGE) } },
         },
         BuilderData = {
             Construction = {
@@ -492,6 +494,7 @@ BuilderGroup {
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1,  'MASSSTORAGE' }},
             -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<', categories.STRUCTURE * (categories.MASSEXTRACTION + categories.MASSFABRICATION + categories.MASSSTORAGE) } },
         },
         BuilderData = {
             Construction = {

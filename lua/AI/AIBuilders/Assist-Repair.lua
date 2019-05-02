@@ -348,7 +348,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.EXPERIMENTAL }},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.30, 1.00}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
@@ -375,6 +375,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.EXPERIMENTAL * (categories.ECONOMIC + categories.SHIELD + categories.MOBILE ) }},
             -- Do we need additional conditions to build it ?
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH2 } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.30, 1.00}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
@@ -401,6 +402,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.EXPERIMENTAL * (categories.ECONOMIC + categories.SHIELD + categories.MOBILE ) }},
             -- Do we need additional conditions to build it ?
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH3 } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.30, 1.00}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...

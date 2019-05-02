@@ -565,8 +565,6 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.00, 0.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
         },
         BuilderType = 'Any',

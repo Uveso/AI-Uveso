@@ -188,10 +188,10 @@ PlatoonTemplate {
 }
 
 PlatoonTemplate {
-    Name = 'T4ExperimentalLandGroupUveso 3 8',
+    Name = 'T4ExperimentalLandGroupUveso 3 5',
     Plan = 'LandAttackAIUveso',
     GlobalSquads = {
-        { categories.EXPERIMENTAL * categories.LAND * categories.MOBILE - categories.INSIGNIFICANTUNIT, 3, 8, 'attack', 'none' },
+        { categories.EXPERIMENTAL * categories.LAND * categories.MOBILE - categories.INSIGNIFICANTUNIT, 3, 5, 'attack', 'none' },
     },
 }
 -- Assist experimentals

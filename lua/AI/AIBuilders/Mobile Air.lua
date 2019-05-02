@@ -365,6 +365,68 @@ BuilderGroup {
         BuilderType = 'Air',
     },
 }
+BuilderGroup {
+    BuilderGroupName = 'U123 Air Builders EXPERIMENTAL',                        -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuildersType = 'FactoryBuilder',
+    -- ============ --
+    --    TECH 2    --
+    -- ============ --
+    Builder {
+        BuilderName = 'U2 Air Gunship',
+        PlatoonTemplate = 'T2AirGunship',
+        Priority = 370,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 30, categories.MOBILE * categories.AIR * categories.GROUNDATTACK - categories.HIGHALTAIR }},
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.GROUNDATTACK * categories.TECH3 - categories.HIGHALTAIR }},
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
+            -- Don't build it if...
+            -- Respect UnitCap
+            { UCBC, 'UnitCapCheckLess', { 0.98 } },
+        },
+        BuilderType = 'Air',
+    },
+    -- ============ --
+    --    TECH 3    --
+    -- ============ --
+    Builder {
+        BuilderName = 'U3E Air Fighter min',
+        PlatoonTemplate = 'T3AirFighter',
+        Priority = 370,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 40, categories.MOBILE * categories.AIR * categories.HIGHALTAIR * categories.ANTIAIR * categories.TECH3 - categories.GROUNDATTACK }},
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
+            -- Don't build it if...
+            -- Respect UnitCap
+            { UCBC, 'UnitCapCheckLess', { 0.98 } },
+        },
+        BuilderType = 'Air',
+    },
+    Builder {
+        BuilderName = 'U3E Air Gunship min',
+        PlatoonTemplate = 'T3AirGunship',
+        Priority = 370,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 15, categories.MOBILE * categories.AIR * categories.GROUNDATTACK * categories.TECH3 - categories.HIGHALTAIR }},
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
+            -- Don't build it if...
+            -- Respect UnitCap
+            { UCBC, 'UnitCapCheckLess', { 0.98 } },
+        },
+        BuilderType = 'Air',
+    },
+}
 -- ===================================================-======================================================== --
 -- ==                                   AirTransport T1 T2 T3 Builder                                        == --
 -- ===================================================-======================================================== --

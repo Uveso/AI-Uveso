@@ -1,4 +1,12 @@
 *************************************************************************************************************************************
+v66 (02.May.2019)
+
+- Fix: Removed expansion builder for AI-Experimental
+- Opt: Added Air platoon builder to build basic Tech3 air units.
+- Opt: Added extra attack platoons for high experimental count.
+- Opt: Changed assister so that at least 2 engineers are idle and waiting for non experimental buildorders
+
+*************************************************************************************************************************************
 v65 (28.Apr.2019)
 
 - Fix: A bug inside buildconditions was preventing the GPG AI from upgrading extractors.
