@@ -73,13 +73,13 @@ FactoryBuilderManager = Class(OldFactoryBuilderManagerClass) {
             if self.Brain[ScenarioInfo.Options.AIPLatoonNameDebug] or ScenarioInfo.Options.AIPLatoonNameDebug == 'all' then
                 factory:SetCustomName(builder.BuilderName)
             end
-            -- LOG('*AI DEBUG: ARMY ', repr(self.Brain:GetArmyIndex()),': Factory Builder Manager Building - ',repr(builder.BuilderName))
             if not template then
-                SPEW('*AI DEBUG: ARMY ', repr(self.Brain:GetArmyIndex()),': Factory Builder Manager template is nil- ',repr(builder.BuilderName))
+                SPEW('*AI DEBUG: ARMY '..repr(self.Brain:GetArmyIndex())..': Factory Builder Manager template is nil- '..repr(builder.BuilderName))
             end
             if not factory then
-                SPEW('*AI DEBUG: ARMY ', repr(self.Brain:GetArmyIndex()),': Factory Builder Manager factory is nil- ',repr(builder.BuilderName))
+                SPEW('*AI DEBUG: ARMY '..repr(self.Brain:GetArmyIndex())..': Factory Builder Manager factory is nil- '..repr(builder.BuilderName))
             end
+            --LOG('*AI DEBUG: ARMY '..repr(self.Brain:GetArmyIndex())..': Factory Builder Manager Building - '..repr(builder.BuilderName)..' - '..repr(template))
             self.Brain:BuildPlatoon(template, {factory}, 1)
         else
             -- rename factory

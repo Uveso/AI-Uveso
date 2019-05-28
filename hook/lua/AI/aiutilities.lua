@@ -1,4 +1,15 @@
 
+
+-- Patch for short build range
+local TheOldEngineerMoveWithSafePathFunction = EngineerMoveWithSafePath
+function EngineerMoveWithSafePath(aiBrain, unit, destination)
+    local pos = unit:GetPosition()
+    if VDist2(pos[1], pos[3], destination[1], destination[3]) < 14 then
+        return true
+    end
+    return TheOldEngineerMoveWithSafePathFunction(aiBrain, unit, destination)
+end
+
 -- Helper function for targeting
 function ValidateLayer(UnitPos,MovementLayer)
     if MovementLayer == 'Air' then
@@ -178,9 +189,9 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
                     count = 0
                 end
                 -- DEBUG; use the first target if we can path to it.
-                if UnitWithPath then
-                    return UnitWithPath, UnitNoPath, path, reason
-                end
+                --if UnitWithPath then
+                --    return UnitWithPath, UnitNoPath, path, reason
+                --end
                 -- DEBUG; use the first target if we can path to it.
             end
             if UnitWithPath then

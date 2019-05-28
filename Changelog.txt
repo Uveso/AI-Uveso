@@ -1,4 +1,24 @@
 *************************************************************************************************************************************
+v68 (28.May.2019)
+
+- Fix: Engineers will no longer search for a path if the destination is closer than 14 map units. (buildrange)
+- Opt: Target function will now select the closest target, not the first in list.
+- Opt: Removed default forked threads InitializeEconomyState and OnIntelChange.
+- Opt: Optimized BrainConditionsMonitor
+- Opt: Optimized buildconditions for better performance
+- Opt: Buildconditions are moved from UnitCount- to MiscBuildConditions.lua file. (instant to noninstant buildcondition)
+- Opt: Changed categories inside buildconditions from string to userData format for better performance.
+- Opt: Increased delay time for building next factory to 20 seconds (was 5)
+- Fix: Fixed an issue where engineers can't build massextractors nearby.
+- Fix: Repaired CalculatePriority function inside Builder.lua to change buildpriority for Platoonbuilders.
+- Fix: Repaired OnBeat function inside Gamemain.lua to fix some eco window issues (odd numbers)
+
+*************************************************************************************************************************************
+v67 (07.May.2019)
+
+- New: Added mod file validator to check file and bytecount.
+
+*************************************************************************************************************************************
 v66 (02.May.2019)
 
 - Fix: Removed expansion builder for AI-Experimental

@@ -12,16 +12,6 @@ AIBrain = Class(OldAIBrainClass) {
         KillThread(CurrentThread())
     end,
 
-    ParseIntelThread = function(self)
-        -- Only use this with AI-Uveso
-        if not self.Uveso then
-            return OldAIBrainClass.ParseIntelThread(self)
-        end
-        WaitTicks(10)
-        -- We are leaving this forked thread here because we don't need it.
-        KillThread(CurrentThread())
-    end,
-
     EconomyMonitor = function(self)
         -- Only use this with AI-Uveso
         if not self.Uveso then
@@ -33,20 +23,34 @@ AIBrain = Class(OldAIBrainClass) {
         self.EconomyMonitorThread = nil
     end,
 
-   SetupAttackVectorsThread = function(self)
+   ExpansionHelpThread = function(self)
        -- Only use this with AI-Uveso
         if not self.Uveso then
-            return OldAIBrainClass.SetupAttackVectorsThread(self)
+            return OldAIBrainClass.ExpansionHelpThread(self)
         end
         WaitTicks(10)
         -- We are leaving this forked thread here because we don't need it.
         KillThread(CurrentThread())
     end,
 
-   ExpansionHelpThread = function(self)
+    InitializeEconomyState = function(self)
+        -- Only use this with AI-Uveso
+        if not self.Uveso then
+            return OldAIBrainClass.InitializeEconomyState(self)
+        end
+    end,
+
+    OnIntelChange = function(self, blip, reconType, val)
+        -- Only use this with AI-Uveso
+        if not self.Uveso then
+            return OldAIBrainClass.OnIntelChange(self, blip, reconType, val)
+        end
+    end,
+
+    SetupAttackVectorsThread = function(self)
        -- Only use this with AI-Uveso
         if not self.Uveso then
-            return OldAIBrainClass.ExpansionHelpThread(self)
+            return OldAIBrainClass.SetupAttackVectorsThread(self)
         end
         WaitTicks(10)
         -- We are leaving this forked thread here because we don't need it.

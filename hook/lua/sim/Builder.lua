@@ -1,3 +1,25 @@
+-- For AI Patch V5
+TheOldBuilder = Builder
+Builder = Class(TheOldBuilder) {
+
+    CalculatePriority = function(self, builderManager)
+        self.PriorityAltered = false
+        if self.BuilderName == 'U1 Power low trend' then
+            LOG('CalculatePriority '..self.BuilderName..' - '..repr(self.PriorityFunction))
+        end
+        if Builders[self.BuilderName].PriorityFunction then
+            LOG('CalculatePriority '..self.BuilderName..' - '..self.Priority)
+            local newPri = Builders[self.BuilderName]:PriorityFunction(self.Brain)
+            if newPri != self.Priority then
+                self.Priority = newPri
+                self.PriorityAltered = true
+            end
+            LOG('New Priority '..self.BuilderName..' - '..self.Priority)
+        end
+        return self.PriorityAltered
+    end,
+
+}
 
 -- For Platoon debugging. Unremarking the debugline will print all platoons with priority inside game.log
 TheOldPlatoonBuilder = PlatoonBuilder
