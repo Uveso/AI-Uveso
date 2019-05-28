@@ -1,6 +1,5 @@
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 local EBC = '/lua/editor/EconomyBuildConditions.lua'
-local MIBC = '/lua/editor/MiscBuildConditions.lua'
 
 local MaxCapStructure = 0.12                                                    -- 12% of all units can be structures (STRUCTURE -MASSEXTRACTION -DEFENSE -FACTORY)
 
@@ -143,7 +142,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconIncome', { 12, 1500}},
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.95, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
-            { MIBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -172,7 +171,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconIncome', { 12, 1500}},
             { EBC, 'GreaterThanEconStorageRatio', { 0.95, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { MIBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
         },
         BuilderType = 'Any',
         BuilderData = {

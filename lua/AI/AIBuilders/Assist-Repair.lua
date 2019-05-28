@@ -1,6 +1,5 @@
 local EBC = '/lua/editor/EconomyBuildConditions.lua'
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
-local MIBC = '/lua/editor/MiscBuildConditions.lua'
 
 -- ===================================================-======================================================== --
 -- ==                                             Assistees                                                  == --
@@ -17,7 +16,7 @@ BuilderGroup {
         Priority = 200,
         InstanceCount = 20,
         BuilderConditions = {
-            { MIBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH2 , categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH1 }},
+            { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH2 , categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH1 }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND * ( categories.TECH2 + categories.TECH3 ) } },
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.80}}, -- Ratio from 0 to 1. (1=100%)
@@ -40,7 +39,7 @@ BuilderGroup {
         Priority = 200,
         InstanceCount = 20,
         BuilderConditions = {
-            { MIBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH3 , categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH2 }},
+            { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH3 , categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH2 }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH3 } },
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.80}}, -- Ratio from 0 to 1. (1=100%)
@@ -63,7 +62,7 @@ BuilderGroup {
         Priority = 200,
         InstanceCount = 5,
         BuilderConditions = {
-            { MIBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH3 , categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH2 }},
+            { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH3 , categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH2 }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH3 } },
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.80}}, -- Ratio from 0 to 1. (1=100%)
         },
@@ -85,7 +84,7 @@ BuilderGroup {
         Priority = 200,
         InstanceCount = 20,
         BuilderConditions = {
-            { MIBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.FACTORY}},
+            { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.FACTORY}},
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.80}}, -- Ratio from 0 to 1. (1=100%)
         },
         BuilderType = 'Any',
@@ -158,7 +157,7 @@ BuilderGroup {
         Priority = 16300,
         BuilderConditions = {
             -- When do we want to build this ?
-            { MIBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.ENERGYPRODUCTION * (categories.TECH2 + categories.TECH3) }},
+            { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.ENERGYPRODUCTION * (categories.TECH2 + categories.TECH3) }},
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.80}}, -- Ratio from 0 to 1. (1=100%)
@@ -183,7 +182,7 @@ BuilderGroup {
         InstanceCount = 10,
         BuilderConditions = {
             -- When do we want to build this ?
-            { MIBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.ENERGYPRODUCTION * (categories.TECH2 + categories.TECH3) }},
+            { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.ENERGYPRODUCTION * (categories.TECH2 + categories.TECH3) }},
             -- Do we need additional conditions to build it ?
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
             -- Have we the eco to build it ?
@@ -210,7 +209,7 @@ BuilderGroup {
         InstanceCount = 5,
         BuilderConditions = {
             -- When do we want to build this ?
-            { MIBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.ENERGYPRODUCTION * (categories.TECH2 + categories.TECH3) }},
+            { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.ENERGYPRODUCTION * (categories.TECH2 + categories.TECH3) }},
             -- Do we need additional conditions to build it ?
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH2 } },
             -- Have we the eco to build it ?
@@ -237,7 +236,7 @@ BuilderGroup {
         InstanceCount = 5,
         BuilderConditions = {
             -- When do we want to build this ?
-            { MIBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.ENERGYPRODUCTION * (categories.TECH2 + categories.TECH3) }},
+            { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.ENERGYPRODUCTION * (categories.TECH2 + categories.TECH3) }},
             -- Do we need additional conditions to build it ?
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH3 } },
             -- Have we the eco to build it ?
@@ -347,7 +346,7 @@ BuilderGroup {
         InstanceCount = 50,
         BuilderConditions = {
             -- When do we want to build this ?
-            { MIBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.EXPERIMENTAL }},
+            { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.EXPERIMENTAL }},
             -- Do we need additional conditions to build it ?
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
             -- Have we the eco to build it ?
@@ -374,7 +373,7 @@ BuilderGroup {
         InstanceCount = 50,
         BuilderConditions = {
             -- When do we want to build this ?
-            { MIBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.EXPERIMENTAL * (categories.ECONOMIC + categories.SHIELD + categories.MOBILE ) }},
+            { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.EXPERIMENTAL * (categories.ECONOMIC + categories.SHIELD + categories.MOBILE ) }},
             -- Do we need additional conditions to build it ?
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH2 } },
             -- Have we the eco to build it ?
@@ -401,7 +400,7 @@ BuilderGroup {
         InstanceCount = 15,
         BuilderConditions = {
             -- When do we want to build this ?
-            { MIBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.EXPERIMENTAL * (categories.ECONOMIC + categories.SHIELD + categories.MOBILE ) }},
+            { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.EXPERIMENTAL * (categories.ECONOMIC + categories.SHIELD + categories.MOBILE ) }},
             -- Do we need additional conditions to build it ?
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH3 } },
             -- Have we the eco to build it ?
@@ -432,7 +431,7 @@ BuilderGroup {
         InstanceCount = 10,
         BuilderConditions = {
             -- When do we want to build this ?
-            { MIBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.SHIELD }},
+            { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.SHIELD }},
             -- Do we need additional conditions to build it ?
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 } },
             -- Have we the eco to build it ?
@@ -587,7 +586,7 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 6, categories.MOBILE * categories.ENGINEER}},
             -- Do we need additional conditions to build it ?
             { EBC, 'LessThanEconStorageRatio', { 0.80, 2.00}}, -- Ratio from 0 to 1. (1=100%)
-            { MIBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
+            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             -- Don't build it if...
         },
@@ -606,7 +605,7 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 12, categories.MOBILE * categories.ENGINEER}},
             -- Do we need additional conditions to build it ?
             { EBC, 'LessThanEconStorageRatio', { 0.80, 2.00}}, -- Ratio from 0 to 1. (1=100%)
-            { MIBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
+            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             -- Don't build it if...
         },
@@ -625,7 +624,7 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 18, categories.MOBILE * categories.ENGINEER}},
             -- Do we need additional conditions to build it ?
             { EBC, 'LessThanEconStorageRatio', { 0.80, 2.00}}, -- Ratio from 0 to 1. (1=100%)
-            { MIBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
+            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             -- Don't build it if...
         },

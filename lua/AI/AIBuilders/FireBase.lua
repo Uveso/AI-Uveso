@@ -1,6 +1,5 @@
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 local MABC = '/lua/editor/MarkerBuildConditions.lua'
-local MIBC = '/lua/editor/MiscBuildConditions.lua'
 
 local MaxDefense = 0.15 -- 15% of all units can be defenses (categories.STRUCTURE * categories.DEFENSE)
 
@@ -16,7 +15,7 @@ BuilderGroup {
             { MABC, 'CanBuildFirebase', { 'LocationType', 256, 'Expansion Area', -1000, 5, 1, 'AntiSurface', 1, 'STRATEGIC', 20} },
             { UCBC, 'GreaterThanGameTimeSeconds', { 600 } },
             -- Respect UnitCap
-            { MIBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<', categories.STRUCTURE * categories.DEFENSE } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<', categories.STRUCTURE * categories.DEFENSE } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -51,7 +50,7 @@ BuilderGroup {
             { MABC, 'CanBuildFirebase', { 'LocationType', 256, 'Expansion Area', -1000, 5, 1, 'AntiSurface', 1, 'STRATEGIC', 20} },
             { UCBC, 'GreaterThanGameTimeSeconds', { 600 } },
             -- Respect UnitCap
-            { MIBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<', categories.STRUCTURE * categories.DEFENSE } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<', categories.STRUCTURE * categories.DEFENSE } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -86,7 +85,7 @@ BuilderGroup {
             { MABC, 'CanBuildFirebase', { 'LocationType', 256, 'Expansion Area', -1000, 5, 1, 'AntiSurface', 1, 'STRATEGIC', 20} },
             { UCBC, 'GreaterThanGameTimeSeconds', { 600 } },
             -- Respect UnitCap
-            { MIBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<', categories.STRUCTURE * categories.DEFENSE } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<', categories.STRUCTURE * categories.DEFENSE } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -121,7 +120,7 @@ BuilderGroup {
             { MABC, 'CanBuildFirebase', { 'LocationType', 256, 'Naval Area', -1000, 5, 1, 'AntiSurface', 1, 'STRATEGIC', 20} },
             { UCBC, 'GreaterThanGameTimeSeconds', { 600 } },
             -- Respect UnitCap
-            { MIBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<', categories.STRUCTURE * categories.DEFENSE } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<', categories.STRUCTURE * categories.DEFENSE } },
         },
         BuilderType = 'Any',
         BuilderData = {

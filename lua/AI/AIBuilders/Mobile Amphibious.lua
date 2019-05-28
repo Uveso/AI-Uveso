@@ -20,7 +20,7 @@ BuilderGroup {
         Priority = 150,
         BuilderConditions = {
             -- When do we want to build this ?
-            { MIBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.LAND - categories.ENGINEER, '<=', (categories.MOBILE * categories.LAND) + (categories.STRUCTURE * categories.DEFENSE) } },
+            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.LAND - categories.ENGINEER, '<=', (categories.MOBILE * categories.LAND) + (categories.STRUCTURE * categories.DEFENSE) } },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { false } },
@@ -30,7 +30,7 @@ BuilderGroup {
             -- Don't build it if...
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'MOBILE INDIRECTFIRE' } },
             -- Respect UnitCap
-            { MIBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
         BuilderType = 'Land',
     },
@@ -43,7 +43,7 @@ BuilderGroup {
         Priority = 260,
         BuilderConditions = {
             -- When do we want to build this ?
-            { MIBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.LAND - categories.ENGINEER, '<=', (categories.MOBILE * categories.LAND) + (categories.STRUCTURE * categories.DEFENSE) } },
+            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.LAND - categories.ENGINEER, '<=', (categories.MOBILE * categories.LAND) + (categories.STRUCTURE * categories.DEFENSE) } },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.ENERGYPRODUCTION * categories.TECH3 }},
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { false } },
@@ -52,7 +52,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
-            { MIBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
         BuilderType = 'Land',
     },
@@ -72,7 +72,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             -- Respect UnitCap
-            { MIBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
         BuilderType = 'Land',
     },
@@ -107,7 +107,7 @@ BuilderGroup {
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to form this ?
-            { MIBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.MOBILE - categories.SCOUT }}, -- radius, LocationType, unitCount, categoryEnemy
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.MOBILE - categories.SCOUT }}, -- radius, LocationType, unitCount, categoryEnemy
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
@@ -143,7 +143,7 @@ BuilderGroup {
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to form this ?
             { MIBC, 'CanPathToCurrentEnemy', { false } },
-            { MIBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 0, categories.STRUCTURE + categories.MOBILE }}, -- radius, LocationType, unitCount, categoryEnemy
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 0, categories.STRUCTURE + categories.MOBILE }}, -- radius, LocationType, unitCount, categoryEnemy
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
@@ -181,7 +181,7 @@ BuilderGroup {
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to form this ?
             { MIBC, 'CanPathToCurrentEnemy', { false } },
-            { MIBC, 'UnitsGreaterAtEnemy', { 1 , categories.STRUCTURE + categories.MOBILE } },
+            { UCBC, 'UnitsGreaterAtEnemy', { 1 , categories.STRUCTURE + categories.MOBILE } },
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },

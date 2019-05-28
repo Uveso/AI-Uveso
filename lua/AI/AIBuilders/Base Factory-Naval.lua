@@ -1,6 +1,5 @@
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 local EBC = '/lua/editor/EconomyBuildConditions.lua'
-local MIBC = '/lua/editor/MiscBuildConditions.lua'
 
 local BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua').GetDangerZoneRadii()
 
@@ -48,10 +47,10 @@ BuilderGroup {
         DelayEqualBuildPlattons = {'Factories', 3},
         BuilderConditions = {
             -- When do we want to build this ?
-            { MIBC, 'HaveUnitRatioVersusEnemy', { 1.00, categories.STRUCTURE * categories.FACTORY * categories.NAVAL, '<', categories.STRUCTURE * categories.FACTORY * categories.NAVAL } },
-            { MIBC, 'NavalBaseWithLeastUnits', {  60, 'LocationType', categories.STRUCTURE * categories.FACTORY * categories.NAVAL }}, -- radius, LocationType, categoryUnits
+            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.00, 'STRUCTURE FACTORY NAVAL', '<','STRUCTURE FACTORY NAVAL' } },
+            { UCBC, 'NavalBaseWithLeastUnits', {  60, 'LocationType', categories.STRUCTURE * categories.FACTORY * categories.NAVAL }}, -- radius, LocationType, categoryUnits
             -- Do we need additional conditions to build it ?
-            { MIBC, 'HaveUnitRatioLOW', { 1.0, categories.STRUCTURE * categories.FACTORY * categories.NAVAL, '<', categories.STRUCTURE * categories.FACTORY * categories.LAND } },
+            { UCBC, 'HaveUnitRatio', { 1.0, 'STRUCTURE FACTORY NAVAL', '<','STRUCTURE FACTORY LAND' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.20, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
@@ -59,7 +58,7 @@ BuilderGroup {
             { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.FACTORY * categories.NAVAL * categories.TECH1 }},
             -- Respect UnitCap
-            { MIBC, 'HaveUnitRatioVersusCap', { MaxCapFactory , '<', categories.STRUCTURE * categories.FACTORY * categories.NAVAL } }, -- Maximal 3 factories at 125 unitcap, 12 factories at 500 unitcap...
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapFactory , '<', categories.STRUCTURE * categories.FACTORY * categories.NAVAL } }, -- Maximal 3 factories at 125 unitcap, 12 factories at 500 unitcap...
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -92,7 +91,7 @@ BuilderGroup {
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
             -- Respect UnitCap
-            { MIBC, 'HaveUnitRatioVersusCap', { MaxCapFactory , '<', categories.STRUCTURE * categories.FACTORY * categories.NAVAL } }, -- Maximal 3 factories at 125 unitcap, 12 factories at 500 unitcap...
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapFactory , '<', categories.STRUCTURE * categories.FACTORY * categories.NAVAL } }, -- Maximal 3 factories at 125 unitcap, 12 factories at 500 unitcap...
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -117,7 +116,7 @@ BuilderGroup {
         DelayEqualBuildPlattons = {'Factories', 3},
         BuilderConditions = {
             -- When do we want to build this ?
-            { MIBC, 'NavalBaseWithLeastUnits', {  60, 'LocationType', categories.STRUCTURE * categories.FACTORY * categories.NAVAL }}, -- radius, LocationType, categoryUnits
+            { UCBC, 'NavalBaseWithLeastUnits', {  60, 'LocationType', categories.STRUCTURE * categories.FACTORY * categories.NAVAL }}, -- radius, LocationType, categoryUnits
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.35, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
@@ -125,7 +124,7 @@ BuilderGroup {
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
             -- Respect UnitCap
-            { MIBC, 'HaveUnitRatioVersusCap', { MaxCapFactory , '<', categories.STRUCTURE * categories.FACTORY * categories.NAVAL } }, -- Maximal 3 factories at 125 unitcap, 12 factories at 500 unitcap...
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapFactory , '<', categories.STRUCTURE * categories.FACTORY * categories.NAVAL } }, -- Maximal 3 factories at 125 unitcap, 12 factories at 500 unitcap...
         },
         BuilderType = 'Any',
         BuilderData = {
