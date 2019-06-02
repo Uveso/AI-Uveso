@@ -198,6 +198,8 @@ BrainConditionsMonitor = Class {
 --            end
             --local numPerTick = 20
             --LOG('*AI DEBUG: '.. self.Brain.Nickname ..' ConditionMonitorThread checked: '..numResults..' - numPerTick '..numPerTick..' - 1 loop every '..((numResults/numPerTick)/10)..' seconds.')
+            coroutine.yield(1)
+            checks = 0
         end
     end,
 

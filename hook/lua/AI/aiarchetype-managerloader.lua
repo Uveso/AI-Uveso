@@ -100,6 +100,7 @@ function EcoManager(aiBrain)
     local MassFabrikators = {}
     local AntiNuke = {}
     local paragons = {}
+    local Factories = {}
     local lastCall = 0
     local ParaComplete
     local allyScore
@@ -112,6 +113,7 @@ function EcoManager(aiBrain)
         MassFabrikators = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.MASSFABRICATION, false, false) -- also gets unbuilded units (planed to build)
         AntiNuke = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.ANTIMISSILE * categories.SILO * categories.TECH3, false, false) -- also gets unbuilded units (planed to build)
         paragons = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC  * categories.ENERGYPRODUCTION  * categories.MASSPRODUCTION, false, false)
+        Factories = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.FACTORY, false, false)
         ParaComplete = 0
         bussy = false
         for unitNum, unit in paragons do
@@ -284,7 +286,7 @@ function EcoManager(aiBrain)
         if bussy then
             continue -- while true do
         end
-        -- loop over engineers and manage pause / unpause
+        -- loop over assisting engineers and manage pause / unpause
         for _, unit in Engineers do
             -- if the unit is dead, continue with the next unit
             if unit.Dead then continue end
@@ -364,7 +366,90 @@ function EcoManager(aiBrain)
         if bussy then
             continue -- while true do
         end
-    end
+        -- loop over Factories and manage pause / unpause
+        for _, unit in Factories do
+            -- if the unit is dead, continue with the next unit
+            if unit.Dead then continue end
+            if aiBrain.HasParagon then
+                if unit:IsPaused() then
+                    unit:SetPaused( false )
+                    bussy = true
+                    break -- for _, unit in Engineers do
+                end
+            -- We have negative eco. Check if we can switch something off
+            elseif aiBrain:GetEconomyStoredRatio('MASS') < 0.01 or aiBrain:GetEconomyStoredRatio('ENERGY') < 0.90 then
+                if unit:IsPaused() then continue end
+                if not unit.UnitBeingBuilt then continue end
+                if EntityCategoryContains(categories.ENGINEER + categories.TECH1, unit.UnitBeingBuilt) then continue end
+                unit:SetPaused( true )
+                bussy = true
+                break -- for _, unit in Engineers do
+            else
+                if not unit:IsPaused() then continue end
+                unit:SetPaused( false )
+                bussy = true
+                break -- for _, unit in Engineers do
+            end
+        end
+        if bussy then
+            continue -- while true do
+        end
+        -- loop over building engineers and manage pause / unpause
+        for _, unit in Engineers do
+            -- if the unit is dead, continue with the next unit
+            if unit.Dead then continue end
+            if unit.PlatoonHandle.PlatoonData.Assist.AssisteeType then continue end
+            -- Only Check units that are assisting
+            if not unit.UnitBeingBuilt then continue end
+            if aiBrain.HasParagon then
+                if unit:IsPaused() then
+                    unit:SetPaused( false )
+                    bussy = true
+                    break -- for _, unit in Engineers do
+                end
+            -- We have negative eco. Check if we can switch something off
+            elseif aiBrain:GetEconomyStoredRatio('ENERGY') < 0.01 then
+                if unit:IsPaused() then continue end
+                if not EntityCategoryContains(categories.ENERGYPRODUCTION - categories.EXPERIMENTAL, unit.UnitBeingBuilt) then
+                    unit:SetPaused( true )
+                    bussy = true
+                    break -- for _, unit in Engineers do
+                end
+            elseif aiBrain:GetEconomyStoredRatio('MASS') < 0.01 then
+                if unit:IsPaused() then continue end
+                if not EntityCategoryContains((categories.MASSEXTRACTION + categories.ENERGYPRODUCTION) - categories.EXPERIMENTAL, unit.UnitBeingBuilt) then
+                    unit:SetPaused( true )
+                    bussy = true
+                    break -- for _, unit in Engineers do
+                end
+            -- We have positive eco. Check if we can switch something on
+            elseif aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.80 then
+                if not unit:IsPaused() then continue end
+                if not EntityCategoryContains(categories.ENERGYPRODUCTION - categories.EXPERIMENTAL, unit.UnitBeingBuilt) then
+                    unit:SetPaused( false )
+                    bussy = true
+                    break -- for _, unit in Engineers do
+                end
+            elseif aiBrain:GetEconomyStoredRatio('MASS') >= 0.2 then
+                if not unit:IsPaused() then continue end
+                if not EntityCategoryContains(categories.MASSEXTRACTION - categories.EXPERIMENTAL, unit.UnitBeingBuilt) then
+                    unit:SetPaused( false )
+                    bussy = true
+                    break -- for _, unit in Engineers do
+                end
+            elseif aiBrain:GetEconomyStoredRatio('MASS') >= 0.01 and aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.80 then
+                if not unit:IsPaused() then continue end
+                if EntityCategoryContains((categories.ENERGYPRODUCTION + categories.MASSEXTRACTION) - categories.EXPERIMENTAL, unit.UnitBeingBuilt) then
+                    unit:SetPaused( false )
+                    bussy = true
+                    break -- for _, unit in Engineers do
+                end
+            end
+        end
+        if bussy then
+            continue -- while true do
+        end
+   end
 end
 
 function LocationRangeManagerThread(aiBrain)
@@ -716,6 +801,23 @@ function BaseTargetManager(aiBrain)
                 end
             end
         end
+        WaitTicks(1)
+        -- Search for Shields in EnemyZone
+        if not ClosestTarget then
+            targets = aiBrain:GetUnitsAroundPoint(categories.STRUCTURE * categories.SHIELD, baseposition, BaseEnemyZone, 'Enemy')
+            for _, unit in targets do
+                if not unit.Dead then
+                    if not IsEnemy( aiBrain:GetArmyIndex(), unit:GetAIBrain():GetArmyIndex() ) then continue end
+                    local TargetPosition = unit:GetPosition()
+                    local targetRange = VDist2(baseposition[1], baseposition[3], TargetPosition[1], TargetPosition[3])
+                    if targetRange < distance then
+                        distance = targetRange
+                        ClosestTarget = unit
+                    end
+                end
+            end
+        end
+        WaitTicks(1)
         -- Search for experimentals in EnemyZone
         if not ClosestTarget then
             targets = aiBrain:GetUnitsAroundPoint(categories.EXPERIMENTAL - categories.AIR - categories.INSIGNIFICANTUNIT, baseposition, BaseEnemyZone, 'Enemy')
@@ -731,6 +833,7 @@ function BaseTargetManager(aiBrain)
                 end
             end
         end
+        WaitTicks(1)
         -- Search for T3 Factories / Gates in EnemyZone
         if not ClosestTarget then
             targets = aiBrain:GetUnitsAroundPoint((categories.STRUCTURE * categories.GATE) + (categories.STRUCTURE * categories.FACTORY * categories.TECH3 - categories.SUPPORTFACTORY), baseposition, BaseEnemyZone, 'Enemy')

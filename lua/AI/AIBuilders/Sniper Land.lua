@@ -30,13 +30,13 @@ BuilderGroup {
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 50000,                                        -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = 'STRUCTURE',                                 -- Only find targets matching these categories.
+            TargetSearchCategory = categories.STRUCTURE,                                 -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                'STRUCTURE EXPERIMENTAL ECONOMIC',
-                'STRUCTURE EXPERIMENTAL SHIELD',
-                'STRUCTURE EXPERIMENTAL',
-                'FACTORY TECH3',
-                'ALLUNITS',
+                categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
+                categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
+                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.FACTORY * categories.TECH3,
+                categories.ALLUNITS,
             },
         },
         BuilderConditions = {
@@ -64,13 +64,13 @@ BuilderGroup {
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 50000,                                        -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = 'STRUCTURE',                                 -- Only find targets matching these categories.
+            TargetSearchCategory = categories.STRUCTURE,                                 -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                'STRUCTURE EXPERIMENTAL ECONOMIC',
-                'STRUCTURE EXPERIMENTAL SHIELD',
-                'STRUCTURE EXPERIMENTAL',
-                'FACTORY TECH3',
-                'ALLUNITS',
+                categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
+                categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
+                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.FACTORY * categories.TECH3,
+                categories.ALLUNITS,
             },
         },
         BuilderConditions = {
@@ -98,13 +98,13 @@ BuilderGroup {
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 50000,                                        -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = 'STRUCTURE',                                 -- Only find targets matching these categories.
+            TargetSearchCategory = categories.STRUCTURE,                                 -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                'STRUCTURE EXPERIMENTAL ECONOMIC',
-                'STRUCTURE EXPERIMENTAL SHIELD',
-                'STRUCTURE EXPERIMENTAL',
-                'FACTORY TECH3',
-                'ALLUNITS',
+                categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
+                categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
+                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.FACTORY * categories.TECH3,
+                categories.ALLUNITS,
             },
         },
         BuilderConditions = {
@@ -132,13 +132,13 @@ BuilderGroup {
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 50000,                                        -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = 'STRUCTURE',                                 -- Only find targets matching these categories.
+            TargetSearchCategory = categories.STRUCTURE,                                 -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                'STRUCTURE EXPERIMENTAL ECONOMIC',
-                'STRUCTURE EXPERIMENTAL SHIELD',
-                'STRUCTURE EXPERIMENTAL',
-                'FACTORY TECH3',
-                'ALLUNITS',
+                categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
+                categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
+                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.FACTORY * categories.TECH3,
+                categories.ALLUNITS,
             },
         },
         BuilderConditions = {

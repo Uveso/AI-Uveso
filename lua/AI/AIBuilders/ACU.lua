@@ -22,10 +22,11 @@ BuilderGroup {
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = categories.ALLUNITS - (categories.ENGINEER * categories.TECH1 * categories.TECH2) - categories.AIR - categories.SCOUT , -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Attack these targets.
-                'COMMAND',
-                'EXPERIMENTAL',
-                'INDIRECTFIRE, DIRECTFIRE',
-                'ALLUNITS',
+                categories.COMMAND,
+                categories.EXPERIMENTAL,
+                categories.INDIRECTFIRE,
+                categories.DIRECTFIRE,
+                categories.ALLUNITS,
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true

@@ -291,10 +291,10 @@ function ReclaimAIThread(platoon,self,aiBrain)
             local y1 = SelfPos[3]-scanrange
             local x2 = SelfPos[1]+scanrange
             local y2 = SelfPos[3]+scanrange
-            if x1 < 6 then x1 = 6 end
-            if y1 < 6 then y1 = 6 end
-            if x2 > MAPx-6 then x2 = MAPx-6 end
-            if y2 > MAPy-6 then y2 = MAPy-6 end
+            if x1 < playablearea[1]+6 then x1 = playablearea[1]+6 end
+            if y1 < playablearea[2]+6 then y1 = playablearea[2]+6 end
+            if x2 > playablearea[3]-6 then x2 = playablearea[3]-6 end
+            if y2 > playablearea[4]-6 then y2 = playablearea[4]-6 end
             --LOG('GetReclaimablesInRect from x1='..math.floor(x1)..' - x2='..math.floor(x2)..' - y1='..math.floor(y1)..' - y2='..math.floor(y2)..' - scanrange='..scanrange..'')
             local props = GetReclaimablesInRect(Rect(x1, y1, x2, y2))
             local NearestWreckDist = -1
@@ -365,17 +365,17 @@ function ReclaimAIThread(platoon,self,aiBrain)
             scanKM = math.floor(10000/512*NearestWreckDist)
             if NearestWreckDist > 20 and not self.Dead then
                 --LOG('NearestWreck is > 20 away Distance:'..NearestWreckDist..'. Moving to Wreckage!')
-                if NearestWreckPos[1] < 0+21 then
-                    NearestWreckPos[1] = 21
+                if NearestWreckPos[1] < playablearea[1]+21 then
+                    NearestWreckPos[1] = playablearea[1]+21
                 end
-                if NearestWreckPos[1] > MAPx-21 then
-                    NearestWreckPos[1] = MAPx-21
+                if NearestWreckPos[1] > playablearea[3]-21 then
+                    NearestWreckPos[1] = playablearea[3]-21
                 end
-                if NearestWreckPos[3] < 0+21 then
-                    NearestWreckPos[3] = 21
+                if NearestWreckPos[3] < playablearea[2]+21 then
+                    NearestWreckPos[3] = playablearea[2]+21
                 end
-                if NearestWreckPos[3] > MAPy-21 then
-                    NearestWreckPos[3] = MAPy-21
+                if NearestWreckPos[3] > playablearea[4]-21 then
+                    NearestWreckPos[3] = playablearea[4]-21
                 end
                  if self.lastXtarget == NearestWreckPos[1] and self.lastYtarget == NearestWreckPos[3] then
                     self.blocked = self.blocked + 1

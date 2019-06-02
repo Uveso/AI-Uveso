@@ -57,7 +57,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'MOBILE INDIRECTFIRE' } },
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, categories.MOBILE * categories.INDIRECTFIRE } },
             -- Respect UnitCap
             { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
@@ -76,7 +76,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, 'MOBILE DIRECTFIRE' } },
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, categories.MOBILE * categories.DIRECTFIRE } },
             -- Respect UnitCap
             { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
@@ -100,7 +100,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.LAND * categories.TECH3 - categories.ENGINEER}},
-            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'MOBILE DIRECTFIRE' } },
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, categories.MOBILE * categories.DIRECTFIRE } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
@@ -121,7 +121,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.LAND * categories.TECH3 - categories.ENGINEER}},
-            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'MOBILE INDIRECTFIRE' } },
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, categories.MOBILE * categories.INDIRECTFIRE } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
@@ -156,7 +156,7 @@ BuilderGroup {
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.LAND - categories.ENGINEER, '<=', (categories.MOBILE * categories.LAND) + (categories.STRUCTURE * categories.DEFENSE) } },
-            { UCBC, 'HaveUnitRatio', { 3.00, categories.MOBILE * categories.LAND * categories.TECH1 - categories.ENGINEER, '<=',categories.MOBILE * categories.LAND * categories.TECH2 - categories.ENGINEER } },
+            { UCBC, 'HaveUnitRatioUveso', { 3.00, categories.MOBILE * categories.LAND * categories.TECH1 - categories.ENGINEER, '<=',categories.MOBILE * categories.LAND * categories.TECH2 - categories.ENGINEER } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
@@ -200,7 +200,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.LAND - categories.ENGINEER, '<=', (categories.MOBILE * categories.LAND) + (categories.STRUCTURE * categories.DEFENSE) } },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.ENERGYPRODUCTION * categories.TECH3 }},
-            { UCBC, 'HaveUnitRatio', { 3.00, categories.MOBILE * categories.LAND * categories.TECH2 - categories.ENGINEER, '<=',categories.MOBILE * categories.LAND * categories.TECH3 - categories.ENGINEER } },
+            { UCBC, 'HaveUnitRatioUveso', { 3.00, categories.MOBILE * categories.LAND * categories.TECH2 - categories.ENGINEER, '<=',categories.MOBILE * categories.LAND * categories.TECH3 - categories.ENGINEER } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
@@ -258,7 +258,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'MOBILE DIRECTFIRE' } },
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, categories.MOBILE * categories.DIRECTFIRE } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
@@ -278,7 +278,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, 'MOBILE INDIRECTFIRE' } },
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, categories.MOBILE * categories.INDIRECTFIRE } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
@@ -313,7 +313,7 @@ BuilderGroup {
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.LAND - categories.ENGINEER, '<=', (categories.MOBILE * categories.LAND) + (categories.STRUCTURE * categories.DEFENSE) } },
-            { UCBC, 'HaveUnitRatio', { 3.00, categories.MOBILE * categories.LAND * categories.TECH1 - categories.ENGINEER, '<=',categories.MOBILE * categories.LAND * categories.TECH2 - categories.ENGINEER } },
+            { UCBC, 'HaveUnitRatioUveso', { 3.00, categories.MOBILE * categories.LAND * categories.TECH1 - categories.ENGINEER, '<=',categories.MOBILE * categories.LAND * categories.TECH2 - categories.ENGINEER } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
@@ -357,7 +357,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.LAND - categories.ENGINEER, '<=', (categories.MOBILE * categories.LAND) + (categories.STRUCTURE * categories.DEFENSE) } },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.ENERGYPRODUCTION * categories.TECH3 }},
-            { UCBC, 'HaveUnitRatio', { 3.00, categories.MOBILE * categories.LAND * categories.TECH2 - categories.ENGINEER, '<=',categories.MOBILE * categories.LAND * categories.TECH3 - categories.ENGINEER } },
+            { UCBC, 'HaveUnitRatioUveso', { 3.00, categories.MOBILE * categories.LAND * categories.TECH2 - categories.ENGINEER, '<=',categories.MOBILE * categories.LAND * categories.TECH3 - categories.ENGINEER } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
@@ -506,7 +506,7 @@ BuilderGroup {
         Priority = 160,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatio', { 4.0, 'MOBILE LAND DIRECTFIRE TECH1', '<','MOBILE LAND INDIRECTFIRE TECH1' } },
+            { UCBC, 'HaveUnitRatioUveso', { 4.0, categories.MOBILE * categories.LAND * categories.DIRECTFIRE * categories.TECH1, '<',categories.MOBILE * categories.LAND * categories.INDIRECTFIRE * categories.TECH1 } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
@@ -525,7 +525,7 @@ BuilderGroup {
         Priority = 160,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatio', { 2.0, 'MOBILE LAND BOT TECH1', '<','MOBILE LAND INDIRECTFIRE TECH1' } },
+            { UCBC, 'HaveUnitRatioUveso', { 2.0, categories.MOBILE * categories.LAND * categories.BOT * categories.TECH1, '<',categories.MOBILE * categories.LAND * categories.INDIRECTFIRE * categories.TECH1 } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             { MIBC, 'FactionIndex', { 1, 2, 3 , 5 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
@@ -545,7 +545,7 @@ BuilderGroup {
         Priority = 160,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE LAND ANTIAIR TECH1', '<','MOBILE LAND INDIRECTFIRE TECH1' } },
+            { UCBC, 'HaveUnitRatioUveso', { 1.0, categories.MOBILE * categories.LAND * categories.ANTIAIR * categories.TECH1, '<',categories.MOBILE * categories.LAND * categories.INDIRECTFIRE * categories.TECH1 } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
@@ -567,7 +567,7 @@ BuilderGroup {
         Priority = 260,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatio', { 8.00, 'MOBILE LAND DIRECTFIRE TECH2', '<','MOBILE LAND INDIRECTFIRE' } },
+            { UCBC, 'HaveUnitRatioUveso', { 8.00, categories.MOBILE * categories.LAND * categories.DIRECTFIRE * categories.TECH2, '<',categories.MOBILE * categories.LAND * categories.INDIRECTFIRE } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
@@ -586,7 +586,7 @@ BuilderGroup {
         Priority = 260,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatio', { 8.00, 'MOBILE LAND DIRECTFIRE TECH2', '<','MOBILE LAND INDIRECTFIRE' } },
+            { UCBC, 'HaveUnitRatioUveso', { 8.00, categories.MOBILE * categories.LAND * categories.DIRECTFIRE * categories.TECH2, '<',categories.MOBILE * categories.LAND * categories.INDIRECTFIRE } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
@@ -605,7 +605,7 @@ BuilderGroup {
         Priority = 260,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatio', { 2.0, 'MOBILE LAND ANTIAIR TECH2', '<','MOBILE LAND INDIRECTFIRE' } },
+            { UCBC, 'HaveUnitRatioUveso', { 2.0, categories.MOBILE * categories.LAND * categories.ANTIAIR * categories.TECH2, '<',categories.MOBILE * categories.LAND * categories.INDIRECTFIRE } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
@@ -627,7 +627,7 @@ BuilderGroup {
         Priority = 350,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatio', { 8.0, 'MOBILE LAND DIRECTFIRE TECH3', '<','MOBILE LAND INDIRECTFIRE' } },
+            { UCBC, 'HaveUnitRatioUveso', { 8.0, categories.MOBILE * categories.LAND * categories.DIRECTFIRE * categories.TECH3, '<',categories.MOBILE * categories.LAND * categories.INDIRECTFIRE } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
@@ -645,7 +645,7 @@ BuilderGroup {
         Priority = 350,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatio', { 8.0, 'MOBILE LAND DIRECTFIRE TECH3', '<','MOBILE LAND INDIRECTFIRE' } },
+            { UCBC, 'HaveUnitRatioUveso', { 8.0, categories.MOBILE * categories.LAND * categories.DIRECTFIRE * categories.TECH3, '<',categories.MOBILE * categories.LAND * categories.INDIRECTFIRE } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
@@ -663,7 +663,7 @@ BuilderGroup {
         Priority = 350,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatio', { 8.0, 'MOBILE LAND DIRECTFIRE TECH3', '<','MOBILE LAND INDIRECTFIRE' } },
+            { UCBC, 'HaveUnitRatioUveso', { 8.0, categories.MOBILE * categories.LAND * categories.DIRECTFIRE * categories.TECH3, '<',categories.MOBILE * categories.LAND * categories.INDIRECTFIRE } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
@@ -681,7 +681,7 @@ BuilderGroup {
         Priority = 350,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE LAND ANTIAIR TECH3', '<','MOBILE LAND INDIRECTFIRE' } },
+            { UCBC, 'HaveUnitRatioUveso', { 1.0, categories.MOBILE * categories.LAND * categories.ANTIAIR * categories.TECH3, '<',categories.MOBILE * categories.LAND * categories.INDIRECTFIRE } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
@@ -699,8 +699,8 @@ BuilderGroup {
         Priority = 350,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE LAND SHIELD', '<','MOBILE LAND INDIRECTFIRE TECH3' } },
-            { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE LAND STEALTHFIELD', '<','MOBILE LAND INDIRECTFIRE TECH3' } },
+            { UCBC, 'HaveUnitRatioUveso', { 1.0, categories.MOBILE * categories.LAND * categories.SHIELD, '<',categories.MOBILE * categories.LAND * categories.INDIRECTFIRE * categories.TECH3 } },
+            { UCBC, 'HaveUnitRatioUveso', { 1.0, categories.MOBILE * categories.LAND * categories.STEALTHFIELD, '<',categories.MOBILE * categories.LAND * categories.INDIRECTFIRE * categories.TECH3 } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
@@ -728,7 +728,7 @@ BuilderGroup {
         Priority = 160,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatio', { 4.0, 'MOBILE LAND DIRECTFIRE TECH1', '<','MOBILE LAND INDIRECTFIRE TECH1' } },
+            { UCBC, 'HaveUnitRatioUveso', { 4.0, categories.MOBILE * categories.LAND * categories.DIRECTFIRE * categories.TECH1, '<',categories.MOBILE * categories.LAND * categories.INDIRECTFIRE * categories.TECH1 } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
@@ -747,7 +747,7 @@ BuilderGroup {
         Priority = 160,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatio', { 2.0, 'MOBILE LAND BOT TECH1', '<','MOBILE LAND INDIRECTFIRE TECH1' } },
+            { UCBC, 'HaveUnitRatioUveso', { 2.0, categories.MOBILE * categories.LAND * categories.BOT * categories.TECH1, '<',categories.MOBILE * categories.LAND * categories.INDIRECTFIRE * categories.TECH1 } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             { MIBC, 'FactionIndex', { 1, 2, 3 , 5 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
@@ -767,7 +767,7 @@ BuilderGroup {
         Priority = 160,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE LAND ANTIAIR TECH1', '<','MOBILE LAND INDIRECTFIRE TECH1' } },
+            { UCBC, 'HaveUnitRatioUveso', { 1.0, categories.MOBILE * categories.LAND * categories.ANTIAIR * categories.TECH1, '<',categories.MOBILE * categories.LAND * categories.INDIRECTFIRE * categories.TECH1 } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
@@ -789,7 +789,7 @@ BuilderGroup {
         Priority = 260,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatio', { 8.00, 'MOBILE LAND DIRECTFIRE TECH2', '<','MOBILE LAND INDIRECTFIRE' } },
+            { UCBC, 'HaveUnitRatioUveso', { 8.00, categories.MOBILE * categories.LAND * categories.DIRECTFIRE * categories.TECH2, '<',categories.MOBILE * categories.LAND * categories.INDIRECTFIRE } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
@@ -808,7 +808,7 @@ BuilderGroup {
         Priority = 260,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatio', { 8.00, 'MOBILE LAND DIRECTFIRE TECH2', '<','MOBILE LAND INDIRECTFIRE' } },
+            { UCBC, 'HaveUnitRatioUveso', { 8.00, categories.MOBILE * categories.LAND * categories.DIRECTFIRE * categories.TECH2, '<',categories.MOBILE * categories.LAND * categories.INDIRECTFIRE } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
@@ -827,7 +827,7 @@ BuilderGroup {
         Priority = 260,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatio', { 2.0, 'MOBILE LAND ANTIAIR TECH2', '<','MOBILE LAND INDIRECTFIRE' } },
+            { UCBC, 'HaveUnitRatioUveso', { 2.0, categories.MOBILE * categories.LAND * categories.ANTIAIR * categories.TECH2, '<',categories.MOBILE * categories.LAND * categories.INDIRECTFIRE } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
@@ -849,7 +849,7 @@ BuilderGroup {
         Priority = 350,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatio', { 8.0, 'MOBILE LAND DIRECTFIRE TECH3', '<','MOBILE LAND INDIRECTFIRE' } },
+            { UCBC, 'HaveUnitRatioUveso', { 8.0, categories.MOBILE * categories.LAND * categories.DIRECTFIRE * categories.TECH3, '<',categories.MOBILE * categories.LAND * categories.INDIRECTFIRE } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
@@ -867,7 +867,7 @@ BuilderGroup {
         Priority = 350,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatio', { 8.0, 'MOBILE LAND DIRECTFIRE TECH3', '<','MOBILE LAND INDIRECTFIRE' } },
+            { UCBC, 'HaveUnitRatioUveso', { 8.0, categories.MOBILE * categories.LAND * categories.DIRECTFIRE * categories.TECH3, '<',categories.MOBILE * categories.LAND * categories.INDIRECTFIRE } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
@@ -885,7 +885,7 @@ BuilderGroup {
         Priority = 350,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatio', { 8.0, 'MOBILE LAND DIRECTFIRE TECH3', '<','MOBILE LAND INDIRECTFIRE' } },
+            { UCBC, 'HaveUnitRatioUveso', { 8.0, categories.MOBILE * categories.LAND * categories.DIRECTFIRE * categories.TECH3, '<',categories.MOBILE * categories.LAND * categories.INDIRECTFIRE } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
@@ -903,7 +903,7 @@ BuilderGroup {
         Priority = 350,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE LAND ANTIAIR TECH3', '<','MOBILE LAND INDIRECTFIRE' } },
+            { UCBC, 'HaveUnitRatioUveso', { 1.0, categories.MOBILE * categories.LAND * categories.ANTIAIR * categories.TECH3, '<',categories.MOBILE * categories.LAND * categories.INDIRECTFIRE } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
@@ -921,8 +921,8 @@ BuilderGroup {
         Priority = 350,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE LAND SHIELD', '<','MOBILE LAND INDIRECTFIRE TECH3' } },
-            { UCBC, 'HaveUnitRatio', { 1.0, 'MOBILE LAND STEALTHFIELD', '<','MOBILE LAND INDIRECTFIRE TECH3' } },
+            { UCBC, 'HaveUnitRatioUveso', { 1.0, categories.MOBILE * categories.LAND * categories.SHIELD, '<',categories.MOBILE * categories.LAND * categories.INDIRECTFIRE * categories.TECH3 } },
+            { UCBC, 'HaveUnitRatioUveso', { 1.0, categories.MOBILE * categories.LAND * categories.STEALTHFIELD, '<',categories.MOBILE * categories.LAND * categories.INDIRECTFIRE * categories.TECH3 } },
             -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
@@ -1062,7 +1062,7 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                                    -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
-            RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
+            RequireTransport = false,                                            -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 200,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.STRUCTURE - categories.NAVAL,     -- Only find targets matching these categories.
@@ -1103,22 +1103,22 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
-            RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
+            RequireTransport = false,                                            -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 0,                                            -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            TargetSearchCategory = 'STRUCTURE,ENGINEER',                        -- Only find targets matching these categories.
+            TargetSearchCategory = categories.STRUCTURE + categories.ENGINEER,                        -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                'MASSEXTRACTION',
-                'ENGINEER',
-                'STRUCTURE EXPERIMENTAL SHIELD',
-                'STRUCTURE ARTILLERY',
-                'STRUCTURE NUKE',
-                'STRUCTURE ENERGYPRODUCTION',
-                'STRUCTURE EXPERIMENTAL',
-                'STRUCTURE ANTIMISSILE TECH3',
-                'STRUCTURE DEFENSE TECH3',
-                'FACTORY TECH3',
-                'ALLUNITS',
+                categories.MASSEXTRACTION,
+                categories.ENGINEER,
+                categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
+                categories.STRUCTURE * categories.ARTILLERY,
+                categories.STRUCTURE * categories.NUKE,
+                categories.STRUCTURE * categories.ENERGYPRODUCTION,
+                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.STRUCTURE * categories.ANTIMISSILE * categories.TECH3,
+                categories.STRUCTURE * categories.DEFENSE * categories.TECH3,
+                categories.FACTORY * categories.TECH3,
+                categories.ALLUNITS,
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
@@ -1160,7 +1160,7 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
-            RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
+            RequireTransport = false,                                            -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.DEFENSE + categories.MASSEXTRACTION, -- Only find targets matching these categories.
@@ -1189,7 +1189,7 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
-            RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
+            RequireTransport = false,                                            -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 80,                                           -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.MASSEXTRACTION + categories.DEFENSE, -- Only find targets matching these categories.
@@ -1223,13 +1223,13 @@ BuilderGroup {
             AttackEnemyStrength = 100,                                           -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = (categories.MOBILE * categories.LAND - categories.SCOUT) + (categories.STRUCTURE - categories.NAVAL), -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                'EXPERIMENTAL',
-                'MOBILE LAND INDIRECTFIRE',
-                'MOBILE LAND DIRECTFIRE',
-                'STRUCTURE DEFENSE',
-                'MOBILE LAND ANTIAIR',
-                'STRUCTURE ANTIAIR',
-                'ALLUNITS',
+                categories.EXPERIMENTAL,
+                categories.MOBILE * categories.LAND * categories.INDIRECTFIRE,
+                categories.MOBILE * categories.LAND * categories.DIRECTFIRE,
+                categories.STRUCTURE * categories.DEFENSE,
+                categories.MOBILE * categories.LAND * categories.ANTIAIR,
+                categories.STRUCTURE * categories.ANTIAIR,
+                categories.ALLUNITS,
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
@@ -1250,16 +1250,16 @@ BuilderGroup {
             AttackEnemyStrength = 100000000,                                    -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.ALLUNITS,                         -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                'STRUCTURE EXPERIMENTAL ECONOMIC',
-                'STRUCTURE EXPERIMENTAL',
-                'STRUCTURE NUKE',
-                'STRUCTURE FACTORY TECH3',
-                'STRUCTURE ENERGYPRODUCTION TECH3',
-                'STRUCTURE DEFENSE TECH3',
-                'STRUCTURE DEFENSE TECH2',
-                'STRUCTURE DEFENSE',
-                'STRUCTURE',
-                'ALLUNITS',
+                categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
+                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.STRUCTURE * categories.NUKE,
+                categories.STRUCTURE * categories.FACTORY * categories.TECH3,
+                categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
+                categories.STRUCTURE * categories.DEFENSE * categories.TECH3,
+                categories.STRUCTURE * categories.DEFENSE * categories.TECH2,
+                categories.STRUCTURE * categories.DEFENSE,
+                categories.STRUCTURE,
+                categories.ALLUNITS,
             },
             WeaponTargetCategories = {                                          -- Override weapon target priorities
                 categories.EXPERIMENTAL,
@@ -1289,16 +1289,16 @@ BuilderGroup {
             AttackEnemyStrength = 100000000,                                    -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.ALLUNITS,                         -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                'STRUCTURE EXPERIMENTAL ECONOMIC',
-                'STRUCTURE EXPERIMENTAL',
-                'STRUCTURE NUKE',
-                'STRUCTURE FACTORY TECH3',
-                'STRUCTURE ENERGYPRODUCTION TECH3',
-                'STRUCTURE DEFENSE TECH3',
-                'STRUCTURE DEFENSE TECH2',
-                'STRUCTURE DEFENSE',
-                'STRUCTURE',
-                'ALLUNITS',
+                categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
+                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.STRUCTURE * categories.NUKE,
+                categories.STRUCTURE * categories.FACTORY * categories.TECH3,
+                categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
+                categories.STRUCTURE * categories.DEFENSE * categories.TECH3,
+                categories.STRUCTURE * categories.DEFENSE * categories.TECH2,
+                categories.STRUCTURE * categories.DEFENSE,
+                categories.STRUCTURE,
+                categories.ALLUNITS,
             },
             WeaponTargetCategories = {                                          -- Override weapon target priorities
                 categories.EXPERIMENTAL,
@@ -1334,16 +1334,16 @@ BuilderGroup {
             AttackEnemyStrength = 300,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.ALLUNITS,                         -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                'STRUCTURE EXPERIMENTAL ECONOMIC',
-                'STRUCTURE EXPERIMENTAL',
-                'STRUCTURE NUKE',
-                'STRUCTURE FACTORY TECH3',
-                'STRUCTURE ENERGYPRODUCTION TECH3',
-                'STRUCTURE DEFENSE TECH3',
-                'STRUCTURE DEFENSE TECH2',
-                'STRUCTURE DEFENSE',
-                'STRUCTURE',
-                'ALLUNITS',
+                categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
+                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.STRUCTURE * categories.NUKE,
+                categories.STRUCTURE * categories.FACTORY * categories.TECH3,
+                categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
+                categories.STRUCTURE * categories.DEFENSE * categories.TECH3,
+                categories.STRUCTURE * categories.DEFENSE * categories.TECH2,
+                categories.STRUCTURE * categories.DEFENSE,
+                categories.STRUCTURE,
+                categories.ALLUNITS,
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
@@ -1364,16 +1364,16 @@ BuilderGroup {
             AttackEnemyStrength = 100000000,                                    -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.ALLUNITS,                         -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                'STRUCTURE EXPERIMENTAL ECONOMIC',
-                'STRUCTURE EXPERIMENTAL',
-                'STRUCTURE NUKE',
-                'STRUCTURE FACTORY TECH3',
-                'STRUCTURE ENERGYPRODUCTION TECH3',
-                'STRUCTURE DEFENSE TECH3',
-                'STRUCTURE DEFENSE TECH2',
-                'STRUCTURE DEFENSE',
-                'STRUCTURE',
-                'ALLUNITS',
+                categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
+                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.STRUCTURE * categories.NUKE,
+                categories.STRUCTURE * categories.FACTORY * categories.TECH3,
+                categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
+                categories.STRUCTURE * categories.DEFENSE * categories.TECH3,
+                categories.STRUCTURE * categories.DEFENSE * categories.TECH2,
+                categories.STRUCTURE * categories.DEFENSE,
+                categories.STRUCTURE,
+                categories.ALLUNITS,
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
@@ -1394,16 +1394,16 @@ BuilderGroup {
             AttackEnemyStrength = 100000000,                                    -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.ALLUNITS,                         -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                'STRUCTURE EXPERIMENTAL ECONOMIC',
-                'STRUCTURE EXPERIMENTAL',
-                'STRUCTURE NUKE',
-                'STRUCTURE FACTORY TECH3',
-                'STRUCTURE ENERGYPRODUCTION TECH3',
-                'STRUCTURE DEFENSE TECH3',
-                'STRUCTURE DEFENSE TECH2',
-                'STRUCTURE DEFENSE',
-                'STRUCTURE',
-                'ALLUNITS',
+                categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
+                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.STRUCTURE * categories.NUKE,
+                categories.STRUCTURE * categories.FACTORY * categories.TECH3,
+                categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
+                categories.STRUCTURE * categories.DEFENSE * categories.TECH3,
+                categories.STRUCTURE * categories.DEFENSE * categories.TECH2,
+                categories.STRUCTURE * categories.DEFENSE,
+                categories.STRUCTURE,
+                categories.ALLUNITS,
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true

@@ -17,7 +17,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, 'ENGINEER TECH3' }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, categories.ENGINEER * categories.TECH3 }},
             { UCBC, 'CanBuildCategory', { categories.MOBILE * categories.AIR * categories.EXPERIMENTAL - categories.SATELLITE } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome', { 7.0, 600.0 }},                    -- Base income
@@ -30,7 +30,7 @@ BuilderGroup {
                 DesiresAssist = true,
                 NumAssistees = 10,
                 BuildClose = true,
-                AdjacencyCategory = 'SHIELD STRUCTURE',
+                AdjacencyCategory = categories.STRUCTURE * categories.SHIELD,
                 BuildStructures = {
                     'T4AirExperimental1',
                 },
@@ -47,7 +47,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, 'ENGINEER TECH3' }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, categories.ENGINEER * categories.TECH3 }},
             { UCBC, 'CanBuildCategory', { categories.MOBILE * categories.AIR * categories.EXPERIMENTAL - categories.SATELLITE } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome', { 7.0, 600.0 }},                    -- Base income
@@ -60,7 +60,7 @@ BuilderGroup {
                 DesiresAssist = true,
                 NumAssistees = 10,
                 BuildClose = true,
-                AdjacencyCategory = 'SHIELD STRUCTURE',
+                AdjacencyCategory = categories.STRUCTURE * categories.SHIELD,
                 BuildStructures = {
                     'T4AirExperimental1',
                 },
@@ -132,7 +132,7 @@ BuilderGroup {
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = categories.EXPERIMENTAL,                     -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                'MOBILE AIR EXPERIMENTAL',
+                categories.MOBILE * categories.EXPERIMENTAL * categories.AIR,
                 'MOBILE LAND EXPERIMENTAL',
             },
         },
@@ -163,17 +163,17 @@ BuilderGroup {
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 0,                                            -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = 'STRUCTURE',                                 -- Only find targets matching these categories.
+            TargetSearchCategory = categories.STRUCTURE,                                 -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                'STRUCTURE EXPERIMENTAL ECONOMIC',
-                'STRUCTURE EXPERIMENTAL',
-                'STRUCTURE NUKE',
-                'STRUCTURE FACTORY TECH3',
-                'STRUCTURE ENERGYPRODUCTION TECH3',
-                'STRUCTURE DEFENSE TECH3',
-                'STRUCTURE DEFENSE TECH2',
-                'STRUCTURE DEFENSE',
-                'STRUCTURE',
+                categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
+                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.STRUCTURE * categories.NUKE,
+                categories.STRUCTURE * categories.FACTORY * categories.TECH3,
+                categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
+                categories.STRUCTURE * categories.DEFENSE * categories.TECH3,
+                categories.STRUCTURE * categories.DEFENSE * categories.TECH2,
+                categories.STRUCTURE * categories.DEFENSE,
+                categories.STRUCTURE,
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
@@ -198,16 +198,16 @@ BuilderGroup {
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = categories.ALLUNITS,                         -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                'STRUCTURE EXPERIMENTAL ECONOMIC',
-                'STRUCTURE EXPERIMENTAL',
-                'STRUCTURE NUKE',
-                'STRUCTURE FACTORY TECH3',
-                'STRUCTURE ENERGYPRODUCTION TECH3',
-                'STRUCTURE DEFENSE TECH3',
-                'STRUCTURE DEFENSE TECH2',
-                'STRUCTURE DEFENSE',
-                'STRUCTURE',
-                'ALLUNITS',
+                categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
+                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.STRUCTURE * categories.NUKE,
+                categories.STRUCTURE * categories.FACTORY * categories.TECH3,
+                categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
+                categories.STRUCTURE * categories.DEFENSE * categories.TECH3,
+                categories.STRUCTURE * categories.DEFENSE * categories.TECH2,
+                categories.STRUCTURE * categories.DEFENSE,
+                categories.STRUCTURE,
+                categories.ALLUNITS,
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
@@ -242,16 +242,16 @@ BuilderGroup {
             AttackEnemyStrength = 100000,                                       -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.ALLUNITS,                         -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                'STRUCTURE EXPERIMENTAL ECONOMIC',
-                'STRUCTURE EXPERIMENTAL',
-                'STRUCTURE NUKE',
-                'STRUCTURE FACTORY TECH3',
-                'STRUCTURE ENERGYPRODUCTION TECH3',
-                'STRUCTURE DEFENSE TECH3',
-                'STRUCTURE DEFENSE TECH2',
-                'STRUCTURE DEFENSE',
-                'STRUCTURE',
-                'ALLUNITS',
+                categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
+                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.STRUCTURE * categories.NUKE,
+                categories.STRUCTURE * categories.FACTORY * categories.TECH3,
+                categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
+                categories.STRUCTURE * categories.DEFENSE * categories.TECH3,
+                categories.STRUCTURE * categories.DEFENSE * categories.TECH2,
+                categories.STRUCTURE * categories.DEFENSE,
+                categories.STRUCTURE,
+                categories.ALLUNITS,
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true

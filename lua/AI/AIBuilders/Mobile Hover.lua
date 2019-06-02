@@ -26,8 +26,8 @@ BuilderGroup {
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = categories.MOBILE,                           -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                'EXPERIMENTAL',
-                'ALLUNITS',
+                categories.EXPERIMENTAL,
+                categories.ALLUNITS,
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
@@ -56,13 +56,13 @@ BuilderGroup {
             AttackEnemyStrength = 200,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.LAND + categories.NAVAL,          -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                'EXPERIMENTAL',
-                'MOBILE LAND INDIRECTFIRE',
-                'MOBILE LAND DIRECTFIRE',
-                'MOBILE LAND ANTIAIR',
-                'STRUCTURE DEFENSE',
-                'STRUCTURE ANTIAIR',
-                'ALLUNITS',
+                categories.EXPERIMENTAL,
+                categories.MOBILE * categories.LAND * categories.INDIRECTFIRE,
+                categories.MOBILE * categories.LAND * categories.DIRECTFIRE,
+                categories.MOBILE * categories.LAND * categories.ANTIAIR,
+                categories.STRUCTURE * categories.DEFENSE,
+                categories.STRUCTURE * categories.ANTIAIR,
+                categories.ALLUNITS,
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
@@ -91,8 +91,8 @@ BuilderGroup {
             AttackEnemyStrength = 200,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.LAND + categories.NAVAL,          -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                'EXPERIMENTAL',
-                'ALLUNITS',
+                categories.EXPERIMENTAL,
+                categories.ALLUNITS,
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
@@ -125,8 +125,8 @@ BuilderGroup {
             AttackEnemyStrength = 100000000,                                    -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.ALLUNITS,                         -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                'EXPERIMENTAL',
-                'ALLUNITS',
+                categories.EXPERIMENTAL,
+                categories.ALLUNITS,
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true

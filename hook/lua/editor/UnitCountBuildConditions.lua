@@ -16,25 +16,16 @@ end
 
 --{ UCBC, 'CanBuildCategory', { categories.RADAR * categories.TECH1 } },
 local FactionIndexToCategory = {[1] = categories.UEF, [2] = categories.AEON, [3] = categories.CYBRAN, [4] = categories.SERAPHIM, [5] = categories.NOMADS }
-function CanBuildCategory(aiBrain,category, DEBUG)
+function CanBuildCategory(aiBrain,category)
     -- convert text categories like 'MOBILE AIR' to 'categories.MOBILE * categories.AIR'
     local FactionCat = FactionIndexToCategory[aiBrain:GetFactionIndex()] or categories.ALLUNITS
-    if type(category) == 'string' then
-        category = ParseEntityCategory(category)
-    end
     local numBuildableUnits = table.getn(EntityCategoryGetUnitList(category * FactionCat)) or -1
-    if DEBUG then
-        LOG('* CanBuildCategory: FactionIndex: ('..repr(aiBrain:GetFactionIndex())..') numBuildableUnits:'..numBuildableUnits..' - '..repr( EntityCategoryGetUnitList(category * FactionCat) ))
-    end
+    --LOG('* CanBuildCategory: FactionIndex: ('..repr(aiBrain:GetFactionIndex())..') numBuildableUnits:'..numBuildableUnits..' - '..repr( EntityCategoryGetUnitList(category * FactionCat) ))
     return numBuildableUnits > 0
 end
 
 --            { UCBC, 'HaveLessThanUnitsInCategoryBeingUpgrade', { 1, categories.RADAR * categories.TECH1 }},
-function HaveUnitsInCategoryBeingUpgrade(aiBrain, numunits, category, compareType, DEBUG)
-    -- convert text categories like 'MOBILE AIR' to 'categories.MOBILE * categories.AIR'
-    if type(category) == 'string' then
-        category = ParseEntityCategory(category)
-    end
+function HaveUnitsInCategoryBeingUpgrade(aiBrain, numunits, category, compareType)
     -- get all units matching 'category'
     local unitsBuilding = aiBrain:GetListOfUnits(category, false)
     local numBuilding = 0
@@ -46,18 +37,15 @@ function HaveUnitsInCategoryBeingUpgrade(aiBrain, numunits, category, compareTyp
             numBuilding = numBuilding + 1
         end
     end
-    if DEBUG then
-        LOG(aiBrain:GetArmyIndex()..' HaveUnitsInCategoryBeingUpgrade ( '..numBuilding..' '..compareType..' '..numunits..' ) --  return '..repr(CompareBody(numBuilding, numunits, compareType))..' ')
-    end
+    --LOG(aiBrain:GetArmyIndex()..' HaveUnitsInCategoryBeingUpgrade ( '..numBuilding..' '..compareType..' '..numunits..' ) --  return '..repr(CompareBody(numBuilding, numunits, compareType))..' ')
     return CompareBody(numBuilding, numunits, compareType)
 end
-function HaveLessThanUnitsInCategoryBeingUpgrade(aiBrain, numunits, category, DEBUG)
+function HaveLessThanUnitsInCategoryBeingUpgrade(aiBrain, numunits, category)
     return HaveUnitsInCategoryBeingUpgrade(aiBrain, numunits, category, '<')
 end
-function HaveGreaterThanUnitsInCategoryBeingUpgrade(aiBrain, numunits, category, DEBUG)
+function HaveGreaterThanUnitsInCategoryBeingUpgrade(aiBrain, numunits, category)
     return HaveUnitsInCategoryBeingUpgrade(aiBrain, numunits, category, '>')
 end
-
 
 -- function GreaterThanGameTime(aiBrain, num) is multiplying the time by 0.5, if we have an cheat AI. But i need the real time here.
 --            { UCBC, 'GreaterThanGameTimeSeconds', { 180 } },
@@ -96,53 +84,34 @@ function LessThanEnergyTrend(aiBrain, eTrend)
 end
 
 --            { UCBC, 'EnergyToMassRatioIncome', { 10.0, '>=',true } },  -- True if we have 10 times more Energy then Mass income ( 100 >= 10 = true )
-function EnergyToMassRatioIncome(aiBrain, ratio, compareType, DEBUG)
+function EnergyToMassRatioIncome(aiBrain, ratio, compareType)
     local econ = AIUtils.AIGetEconomyNumbers(aiBrain)
-    if DEBUG then
-        LOG(aiBrain:GetArmyIndex()..' CompareBody {World} ( E:'..(econ.EnergyIncome*10)..' '..compareType..' M:'..(econ.MassIncome*10)..' ) -- R['..ratio..'] -- return '..repr(CompareBody(econ.EnergyIncome / econ.MassIncome, ratio, compareType)))
-    end
+    --LOG(aiBrain:GetArmyIndex()..' CompareBody {World} ( E:'..(econ.EnergyIncome*10)..' '..compareType..' M:'..(econ.MassIncome*10)..' ) -- R['..ratio..'] -- return '..repr(CompareBody(econ.EnergyIncome / econ.MassIncome, ratio, compareType)))
     return CompareBody(econ.EnergyIncome / econ.MassIncome, ratio, compareType)
 end
+
 --            { UCBC, 'HaveUnitRatioVersusCap', { 0.024, '<=', categories.STRUCTURE * categories.FACTORY * categories.LAND } }, -- Maximal 3 factories at 125 unitcap, 12 factories at 500 unitcap...
-function HaveUnitRatioVersusCap(aiBrain, ratio, compareType, categoryOwn, DEBUG)
-    local testCatOwn = categoryOwn
-    if type(testCatOwn) == 'string' then
-        testCatOwn = ParseEntityCategory(testCatOwn)
-    end
-    local numOwnUnits = aiBrain:GetCurrentUnits(testCatOwn)
+function HaveUnitRatioVersusCap(aiBrain, ratio, compareType, categoryOwn)
+    local numOwnUnits = aiBrain:GetCurrentUnits(categoryOwn)
     local cap = GetArmyUnitCap(aiBrain:GetArmyIndex())
-    if DEBUG then
-        LOG(aiBrain:GetArmyIndex()..' CompareBody {World} ( '..numOwnUnits..' '..compareType..' '..cap..' ) -- ['..ratio..'] -- '..repr(DEBUG)..' :: '..(numOwnUnits / cap)..' '..compareType..' '..cap..' return '..repr(CompareBody(numOwnUnits / cap, ratio, compareType)))
-    end
+    --LOG(aiBrain:GetArmyIndex()..' CompareBody {World} ( '..numOwnUnits..' '..compareType..' '..cap..' ) -- ['..ratio..'] -- '..repr(DEBUG)..' :: '..(numOwnUnits / cap)..' '..compareType..' '..cap..' return '..repr(CompareBody(numOwnUnits / cap, ratio, compareType)))
     return CompareBody(numOwnUnits / cap, ratio, compareType)
 end
 
-
-function HaveUnitRatioVersusEnemy(aiBrain, ratio, categoryOwn, compareType, categoryEnemy, DEBUG)
+function HaveUnitRatioVersusEnemy(aiBrain, ratio, categoryOwn, compareType, categoryEnemy)
     -- in case we don't have omni view, return always true. We cant count units without omni
     if not aiBrain.CheatEnabled or ScenarioInfo.Options.OmniCheat ~= "on" then
         --LOG('* HaveUnitRatioVersusEnemy: AI is not Cheating or Omni is Off')
         return true
     end
-
-    local testCatOwn = categoryOwn
-    if type(testCatOwn) == 'string' then
-        testCatOwn = ParseEntityCategory(testCatOwn)
-    end
-    local numOwnUnits = aiBrain:GetCurrentUnits(testCatOwn)
-    local testCatEnemy = categoryEnemy
-    if type(testCatEnemy) == 'string' then
-        testCatEnemy = ParseEntityCategory(testCatEnemy)
-    end
+    local numOwnUnits = aiBrain:GetCurrentUnits(categoryOwn)
     local mapSizeX, mapSizeZ = GetMapSize()
-    local numEnemyUnits = aiBrain:GetNumUnitsAroundPoint(testCatEnemy, Vector(mapSizeX/2,0,mapSizeZ/2), mapSizeX+mapSizeZ , 'Enemy')
-    if DEBUG then
-        LOG(aiBrain:GetArmyIndex()..' CompareBody {World} ( '..numOwnUnits..' '..compareType..' '..numEnemyUnits..' ) -- ['..ratio..'] -- return '..repr(CompareBody(numOwnUnits / numEnemyUnits, ratio, compareType)))
-    end
+    local numEnemyUnits = aiBrain:GetNumUnitsAroundPoint(categoryEnemy, Vector(mapSizeX/2,0,mapSizeZ/2), mapSizeX+mapSizeZ , 'Enemy')
+    --LOG(aiBrain:GetArmyIndex()..' CompareBody {World} ( '..numOwnUnits..' '..compareType..' '..numEnemyUnits..' ) -- ['..ratio..'] -- return '..repr(CompareBody(numOwnUnits / numEnemyUnits, ratio, compareType)))
     return CompareBody(numOwnUnits / numEnemyUnits, ratio, compareType)
 end
 
-function HaveUnitRatioAtLocation(aiBrain, locType, ratio, categoryNeed, compareType, categoryHave, DEBUG)
+function HaveUnitRatioAtLocation(aiBrain, locType, ratio, categoryNeed, compareType, categoryHave)
     local AIName = ArmyBrains[aiBrain:GetArmyIndex()].Nickname
     local baseposition, radius
     if BASEPOSTITIONS[AIName][locType] then
@@ -167,25 +136,14 @@ function HaveUnitRatioAtLocation(aiBrain, locType, ratio, categoryNeed, compareT
     if not baseposition then
         return false
     end
-    local testCatNeed = categoryNeed
-    if type(testCatNeed) == 'string' then
-        testCatNeed = ParseEntityCategory(testCatNeed)
-    end
-    local numNeedUnits = aiBrain:GetNumUnitsAroundPoint(testCatNeed, baseposition, radius , 'Ally')
-    
-    local testCatHave = categoryHave
-    if type(testCatHave) == 'string' then
-        testCatHave = ParseEntityCategory(testCatHave)
-    end
-    local numHaveUnits = aiBrain:GetNumUnitsAroundPoint(testCatHave, baseposition, radius , 'Ally')
-    if DEBUG then
-        LOG(aiBrain:GetArmyIndex()..' CompareBody {'..locType..'} ( '..numNeedUnits..' '..compareType..' '..numHaveUnits..' ) -- ['..ratio..'] -- '..categoryNeed..' '..compareType..' '..categoryHave..' return '..repr(CompareBody(numNeedUnits / numHaveUnits, ratio, compareType)))
-    end
+    local numNeedUnits = aiBrain:GetNumUnitsAroundPoint(categoryNeed, baseposition, radius , 'Ally')
+    local numHaveUnits = aiBrain:GetNumUnitsAroundPoint(categoryHave, baseposition, radius , 'Ally')
+    --LOG(aiBrain:GetArmyIndex()..' CompareBody {'..locType..'} ( '..numNeedUnits..' '..compareType..' '..numHaveUnits..' ) -- ['..ratio..'] -- '..categoryNeed..' '..compareType..' '..categoryHave..' return '..repr(CompareBody(numNeedUnits / numHaveUnits, ratio, compareType)))
     return CompareBody(numNeedUnits / numHaveUnits, ratio, compareType)
 end
 
 --{ UCBC, 'HaveUnitRatioAtLocationRadiusVersusEnemy', { 1.50, 'LocationType', 90, 'STRUCTURE DEFENSE ANTIMISSILE TECH3', '<','SILO NUKE TECH3' } },
-function HaveUnitRatioAtLocationRadiusVersusEnemy(aiBrain, ratio, locType, radius, categoryOwn, compareType, categoryEnemy, DEBUG)
+function HaveUnitRatioAtLocationRadiusVersusEnemy(aiBrain, ratio, locType, radius, categoryOwn, compareType, categoryEnemy)
     local AIName = ArmyBrains[aiBrain:GetArmyIndex()].Nickname
     local baseposition, radius
     if BASEPOSTITIONS[AIName][locType] then
@@ -210,30 +168,16 @@ function HaveUnitRatioAtLocationRadiusVersusEnemy(aiBrain, ratio, locType, radiu
     if not baseposition then
         return false
     end
-    local testCatOwn = categoryOwn
-    if type(testCatOwn) == 'string' then
-        testCatOwn = ParseEntityCategory(testCatOwn)
-    end
-    local numNeedUnits = aiBrain:GetNumUnitsAroundPoint(testCatOwn, baseposition, radius , 'Ally')
-
-    local testCatEnemy = categoryEnemy
-    if type(testCatEnemy) == 'string' then
-        testCatEnemy = ParseEntityCategory(testCatEnemy)
-    end
+    local numNeedUnits = aiBrain:GetNumUnitsAroundPoint(categoryOwn, baseposition, radius , 'Ally')
     local mapSizeX, mapSizeZ = GetMapSize()
-    local numEnemyUnits = aiBrain:GetNumUnitsAroundPoint(testCatEnemy, Vector(mapSizeX/2,0,mapSizeZ/2), mapSizeX+mapSizeZ , 'Enemy')
-
+    local numEnemyUnits = aiBrain:GetNumUnitsAroundPoint(categoryEnemy, Vector(mapSizeX/2,0,mapSizeZ/2), mapSizeX+mapSizeZ , 'Enemy')
     return CompareBody(numNeedUnits / numEnemyUnits, ratio, compareType)
 end
 
 --            { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 0, categories.MASSEXTRACTION} },
 function HavePoolUnitInArmy(aiBrain, unitCount, unitCategory, compareType)
-    local testCat = unitCategory
-    if type(unitCategory) == 'string' then
-        testCat = ParseEntityCategory(unitCategory)
-    end
     local poolPlatoon = aiBrain:GetPlatoonUniquelyNamed('ArmyPool')
-    local numUnits = poolPlatoon:GetNumCategoryUnits(testCat)
+    local numUnits = poolPlatoon:GetNumCategoryUnits(unitCategory)
     --LOG('* HavePoolUnitInArmy: numUnits= '..numUnits) 
     return CompareBody(numUnits, unitCount, compareType)
 end
@@ -268,94 +212,43 @@ function ReclaimableEnergyInArea(aiBrain, locType)
     return false
 end
 
-function CanBuildOnMassLessThanLocationDistance(aiBrain, locationType, distance, threatMin, threatMax, threatRings, threatType, maxNum )
-    local engineerManager = aiBrain.BuilderManagers[locationType].EngineerManager
-    if not engineerManager then
-        WARN('*AI WARNING: Invalid location - ' .. locationType)
-        return false
-    end
-    local locationPos = aiBrain.BuilderManagers[locationType].EngineerManager.Location
-    local markerTable = AIUtils.AIGetSortedMassLocations(aiBrain, maxNum, threatMin, threatMax, threatRings, threatType, locationPos)
-    if markerTable[1] and VDist2(locationPos[1], locationPos[3], markerTable[1][1], markerTable[1][3]) < distance then
-        --LOG('SearchRadius: '..distance..' - We can build on '..repr(locationType)..' in less than '..VDist2(locationPos[1], locationPos[3], markerTable[1][1], markerTable[1][3]))
-        return true
-    else
-        --LOG('SearchRadius: '..distance..' - Outside range from '..repr(locationType)..': '..VDist2(locationPos[1], locationPos[3], markerTable[1][1], markerTable[1][3]))
-    end
-    return false
-end
-function CanNotBuildOnMassLessThanLocationDistance(aiBrain, locationType, distance, threatMin, threatMax, threatRings, threatType, maxNum )
-    local engineerManager = aiBrain.BuilderManagers[locationType].EngineerManager
-    if not engineerManager then
-        WARN('*AI WARNING: Invalid location - ' .. locationType)
-        return false
-    end
-    local locationPos = aiBrain.BuilderManagers[locationType].EngineerManager.Location
-    local markerTable = AIUtils.AIGetSortedMassLocations(aiBrain, maxNum, threatMin, threatMax, threatRings, threatType, locationPos)
-    if markerTable[1] and VDist2(locationPos[1], locationPos[3], markerTable[1][1], markerTable[1][3]) < distance then
-        return false
-    end
-    return true
-end
-
-function HaveEnemyUnitAtLocation(aiBrain, radius, locationType, unitCount, categoryEnemy, compareType, DEBUG)
+function HaveEnemyUnitAtLocation(aiBrain, radius, locationType, unitCount, categoryEnemy, compareType)
     if not aiBrain.BuilderManagers[locationType] then
         WARN('*AI WARNING: HaveEnemyUnitAtLocation - Invalid location - ' .. locationType)
         return false
     end
-    local categoryEnemy = categoryEnemy
-    if type(categoryEnemy) == 'string' then
-        categoryEnemy = ParseEntityCategory(categoryEnemy)
-    end
     local numEnemyUnits = aiBrain:GetNumUnitsAroundPoint(categoryEnemy, aiBrain.BuilderManagers[locationType].Position, radius , 'Enemy')
-    if DEBUG then
-        DrawCircle(aiBrain.BuilderManagers[locationType].Position, radius, '0000FF')
-        DrawCircle(aiBrain.BuilderManagers[locationType].Position, radius+1, '0000FF')
-        LOG(aiBrain:GetArmyIndex()..' CompareBody {World} radius:['..radius..'] '..repr(DEBUG)..' ['..numEnemyUnits..'] '..compareType..' ['..unitCount..'] return '..repr(CompareBody(numEnemyUnits, unitCount, compareType)))
-    end
+    --LOG(aiBrain:GetArmyIndex()..' CompareBody {World} radius:['..radius..'] '..repr(DEBUG)..' ['..numEnemyUnits..'] '..compareType..' ['..unitCount..'] return '..repr(CompareBody(numEnemyUnits, unitCount, compareType)))
     return CompareBody(numEnemyUnits, unitCount, compareType)
 end
 --            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.MOBILE * categories.LAND }}, -- radius, LocationType, unitCount, categoryEnemy
-function EnemyUnitsGreaterAtLocationRadius(aiBrain, radius, locationType, unitCount, categoryEnemy, DEBUG)
-    return HaveEnemyUnitAtLocation(aiBrain, radius, locationType, unitCount, categoryEnemy, '>', DEBUG)
+function EnemyUnitsGreaterAtLocationRadius(aiBrain, radius, locationType, unitCount, categoryEnemy)
+    return HaveEnemyUnitAtLocation(aiBrain, radius, locationType, unitCount, categoryEnemy, '>')
 end
 --            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BasePanicZone, 'LocationType', 1, categories.MOBILE * categories.LAND }}, -- radius, LocationType, unitCount, categoryEnemy
-function EnemyUnitsLessAtLocationRadius(aiBrain, radius, locationType, unitCount, categoryEnemy, DEBUG)
-    return HaveEnemyUnitAtLocation(aiBrain, radius, locationType, unitCount, categoryEnemy, '<', DEBUG)
+function EnemyUnitsLessAtLocationRadius(aiBrain, radius, locationType, unitCount, categoryEnemy)
+    return HaveEnemyUnitAtLocation(aiBrain, radius, locationType, unitCount, categoryEnemy, '<')
 end
-
 
 --            { UCBC, 'UnitsLessAtEnemy', { 1 , 'MOBILE EXPERIMENTAL' } },
 --            { UCBC, 'UnitsGreaterAtEnemy', { 1 , 'MOBILE EXPERIMENTAL' } },
-function GetEnemyUnits(aiBrain, unitCount, categoryEnemy, compareType, DEBUG)
-    local testCatEnemy = categoryEnemy
-    if type(testCatEnemy) == 'string' then
-        testCatEnemy = ParseEntityCategory(testCatEnemy)
-    end
+function GetEnemyUnits(aiBrain, unitCount, categoryEnemy, compareType)
     local mapSizeX, mapSizeZ = GetMapSize()
-    local numEnemyUnits = aiBrain:GetNumUnitsAroundPoint(testCatEnemy, Vector(mapSizeX/2,0,mapSizeZ/2), mapSizeX+mapSizeZ , 'Enemy')
-    if DEBUG then
-        LOG(aiBrain:GetArmyIndex()..' CompareBody {World} '..categoryEnemy..' ['..numEnemyUnits..'] '..compareType..' ['..unitCount..'] return '..repr(CompareBody(numEnemyUnits, unitCount, compareType)))
-    end
+    local numEnemyUnits = aiBrain:GetNumUnitsAroundPoint(categoryEnemy, Vector(mapSizeX/2,0,mapSizeZ/2), mapSizeX+mapSizeZ , 'Enemy')
+    --LOG(aiBrain:GetArmyIndex()..' CompareBody {World} '..categoryEnemy..' ['..numEnemyUnits..'] '..compareType..' ['..unitCount..'] return '..repr(CompareBody(numEnemyUnits, unitCount, compareType)))
     return CompareBody(numEnemyUnits, unitCount, compareType)
 end
-function UnitsLessAtEnemy(aiBrain, unitCount, categoryEnemy, DEBUG)
-    return GetEnemyUnits(aiBrain, unitCount, categoryEnemy, '<', DEBUG)
+function UnitsLessAtEnemy(aiBrain, unitCount, categoryEnemy)
+    return GetEnemyUnits(aiBrain, unitCount, categoryEnemy, '<')
 end
-function UnitsGreaterAtEnemy(aiBrain, unitCount, categoryEnemy, DEBUG)
-    return GetEnemyUnits(aiBrain, unitCount, categoryEnemy, '>', DEBUG)
+function UnitsGreaterAtEnemy(aiBrain, unitCount, categoryEnemy)
+    return GetEnemyUnits(aiBrain, unitCount, categoryEnemy, '>')
 end
 
 --            { UCBC, 'EngineerManagerUnitsAtLocation', { 'MAIN', '<=', 100,  'ENGINEER TECH3' } },
-function EngineerManagerUnitsAtLocation(aiBrain, LocationType, compareType, numUnits, category, DEBUG)
-    local testCat = category
-    if type(testCat) == 'string' then
-        testCat = ParseEntityCategory(testCat)
-    end
-    local numEngineers = aiBrain.BuilderManagers[LocationType].EngineerManager:GetNumCategoryUnits('Engineers', testCat)
-    if DEBUG then
-        LOG('* EngineerManagerUnitsAtLocation: '..LocationType..' ( engineers: '..numEngineers..' '..compareType..' '..numUnits..' ) -- '..category..' return '..repr(CompareBody( numEngineers, numUnits, compareType )) )
-    end
+function EngineerManagerUnitsAtLocation(aiBrain, LocationType, compareType, numUnits, category)
+    local numEngineers = aiBrain.BuilderManagers[LocationType].EngineerManager:GetNumCategoryUnits('Engineers', category)
+    --LOG('* EngineerManagerUnitsAtLocation: '..LocationType..' ( engineers: '..numEngineers..' '..compareType..' '..numUnits..' ) -- '..category..' return '..repr(CompareBody( numEngineers, numUnits, compareType )) )
     return CompareBody( numEngineers, numUnits, compareType )
 end
 
@@ -368,34 +261,21 @@ function BuildOnlyOnLocation(aiBrain, LocationType, AllowedLocationType)
     return false
 end
 --            { UCBC, 'BuildNotOnLocation', { 'LocationType', 'MAIN' } },
-function BuildNotOnLocation(aiBrain, LocationType, ForbiddenLocationType, DEBUG)
+function BuildNotOnLocation(aiBrain, LocationType, ForbiddenLocationType)
     if string.find(LocationType, ForbiddenLocationType) then
-        if DEBUG then
-            LOG('* BuildOnlyOnLocation: we are on location '..LocationType..', forbidden locations are: '..ForbiddenLocationType..'. return false (don\'t build it)')
-        end
+        --LOG('* BuildOnlyOnLocation: we are on location '..LocationType..', forbidden locations are: '..ForbiddenLocationType..'. return false (don\'t build it)')
         return false
     end
-    if DEBUG then
-        LOG('* BuildOnlyOnLocation: we are on location '..LocationType..', forbidden locations are: '..ForbiddenLocationType..'. return true (OK, build it)')
-    end
+    --LOG('* BuildOnlyOnLocation: we are on location '..LocationType..', forbidden locations are: '..ForbiddenLocationType..'. return true (OK, build it)')
     return true
 end
 
-
 function HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation(aiBrain, locationType, numReq, category, constructionCat)
-    local cat = category
-    if type(category) == 'string' then
-        cat = ParseEntityCategory(category)
-    end
-    local consCat = constructionCat
-    if consCat and type(consCat) == 'string' then
-        consCat = ParseEntityCategory(constructionCat)
-    end
     local numUnits
-    if consCat then
-        numUnits = table.getn( GetUnitsBeingBuiltLocation(aiBrain, locationType, cat, cat + categories.ENGINEER * categories.MOBILE + consCat) or {} )
+    if constructionCat then
+        numUnits = table.getn( GetUnitsBeingBuiltLocation(aiBrain, locationType, category, category + categories.ENGINEER * categories.MOBILE + constructionCat) or {} )
     else
-        numUnits = table.getn( GetUnitsBeingBuiltLocation(aiBrain,locationType, cat, cat + categories.ENGINEER * categories.MOBILE ) or {} )
+        numUnits = table.getn( GetUnitsBeingBuiltLocation(aiBrain,locationType, category, category + categories.ENGINEER * categories.MOBILE ) or {} )
     end
     if numUnits > numReq then
         return true
@@ -609,65 +489,12 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------------
 -- For debug printing
---             { UCBC, 'HaveUnitRatio', { 0.75, 'MASSEXTRACTION TECH1', '<=','MASSEXTRACTION TECH2',true } },
-function HaveUnitRatio(aiBrain, ratio, categoryOne, compareType, categoryTwo, DEBUG)
-    local testCatOne = categoryOne
-    if type(testCatOne) == 'string' then
-        testCatOne = ParseEntityCategory(testCatOne)
-    end
-    local numOne = aiBrain:GetCurrentUnits(testCatOne)
-
-    local testCatTwo = categoryTwo
-    if type(testCatTwo) == 'string' then
-        testCatTwo = ParseEntityCategory(testCatTwo)
-    end
-    local numTwo = aiBrain:GetCurrentUnits(testCatTwo)
-    if DEBUG then
-        LOG(aiBrain:GetArmyIndex()..' CompareBody {World} ( '..numOne..' '..compareType..' '..numTwo..' ) -- ['..ratio..'] -- '..categoryOne..' '..compareType..' '..categoryTwo..' ('..(numOne / numTwo)..' '..compareType..' '..ratio..' ?) return '..repr(CompareBody(numOne / numTwo, ratio, compareType)))
-    end
-
+--             { UCBC, 'HaveUnitRatioUveso', { 0.75, 'MASSEXTRACTION TECH1', '<=','MASSEXTRACTION TECH2',true } },
+function HaveUnitRatioUveso(aiBrain, ratio, categoryOne, compareType, categoryTwo)
+    local numOne = aiBrain:GetCurrentUnits(categoryOne)
+    local numTwo = aiBrain:GetCurrentUnits(categoryTwo)
+    --LOG(aiBrain:GetArmyIndex()..' CompareBody {World} ( '..numOne..' '..compareType..' '..numTwo..' ) -- ['..ratio..'] -- '..categoryOne..' '..compareType..' '..categoryTwo..' ('..(numOne / numTwo)..' '..compareType..' '..ratio..' ?) return '..repr(CompareBody(numOne / numTwo, ratio, compareType)))
     return CompareBody(numOne / numTwo, ratio, compareType)
 end
 
-function HavePoolUnitComparisonAtLocationII(aiBrain, locationType, unitCount, unitCategory, compareType)
-    local engineerManager = aiBrain.BuilderManagers[locationType].EngineerManager
-    local testCat = unitCategory
-    if type(unitCategory) == 'string' then
-        testCat = ParseEntityCategory(unitCategory)
-    end
-    if not engineerManager then
-        WARN('*AI WARNING: HavePoolUnitComparisonAtLocationII - Invalid location - ' .. locationType)
-        return false
-    end
-    local poolPlatoon = aiBrain:GetPlatoonUniquelyNamed('ArmyPool')
-    local numUnits = poolPlatoon:GetNumCategoryUnits(testCat, engineerManager:GetLocationCoords(), engineerManager:GetLocationRadius())
-    LOG('* PoolGreaterAtLocationII: numUnits from GetPlatoonUniquelyNamed(ArmyPool) '..numUnits..' - '..locationType)
-    return CompareBody(numUnits, unitCount, compareType)
-end
-function PoolLessAtLocationII(aiBrain, locationType, unitCount, unitCategory)
-    return HavePoolUnitComparisonAtLocationII(aiBrain, locationType, unitCount, unitCategory, '<')
-end
-function PoolGreaterAtLocationII(aiBrain, locationType, unitCount, unitCategory)
-    return HavePoolUnitComparisonAtLocationII(aiBrain, locationType, unitCount, unitCategory, '>')
-end
-
-
---            { UCBC, 'AreShieldsDamaged', { 'LocationType'}},
-function AreShieldsDamaged(aiBrain, locationType)
-    local engineerManager = aiBrain.BuilderManagers[locationType].EngineerManager
-    if not engineerManager then
-        return false
-    end
-    local shields = aiBrain:GetUnitsAroundPoint(categories.STRUCTURE * categories.SHIELD, engineerManager:GetLocationCoords(), engineerManager.Radius, 'Ally')
-    for num, unit in shields do
-        if not unit.Dead and unit:ShieldIsOn() then
-            shieldPercent = (unit.MyShield:GetHealth() / unit.MyShield:GetMaxHealth())
-            if shieldPercent < 0.90 then
-                LOG('* AreShieldsDamaged: true')
-                return true
-            end
-        end
-    end
-    return false
-end
 

@@ -27,7 +27,7 @@ BuilderGroup {
                 AssistLocation = 'LocationType',
                 AssisteeType = 'Factory',
                 AssistRange = 80,
-                BeingBuiltCategories = {'STRUCTURE LAND FACTORY TECH2'},
+                BeingBuiltCategories = {'STRUCTURE LAND FACTORY TECH2'},        -- Unitcategories must be type string
                 AssistUntilFinished = true,
                 Time = 0,
             },
@@ -50,7 +50,7 @@ BuilderGroup {
                 AssistLocation = 'LocationType',
                 AssisteeType = 'Factory',
                 AssistRange = 80,
-                BeingBuiltCategories = {'STRUCTURE LAND FACTORY TECH3'},
+                BeingBuiltCategories = {'STRUCTURE LAND FACTORY TECH3'},        -- Unitcategories must be type string
                 AssistUntilFinished = true,
                 Time = 0,
             },
@@ -72,7 +72,7 @@ BuilderGroup {
                 AssistLocation = 'LocationType',
                 AssisteeType = 'Factory',
                 AssistRange = 80,
-                BeingBuiltCategories = {'STRUCTURE LAND FACTORY TECH3'},
+                BeingBuiltCategories = {'STRUCTURE LAND FACTORY TECH3'},        -- Unitcategories must be type string
                 AssistUntilFinished = true,
                 Time = 0,
             },
@@ -94,7 +94,7 @@ BuilderGroup {
                 AssisteeType = 'Factory',
                 AssistRange = 80,
                 AssistClosestUnit = true,                                       -- Assist the closest unit instead unit with the least number of assisters
-                BeingBuiltCategories = {'STRUCTURE FACTORY'},
+                BeingBuiltCategories = {'STRUCTURE FACTORY'},                   -- Unitcategories must be type string
                 AssistUntilFinished = true,
                 Time = 0,
             },
@@ -107,7 +107,7 @@ BuilderGroup {
         Priority = 600,
         InstanceCount = 6,
         BuilderConditions = {
-            { UCBC, 'LocationFactoriesBuildingGreater', { 'LocationType', 0, 'MOBILE' } },
+            { UCBC, 'LocationFactoriesBuildingGreater', { 'LocationType', 0, categories.MOBILE } },
             { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.80}}, -- Ratio from 0 to 1. (1=100%)
             { UCBC, 'GreaterThanGameTimeSeconds', { 60*15 } },
         },
@@ -117,7 +117,7 @@ BuilderGroup {
                 AssistLocation = 'LocationType',
                 AssisteeType = 'Factory',
                 AssistRange = 120,
-                BeingBuiltCategories = {'STRUCTURE FACTORY'},
+                BeingBuiltCategories = {'STRUCTURE FACTORY'},                   -- Unitcategories must be type string
                 AssistClosestUnit = false,                                       -- Assist the closest unit instead unit with the least number of assisters
                 AssistUntilFinished = true,
                 Time = 0,
@@ -130,7 +130,7 @@ BuilderGroup {
         Priority = 600,
         InstanceCount = 6,
         BuilderConditions = {
-            { UCBC, 'LocationFactoriesBuildingGreater', { 'LocationType', 0, 'MOBILE' } },
+            { UCBC, 'LocationFactoriesBuildingGreater', { 'LocationType', 0, categories.MOBILE } },
             { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.80}}, -- Ratio from 0 to 1. (1=100%)
             { UCBC, 'GreaterThanGameTimeSeconds', { 60*15 } },
         },
@@ -140,7 +140,7 @@ BuilderGroup {
                 AssistLocation = 'LocationType',
                 AssisteeType = 'Factory',
                 AssistRange = 120,
-                BeingBuiltCategories = {'STRUCTURE FACTORY'},
+                BeingBuiltCategories = {'STRUCTURE FACTORY'},                   -- Unitcategories must be type string
                 AssistClosestUnit = true,                                       -- Assist the closest unit instead unit with the least number of assisters
                 AssistUntilFinished = true,
                 Time = 0,
@@ -169,7 +169,7 @@ BuilderGroup {
                 AssistLocation = 'LocationType',
                 AssisteeType = 'Structure',
                 AssistRange = 30,
-                BeingBuiltCategories = {'STRUCTURE ENERGYPRODUCTION TECH2', 'STRUCTURE ENERGYPRODUCTION TECH3'},
+                BeingBuiltCategories = {'STRUCTURE ENERGYPRODUCTION TECH2', 'STRUCTURE ENERGYPRODUCTION TECH3'},-- Unitcategories must be type string
                 AssistUntilFinished = true,
                 Time = 0,
             },
@@ -196,7 +196,7 @@ BuilderGroup {
                 AssisteeType = 'Structure',
                 AssistRange = 80,
                 AssistClosestUnit = true,                                       -- Assist the closest unit instead unit with the least number of assisters
-                BeingBuiltCategories = {'STRUCTURE ENERGYPRODUCTION TECH2', 'STRUCTURE ENERGYPRODUCTION TECH3'},
+                BeingBuiltCategories = {'STRUCTURE ENERGYPRODUCTION TECH2', 'STRUCTURE ENERGYPRODUCTION TECH3'},-- Unitcategories must be type string
                 AssistUntilFinished = true,
                 Time = 0,
             },
@@ -223,7 +223,7 @@ BuilderGroup {
                 AssisteeType = 'Structure',
                 AssistRange = 80,
                 AssistClosestUnit = true,                                       -- Assist the closest unit instead unit with the least number of assisters
-                BeingBuiltCategories = {'STRUCTURE ENERGYPRODUCTION TECH2', 'STRUCTURE ENERGYPRODUCTION TECH3'},
+                BeingBuiltCategories = {'STRUCTURE ENERGYPRODUCTION TECH2', 'STRUCTURE ENERGYPRODUCTION TECH3'},-- Unitcategories must be type string
                 AssistUntilFinished = true,
                 Time = 0,
             },
@@ -250,7 +250,7 @@ BuilderGroup {
                 AssisteeType = 'Structure',
                 AssistRange = 80,
                 AssistClosestUnit = true,                                       -- Assist the closest unit instead unit with the least number of assisters
-                BeingBuiltCategories = {'STRUCTURE ENERGYPRODUCTION TECH2', 'STRUCTURE ENERGYPRODUCTION TECH3'},
+                BeingBuiltCategories = {'STRUCTURE ENERGYPRODUCTION TECH2', 'STRUCTURE ENERGYPRODUCTION TECH3'},-- Unitcategories must be type string
                 AssistUntilFinished = true,
                 Time = 0,
             },
@@ -278,7 +278,7 @@ BuilderGroup {
                 AssistLocation = 'LocationType',
                 AssisteeType = 'Structure',
                 AssistRange = 150,
-                BeingBuiltCategories = {'EXPERIMENTAL ECONOMIC'},
+                BeingBuiltCategories = {'EXPERIMENTAL ECONOMIC'},               -- Unitcategories must be type string
                 AssistUntilFinished = true,
                 Time = 0,
             },
@@ -304,7 +304,7 @@ BuilderGroup {
                 AssistLocation = 'LocationType',
                 AssisteeType = 'Structure',
                 AssistRange = 150,
-                BeingBuiltCategories = {'EXPERIMENTAL ECONOMIC'},
+                BeingBuiltCategories = {'EXPERIMENTAL ECONOMIC'},               -- Unitcategories must be type string
                 AssistUntilFinished = true,
                 Time = 0,
             },
@@ -330,7 +330,7 @@ BuilderGroup {
                 AssistLocation = 'LocationType',
                 AssisteeType = 'Structure',
                 AssistRange = 150,
-                BeingBuiltCategories = {'EXPERIMENTAL ECONOMIC'},
+                BeingBuiltCategories = {'EXPERIMENTAL ECONOMIC'},               -- Unitcategories must be type string
                 AssistUntilFinished = true,
                 Time = 0,
             },
@@ -360,7 +360,7 @@ BuilderGroup {
                 AssisteeType = 'Structure',
                 AssistRange = 100,
                 AssistClosestUnit = true,                                       -- Assist the closest unit instead unit with the least number of assisters
-                BeingBuiltCategories = {'EXPERIMENTAL'},
+                BeingBuiltCategories = {'EXPERIMENTAL'},                        -- Unitcategories must be type string
                 AssistUntilFinished = true,
                 Time = 0,
             },
@@ -387,7 +387,7 @@ BuilderGroup {
                 AssisteeType = 'Structure',
                 AssistRange = 100,
                 AssistClosestUnit = true,                                       -- Assist the closest unit instead unit with the least number of assisters
-                BeingBuiltCategories = {'EXPERIMENTAL ECONOMIC, EXPERIMENTAL SHIELD, EXPERIMENTAL MOBILE'},
+                BeingBuiltCategories = {'EXPERIMENTAL ECONOMIC, EXPERIMENTAL SHIELD, EXPERIMENTAL MOBILE'},-- Unitcategories must be type string
                 AssistUntilFinished = true,
                 Time = 0,
             },
@@ -414,7 +414,7 @@ BuilderGroup {
                 AssisteeType = 'Structure',
                 AssistRange = 100,
                 AssistClosestUnit = true,                                       -- Assist the closest unit instead unit with the least number of assisters
-                BeingBuiltCategories = {'EXPERIMENTAL ECONOMIC, EXPERIMENTAL SHIELD, EXPERIMENTAL MOBILE'},
+                BeingBuiltCategories = {'EXPERIMENTAL ECONOMIC, EXPERIMENTAL SHIELD, EXPERIMENTAL MOBILE'},-- Unitcategories must be type string
                 AssistUntilFinished = true,
                 Time = 0,
             },
@@ -443,7 +443,7 @@ BuilderGroup {
         BuilderData = {
             Assist = {
                 AssistLocation = 'LocationType',
-                BeingBuiltCategories = {'STRUCTURE SHIELD'},
+                BeingBuiltCategories = {'STRUCTURE SHIELD'},                    -- Unitcategories must be type string
                 AssisteeType = 'Structure',
                 AssistRange = 100,
                 AssistClosestUnit = true,                                       -- Assist the closest unit instead unit with the least number of assisters

@@ -1229,15 +1229,17 @@ Platoon = Class(OldPlatoonClass) {
                 if TargetUnit then
                     --LOG('* ACUAttackAIUveso: ATTACK TargetUnit')
                     if aiBrain:PlatoonExists(self) and TargetUnit and not TargetUnit.Dead and not TargetUnit:BeenDestroyed() then
-                        self:Stop()
-                        local cdrNewPos = {}
                         local targetPos = TargetUnit:GetPosition()
+                        local cdrNewPos = {}
+                        cdr:GetNavigator():AbortMove()
                         cdrNewPos[1] = targetPos[1] + Random(-3, 3)
                         cdrNewPos[2] = targetPos[2]
                         cdrNewPos[3] = targetPos[3] + Random(-3, 3)
                         self:MoveToLocation(cdrNewPos, false)
                         WaitTicks(1)
-                        self:AttackTarget(TargetUnit)
+                        if TargetUnit and not TargetUnit.Dead and not TargetUnit:BeenDestroyed() then
+                            self:AttackTarget(TargetUnit)
+                        end
                     end
                 -- if we have no target, move to base. If we are at base, dance. (random moves)
                 elseif UUtils.CDRForceRunHome(self,cdr) then
@@ -1440,7 +1442,11 @@ Platoon = Class(OldPlatoonClass) {
 
     MovePath = function(self, aiBrain, path, bAggroMove, target)
         self:SetPlatoonFormationOverride('NoFormation')
-        for i=1, table.getn(path) do
+        local AirCUT = 0
+        if self.MovementLayer == 'Air' then
+            AirCUT = 3
+        end
+        for i=1, table.getn(path)-AirCUT do
             local PlatoonPosition
             local Lastdist
             local dist
@@ -1651,7 +1657,7 @@ Platoon = Class(OldPlatoonClass) {
             -- Move the unit to the desired base after transfering BuilderManagers to the new LocationType
             local basePosition = aiBrain.BuilderManagers[self.PlatoonData.MoveToLocationType].Position
             --LOG('* TransferAIUveso: Moving transfer-units to - ' .. self.PlatoonData.MoveToLocationType)
-            self:SimpleReturnToBase(basePosition)
+            self:MoveToLocationInclTransport(true, basePosition, false, false, basePosition, false)
         end
         if aiBrain:PlatoonExists(self) then
             self:PlatoonDisband()
