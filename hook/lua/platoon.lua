@@ -1674,7 +1674,11 @@ Platoon = Class(OldPlatoonClass) {
                 break
             end
         end
-        UUtils.ReclaimAIThread(self,eng,aiBrain)
+		if eng then
+			eng.UnitBeingBuilt = eng
+			UUtils.ReclaimAIThread(self,eng,aiBrain)
+			eng.UnitBeingBuilt = nil
+		end
         self:PlatoonDisband()
     end,
 

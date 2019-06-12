@@ -5,6 +5,8 @@ local BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lu
 
 local MaxAttackForce = 0.45                                                     -- 45% of all units can be attacking units (categories.MOBILE - categories.ENGINEER)
 
+if not categories.STEALTHFIELD then categories.STEALTHFIELD = categories.SHIELD end
+
 -- ===================================================-======================================================== --
 --                                           LAND Scouts Builder                                                --
 -- ===================================================-======================================================== --
@@ -965,9 +967,9 @@ BuilderGroup {
     BuildersType = 'PlatoonFormBuilder',                                        -- BuilderTypes are: EngineerBuilder, FactoryBuilder, PlatoonFormBuilder.
     Builder {
         BuilderName = 'U123 AntiCDR PANIC',                                     -- Random Builder Name.
-        PlatoonTemplate = 'LandAttackInterceptUveso 1 100',                     -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates"
+        PlatoonTemplate = 'LandAttackInterceptUveso 2 20',                     -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates"
         Priority = 95,                                                          -- Priority. Higher priotity will be build more often then lower priotity.
-        InstanceCount = 2,                                                      -- Number of plattons that will be formed with this template.
+        InstanceCount = 10,                                                      -- Number of plattons that will be formed with this template.
         BuilderData = {
             SearchRadius = BasePanicZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
@@ -990,8 +992,8 @@ BuilderGroup {
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
     Builder {
-        BuilderName = 'U123 PANIC 1 100',                                       -- Random Builder Name.
-        PlatoonTemplate = 'LandAttackInterceptUveso 1 100',                     -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates"
+        BuilderName = 'U123 PANIC 2 20',                                        -- Random Builder Name.
+        PlatoonTemplate = 'LandAttackInterceptUveso 2 20',                       -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates"
         Priority = 90,                                                          -- Priority. 1000 is normal.
         InstanceCount = 12,                                                      -- Number of plattons that will be formed.
         BuilderData = {

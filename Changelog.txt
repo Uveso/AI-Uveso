@@ -1,4 +1,18 @@
 *************************************************************************************************************************************
+v69 (11.Jun.2019)
+
+- Fix: Engineers are now able to build the 2nd land factory in case the Commander is fighting
+- Fix: Engineer reclaim function will no longer exit for buildorders.
+- Fix: Engineer reclaim function now respect playable area instead of map size.
+- Opt: Optimized buildcondition CanBuildOnMassLessThanDistance from 1.9 ms to 0.2 ms
+- Opt: Optimized buildcondition CanBuildOnHydroLessThanDistance from 1.4 ms to 0.2 ms
+- Opt: Cleaned buildconditionmonitor from useless initial class
+- Opt: Added Shield and AA defense for paragon
+- Opt: AI ecomanager will now pause engineers and factories on low mass/energy
+- Opt: Removed unused StrategyManager thread
+- Opt: Changed priority for low energy builder to build energy more aggressive on game start
+
+*************************************************************************************************************************************
 v68 (02.Jun.2019)
 
 - Fix: Engineers will no longer search for a path if the destination is closer than 14 map units. (buildrange)

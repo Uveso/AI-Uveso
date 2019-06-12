@@ -24,7 +24,6 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.STRUCTURE * categories.FACTORY * categories.LAND } },
             -- Do we need additional conditions to build it ?
-            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 0.8, 12.0}}, -- Absolut Base income
             -- Don't build it if...
@@ -45,16 +44,16 @@ BuilderGroup {
     },
     Builder {
         BuilderName = 'U1 Land Factory 2nd',
-        PlatoonTemplate = 'CommanderBuilder',
+        PlatoonTemplate = 'EngineerBuilder',
         Priority = 17800,
         DelayEqualBuildPlattons = {'Factories', 3},
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.STRUCTURE * categories.FACTORY * categories.LAND } },
             -- Do we need additional conditions to build it ?
-            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 0.8, 12.0}}, -- Absolut Base income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.70 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH1 }},
@@ -73,13 +72,12 @@ BuilderGroup {
     },
     Builder {
         BuilderName = 'UC AIR Factory 1st',
-        PlatoonTemplate = 'EngineerBuilder',
+        PlatoonTemplate = 'CommanderBuilder',
         Priority = 17800,
         DelayEqualBuildPlattons = {'Factories', 3},
         BuilderConditions = {
             -- When do we want to build this ?
             -- Do we need additional conditions to build it ?
-            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.AIR - categories.SUPPORTFACTORY } },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 3, categories.STRUCTURE * categories.FACTORY * categories.LAND } },
             -- Have we the eco to build it ?
@@ -109,7 +107,6 @@ BuilderGroup {
         BuilderConditions = {
             -- When do we want to build this ?
             -- Do we need additional conditions to build it ?
-            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.AIR - categories.SUPPORTFACTORY } },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 3, categories.STRUCTURE * categories.FACTORY * categories.LAND } },
             -- Have we the eco to build it ?

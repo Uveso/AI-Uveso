@@ -84,6 +84,37 @@ BuilderGroup {
             }
         }
     },
+    Builder {
+        BuilderName = 'U3 Paragon Shield',
+        PlatoonTemplate = 'T3EngineerBuilder',
+        Priority = 15000,
+        InstanceCount = 2,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HasParagon', {} },
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'AdjacencyCheck', { 'LocationType', categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC  * categories.ENERGYPRODUCTION  * categories.MASSPRODUCTION, 100, 'ueb2304' } },
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+            -- Respect UnitCap
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            NumAssistees = 3,
+            Construction = {
+                AdjacencyCategory = categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC  * categories.ENERGYPRODUCTION  * categories.MASSPRODUCTION,
+                AdjacencyDistance = 100,
+                AvoidCategory = categories.STRUCTURE * categories.SHIELD,
+                maxUnits = 10,
+                maxRadius = 8,
+                BuildClose = false,
+                BuildStructures = {
+                    'T3ShieldDefense',
+                },
+                Location = 'LocationType',
+            }
+        }
+    },
     -- ===================== --
     --    Reclaim Shields    --
     -- ===================== --
@@ -1068,46 +1099,13 @@ BuilderGroup {
         InstanceCount = 2,                                      -- Number of plattons that will be formed.
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatioAtLocation', { 'LocationType', 1.3, categories.STRUCTURE * categories.DEFENSE * categories.ANTIAIR * categories.TECH3, '<=',categories.STRUCTURE * categories.FACTORY } },
+            { UCBC, 'HaveUnitRatioAtLocation', { 'LocationType', 1.0, categories.STRUCTURE * categories.DEFENSE * categories.ANTIAIR * categories.TECH3, '<=',categories.STRUCTURE * categories.FACTORY } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.99}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 32, categories.STRUCTURE * categories.DEFENSE * categories.ANTIAIR }},
-            -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<', categories.STRUCTURE * categories.DEFENSE } },
-        },
-        BuilderType = 'Any',
-        BuilderData = {
-            NumAssistees = 2,
-            Construction = {
-                AdjacencyCategory = categories.STRUCTURE * categories.FACTORY,
-                AdjacencyDistance = 50,
-                AvoidCategory = categories.STRUCTURE * categories.ANTIAIR * categories.TECH3,
-                maxUnits = 1,
-                maxRadius = 8,
-                BuildClose = false,
-                BuildStructures = {
-                    'T3AADefense',
-                },
-                Location = 'LocationType',
-            }
-        }
-    },
-    Builder {
-        BuilderName = 'U3 AirFactory AA EXPERIMENTAL Response',
-        PlatoonTemplate = 'T3EngineerBuilderNoSUB',
-        Priority = 1500,
-        InstanceCount = 2,                                      -- Number of plattons that will be formed.
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.AIR * categories.EXPERIMENTAL } },
-            -- Do we need additional conditions to build it ?
-            -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            -- Don't build it if...
-            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 64, categories.STRUCTURE * categories.DEFENSE * categories.ANTIAIR }},
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<', categories.STRUCTURE * categories.DEFENSE } },
         },
@@ -1139,6 +1137,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.35, 0.99}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 3, categories.STRUCTURE * categories.DEFENSE * categories.ANTIAIR }},
             -- Respect UnitCap
@@ -1152,6 +1151,71 @@ BuilderGroup {
                 AdjacencyDistance = 50,
                 AvoidCategory = categories.STRUCTURE * categories.ANTIAIR * categories.TECH3,
                 maxUnits = 1,
+                maxRadius = 8,
+                BuildClose = false,
+                BuildStructures = {
+                    'T3AADefense',
+                },
+                Location = 'LocationType',
+            }
+        }
+    },
+    Builder {
+        BuilderName = 'U3 AirFactory AA EXPERIMENTAL Response',
+        PlatoonTemplate = 'T3EngineerBuilderNoSUB',
+        Priority = 1500,
+        InstanceCount = 2,                                      -- Number of plattons that will be formed.
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.AIR * categories.EXPERIMENTAL } },
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.99}}, -- Ratio from 0 to 1. (1=100%)
+            -- Don't build it if...
+            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 64, categories.STRUCTURE * categories.DEFENSE * categories.ANTIAIR }},
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<', categories.STRUCTURE * categories.DEFENSE } },
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            NumAssistees = 2,
+            Construction = {
+                AdjacencyCategory = categories.STRUCTURE * categories.FACTORY,
+                AdjacencyDistance = 50,
+                AvoidCategory = categories.STRUCTURE * categories.ANTIAIR * categories.TECH3,
+                maxUnits = 1,
+                maxRadius = 8,
+                BuildClose = false,
+                BuildStructures = {
+                    'T3AADefense',
+                },
+                Location = 'LocationType',
+            }
+        }
+    },
+    Builder {
+        BuilderName = 'U3 Paragon AA',
+        PlatoonTemplate = 'T3EngineerBuilderNoSUB',
+        Priority = 1500,
+        InstanceCount = 5,                                      -- Number of plattons that will be formed.
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HasParagon', {} },
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'AdjacencyCheck', { 'LocationType', categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC  * categories.ENERGYPRODUCTION  * categories.MASSPRODUCTION, 100, 'ueb2304' } },
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+            -- Respect UnitCap
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            NumAssistees = 3,
+            Construction = {
+                AdjacencyCategory = categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC  * categories.ENERGYPRODUCTION  * categories.MASSPRODUCTION,
+                AdjacencyDistance = 100,
+                AvoidCategory = categories.STRUCTURE * categories.ANTIAIR * categories.TECH3,
+                maxUnits = 10,
                 maxRadius = 8,
                 BuildClose = false,
                 BuildStructures = {

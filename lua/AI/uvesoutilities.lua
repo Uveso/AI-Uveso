@@ -275,7 +275,12 @@ local PropBlacklist = {}
 function ReclaimAIThread(platoon,self,aiBrain)
     local scanrange = 25
     local scanKM = 0
-    local MAPx, MAPy = GetMapSize()
+    local playablearea
+    if  ScenarioInfo.MapData.PlayableRect then
+        playablearea = ScenarioInfo.MapData.PlayableRect
+    else
+        playablearea = {0, 0, ScenarioInfo.size[1], ScenarioInfo.size[2]}
+    end
     local basePosition = aiBrain.BuilderManagers['MAIN'].Position
     local MassStorageRatio
     local EnergyStorageRatio
@@ -315,31 +320,28 @@ function ReclaimAIThread(platoon,self,aiBrain)
                     if blacklisted then continue end
                     -- End Blacklisted Props
                     local BPID = p.AssociatedBP or "unknown"
-                    if BPID ~= "unknown" then
-                        if BPID == 'ueb5101' or BPID == 'uab5101' or BPID == 'urb5101' or BPID == 'xsb5101' then
-                            continue
-                        end
+                    if BPID == 'ueb5101' or BPID == 'uab5101' or BPID == 'urb5101' or BPID == 'xsb5101' then -- Walls will not be reclaimed on patrols
+                        continue
                     end
-                    if (MassStorageRatio < EnergyStorageRatio and p.MaxMassReclaim and p.MaxMassReclaim > 1) or (MassStorageRatio > EnergyStorageRatio and p.MaxEnergyReclaim and p.MaxEnergyReclaim > 1) then
-                        if WreckPos[1] >= x1-5 and WreckPos[1] <= x2+5 and WreckPos[3] >= y1-5 and WreckPos[3] <= y2+5 then
-                            WreckDist = VDist2(SelfPos[1], SelfPos[3], WreckPos[1], WreckPos[3])
-                            WrackCount = WrackCount + 1
-                            if WreckDist < NearestWreckDist or NearestWreckDist == -1 then
-                                NearestWreckDist = WreckDist
-                                NearestWreckPos = WreckPos
-                                --LOG('Found Wreckage no.('..WrackCount..') from '..BPID..'. - Distance:'..WreckDist..' - NearestWreckDist:'..NearestWreckDist..'')
-                            end
-                            if NearestWreckDist < 20 then
-                                --LOG('Found Wreckage nearer then 20. break!')
-                                break
-                            end
-                        else
-                            --LOG('Found Wreckage outside searchradius - x:'..WreckPos[1]..' Y:'..WreckPos[3]..'')
+					-- reclaim mass if mass is lower than energy and reclaim energy if energy is lower than mass and gametime is higher then 4 minutes.
+                    if (MassStorageRatio <= EnergyStorageRatio and p.MaxMassReclaim and p.MaxMassReclaim > 1) or (GetGameTimeSeconds() > 240 and MassStorageRatio > EnergyStorageRatio and p.MaxEnergyReclaim and p.MaxEnergyReclaim > 1) then
+                        --LOG('Found Wreckage no.('..WrackCount..') from '..BPID..'. - Distance:'..WreckDist..' - NearestWreckDist:'..NearestWreckDist..' '..repr(MassStorageRatio < EnergyStorageRatio)..' '..repr(p.MaxMassReclaim)..' '..repr(p.MaxEnergyReclaim))
+                        WreckDist = VDist2(SelfPos[1], SelfPos[3], WreckPos[1], WreckPos[3])
+                        WrackCount = WrackCount + 1
+                        if WreckDist < NearestWreckDist or NearestWreckDist == -1 then
+                            NearestWreckDist = WreckDist
+                            NearestWreckPos = WreckPos
+                            --LOG('Found Wreckage no.('..WrackCount..') from '..BPID..'. - Distance:'..WreckDist..' - NearestWreckDist:'..NearestWreckDist..'')
+                        end
+                        if NearestWreckDist < 20 then
+                            --LOG('Found Wreckage nearer then 20. break!')
+                            break
                         end
                     end
                 end
             end
-            if self.Dead then 
+            if self.Dead then
+				--LOG('* ReclaimAIThread: Unit Dead')
                 return
             end
             if NearestWreckDist == -1 then
@@ -365,6 +367,7 @@ function ReclaimAIThread(platoon,self,aiBrain)
             scanKM = math.floor(10000/512*NearestWreckDist)
             if NearestWreckDist > 20 and not self.Dead then
                 --LOG('NearestWreck is > 20 away Distance:'..NearestWreckDist..'. Moving to Wreckage!')
+				-- We don't need to go too close to the mapborder for reclaim, we have reclaimdrones with a flightradius of 25!
                 if NearestWreckPos[1] < playablearea[1]+21 then
                     NearestWreckPos[1] = playablearea[1]+21
                 end
@@ -402,7 +405,7 @@ function ReclaimAIThread(platoon,self,aiBrain)
             IssuePatrol({self}, self:GetPosition())
             IssuePatrol({self}, self:GetPosition())
         else
-            --LOG('No reclaim, moving home')
+            --LOG('Storage Full')
             local HomeDist = VDist2(SelfPos[1], SelfPos[3], basePosition[1], basePosition[3])
             if HomeDist > 36 then
                 --LOG('full, moving home')
@@ -419,6 +422,7 @@ function ReclaimAIThread(platoon,self,aiBrain)
                     scanrange = 25
                 end
             else
+				--LOG('* ReclaimAIThread: Storrage are full, and we are home.')
                 return
             end
         end

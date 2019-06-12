@@ -1,9 +1,3 @@
--- Debug for runtime tests
-local TimeHIGHEST
-local TimeSUM = 0
-local TimeCOUNT = 0
-local TimeAVERAGE
-local LastCheck = 0
 
 -- For testing. Removed the check for unused locations.
 -- The check was using several string search commands that slowed down every condition by 30% or more.
@@ -164,7 +158,6 @@ BrainConditionsMonitor = Class {
         local ResultTable = self.ResultTable
         while true do
             coroutine.yield(1)
---            local START = GetSystemTimeSecondsOnlyForProfileUse()
             --local numResults = 0
             for k,v in ResultTable do
                 if v.InstantCondition then
@@ -178,24 +171,6 @@ BrainConditionsMonitor = Class {
                     checks = 0
                 end
             end
---            local END = GetSystemTimeSecondsOnlyForProfileUse()
---            local DIV = END - START
---            if DIV > 0.001 then
---                if LastCheck + 60 < GetSystemTimeSecondsOnlyForProfileUse() then
---                    LastCheck = GetSystemTimeSecondsOnlyForProfileUse()
---                    TimeAVERAGE = nil
---                end
---                if not TimeHIGHEST or DIV > TimeHIGHEST then
---                    TimeHIGHEST = DIV
---                    TimeAVERAGE = nil
---                end
---                TimeSUM = TimeSUM + (DIV)
---                TimeCOUNT = TimeCOUNT + 1
---                if not TimeAVERAGE or TimeAVERAGE < TimeSUM/TimeCOUNT then
---                    TimeAVERAGE = TimeSUM/TimeCOUNT
---                    LOG('- ConditionMonitor Highest:'..(TimeHIGHEST)..' - ConditionMonitor Average:'..(TimeSUM/TimeCOUNT)..' - ConditionMonitor Actual:'..(DIV))
---                end
---            end
             --local numPerTick = 20
             --LOG('*AI DEBUG: '.. self.Brain.Nickname ..' ConditionMonitorThread checked: '..numResults..' - numPerTick '..numPerTick..' - 1 loop every '..((numResults/numPerTick)/10)..' seconds.')
             coroutine.yield(1)
@@ -233,89 +208,71 @@ function CreateConditionsMonitor(brain)
     return cMonitor
 end
 
-Condition = Class {
-    -- Create the thing
-    Create = function(self,brain,key)
+ImportCondition = Class {
+    Create = function(self,brain,key,filename,funcName,funcData)
         self.Status = false
         self.Brain = brain
         self.Key = key
-    end,
-
-    CheckCondition = function(self)
-        return self.Status
-    end,
-
-    GetStatus = function(self)
-        return self.Status
-    end,
-
-    GetKey = function(self)
-        return self.Key
-    end
-}
-
-ImportCondition = Class(Condition) {
-    Create = function(self,brain,key,filename,funcName,funcData)
-        Condition.Create(self,brain,key)
         self.Filename = filename
         self.FunctionName = funcName
         self.FunctionData = funcData
         self.CheckTime = 0
     end,
-
     CheckCondition = function(self)
-        if self.CheckTime < GetGameTimeSeconds() then
-            self.Status = import(self.Filename)[self.FunctionName](self.Brain, unpack(self.FunctionData))
-            self.CheckTime = GetGameTimeSeconds()
-        else
-            LOG('ImportCondition checked to fast')
-        end
+        self.Status = import(self.Filename)[self.FunctionName](self.Brain, unpack(self.FunctionData))
+        self.CheckTime = GetGameTimeSeconds()
         return self.Status
     end,
-
     GetStatus = function(self)
         return self.Status
     end,
-
+    GetKey = function(self)
+        return self.Key
+    end
 }
 
-InstantImportCondition = Class(Condition) {
+InstantImportCondition = Class {
     Create = function(self,brain,key,filename,funcName,funcData)
-        Condition.Create(self,brain,key)
+        self.Status = false
+        self.Brain = brain
+        self.Key = key
         self.Filename = filename
         self.FunctionName = funcName
         self.FunctionData = funcData
         self.CheckTime = 0
         self.InstantCondition = true
     end,
-
-    -- This class doesn't change when CheckCondition is called; Only changed when requested
     CheckCondition = function(self)
         return self.Status
     end,
-
-    -- This class always performs the check when getting status (basically for stat checks)
     GetStatus = function(self)
         if self.CheckTime < GetGameTimeSeconds() then
             self.Status = import(self.Filename)[self.FunctionName](self.Brain, unpack(self.FunctionData))
             self.CheckTime = GetGameTimeSeconds()
-            --LOG('*AI LOG: Instant Check')
         end
         return self.Status
     end,
-
+    GetKey = function(self)
+        return self.Key
+    end
 }
 
-FunctionCondition = Class(Condition) {
+FunctionCondition = Class {
     Create = function(self,brain,key,funcHandle,funcParams)
-        Condition.Create(self,brain,key)
+        self.Status = false
+        self.Brain = brain
+        self.Key = key
         self.FunctionHandle = funcHandle
         self.FunctionParameters = funcParams or {}
     end,
-
     CheckCondition = function(self)
         self.Status = self.FunctionHandle(self.Brain, unpack(self.FunctionParameters))
         return self.Status
     end,
-
+    GetStatus = function(self)
+        return self.Status
+    end,
+    GetKey = function(self)
+        return self.Key
+    end
 }

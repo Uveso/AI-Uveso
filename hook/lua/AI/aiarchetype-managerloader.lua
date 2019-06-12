@@ -410,36 +410,34 @@ function EcoManager(aiBrain)
             -- We have negative eco. Check if we can switch something off
             elseif aiBrain:GetEconomyStoredRatio('ENERGY') < 0.01 then
                 if unit:IsPaused() then continue end
-                if not EntityCategoryContains(categories.ENERGYPRODUCTION - categories.EXPERIMENTAL, unit.UnitBeingBuilt) then
+                if not EntityCategoryContains( categories.ENERGYPRODUCTION + ((categories.MASSEXTRACTION + categories.FACTORY + categories.ENERGYSTORAGE) * categories.TECH1) , unit.UnitBeingBuilt) then
                     unit:SetPaused( true )
                     bussy = true
                     break -- for _, unit in Engineers do
                 end
             elseif aiBrain:GetEconomyStoredRatio('MASS') < 0.01 then
                 if unit:IsPaused() then continue end
-                if not EntityCategoryContains((categories.MASSEXTRACTION + categories.ENERGYPRODUCTION) - categories.EXPERIMENTAL, unit.UnitBeingBuilt) then
+                if not EntityCategoryContains( categories.MASSEXTRACTION + ((categories.ENERGYPRODUCTION + categories.FACTORY + categories.MASSSTORAGE) * categories.TECH1) , unit.UnitBeingBuilt) then
                     unit:SetPaused( true )
                     bussy = true
                     break -- for _, unit in Engineers do
                 end
             -- We have positive eco. Check if we can switch something on
-            elseif aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.80 then
+            elseif aiBrain:GetEconomyStoredRatio('MASS') >= 0.2 and aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.80 then
                 if not unit:IsPaused() then continue end
-                if not EntityCategoryContains(categories.ENERGYPRODUCTION - categories.EXPERIMENTAL, unit.UnitBeingBuilt) then
-                    unit:SetPaused( false )
-                    bussy = true
-                    break -- for _, unit in Engineers do
-                end
-            elseif aiBrain:GetEconomyStoredRatio('MASS') >= 0.2 then
-                if not unit:IsPaused() then continue end
-                if not EntityCategoryContains(categories.MASSEXTRACTION - categories.EXPERIMENTAL, unit.UnitBeingBuilt) then
-                    unit:SetPaused( false )
-                    bussy = true
-                    break -- for _, unit in Engineers do
-                end
+                unit:SetPaused( false )
+                bussy = true
+                break -- for _, unit in Engineers do
             elseif aiBrain:GetEconomyStoredRatio('MASS') >= 0.01 and aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.80 then
                 if not unit:IsPaused() then continue end
                 if EntityCategoryContains((categories.ENERGYPRODUCTION + categories.MASSEXTRACTION) - categories.EXPERIMENTAL, unit.UnitBeingBuilt) then
+                    unit:SetPaused( false )
+                    bussy = true
+                    break -- for _, unit in Engineers do
+                end
+            elseif aiBrain:GetEconomyStoredRatio('ENERGY') >= 1.00 then
+                if not unit:IsPaused() then continue end
+                if not EntityCategoryContains(categories.ENERGYPRODUCTION - categories.EXPERIMENTAL, unit.UnitBeingBuilt) then
                     unit:SetPaused( false )
                     bussy = true
                     break -- for _, unit in Engineers do

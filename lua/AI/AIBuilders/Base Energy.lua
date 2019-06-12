@@ -1,6 +1,7 @@
 local EBC = '/lua/editor/EconomyBuildConditions.lua'
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 local MIBC = '/lua/editor/MiscBuildConditions.lua'
+local MABC = '/lua/editor/MarkerBuildConditions.lua'
 
 local MaxCapStructure = 0.12                                                    -- 12% of all units can be structures (STRUCTURE -MASSEXTRACTION -DEFENSE -FACTORY)
 
@@ -17,22 +18,19 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Power low trend',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 17890,
-        InstanceCount = 1,                                                      -- Number of plattons that will be formed with this template.
+        Priority = 17870,
+        InstanceCount = 2,                                                      -- Number of plattons that will be formed with this template.
         DelayEqualBuildPlattons = {'Energy', 3},
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'GreaterThanGameTimeSeconds', { 180 } },
-            { UCBC, 'LessThanEnergyTrend', { 60.0 } },
+            { UCBC, 'LessThanEnergyTrend', { 0.0 } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
             -- Do we need additional conditions to build it ?
-            { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.ENGINEER * categories.TECH1 }},
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.ENGINEER * categories.TECH1 }},
             { UCBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}}, -- Absolut Base income
+            { EBC, 'GreaterThanEconIncome',  { 0.5, 0.0}}, -- Absolut Base income
             -- Don't build it if...
-            { UCBC, 'CheckBuildPlattonDelay', { 'Energy' }},
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60*2 } },
             -- Respect UnitCap
         },
         BuilderType = 'Any',
@@ -225,7 +223,7 @@ BuilderGroup {
         InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'CanBuildOnHydroLessThanDistance', { 'LocationType', 90, -1000, 100, 1, 'AntiSurface', 1 }},            -- Do we need additional conditions to build it ?
+            { MABC, 'CanBuildOnHydro', { 'LocationType', 90, -1000, 100, 1, 'AntiSurface', 1 }},            -- Do we need additional conditions to build it ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 }},
             -- Do we need additional conditions to build it ?
@@ -523,14 +521,14 @@ BuilderGroup {
     --    EnergyStorage    --
     -- =================== --
     Builder {
-        BuilderName = 'U1 Energy Storage 5min',
+        BuilderName = 'U1 Energy Storage RECOVER',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17750,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYSTORAGE }},
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.COMMAND }},
             -- Do we need additional conditions to build it ?
-            { UCBC, 'GreaterThanGameTimeSeconds', { 60 * 5 } },
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYSTORAGE }},
             -- Have we the eco to build it ?
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1,  categories.STRUCTURE * categories.ENERGYSTORAGE }},
@@ -540,7 +538,7 @@ BuilderGroup {
         BuilderData = {
             Location = 'LocationType',
             Construction = {
-                BuildClose = true,
+                BuildClose = false,
                 AdjacencyCategory = categories.STRUCTURE * categories.ENERGYPRODUCTION * (categories.TECH3 + categories.TECH2 + categories.TECH1),
                 LocationType = 'LocationType',
                 BuildStructures = {
@@ -568,7 +566,7 @@ BuilderGroup {
         BuilderData = {
             Location = 'LocationType',
             Construction = {
-                BuildClose = true,
+                BuildClose = false,
                 AdjacencyCategory = categories.STRUCTURE * categories.ENERGYPRODUCTION * (categories.TECH3 + categories.TECH2 + categories.TECH1),
                 LocationType = 'LocationType',
                 BuildStructures = {
@@ -599,7 +597,7 @@ BuilderGroup {
         BuilderData = {
             Location = 'LocationType',
             Construction = {
-                BuildClose = true,
+                BuildClose = false,
                 AdjacencyCategory = categories.STRUCTURE * categories.ENERGYPRODUCTION * (categories.TECH3 + categories.TECH2 + categories.TECH1),
                 LocationType = 'LocationType',
                 BuildStructures = {
@@ -630,7 +628,7 @@ BuilderGroup {
         BuilderData = {
             Location = 'LocationType',
             Construction = {
-                BuildClose = true,
+                BuildClose = false,
                 AdjacencyCategory = categories.STRUCTURE * categories.ENERGYPRODUCTION * (categories.TECH3 + categories.TECH2 + categories.TECH1),
                 LocationType = 'LocationType',
                 BuildStructures = {

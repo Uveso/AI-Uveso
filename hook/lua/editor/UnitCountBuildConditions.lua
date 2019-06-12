@@ -378,22 +378,6 @@ function HasNotParagon(aiBrain)
     return false
 end
 
---                { SBC, 'CanBuildOnHydroLessThanDistance', { 'LocationType', 1000, -1000, 100, 1, 'AntiSurface', 1 }},
-function CanBuildOnHydroLessThanDistance(aiBrain, locationType, distance, threatMin, threatMax, threatRings, threatType, maxNum)
-    local engineerManager = aiBrain.BuilderManagers[locationType].EngineerManager
-    if not engineerManager then
-        WARN('*AI WARNING: Invalid location - ' .. locationType)
-        return false
-    end
-    local position = engineerManager:GetLocationCoords()
-
-    local markerTable = AIUtils.AIGetSortedHydroLocations(aiBrain, maxNum, threatMin, threatMax, threatRings, threatType, position)
-    if markerTable[1] and VDist3(markerTable[1], position) < distance then
-        return true
-    end
-    return false
-end
-
 --            { UCBC, 'NavalBaseWithLeastUnits', {  60, 'LocationType', categories.STRUCTURE * categories.FACTORY * categories.NAVAL }}, -- radius, LocationType, categoryUnits
 function NavalBaseWithLeastUnits(aiBrain, radius, locationType, unitCategory)
     local navalMarkers = AIUtils.AIGetMarkerLocations(aiBrain, 'Naval Area')
@@ -421,6 +405,7 @@ end
 function UnfinishedUnitsAtLocation(aiBrain, locationType)
     local engineerManager = aiBrain.BuilderManagers[locationType].EngineerManager
     if not engineerManager then
+        --WARN('*AI WARNING: UnfinishedUnitsAtLocation: Invalid location - ' .. locationType)
         return false
     end
     local unfinishedUnits = aiBrain:GetUnitsAroundPoint(categories.STRUCTURE + categories.EXPERIMENTAL, engineerManager:GetLocationCoords(), engineerManager.Radius, 'Ally')
