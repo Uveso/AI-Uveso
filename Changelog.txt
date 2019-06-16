@@ -1,4 +1,16 @@
 *************************************************************************************************************************************
+v70 (16.Jun.2019)
+
+- Fix: AI will now use the Capacitor enhancement for Nomads ACU
+- Fix: Changed platoontemplates to fit with the latest Nomads version.
+- Fix: Added 6 more engineers for late game reclaim. (10 T1 engineers are now reclaiming mass)
+- Fix: Defenses will no longer be reclaimed if engineers want to reclaim shields.
+- Opt: Moved UEF Sattelite from defense to experimentals platoon builders. (handled now as AIR experimental)
+- Opt: Expansions have now an additional engineer. (now 3, was 2)
+- Opt: Leadfactories (HQ) will be build a bit earlier. (if we have the eco, not by time)
+- Opt: First Land experimental will attack the enemy solo, not as duo as before.
+
+*************************************************************************************************************************************
 v69 (11.Jun.2019)
 
 - Fix: Engineers are now able to build the 2nd land factory in case the Commander is fighting

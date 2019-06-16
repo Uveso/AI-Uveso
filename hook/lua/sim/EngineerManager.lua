@@ -17,7 +17,7 @@ EngineerManager = Class(TheOldEngineerManager) {
         end
     end,
 
-    -- For AI Patch V4. 
+    -- For AI Patch V4. (patched)
     AssignEngineerTask = function(self, unit)
         unit.LastActive = GetGameTimeSeconds()
         if unit.UnitBeingAssist or unit.UnitBeingBuilt then

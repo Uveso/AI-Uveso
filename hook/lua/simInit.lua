@@ -271,23 +271,23 @@ function GraphRender()
             if ScenarioInfo.Options.AIPathingDebug == 'all' then
                 DrawBaseRanger()
             end
-            DrawAIPatchCache()
+            DrawAIPathCache()
         -- Display land path permanent
         elseif ScenarioInfo.Options.AIPathingDebug == 'land' then
             DrawPathGraph('DefaultLand', false)
-            DrawAIPatchCache('DefaultLand')
+            DrawAIPathCache('DefaultLand')
         -- Display water path permanent
         elseif ScenarioInfo.Options.AIPathingDebug == 'water' then
             DrawPathGraph('DefaultWater', false)
-            DrawAIPatchCache('DefaultWater')
+            DrawAIPathCache('DefaultWater')
         -- Display amph path permanent
         elseif ScenarioInfo.Options.AIPathingDebug == 'amph' then
             DrawPathGraph('DefaultAmphibious', false)
-            DrawAIPatchCache('DefaultAmphibious')
+            DrawAIPathCache('DefaultAmphibious')
         -- Display air path permanent
         elseif ScenarioInfo.Options.AIPathingDebug == 'air' then
             DrawPathGraph('DefaultAir', false)
-            DrawAIPatchCache('DefaultAir')
+            DrawAIPathCache('DefaultAir')
         end
         WaitTicks(2)
     end
@@ -361,7 +361,7 @@ function DrawPathGraph(DrawOnly,Blink)
     end
 end
 
-function DrawAIPatchCache(DrawOnly)
+function DrawAIPathCache(DrawOnly)
     -- loop over all players in the game
     for ArmyIndex, aiBrain in ArmyBrains do
         -- is the player an AI-Uveso ?

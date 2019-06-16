@@ -633,7 +633,7 @@ BuilderGroup {
         BuilderType = 'Any',
     },
     Builder {
-        BuilderName = 'U1 Reclaim Resource 3',
+        BuilderName = 'U1 Reclaim Resource 4',
         PlatoonTemplate = 'U1Reclaim',
         Priority = 17400,
         InstanceCount = 6,

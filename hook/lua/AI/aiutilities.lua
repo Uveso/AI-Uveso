@@ -1,13 +1,54 @@
 
 
--- Patch for short build range
-local TheOldEngineerMoveWithSafePathFunction = EngineerMoveWithSafePath
+-- For AI Patch V5 (patched). Don't check a path if we are in build range
 function EngineerMoveWithSafePath(aiBrain, unit, destination)
+    if not destination then
+        return false
+    end
     local pos = unit:GetPosition()
+    -- don't check a path if we are in build range
     if VDist2(pos[1], pos[3], destination[1], destination[3]) < 14 then
         return true
     end
-    return TheOldEngineerMoveWithSafePathFunction(aiBrain, unit, destination)
+    local result, bestPos = unit:CanPathTo(destination)
+    local bUsedTransports = false
+    -- Increase check to 300 for transports
+    if not result or VDist2Sq(pos[1], pos[3], destination[1], destination[3]) > 300 * 300
+    and unit.PlatoonHandle and not EntityCategoryContains(categories.COMMAND, unit) then
+        -- If we can't path to our destination, we need, rather than want, transports
+        local needTransports = not result
+        if VDist2Sq(pos[1], pos[3], destination[1], destination[3]) > 300 * 300 then
+            needTransports = true
+        end
+
+        -- Skip the last move... we want to return and do a build
+        bUsedTransports = AIAttackUtils.SendPlatoonWithTransportsNoCheck(aiBrain, unit.PlatoonHandle, destination, needTransports, true, false)
+
+        if bUsedTransports then
+            return true
+        elseif VDist2Sq(pos[1], pos[3], destination[1], destination[3]) > 512 * 512 then
+            -- If over 512 and no transports dont try and walk!
+            return false
+        end
+    end
+
+    -- If we're here, we haven't used transports and we can path to the destination
+    if result then
+        local path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, 'Amphibious', pos, destination)
+        if path then
+            local pathSize = table.getn(path)
+            -- Move to way points (but not to destination... leave that for the final command)
+            for widx, waypointPath in path do
+                if pathSize ~= widx then
+                    IssueMove({unit}, waypointPath)
+                end
+            end
+        end
+        -- If there wasn't a *safe* path (but dest was pathable), then the last move would have been to go there directly
+        -- so don't bother... the build/capture/reclaim command will take care of that after we return
+        return true
+    end
+    return false
 end
 
 -- Helper function for targeting

@@ -2,7 +2,7 @@
 OldFactoryBuilderManagerClass = FactoryBuilderManager
 FactoryBuilderManager = Class(OldFactoryBuilderManagerClass) {
 
-    -- For AI Patch V4. 
+    -- For AI Patch V4 (patched). 
     GetFactoryTemplate = function(self, templateName, factory)
         local templateData = PlatoonTemplates[templateName]
         if not templateData then

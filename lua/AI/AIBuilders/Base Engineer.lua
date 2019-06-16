@@ -227,9 +227,9 @@ BuilderGroup {
         Priority = 18300,
         InstanceCount = 3,
         BuilderConditions = {
-            { UCBC, 'GreaterThanGameTimeSeconds', { 60*10 } },
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60*20 } },
             { UCBC, 'BuildNotOnLocation', { 'LocationType', 'MAIN' } },
-            { UCBC, 'EngineerManagerUnitsAtLocation', { 'LocationType', '>', 2,  categories.MOBILE * categories.TECH1 } },
+            { UCBC, 'EngineerManagerUnitsAtLocation', { 'LocationType', '>', 3,  categories.MOBILE * categories.TECH1 } },
         },
         BuilderData = {
             MoveToLocationType = 'MAIN',
@@ -244,7 +244,7 @@ BuilderGroup {
         BuilderConditions = {
             { UCBC, 'GreaterThanGameTimeSeconds', { 60*20 } },
             { UCBC, 'BuildNotOnLocation', { 'LocationType', 'MAIN' } },
-            { UCBC, 'EngineerManagerUnitsAtLocation', { 'LocationType', '>', 2,  categories.MOBILE * categories.TECH2 } },
+            { UCBC, 'EngineerManagerUnitsAtLocation', { 'LocationType', '>', 3,  categories.MOBILE * categories.TECH2 } },
         },
         BuilderData = {
             MoveToLocationType = 'MAIN',
@@ -259,7 +259,7 @@ BuilderGroup {
         BuilderConditions = {
             { UCBC, 'GreaterThanGameTimeSeconds', { 60*30 } },
             { UCBC, 'BuildNotOnLocation', { 'LocationType', 'MAIN' } },
-            { UCBC, 'EngineerManagerUnitsAtLocation', { 'LocationType', '>', 2,  categories.MOBILE * categories.TECH3 } },
+            { UCBC, 'EngineerManagerUnitsAtLocation', { 'LocationType', '>', 3,  categories.MOBILE * categories.TECH3 } },
         },
         BuilderData = {
             MoveToLocationType = 'MAIN',

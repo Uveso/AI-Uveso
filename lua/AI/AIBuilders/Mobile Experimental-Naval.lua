@@ -18,7 +18,7 @@ BuilderGroup {
             { UCBC, 'GreaterThanGameTimeSeconds', { 60*20 } },
             -- When do we want to build this ?
             -- Do we need additional conditions to build it ?
-            { SBC, 'IsWaterMap', { true } },
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.NAVAL } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome', { 7.0, 600.0 }},                    -- Base income
             { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
@@ -48,7 +48,7 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
             -- Do we need additional conditions to build it ?
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, categories.ENGINEER * categories.TECH3 }},
-            { SBC, 'IsWaterMap', { true } },
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.NAVAL } },
             { UCBC, 'CanBuildCategory', { categories.MOBILE * categories.NAVAL * categories.EXPERIMENTAL } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome', { 7.0, 600.0 }},                    -- Base income

@@ -137,8 +137,8 @@ BuilderGroup {
         BuilderData = {
             Location = 'LocationType',
             Reclaim = {
-                        categories.STRUCTURE * categories.DEFENSE * categories.TECH1,
-                        categories.STRUCTURE * categories.DEFENSE * categories.TECH2,
+                        categories.STRUCTURE * categories.DEFENSE * categories.SHIELD * categories.TECH1,
+                        categories.STRUCTURE * categories.DEFENSE * categories.SHIELD * categories.TECH2,
                       },
         },
         BuilderType = 'Any',
@@ -162,9 +162,9 @@ BuilderGroup {
         BuilderData = {
             Location = 'LocationType',
             Reclaim = {
-                        categories.STRUCTURE * categories.DEFENSE * categories.TECH1,
-                        categories.STRUCTURE * categories.DEFENSE * categories.TECH2,
-                        categories.STRUCTURE * categories.DEFENSE * categories.TECH3,
+                        categories.STRUCTURE * categories.DEFENSE * categories.SHIELD * categories.TECH1,
+                        categories.STRUCTURE * categories.DEFENSE * categories.SHIELD * categories.TECH2,
+                        categories.STRUCTURE * categories.DEFENSE * categories.SHIELD * categories.TECH3,
                       },
         },
         BuilderType = 'Any',
@@ -808,30 +808,6 @@ BuilderGroup {
                 BuildClose = true,
                 BuildStructures = {
                     'T4Artillery',
-                },
-                Location = 'LocationType',
-            }
-        }
-    },
-    Builder {
-        BuilderName = 'U4 Satellite',
-        PlatoonTemplate = 'T3EngineerBuilderNoSUB',
-        Priority = 875,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.60, 0.95 } }, -- Ratio from 0 to 1. (1=100%)
-            -- Do we need additional conditions to build it ?
-            { MIBC, 'FactionIndex', { 1 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-            -- Respect UnitCap
-        },
-        BuilderType = 'Any',
-        BuilderData = {
-            Construction = {
-                BuildClose = true,
-                BuildStructures = {
-                    'T4SatelliteExperimental',
                 },
                 Location = 'LocationType',
             }

@@ -1,6 +1,7 @@
 local EBC = '/lua/editor/EconomyBuildConditions.lua'
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 local SBC = '/lua/editor/SorianBuildConditions.lua'
+local MIBC = '/lua/editor/MiscBuildConditions.lua'
 local BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua').GetDangerZoneRadii()
 
 -- ===================================================-======================================================== --
@@ -78,7 +79,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
             -- Do we need additional conditions to build it ?
-            { SBC, 'IsWaterMap', { false } },
+            { MIBC, 'CanPathToCurrentEnemy', { true } },
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, categories.ENGINEER * categories.TECH3 }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome', { 7.0, 600.0 }},                    -- Base income
@@ -107,9 +108,9 @@ BuilderGroup {
         InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'GreaterThanGameTimeSeconds', { 60*20 } },
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.MOBILE * categories.EXPERIMENTAL }},
             -- Do we need additional conditions to build it ?
-            { SBC, 'IsWaterMap', { false } },
+            { MIBC, 'CanPathToCurrentEnemy', { true } },
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome', { 7.0, 600.0 }},                    -- Base income
@@ -143,7 +144,7 @@ BuilderGroup {
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome', { 7.0, 100.0 }},                    -- Base income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- Don't build it if...
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.MOBILE * categories.EXPERIMENTAL }},
         },
@@ -236,6 +237,38 @@ BuilderGroup {
 BuilderGroup {
     BuilderGroupName = 'U4 Land Experimental Formers EnemyZone',              -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
+    Builder {
+        BuilderName = 'U4 EnemyBase Land Solo',                                 -- Random Builder Name.
+        --PlatoonAddPlans = {'NameUnitsSorian'},
+        PlatoonTemplate = 'T4ExperimentalLandUveso 1 1',                        -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates"
+        Priority = 70,                                                          -- Priority. 1000 is normal.
+        InstanceCount = 1,                                                      -- Number of plattons that will be formed.
+        FormRadius = 10000,
+        BuilderData = {
+            SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
+            GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
+            AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
+            AttackEnemyStrength = 100000,                                       -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            TargetSearchCategory = categories.ALLUNITS,                                  -- Only find targets matching these categories.
+            MoveToCategories = {                                                -- Move to targets
+                categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
+                categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
+                categories.STRUCTURE * categories.ENERGYPRODUCTION,
+                categories.STRUCTURE * categories.ARTILLERY,
+                categories.STRUCTURE * categories.NUKE,
+                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.STRUCTURE * categories.ANTIMISSILE * categories.TECH3,
+                categories.STRUCTURE * categories.DEFENSE * categories.TECH3,
+                categories.FACTORY * categories.TECH3,
+                categories.ALLUNITS,
+            },
+        },
+        BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
+            -- When do we want to form this ?
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60*30 } },
+        },
+        BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
+    },
     Builder {
         BuilderName = 'U4 EnemyBase Land Duo',                                  -- Random Builder Name.
         --PlatoonAddPlans = {'NameUnitsSorian'},

@@ -1,5 +1,6 @@
 local EBC = '/lua/editor/EconomyBuildConditions.lua'
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
+local MIBC = '/lua/editor/MiscBuildConditions.lua'
 local BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua').GetDangerZoneRadii()
 
 -- ===================================================-======================================================== --
@@ -63,6 +64,31 @@ BuilderGroup {
                 AdjacencyCategory = categories.STRUCTURE * categories.SHIELD,
                 BuildStructures = {
                     'T4AirExperimental1',
+                },
+                Location = 'LocationType',
+            }
+        }
+    },
+    Builder {
+        BuilderName = 'U4 Satellite',
+        PlatoonTemplate = 'T3EngineerBuilderNoSUB',
+        Priority = 875,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
+            -- Do we need additional conditions to build it ?
+            { MIBC, 'FactionIndex', { 1 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconIncome', { 7.0, 600.0 }},                    -- Base income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
+            -- Don't build it if...
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Construction = {
+                BuildClose = true,
+                BuildStructures = {
+                    'T4SatelliteExperimental',
                 },
                 Location = 'LocationType',
             }

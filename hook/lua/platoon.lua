@@ -1,11 +1,11 @@
---WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] * AI-Uveso: offset platoon.lua' )
+WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] * AI-Uveso: offset platoon.lua' )
 
 local UUtils = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua')
 
 OldPlatoonClass = Platoon
 Platoon = Class(OldPlatoonClass) {
 
--- For AI Patch V4. Return/exit the function on platoon disband
+-- For AI Patch V4 (patched). Return/exit the function on platoon disband
     EngineerBuildAI = function(self)
         local aiBrain = self:GetBrain()
         local platoonUnits = self:GetPlatoonUnits()
@@ -359,7 +359,7 @@ Platoon = Class(OldPlatoonClass) {
     end,
 
 
--- For AI Patch V4. remove ReclaimInProgress and CaptureInProgress flag on platoon disband
+-- For AI Patch V4 (patched). remove ReclaimInProgress and CaptureInProgress flag on platoon disband
     PlatoonDisband = function(self)
         local aiBrain = self:GetBrain()
         if self.BuilderHandle then
@@ -400,7 +400,7 @@ Platoon = Class(OldPlatoonClass) {
         aiBrain:DisbandPlatoon(self)
     end,
 
--- For AI Patch V4. Exit with return after platoondisband
+-- For AI Patch V4 (patched). Exit with return after platoondisband
     EconUnfinishedBody = function(self)
         local aiBrain = self:GetBrain()
         local eng = self:GetPlatoonUnits()[1]
@@ -448,7 +448,7 @@ Platoon = Class(OldPlatoonClass) {
         end
     end,
 
--- For AI Patch V4. exit with return on platoon disband
+-- For AI Patch V4 (patched). exit with return on platoon disband
     RepairAI = function(self)
         local aiBrain = self:GetBrain()
         if not self.PlatoonData or not self.PlatoonData.LocationType then
@@ -478,7 +478,7 @@ Platoon = Class(OldPlatoonClass) {
         self:PlatoonDisband()
     end,
 
--- For AI Patch V4. exit with return on disband, set ReclaimInProgress flag before start reclaiming
+-- For AI Patch V4 (patched). exit with return on disband, set ReclaimInProgress flag before start reclaiming
     ReclaimStructuresAI = function(self)
         self:Stop()
         local aiBrain = self:GetBrain()
@@ -539,7 +539,7 @@ Platoon = Class(OldPlatoonClass) {
         end
     end,
 
--- For AI Patch V4. Set CaptureInProgress before start capturing
+-- For AI Patch V4 (patched). Set CaptureInProgress before start capturing
     CaptureAI = function(self)
         local engineers = {}
         local notEngineers = {}
@@ -637,7 +637,7 @@ Platoon = Class(OldPlatoonClass) {
         end
     end,
 
--- For AI Patch V4. fixed debug text
+-- For AI Patch V5 (NOT patched). fixed debug text
     UnitUpgradeAI = function(self)
         local aiBrain = self:GetBrain()
         local platoonUnits = self:GetPlatoonUnits()
@@ -655,7 +655,11 @@ Platoon = Class(OldPlatoonClass) {
             --LOG('* UnitUpgradeAI: UnitBeingUpgradeFactionIndex '..UnitBeingUpgradeFactionIndex)
             if self.PlatoonData.OverideUpgradeBlueprint then
                 local tempUpgradeID = self.PlatoonData.OverideUpgradeBlueprint[UnitBeingUpgradeFactionIndex]
-                if v:CanBuild(tempUpgradeID) then
+                if not tempUpgradeID then
+                    --WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI WARNING: OverideUpgradeBlueprint ' .. repr(v:GetUnitId()) .. ' failed. (Override unitID is empty' )
+                elseif type(tempUpgradeID) ~= 'string' then
+                    WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI WARNING: OverideUpgradeBlueprint ' .. repr(v:GetUnitId()) .. ' failed. (Override unit not present.)' )
+                elseif v:CanBuild(tempUpgradeID) then
                     upgradeID = tempUpgradeID
                 else
                     -- in case the unit can't upgrade with OverideUpgradeBlueprint, warn the programmer
@@ -1198,7 +1202,8 @@ Platoon = Class(OldPlatoonClass) {
                 cdr:SetAutoOvercharge(true)
             else
                 cdr:SetAutoOvercharge(false)
-            end            
+            end
+           
             -- in case we have no Factory left, recover!
             if not aiBrain:GetListOfUnits(categories.STRUCTURE * categories.FACTORY * categories.LAND - categories.SUPPORTFACTORY, false) then
                 --LOG('* ACUAttackAIUveso: exiting attack function. RECOVER')
@@ -1274,7 +1279,7 @@ Platoon = Class(OldPlatoonClass) {
             -- Seraphim
             ['xsl0001'] = {'RateOfFire', 'DamageStabilization', 'BlastAttack', 'DamageStabilizationAdvanced'},
             -- Nomads
-            ['inu0001'] = {'GunUpgrade', 'MovementSpeedIncrease', 'RapidRepair', 'DoubleGuns', 'PowerArmor'},
+            ['xnl0001'] = {'Capacitor', 'GunUpgrade', 'MovementSpeedIncrease', 'DoubleGuns'},
 
             -- UEF - Black Ops ACU
             ['eel0001'] = {'GatlingEnergyCannon', 'CombatEngineering', 'ShieldBattery', 'AutomaticBarrelStabalizers', 'AssaultEngineering', 'ImprovedShieldBattery', 'EnhancedPowerSubsystems', 'ApocalypticEngineering', 'AdvancedShieldBattery'},
@@ -2768,7 +2773,7 @@ Platoon = Class(OldPlatoonClass) {
             -- Seraphim
             ['xsl0301'] = {'DamageStabilization', 'Teleporter'},
             -- Nomads
-            ['inu0301'] = {'xxx', 'xxx', 'xxx'},
+            ['xsl0301'] = {'xxx', 'xxx', 'xxx'},
         }
         local CRDBlueprint = unit:GetBlueprint()
         --LOG('BlueprintId '..repr(CRDBlueprint.BlueprintId))

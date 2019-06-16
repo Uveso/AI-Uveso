@@ -228,7 +228,8 @@ PlatoonTemplate {
             { 'xsl0103', 1, 1, 'attack', 'none' }
         },
         Nomads = {
-            { 'inu1004', 1, 1, 'attack', 'none' }
+            { 'xnl0106', 1, 1, 'attack', 'none' },
+            { 'xnl0201', 1, 1, 'attack', 'none' }
         },
     }
 }
@@ -248,8 +249,8 @@ PlatoonTemplate {
             { 'xsl0203', 1, 1, 'attack', 'none' }
         },
         Nomads = {
-            { 'inu2002', 1, 1, 'attack', 'none' },
-            { 'inu2003', 1, 1, 'attack', 'none' }
+            { 'xnl0203', 1, 1, 'attack', 'none' },
+            { 'xnl0111', 1, 1, 'attack', 'none' }
         },
     }
 }
@@ -269,7 +270,7 @@ PlatoonTemplate {
             { 'xsl0303', 1, 1, 'attack', 'none' }
         },
         Nomads = {
-            { 'inu3002', 1, 1, 'attack', 'none' }
+            { 'xnl0303', 1, 1, 'attack', 'none' }
         },
     }
 }
@@ -290,7 +291,7 @@ PlatoonTemplate {
             { 'xsl0201', 1, 1, 'attack', 'none' }
         },
         Nomads = {
-            { 'inu0107', 1, 1, 'attack', 'none' }
+            { 'xnl0106', 1, 1, 'attack', 'none' }
         },
     }
 }

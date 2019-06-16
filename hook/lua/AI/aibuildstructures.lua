@@ -1,5 +1,5 @@
 
--- For AI Patch V4. validation of building tempaltes, better search for build locations. support for modded units.
+-- For AI Patch V5 (patched). validation of building tempaltes, better search for build locations. support for modded units.
 local AntiSpamList = {}
 function AIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder, relative, buildingTemplate, baseTemplate, reference, NearMarkerType)
     local factionIndex = aiBrain:GetFactionIndex()
@@ -141,7 +141,7 @@ function AIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder,
     return false
 end
 
--- For AI Patch V4. don't build to close to the border
+-- For AI Patch V4 (patched). don't build to close to the border
 function AIBuildAdjacency(aiBrain, builder, buildingType , closeToBuilder, relative, buildingTemplate, baseTemplate, reference, NearMarkerType)
     local whatToBuild = aiBrain:DecideWhatToBuild(builder, buildingType, buildingTemplate)
     if whatToBuild then
