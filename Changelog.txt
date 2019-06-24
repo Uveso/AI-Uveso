@@ -1,7 +1,13 @@
 *************************************************************************************************************************************
-v71 (16.Jun.2019)
+v72 (24.Jun.2019)
 
-- Fix: Added all functions from AI-patch V5 (patch is not released yet)
+- Fix: Added unitIDs for Nomads Supportfactories. AI can now build/upgrade all factories from Nomads mod.
+- Opt: Added debuglines for AIExecuteBuildStructure in case a unit can't be build. (template errors from mods)
+
+*************************************************************************************************************************************
+v71 (18.Jun.2019)
+
+- Fix: Added all functions from AI-patch V5 (patch V5 is not released yet)
 
 *************************************************************************************************************************************
 v70 (16.Jun.2019)

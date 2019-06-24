@@ -9,12 +9,14 @@ function AIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder,
         if AntiSpamList[buildingType] then
             return false
         end
-        SPEW('*AIExecuteBuildStructure: We cant decide whatToBuild! Building Type: '..repr(buildingType)..', faction: '..repr(builder.factionCategory))
+        local FactionIndexToName = {[1] = 'UEF', [2] = 'AEON', [3] = 'CYBRAN', [4] = 'SERAPHIM', [5] = 'NOMADS' }
+        local AIFactionName = FactionIndexToName[factionIndex]
+        SPEW('*AIExecuteBuildStructure: We cant decide whatToBuild! AI-faction: '..AIFactionName..', Building Type: '..repr(buildingType)..', engineer-faction: '..repr(builder.factionCategory))
         -- Get the UnitId for the actual buildingType
         local BuildUnitWithID
         for Key, Data in buildingTemplate do
             if Data[1] and Data[2] and Data[1] == buildingType then
-                --SPEW('*AIExecuteBuildStructure: Found template: '..repr(Data[1])..' - Using UnitID: '..repr(Data[2]))
+                SPEW('*AIExecuteBuildStructure: Found template: '..repr(Data[1])..' - Using UnitID: '..repr(Data[2]))
                 BuildUnitWithID = Data[2]
                 break
             end
@@ -37,8 +39,10 @@ function AIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder,
         end
         -- If we can't find a techlevel for the building we want to build, then return
         if not NeedTech then
-            WARN('*AIExecuteBuildStructure: Cant find techlevel for BuildUnitWithID: '..repr(BuildUnitWithID))
+            WARN('*AIExecuteBuildStructure: Can\'t find techlevel for BuildUnitWithID: '..repr(BuildUnitWithID))
             return false
+        else
+            SPEW('*AIExecuteBuildStructure: Need engineer with Techlevel ('..NeedTech..') for BuildUnitWithID: '..repr(BuildUnitWithID))
         end
         -- get the actual tech level from the builder
         local BC = builder:GetBlueprint().CategoriesHash
@@ -51,13 +55,17 @@ function AIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder,
         end
         -- If we can't find a techlevel for the building we  want to build, return
         if not HasTech then
-            WARN('*AIExecuteBuildStructure: Cant find techlevel for Builder: '..__blueprints[BuildUnitWithID].Description or  "Unknown")
+            WARN('*AIExecuteBuildStructure: Can\'t find techlevel for Builder: '..__blueprints[BuildUnitWithID].Description or  "Unknown")
             return false
+        else
+            SPEW('*AIExecuteBuildStructure: Building ('..repr(BuildUnitWithID)..') has Techlevel ('..HasTech..')')
         end
         --LOG('*AIExecuteBuildStructure: We have TECH'..HasTech..' engineer.')
         if HasTech < NeedTech then
             WARN('*AIExecuteBuildStructure: TECH'..NeedTech..' Unit "'..BuildUnitWithID..'" is assigned to TECH'..HasTech..' buildplatoon! ('..repr(buildingType)..')')
             return false
+        else
+            SPEW('*AIExecuteBuildStructure: Engineer with Techlevel ('..NeedTech..') can build BuildUnitWithID: '..repr(BuildUnitWithID))
         end
         local IsRestricted = import('/lua/game.lua').IsRestricted
         if IsRestricted(BuildUnitWithID, GetFocusArmy()) then
@@ -65,17 +73,30 @@ function AIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder,
             AntiSpamList[buildingType] = true
             return false
         end
-        return false
+        
+        HasFaction = builder.factionCategory
+        NeedFaction = string.upper(__blueprints[string.lower(BuildUnitWithID)].General.FactionName)
+        if HasFaction ~= NeedFaction then
+            WARN('*AIExecuteBuildStructure: AI-faction: '..AIFactionName..', ('..HasFaction..') engineers can\'t build ('..NeedFaction..') structures!')
+            return false
+        else
+            SPEW('*AIExecuteBuildStructure: AI-faction: '..AIFactionName..', Engineer with faction ('..HasFaction..') can build faction ('..NeedFaction..') - BuildUnitWithID: '..repr(BuildUnitWithID))
+        end
+       
+        WARN('*AIExecuteBuildStructure: DecideWhatToBuild call failed for Building Type: '..repr(buildingType)..', faction: '..repr(builder.factionCategory)..' - Unit:'..BuildUnitWithID)
+        whatToBuild = BuildUnitWithID
+        --return false
     else
         -- Sometimes the AI is building a unit that is different from the buildingTemplate table. So we validate the unitID here.
-        for Key, Data in buildingTemplate do
-            if Data[1] and Data[2] and Data[1] == buildingType then
-                if whatToBuild ~= Data[2] then
-                    WARN('*AIExecuteBuildStructure: Missmatch whatToBuild: '..whatToBuild..' ~= buildingTemplate.Data[2]: '..repr(Data[2]))
-                end
-                break
-            end
-        end
+        -- Looks like it never occurred, or i missed the warntext. For now, we don't need it
+        --for Key, Data in buildingTemplate do
+        --    if Data[1] and Data[2] and Data[1] == buildingType then
+        --        if whatToBuild ~= Data[2] then
+        --            WARN('*AIExecuteBuildStructure: Missmatch whatToBuild: '..whatToBuild..' ~= buildingTemplate.Data[2]: '..repr(Data[2]))
+        --        end
+        --        break
+        --    end
+        --end
     end
     -- find a place to build it (ignore enemy locations if it's a resource)
     -- build near the base the engineer is part of, rather than the engineer location

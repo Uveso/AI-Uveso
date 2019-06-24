@@ -12,7 +12,7 @@ function OnFirstUpdate()
     OriginalOnFirstUpdateFunction()
     ForkThread( 
         function()
-            LOG('* AI-Uveso: Changing pathing calculating budget') 
+            LOG('* AI-Uveso: Changing path calculating budget') 
             WaitSeconds(3)
             ConExecute("path_MaxInstantWorkUnits 500")              -- default 500  - Budget for instant pathfinds by the AI
             ConExecute("path_ArmyBudget 1000")                      -- default 1000 - Budget for each army to do pathfinding each tick

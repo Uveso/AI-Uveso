@@ -97,6 +97,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             -- Don't build it if...
             -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense / 2, '<', categories.STRUCTURE * categories.DEFENSE * categories.SHIELD } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -1183,6 +1184,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             -- Don't build it if...
             -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<', categories.STRUCTURE * categories.DEFENSE } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -1192,7 +1194,7 @@ BuilderGroup {
                 AdjacencyDistance = 100,
                 AvoidCategory = categories.STRUCTURE * categories.ANTIAIR * categories.TECH3,
                 maxUnits = 10,
-                maxRadius = 8,
+                maxRadius = 2,
                 BuildClose = false,
                 BuildStructures = {
                     'T3AADefense',

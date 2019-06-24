@@ -107,6 +107,7 @@ function EcoManager(aiBrain)
     local enemyScore
     local MyArmyRatio
     local bussy
+    LOG('* AI-Uveso: Function EcoManager() started! CheatFactor:('..repr(CheatMultOption)..') - BuildFactor:('..repr(BuildMultOption)..')')
     while true do
         WaitTicks(5)
         Engineers = aiBrain:GetListOfUnits(categories.ENGINEER - categories.COMMAND - categories.SUBCOMMANDER, false, false) -- also gets unbuilded units (planed to build)
