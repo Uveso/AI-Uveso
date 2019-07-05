@@ -604,7 +604,7 @@ function LocationRangeManagerThread(aiBrain)
         -- Destroy reclaimables after 10 minutes for better game performance
         if 1 == 1 then
             reclaimdelayer = reclaimdelayer + 1
-            if reclaimdelayer > 12*6 then -- 12*50 ticks = 60 seconds = 1 minutes (12*6 = 12*6*50 ticks = 360 seconds = 6 minutes
+            if reclaimdelayer > 12*6 then -- 12*50 ticks = 60 seconds = 1 minutes (12*6 = 12*6*50 ticks = 360 seconds = 6 minutes) - Means, wrecks will be checked every 6 minutes
                 reclaimdelayer = 0
                 --local count = 0
                 for _, reclaim in GetReclaimablesInRect(Rect(1, 1, ScenarioInfo.size[1], ScenarioInfo.size[2])) do
@@ -612,7 +612,6 @@ function LocationRangeManagerThread(aiBrain)
                         --count = count + 1
                         if not InitialWrecks then
                             reclaim.expirationTime = GetGameTimeSeconds() + 60*25
-                            InitialWrecks = true
                         elseif not reclaim.expirationTime then
                             reclaim.expirationTime = GetGameTimeSeconds() + 60*10
                         elseif GetGameTimeSeconds() > reclaim.expirationTime then
@@ -622,10 +621,16 @@ function LocationRangeManagerThread(aiBrain)
                         end
                     end
                 end
+                -- Set initial wrecks to true after the first pass
+                InitialWrecks = true
                 --LOG('reclaim count:'..count)
             end
         end
         WaitTicks(50)
+
+--        local SUtils = import('/lua/AI/sorianutilities.lua')
+--        SUtils.AIRandomizeTaunt(aiBrain)
+
     end
 end
 

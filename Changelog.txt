@@ -1,4 +1,9 @@
 *************************************************************************************************************************************
+v72 (XX.Jun.2019)
+
+- Fix: Excluded unit xnl0201 from amphibious platoon (unit motion type changed from hover to land)
+
+*************************************************************************************************************************************
 v72 (24.Jun.2019)
 
 - Fix: Added unitIDs for Nomads Supportfactories. AI can now build/upgrade all factories from Nomads mod.
