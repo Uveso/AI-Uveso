@@ -219,8 +219,9 @@ BuilderGroup {
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = categories.EXPERIMENTAL,                     -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                categories.MOBILE * categories.EXPERIMENTAL * categories.AIR,
-                'MOBILE LAND EXPERIMENTAL',
+                categories.MOBILE * categories.EXPERIMENTAL * categories.LAND,
+                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.STRUCTURE * categories.FACTORY
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
@@ -259,7 +260,7 @@ BuilderGroup {
                 categories.STRUCTURE * categories.EXPERIMENTAL,
                 categories.STRUCTURE * categories.ANTIMISSILE * categories.TECH3,
                 categories.STRUCTURE * categories.DEFENSE * categories.TECH3,
-                categories.FACTORY * categories.TECH3,
+                categories.STRUCTURE * categories.FACTORY * categories.TECH3,
                 categories.ALLUNITS,
             },
         },
@@ -291,7 +292,7 @@ BuilderGroup {
                 categories.STRUCTURE * categories.EXPERIMENTAL,
                 categories.STRUCTURE * categories.ANTIMISSILE * categories.TECH3,
                 categories.STRUCTURE * categories.DEFENSE * categories.TECH3,
-                categories.FACTORY * categories.TECH3,
+                categories.STRUCTURE * categories.FACTORY * categories.TECH3,
                 categories.ALLUNITS,
             },
         },
@@ -324,7 +325,7 @@ BuilderGroup {
                 categories.STRUCTURE * categories.EXPERIMENTAL,
                 categories.STRUCTURE * categories.ANTIMISSILE * categories.TECH3,
                 categories.STRUCTURE * categories.DEFENSE * categories.TECH3,
-                categories.FACTORY * categories.TECH3,
+                categories.STRUCTURE * categories.FACTORY * categories.TECH3,
                 categories.ALLUNITS,
             },
         },

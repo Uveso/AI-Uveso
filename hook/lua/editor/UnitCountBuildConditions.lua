@@ -482,4 +482,40 @@ function HaveUnitRatioUveso(aiBrain, ratio, categoryOne, compareType, categoryTw
     return CompareBody(numOne / numTwo, ratio, compareType)
 end
 
+--             { UCBC, 'HaveLessUnitsInLayer', { 'AIR' } },
+function HaveLessUnitsInLayer(aiBrain, layer)
+    local LANDSTRUCTURE = aiBrain:GetCurrentUnits(categories.LAND * categories.STRUCTURE)
+    local LANDMOBILE = aiBrain:GetCurrentUnits(categories.LAND * categories.MOBILE - categories.ENGINEER)
+    local AIRSTRUCTURE = aiBrain:GetCurrentUnits(categories.AIR * categories.STRUCTURE)
+    local AIRMOBILE = aiBrain:GetCurrentUnits(categories.AIR * categories.MOBILE - categories.SCOUT - categories.TRANSPORTFOCUS)
+    local NAVALSTRUCTURE = aiBrain:GetCurrentUnits(categories.NAVAL * categories.STRUCTURE)
+    local NAVALMOBILE = aiBrain:GetCurrentUnits(categories.NAVAL * categories.MOBILE)
+    local LAND = LANDSTRUCTURE > 0
+    local AIR = AIRSTRUCTURE > 0
+    local NAVAL = NAVALSTRUCTURE > 0
+    if layer == 'LAND' then
+        if AIR and LANDMOBILE > AIRMOBILE then
+            return false
+        end
+        if NAVAL and LANDMOBILE > NAVALMOBILE then
+            return false
+        end
+    elseif layer == 'AIR' then
+        if LAND and AIRMOBILE > LANDMOBILE then
+            return false
+        end
+        if NAVAL and AIRMOBILE > NAVALMOBILE then
+            return false
+        end
+    elseif layer == 'NAVAL' then
+        if LAND and NAVALMOBILE > LANDMOBILE then
+            return false
+        end
+        if AIR and NAVALMOBILE > AIRMOBILE then
+            return false
+        end
+    end
+    LOG('Less Units in layer: '..layer..'. Land:('..LANDMOBILE..') Air:('..AIRMOBILE..') Naval:('..NAVALMOBILE..')')
+    return true
+end
 

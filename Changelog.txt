@@ -1,7 +1,14 @@
 *************************************************************************************************************************************
-v72 (XX.Jun.2019)
+v73 (03.Sep.2019)
 
+- New: Added function for the buildconditionmonitor to balance unit count on different layers.
+- Opt: Rewrote eco system. Nukes, massfabricators, antinuke, intel, experimental and normal shields can now be switched on/off
+- Opt: Rewrote nuke launch strategy manager. Nukes will now be fired more often.
+- Opt: Increased the buildchance for Nuke Launchers.
+- Opt: Engineers will now also be build in idle air factories.
+- Opt: Sub AI "Experimentals" now only builds experimental units.
 - Fix: Excluded unit xnl0201 from amphibious platoon (unit motion type changed from hover to land)
+- Del: Removed Sub AI "Swarm". We have now a external mod for Swarm AIs.
 
 *************************************************************************************************************************************
 v72 (24.Jun.2019)

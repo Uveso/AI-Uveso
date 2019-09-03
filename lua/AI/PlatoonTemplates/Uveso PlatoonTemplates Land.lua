@@ -225,7 +225,6 @@ PlatoonTemplate {
             { 'url0106', 1, 1, 'attack', 'None' }
         },
         Seraphim = {
-            --{ 'xsl0101', 1, 1, 'attack', 'none' }
             { 'xsl0201', 1, 1, 'attack', 'none' }
         },
         Nomads = {

@@ -29,17 +29,17 @@ BaseBuilderTemplate {
         'U1 Factory Builders RECOVER',
 
         'U123 Factory Upgrader Rush',
-        'U1 Gate Builders',
-        'U3 SACU Builder',
+--        'U1 Gate Builders',
+--        'U3 SACU Builder',
 
 --        'U123 Air Transport Builders',
 
---        'U3 Strategic Missile Launcher Builder',
---        'U4 Strategic Missile Launcher NukeAI',
---        'U4 Strategic Missile Defense Builders',
---        'U4 Strategic Missile Defense Anti-NukeAI',
+        'U3 Strategic Missile Launcher Builder',
+        'U4 Strategic Missile Launcher NukeAI',
+        'U4 Strategic Missile Defense Builders',
+        'U4 Strategic Missile Defense Anti-NukeAI',
 
-        'U234 Repair Shields Former',
+--        'U234 Repair Shields Former',
 
         -----------------------------------------------------------------------------
         -- ==== Factory ==== --
@@ -52,7 +52,7 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== Sniper Former ==== --
         -----------------------------------------------------------------------------
-        'U3 SACU Teleport Formers',
+--        'U3 SACU Teleport Formers',
 
     },
     -- Not used by Uveso's AI. We always need intel in case the commander is dead.
@@ -62,10 +62,10 @@ BaseBuilderTemplate {
 
     BaseSettings = {
         FactoryCount = {
-            Land = 5,
-            Air = 1,
-            Sea = 1,
-            Gate = 3,
+            Land = 3,
+            Air = 2,
+            Sea = 2,
+            Gate = 2,
         },
         EngineerCount = {
             Tech1 = 4,

@@ -9,11 +9,6 @@ Uveso_0006="A rushing AI. Good for 5x5 and 10x10 maps."
 Uveso_0007="AIx: Uveso Rush"
 Uveso_0008="A rushing AI using cheat options. Good for 5x5 and 10x10 maps."
 
-Uveso_0019="AI: Uveso Swarm"
-Uveso_0020="A spaming AI. Good for 5x5 and 10x10 maps."
-Uveso_0021="AIx: Uveso Swarm"
-Uveso_0022="A spaming AI using cheat options. Good for 5x5 and 10x10 maps."
-
 Uveso_0009="AI: Uveso Experimentals"
 Uveso_0010="A experimental AI. Good for 10x10 and 20x20 maps."
 Uveso_0011="AIx: Uveso Experimentals"

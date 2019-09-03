@@ -18,10 +18,6 @@ AI = {
             name = "<LOC Uveso_0005>AI: Uveso Rush",
         },
         {
-            key = 'uvesoswarm',
-            name = "<LOC Uveso_0019>AI: Uveso Swarm",
-        },
-        {
             key = 'uvesoadaptive',
             name = "<LOC Uveso_0001>AI: Uveso Adaptive",
         },
@@ -45,10 +41,6 @@ AI = {
             name = "<LOC Uveso_0007>AIx: Uveso Rush",
         },
         {
-            key = 'uvesoswarmcheat',
-            name = "<LOC Uveso_0021>AIx: Uveso Swarm",
-        },
-        {
             key = 'uvesoadaptivecheat',
             name = "<LOC Uveso_0003>AIx: Uveso Adaptive",
         },
@@ -60,9 +52,9 @@ AI = {
             key = 'uvesooverwhelmcheat',
             name = "<LOC Uveso_0017>AIx: Uveso Overwhelm",
         },
---        {
---            key = 'uvesonullcheat',
---            name = "AIx: Uveso Null",
---        },
+        {
+            key = 'uvesonullcheat',
+            name = "AIx: Uveso Null",
+        },
     },
 }

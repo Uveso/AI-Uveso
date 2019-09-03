@@ -9,11 +9,6 @@ Uveso_0006="Eine Sturm KI. Gut für 5x5 und 10x10 Karten."
 Uveso_0007="KIx: Uveso Sturm"
 Uveso_0008="Eine Sturm KI, Einstellbar über Cheat-Optionen. Gut für 5x5 und 10x10 Karten."
 
-Uveso_0019="KI: Uveso Swarm"
-Uveso_0020="Eine KI die massenweise Einheiten produziert. Gut für 5x5 und 10x10 Karten."
-Uveso_0021="KIx: Uveso Swarm"
-Uveso_0022="Eine KI die massenweise Einheiten produziert, Einstellbar über Cheat-Optionen. Gut für 5x5 und 10x10 Karten."
-
 Uveso_0009="KI: Uveso Experimentals"
 Uveso_0010="Eine KI die auf Experimentals fokussiert ist. Gut für 10x10 und 20x20 Karten."
 Uveso_0011="KIx: Uveso Experimentals"

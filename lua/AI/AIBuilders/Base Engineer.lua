@@ -149,10 +149,10 @@ BuilderGroup {
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 2, categories.ENGINEER * categories.TECH3 } },
             -- Respect UnitCap
         },
-        BuilderType = 'All',
+        BuilderType = 'Land',
     },
     Builder {
-        BuilderName = 'U3 Engineer noPool',
+        BuilderName = 'U3 Engineer noPool Land',
         PlatoonTemplate = 'T3BuildEngineer',
         Priority = 18400,
         BuilderConditions = {
@@ -166,7 +166,24 @@ BuilderGroup {
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers / 3 , '<', categories.MOBILE * categories.ENGINEER * categories.TECH3 } },
         },
-        BuilderType = 'All',
+        BuilderType = 'Land',
+    },
+    Builder {
+        BuilderName = 'U3 Engineer noPool Air',
+        PlatoonTemplate = 'T3BuildEngineer',
+        Priority = 18400,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'PoolLessAtLocation', { 'LocationType', 3, categories.MOBILE * categories.ENGINEER * categories.TECH3 - categories.SUBCOMMANDER } },
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.99 } },             -- Ratio from 0 to 1. (1=100%)
+            -- Don't build it if...
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapEngineers / 3 , '<', categories.MOBILE * categories.ENGINEER * categories.TECH3 } },
+        },
+        BuilderType = 'Air',
     },
 }
 BuilderGroup {

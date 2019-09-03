@@ -58,13 +58,11 @@ BaseBuilderTemplate {
         -- Upgrade Factories TECH1->TECH2 and TECH2->TECH3
         'U123 Factory Upgrader Rush',
         -- Build Air Staging Platform to refill and repair air units.
-        'U2 Air Staging Platform Builders',
 
         -----------------------------------------------------------------------------
         -- ==== Land Units BUILDER ==== --
         -----------------------------------------------------------------------------
         -- Build Land Units
-        'U123 Land Builders Panic',
 
         -----------------------------------------------------------------------------
         -- ==== Land Units FORMER==== --
@@ -82,7 +80,6 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== Amphibious Units BUILDER ==== --
         -----------------------------------------------------------------------------
-        'U123 Amphibious Builders',
 
         -----------------------------------------------------------------------------
         -- ==== Amphibious Units FORMER==== --
@@ -93,9 +90,7 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== Air Units BUILDER ==== --
         -----------------------------------------------------------------------------
-        'U123 Air Builders EXPERIMENTAL',
         -- Build Air Transporter
-        'U123 Air Transport Builders',
 
         -----------------------------------------------------------------------------
         -- ==== Air Units FORMER==== --
@@ -141,8 +136,6 @@ BaseBuilderTemplate {
 --        'U4 Strategic Missile Launcher NukeAI',
         'U4 Strategic Missile Defense Builders',
         'U4 Strategic Missile Defense Anti-NukeAI',
---        'U4 Artillery Builders',
-        'U4 Artillery Formers',
         -- Build Anti Air near AirFactories
         'U123 Defense Anti Air Builders',
         -- Ground Defense Builder
@@ -151,12 +144,10 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== FireBase BUILDER ==== --
         -----------------------------------------------------------------------------
-        'U1 FirebaseBuilders',
 
         -----------------------------------------------------------------------------
         -- ==== Sniper Former ==== --
         -----------------------------------------------------------------------------
-        'U3 SACU Teleport Formers',
 
         -- We need this even if we have Omni View to get target informations for experimentals attack.
         -----------------------------------------------------------------------------

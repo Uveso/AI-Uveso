@@ -1,7 +1,7 @@
 name = "AI-Uveso"
 uid = "62e2j64a-AIUV-0730-89465-146as555a8u3"
 version = 73
-copyright = "Uveso 2017-2019"
+copyright = "2017-2019 Uveso"
 description = "(For FAF only)"
 author = "Uveso"
 url = ""
