@@ -1,6 +1,6 @@
 
-OldAIBrainClass = AIBrain
-AIBrain = Class(OldAIBrainClass) {
+UvesoAIBrainClass = AIBrain
+AIBrain = Class(UvesoAIBrainClass) {
 
     -- For AI Patch V5 (patched). patch for missing StrategyManager
     OnDefeat = function(self)
@@ -267,11 +267,11 @@ AIBrain = Class(OldAIBrainClass) {
         end
     end,
 
-    -- AI-Uveso. Removing the StrategyManager
+    -- For AI Patch V6 + AI-Uveso. Removing the StrategyManager
     AddBuilderManagers = function(self, position, radius, baseName, useCenter)
        -- Only use this with AI-Uveso
         if not self.Uveso then
-            return OldAIBrainClass.AddBuilderManagers(self, position, radius, baseName, useCenter)
+            return UvesoAIBrainClass.AddBuilderManagers(self, position, radius, baseName, useCenter)
         end
         self.BuilderManagers[baseName] = {
             FactoryManager = FactoryManager.CreateFactoryBuilderManager(self, baseName, position, radius, useCenter),
@@ -291,14 +291,50 @@ AIBrain = Class(OldAIBrainClass) {
             },
             BuilderHandles = {},
             Position = position,
+            BaseType = Scenario.MasterChain._MASTERCHAIN_.Markers[baseName].type or 'MAIN',
         }
         self.NumBases = self.NumBases + 1
+    end,
+
+    -- For AI Patch V6. patch for faster location search, needs AddBuilderManagers
+    GetManagerCount = function(self, type)
+        local count = 0
+        for k, v in self.BuilderManagers do
+            if not v.BaseType then
+                continue
+            end
+            if type then
+                if type == 'Start Location' and v.BaseType ~= 'MAIN' and v.BaseType ~= 'Blank Marker' then
+                    continue
+                elseif type == 'Naval Area' and v.BaseType ~= 'Naval Area' then
+                    continue
+                elseif type == 'Expansion Area' and v.BaseType ~= 'Expansion Area' and v.BaseType ~= 'Large Expansion Area' then
+                    continue
+                end
+            end
+
+            if v.EngineerManager:GetNumCategoryUnits('Engineers', categories.ALLUNITS) <= 0 and v.FactoryManager:GetNumCategoryFactories(categories.ALLUNITS) <= 0 then
+                continue
+            end
+
+            count = count + 1
+        end
+        return count
+    end,
+
+    OnCreateAI = function(self, planName)
+        UvesoAIBrainClass.OnCreateAI(self, planName)
+        local per = ScenarioInfo.ArmySetup[self.Name].AIPersonality
+        if string.find(per, 'uveso') then
+            LOG('This is uveso')
+            self.Uveso = true
+        end
     end,
 
     BaseMonitorThread = function(self)
        -- Only use this with AI-Uveso
         if not self.Uveso then
-            return OldAIBrainClass.BaseMonitorThread(self)
+            return UvesoAIBrainClass.BaseMonitorThread(self)
         end
         WaitTicks(10)
         -- We are leaving this forked thread here because we don't need it.
@@ -308,7 +344,7 @@ AIBrain = Class(OldAIBrainClass) {
     EconomyMonitor = function(self)
         -- Only use this with AI-Uveso
         if not self.Uveso then
-            return OldAIBrainClass.EconomyMonitor(self)
+            return UvesoAIBrainClass.EconomyMonitor(self)
         end
         WaitTicks(10)
         -- We are leaving this forked thread here because we don't need it.
@@ -319,7 +355,7 @@ AIBrain = Class(OldAIBrainClass) {
    ExpansionHelpThread = function(self)
        -- Only use this with AI-Uveso
         if not self.Uveso then
-            return OldAIBrainClass.ExpansionHelpThread(self)
+            return UvesoAIBrainClass.ExpansionHelpThread(self)
         end
         WaitTicks(10)
         -- We are leaving this forked thread here because we don't need it.
@@ -329,21 +365,21 @@ AIBrain = Class(OldAIBrainClass) {
     InitializeEconomyState = function(self)
         -- Only use this with AI-Uveso
         if not self.Uveso then
-            return OldAIBrainClass.InitializeEconomyState(self)
+            return UvesoAIBrainClass.InitializeEconomyState(self)
         end
     end,
 
     OnIntelChange = function(self, blip, reconType, val)
         -- Only use this with AI-Uveso
         if not self.Uveso then
-            return OldAIBrainClass.OnIntelChange(self, blip, reconType, val)
+            return UvesoAIBrainClass.OnIntelChange(self, blip, reconType, val)
         end
     end,
 
     SetupAttackVectorsThread = function(self)
        -- Only use this with AI-Uveso
         if not self.Uveso then
-            return OldAIBrainClass.SetupAttackVectorsThread(self)
+            return UvesoAIBrainClass.SetupAttackVectorsThread(self)
         end
         WaitTicks(10)
         -- We are leaving this forked thread here because we don't need it.
@@ -353,7 +389,7 @@ AIBrain = Class(OldAIBrainClass) {
     ParseIntelThread = function(self)
        -- Only use this with AI-Uveso
         if not self.Uveso then
-            return OldAIBrainClass.ParseIntelThread(self)
+            return UvesoAIBrainClass.ParseIntelThread(self)
         end
         WaitTicks(10)
         -- We are leaving this forked thread here because we don't need it.

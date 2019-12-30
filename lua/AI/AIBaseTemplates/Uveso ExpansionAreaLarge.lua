@@ -41,7 +41,6 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         'U123 Land Builders Panic',
         'U123 Land Builders ADAPTIVE',
-        'U123 Land Builders Ratio',
         'U3 SACU Builder',
 
         -----------------------------------------------------------------------------

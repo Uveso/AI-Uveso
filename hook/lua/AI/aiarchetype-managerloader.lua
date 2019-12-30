@@ -1,4 +1,6 @@
-local CalculateBrainScore = import('/lua/sim/score.lua').CalculateBrainScore
+WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] * AI-Uveso: offset aiarchetype-managerloader.lua' )
+-- 200
+
 local Buff = import('/lua/sim/Buff.lua')
 
 -- This hook is for debug-option Platoon-Names. Hook for all AI's
@@ -45,8 +47,10 @@ function ExecutePlan(aiBrain)
         -- Uveso is using a locationmanager ecomanager and BaseAlert Thread
         elseif aiBrain.Uveso then
             ForkThread(LocationRangeManagerThread, aiBrain)
-            ForkThread(EcoManager, aiBrain)
-            ForkThread(BaseTargetManager, aiBrain)
+            ForkThread(EcoManagerThread, aiBrain)
+            ForkThread(BaseTargetManagerThread, aiBrain)
+            ForkThread(MarkerGridThreatManagerThread, aiBrain)
+            ForkThread(MassManagerThread, aiBrain)
         -- Debug for Platoon names
         elseif aiBrain[ScenarioInfo.Options.AIPLatoonNameDebug] or ScenarioInfo.Options.AIPLatoonNameDebug == 'all' then
             ForkThread(LocationRangeManagerThread, aiBrain)
@@ -90,12 +94,16 @@ function SetArmyPoolBuff(aiBrain, CheatMult, BuildMult)
     end
 end
 
-function EcoManager(aiBrain)
+function EcoManagerThread(aiBrain)
+    while GetGameTimeSeconds() < 15 + aiBrain:GetArmyIndex() do
+        WaitTicks(10)
+    end
     local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
     local CheatMultOption = tonumber(ScenarioInfo.Options.CheatMult)
     local BuildMultOption = tonumber(ScenarioInfo.Options.BuildMult)
     local CheatMult = CheatMultOption
     local BuildMult = BuildMultOption
+    LOG('* AI-Uveso: Function EcoManagerThread() started! CheatFactor:('..repr(CheatMultOption)..') - BuildFactor:('..repr(BuildMultOption)..') ['..aiBrain.Nickname..']')
     local Engineers = {}
     local paragons = {}
     local Factories = {}
@@ -105,11 +113,11 @@ function EcoManager(aiBrain)
     local enemyScore
     local MyArmyRatio
     local bussy
-    LOG('* AI-Uveso: Function EcoManager() started! CheatFactor:('..repr(CheatMultOption)..') - BuildFactor:('..repr(BuildMultOption)..')')
-    while true do
+    while aiBrain.Result ~= "defeat" do
+        --LOG('* AI-Uveso: Function EcoManagerThread() beat. ['..aiBrain.Nickname..']')
         WaitTicks(5)
         Engineers = aiBrain:GetListOfUnits(categories.ENGINEER - categories.COMMAND - categories.SUBCOMMANDER, false, false) -- also gets unbuilded units (planed to build)
-        paragons = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC  * categories.ENERGYPRODUCTION  * categories.MASSPRODUCTION, false, false)
+        paragons = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC * categories.ENERGYPRODUCTION * categories.MASSPRODUCTION, false, false)
         Factories = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.FACTORY, false, false)
         ParaComplete = 0
         bussy = false
@@ -269,7 +277,7 @@ function EcoManager(aiBrain)
                 if DisableUnits(aiBrain, categories.STRUCTURE * categories.NUKE * (categories.TECH3 + categories.EXPERIMENTAL), 'Nuke') then bussy = true
                 end
             end
-        elseif aiBrain:GetEconomyStoredRatio('ENERGY') > 0.99 then
+        elseif aiBrain:GetEconomyStoredRatio('ENERGY') > 0.95 then
             if aiBrain:GetEconomyStoredRatio('MASS') > 0.50 then
                 -- Enable NormalShields
                 if EnableUnits(aiBrain, categories.STRUCTURE * categories.SHIELD - categories.EXPERIMENTAL, 'NormalShields') then bussy = true
@@ -515,7 +523,7 @@ function EcoManager(aiBrain)
             if unit.PlatoonHandle.PlatoonData.Assist.AssisteeType then continue end
             -- Only Check units that are assisting
             if not unit.UnitBeingBuilt then continue end
-            if aiBrain.HasParagon then
+            if aiBrain.HasParagon or unit.noPause then
                 if unit:IsPaused() then
                     unit:SetPaused( false )
                     bussy = true
@@ -625,17 +633,21 @@ function EnableUnits(aiBrain, Category, UnitType)
 end
 
 function LocationRangeManagerThread(aiBrain)
+    LOG('* AI-Uveso: Function LocationRangeManagerThread() started. ['..aiBrain.Nickname..']')
     local unitcounterdelayer = 0
     local reclaimdelayer = 1000 -- This value must be high so we will scan the wrecks at gamestart
     local InitialWrecks
     local ArmyUnits = {}
     -- wait at start of the game for delayed AI message
-    WaitTicks(50)
+    while GetGameTimeSeconds() < 20 + aiBrain:GetArmyIndex() do
+        WaitTicks(10)
+    end
     if not import('/lua/AI/sorianutilities.lua').CheckForMapMarkers(aiBrain) then
         import('/lua/AI/sorianutilities.lua').AISendChat('all', ArmyBrains[aiBrain:GetArmyIndex()].Nickname, 'badmap')
     end
 
-    while true do
+    while aiBrain.Result ~= "defeat" do
+        --LOG('* AI-Uveso: Function LocationRangeManagerThread() beat. ['..aiBrain.Nickname..']')
         -- loop over all location managers
         for baseLocation, managers in aiBrain.BuilderManagers do
             -- get all factories from this location
@@ -906,7 +918,7 @@ function BaseRanger(aiBrain)
         -- store all bases ang radii global inside Scenario.MasterChain
         -- Wee need this to draw the debug circles
         if aiBrain.Uveso then
-            if ScenarioInfo.Options.AIPathingDebug == 'all' then
+            if ScenarioInfo.Options.AIPathingDebug == 'pathlocation' then
                 Scenario.MasterChain._MASTERCHAIN_.BaseRanger = Scenario.MasterChain._MASTERCHAIN_.BaseRanger or {}
                 Scenario.MasterChain._MASTERCHAIN_.BaseRanger[aiBrain:GetArmyIndex()] = BaseRanger
             end
@@ -915,13 +927,18 @@ function BaseRanger(aiBrain)
     return BaseRanger
 end
 
-function BaseTargetManager(aiBrain)
+function BaseTargetManagerThread(aiBrain)
+    while GetGameTimeSeconds() < 25 + aiBrain:GetArmyIndex() do
+        WaitTicks(10)
+    end
+    LOG('* AI-Uveso: Function BaseTargetManagerThread() started. ['..aiBrain.Nickname..']')
     local BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua').GetDangerZoneRadii()
     local targets = {}
     local baseposition, radius
     local ClosestTarget
     local distance
-    while true do
+    while aiBrain.Result ~= "defeat" do
+        --LOG('* AI-Uveso: Function BaseTargetManagerThread() beat. ['..aiBrain.Nickname..']')
         ClosestTarget = nil
         distance = 1024
         WaitTicks(50)
@@ -1036,5 +1053,199 @@ function BaseTargetManager(aiBrain)
             end
         end
         aiBrain.PrimaryTarget = ClosestTarget
+    end
+end
+
+function MarkerGridThreatManagerThread(aiBrain)
+    while GetGameTimeSeconds() < 30 + aiBrain:GetArmyIndex() do
+        WaitTicks(10)
+    end
+    LOG('* AI-Uveso: Function MarkerGridThreatManagerThread() started. ['..aiBrain.Nickname..']')
+    local AIAttackUtils = import('/lua/ai/aiattackutilities.lua')
+    local numTargetTECH123 = 0
+    local numTargetTECH4 = 0
+    local numTargetCOM = 0
+    local armyIndex = aiBrain:GetArmyIndex()
+    local PathGraphs = AIAttackUtils.GetPathGraphs()
+    local Delayer = -1
+    local vector
+    if not (PathGraphs['Land'] or PathGraphs['Amphibious'] or PathGraphs['Air'] or PathGraphs['Water']) then
+        WARN('* AI-Uveso: Function MarkerGridThreatManagerThread() No AI path markers found on map. Threat handling diabled!  '..ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality)
+        -- end this forked thead
+        return
+    end
+    while aiBrain.Result ~= "defeat" do
+        ----LOG('* AI-Uveso: Function MarkerGridThreatManagerThread() beat. ['..aiBrain.Nickname..']')
+        for Layer, LayerMarkers in PathGraphs do
+            for graph, GraphMarkers in LayerMarkers do
+                for nodename, markerInfo in GraphMarkers do
+                    vector = Vector(markerInfo.position[1],markerInfo.position[2],markerInfo.position[3])
+                    if markerInfo.layer == 'Land' then
+                        numTargetTECH123 = aiBrain:GetNumUnitsAroundPoint( (categories.DIRECTFIRE + categories.INDIRECTFIRE + categories.GROUNDATTACK + categories.BOMBER) - categories.EXPERIMENTAL, vector , 30 , 'Enemy')
+                        numTargetTECH4   = aiBrain:GetNumUnitsAroundPoint( (categories.DIRECTFIRE + categories.INDIRECTFIRE + categories.GROUNDATTACK + categories.BOMBER) * categories.EXPERIMENTAL, vector , 60 , 'Enemy')
+                        numTargetCOM     = aiBrain:GetNumUnitsAroundPoint(categories.COMMAND, vector , 30 , 'Enemy')
+                    end
+                    if markerInfo.layer == 'Water' then
+                        numTargetTECH123 = aiBrain:GetNumUnitsAroundPoint( (categories.NAVAL + categories.GROUNDATTACK + categories.BOMBER) - categories.EXPERIMENTAL, vector , 30 , 'Enemy')
+                        numTargetTECH4   = aiBrain:GetNumUnitsAroundPoint( (categories.NAVAL + categories.GROUNDATTACK + categories.BOMBER) * categories.EXPERIMENTAL, vector , 60 , 'Enemy')
+                    end
+                    if markerInfo.layer == 'Air' then
+                        numTargetTECH123 = aiBrain:GetNumUnitsAroundPoint(categories.ANTIAIR - categories.EXPERIMENTAL, vector , 60 , 'Enemy')
+                        numTargetTECH4   = aiBrain:GetNumUnitsAroundPoint(categories.ANTIAIR * categories.EXPERIMENTAL, vector , 60 , 'Enemy')
+                    end
+                    if markerInfo.layer == 'Amphibious' then
+                        numTargetTECH123 = aiBrain:GetNumUnitsAroundPoint( (categories.DIRECTFIRE + categories.INDIRECTFIRE + categories.GROUNDATTACK + categories.BOMBER) - categories.EXPERIMENTAL, vector , 30 , 'Enemy')
+                        numTargetTECH4   = aiBrain:GetNumUnitsAroundPoint( (categories.DIRECTFIRE + categories.INDIRECTFIRE + categories.GROUNDATTACK + categories.BOMBER) * categories.EXPERIMENTAL, vector , 60 , 'Enemy')
+                        numTargetCOM     = aiBrain:GetNumUnitsAroundPoint(categories.COMMAND, vector , 30 , 'Enemy')
+                    end
+                    local Threat = numTargetTECH123 * 15 + numTargetTECH4 * 60 + numTargetCOM * 30
+                    --LOG('* MarkerGridThreatManagerThread: 1='..numTargetTECH1..'  2='..numTargetTECH2..'  3='..numTargetTECH123..'  4='..numTargetTECH4..' - Threat='..Threat..'.' )
+                    Scenario.MasterChain._MASTERCHAIN_.Markers[nodename][armyIndex] = Threat
+                    Delayer = Delayer + 1
+                    if Delayer > 5 then
+                        Delayer = 0
+                        coroutine.yield(1)
+                    end
+                end
+            end
+        end
+        coroutine.yield(1)
+    end
+end
+
+function MassManagerThread(aiBrain)
+    while GetGameTimeSeconds() < 10 do
+        WaitTicks(10)
+    end
+    LOG('* AI-Uveso: Function MassManagerThread() started. ['..aiBrain.Nickname..']')
+    local PlatoonList
+    local Engineers = {}
+    local basePosition = aiBrain.BuilderManagers['MAIN'].Position
+
+    -- create a list of mass markers sorted by distance to main base
+    local MassMarker = {}
+--    for _, v in Scenario.MasterChain._MASTERCHAIN_.Markers do
+    for _, v in import('/lua/sim/ScenarioUtilities.lua').GetMarkers() do
+        if v.type == 'Mass' then
+            if v.position[1] <= 8 or v.position[1] >= ScenarioInfo.size[1] - 8 or v.position[3] <= 8 or v.position[3] >= ScenarioInfo.size[2] - 8 then
+                -- mass marker is too close to border, skip it.
+                continue
+            end 
+            table.insert(MassMarker, {Position = v.position, Distance = VDist3( v.position, basePosition ), NearestMarker = {} })
+        end
+    end
+    table.sort(MassMarker, function(a,b) return a.Distance < b.Distance end)
+
+    -- create a table for each marker with markers nearby
+    for _,marker1 in MassMarker do
+        for k2,marker2 in MassMarker do
+            if VDist3( marker1.Position, marker2.Position ) < 35 and VDist3( marker1.Position, basePosition ) > 50 then
+                table.insert(marker1.NearestMarker, k2)
+            end
+        end
+    end
+    --LOG('* AI-Uveso: Function MassManagerThread() ['..repr(MassMarker)..']')
+
+    while aiBrain.Result ~= "defeat" do
+        --LOG('* AI-Uveso: Function MassManagerThread() PULSE. ['..aiBrain.Nickname..']')
+        -- make a table of all engineers with BuildOnMassAI AIPlan
+        Engineers = {}
+        PlatoonList = aiBrain:GetPlatoonsList()
+        for _,Platoon in PlatoonList do
+            if Platoon.PlanName and Platoon.PlanName == 'BuildOnMassAI' then
+                --LOG('* AI-Uveso: Function MassManagerThread() Found Platton with plan '..Platoon.PlanName)
+                local platoonUnits = Platoon:GetPlatoonUnits()
+                for k, v in platoonUnits do
+                    table.insert(Engineers, v )
+                end
+            end
+        end
+        --LOG('* AI-Uveso: Function MassManagerThread() engineer count: '..table.getn(Engineers))
+
+        -- check if we have an idle engineer
+        local IdleCount = 0
+        for ke, Engineer in Engineers do
+            if Engineer.Dead or Engineer:BeenDestroyed() then
+                continue
+            end
+            if not Engineer:IsUnitState('Building') and Engineer:IsIdleState() then
+                IdleCount = IdleCount + 1
+            end
+        end
+        --LOG('* AI-Uveso: Function MassManagerThread() engineers that can work: '..repr(IdleCount))
+
+        if IdleCount > 0 then
+            local EngiOnTheWay
+            local MexToCap
+            local dist
+            -- loop over all engineers and find the closest mass spot to move on
+            for ke, Engineer in Engineers do
+                if Engineer.Dead or Engineer:BeenDestroyed() or Engineer:IsUnitState('Building') or not Engineer:IsIdleState() or Engineer.MexToCap then
+                    --LOG('* AI-Uveso: Engineer ['..ke..'] is bussy.')
+                    continue
+                end
+                --LOG('* AI-Uveso: Engineer ['..ke..'] Searching for closest mass spot')
+                EngiPos = Engineer:GetPosition()
+                MexToCap = nil
+                dist = nil
+                -- loop over all mass points
+                for km, marker in MassMarker do
+                    --LOG('* AI-Uveso: Engineer ['..ke..'] check mass spot = ('..km..')')
+                    -- is this the closest massmarker ?
+                    if not dist or dist > VDist3( marker.Position, EngiPos ) then
+                        --LOG('* AI-Uveso: Engineer ['..ke..'] closest mass spot = ('..km..') - distance = ('..VDist3( marker.Position, EngiPos )..')')
+                        -- This could be our next mass spot, check if another engineer is already on the way to it
+                        EngiOnTheWay = false
+                        for kC, EngineerC in Engineers do
+                            if EngineerC.Dead or EngineerC:BeenDestroyed() then
+                                continue
+                            end
+                            -- don't check against yourself
+                            if ke == kC then
+                                continue
+                            end
+                            EngineerC.nextmex = EngineerC.nextmex or {}
+                            for knm, mex in EngineerC.nextmex do
+                                if mex == km then
+                                    --LOG('* AI-Uveso: Engineer ['..ke..'] Engineer ['..kC..'] is already moving to ('..km..')')
+                                    EngiOnTheWay = true
+                                    break -- for knm, mex in EngineerC.nextmex do
+                                end
+                            end
+                            -- Ther is already a engineer on the way to this spot, no need to search for another engineer.
+                            if EngiOnTheWay then
+                                break -- for kC, EngineerC in Engineers do
+                            end
+                        end
+                        -- If no engineer is on the way, then this spot can be used. save it until we find maybe a closer one
+                        if not EngiOnTheWay then
+                            if not aiBrain:CanBuildStructureAt('ueb1103', marker.Position) then
+                                local checkUnits = aiBrain:GetUnitsAroundPoint(categories.MASSEXTRACTION, marker.Position, 1, 'Ally')
+                                if checkUnits and table.getn(checkUnits) > 0 then
+                                    --LOG('* AI-Uveso: Engineer ['..ke..'] Found own/allied extractor at mass spot ['..km..']')
+                                    continue
+                                end
+                            end
+                            MexToCap = marker
+                            MexToCapIndex = km
+                            dist = VDist3( marker.Position, EngiPos )
+                        end
+                    end
+                end
+                if MexToCap then
+                    --LOG('* AI-Uveso: Engineer ['..ke..'] moving to closest mass spot = ('..MexToCapIndex..')')
+                    Engineer.MexToCap = MexToCap
+                    Engineer.nextmex = MexToCap.NearestMarker
+                    IdleCount = IdleCount - 1
+                end
+                -- check if we have still available engineers, if not break
+                if IdleCount < 1 then
+                    break -- for km, marker in MassMarker do
+                end
+            end
+
+        end
+
+        coroutine.yield(10)
     end
 end

@@ -33,6 +33,7 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- Build MassExtractors / Creators
         'U1 MassBuilders',
+        'U1 Mass Capture',
         -- Upgrade MassExtractors from Tech 1 to 2 AND from Tech 2 to 3
         'U123 ExtractorUpgrades',
         -- Build Mass Storage (Adjacency)
@@ -62,7 +63,6 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         'U123 Land Builders Panic',
         'U123 Land Builders ADAPTIVE',
-        'U123 Land Builders Ratio',
         'U3 SACU Builder',
 
         -----------------------------------------------------------------------------
@@ -98,7 +98,8 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== Air Units BUILDER ==== --
         -----------------------------------------------------------------------------
-        'U123 Air Builders',
+        'U123 Air Builders ADAPTIVE',
+        'U123 Air Builders EXPERIMENTAL',
         -- Build Air Transporter
         'U123 Air Transport Builders',
 
@@ -152,7 +153,7 @@ BaseBuilderTemplate {
         'U4 Strategic Missile Defense Builders',
         'U4 Strategic Missile Defense Anti-NukeAI',
         'U4 Artillery Builders',
-        'U4 Artillery Formers',
+        'U4 Artillery Formers', -- also needed for UEF SATELLITE
         -- Build Anti Air near AirFactories
         'U123 Defense Anti Air Builders',
         -- Ground Defense Builder
@@ -189,7 +190,7 @@ BaseBuilderTemplate {
 
         'CounterIntelBuilders',
 
-        'AeonOptics',
+--        'AeonOptics',
         'CybranOptics',
 
     },
@@ -224,7 +225,7 @@ BaseBuilderTemplate {
         local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
         if personality == 'uvesoadaptive' or personality == 'uvesoadaptivecheat' then
             --LOG('### M-FirstBaseFunction '..personality)
-            return 1000, 'uvesoadaptive'
+            return 1000, 'uvesoadaptive' -- AIPersonality
         end
         return -1
     end,

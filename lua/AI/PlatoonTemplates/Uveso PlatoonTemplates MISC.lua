@@ -31,28 +31,35 @@ PlatoonTemplate {
     Name = 'U1EngineerTransfer',
     Plan = 'TransferAIUveso',
     GlobalSquads = {
-        { categories.MOBILE * categories.ENGINEER * categories.TECH1, 1, 1, 'support', 'none' },
+        { categories.MOBILE * categories.ENGINEER * categories.TECH1 - categories.POD, 1, 1, 'support', 'none' },
     },
 }
 PlatoonTemplate {
     Name = 'U2EngineerTransfer',
     Plan = 'TransferAIUveso',
     GlobalSquads = {
-        { categories.MOBILE * categories.ENGINEER * categories.TECH2, 1, 1, 'support', 'none' },
+        { categories.MOBILE * categories.ENGINEER * categories.TECH2 - categories.POD, 1, 1, 'support', 'none' },
     },
 }
 PlatoonTemplate {
     Name = 'U3EngineerTransfer',
     Plan = 'TransferAIUveso',
     GlobalSquads = {
-        { categories.MOBILE * categories.ENGINEER * categories.TECH3, 1, 1, 'support', 'none' },
+        { categories.MOBILE * categories.ENGINEER * categories.TECH3 - categories.POD, 1, 1, 'support', 'none' },
     },
 }
 PlatoonTemplate {
     Name = 'U1Reclaim',
     Plan = 'ReclaimAIUveso',
     GlobalSquads = {
-        { categories.ENGINEER * categories.TECH1, 1, 1, "support", "None" }
+        { categories.ENGINEER * categories.TECH1 - categories.POD, 1, 1, "support", "None" }
+    },
+}
+PlatoonTemplate {
+    Name = 'U1MassDummy',
+    Plan = 'BuildOnMassAI',
+    GlobalSquads = {
+        { categories.MOBILE * categories.ENGINEER * categories.TECH1 - categories.POD, 1, 1, 'support', 'none' },
     },
 }
 PlatoonTemplate {
@@ -67,20 +74,21 @@ PlatoonTemplate {
     Name = 'T3EngineerBuilderNoSUB',
     Plan = 'EngineerBuildAI',
     GlobalSquads = {
-        { categories.ENGINEER * categories.TECH3 - categories.SUBCOMMANDER, 1, 1, 'support', 'None' }
+        { categories.ENGINEER * categories.TECH3 - categories.SUBCOMMANDER - categories.POD, 1, 1, 'support', 'None' }
     },
 }
 PlatoonTemplate {
     Name = 'T3EngineerAssistNoSUB',
     Plan = 'ManagerEngineerAssistAI',
     GlobalSquads = {
-        { categories.ENGINEER * categories.TECH3 - categories.SUBCOMMANDER, 1, 1, 'support', 'None' }
+        { categories.ENGINEER * categories.TECH3 - categories.SUBCOMMANDER - categories.POD, 1, 1, 'support', 'None' }
     },
 }
 PlatoonTemplate {
     Name = 'EngineerAssistGROUP',
     Plan = 'ManagerEngineerAssistAI',
     GlobalSquads = {
-        { categories.ENGINEER * categories.TECH1 - categories.SUBCOMMANDER, 1, 10, 'support', 'None' }
+        { categories.ENGINEER * categories.TECH1 - categories.SUBCOMMANDER - categories.POD, 1, 10, 'support', 'None' }
     },
 }
+

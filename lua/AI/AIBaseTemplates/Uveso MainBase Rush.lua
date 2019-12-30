@@ -41,6 +41,7 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- Build MassExtractors / Creators
         'U1 MassBuilders',                           -- Priority = 1100
+        'U1 Mass Capture',
         -- Upgrade MassExtractors from Tech 1 to 2 AND from Tech 2 to 3
         'U123 ExtractorUpgrades',                      -- Priority = 1100
         -- Build Mass Storage (Adjacency)
@@ -59,18 +60,17 @@ BaseBuilderTemplate {
         'U1 Factory Builders 1st',
         'U1 Factory Builders RUSH',
         'U1 Factory Builders RECOVER',
---        'U1 Gate Builders',
+        'U1 Gate Builders',
         -- Upgrade Factories TECH1->TECH2 and TECH2->TECH3
         'U123 Factory Upgrader Rush',
         -- Build Air Staging Platform to refill and repair air units.
---        'U2 Air Staging Platform Builders',
+        'U2 Air Staging Platform Builders',
 
         -----------------------------------------------------------------------------
         -- ==== Land Units BUILDER ==== --
         -----------------------------------------------------------------------------
         'U123 Land Builders Panic',
-        'U123 Land Formers RUSH',
-        'U123 Land Builders Ratio RUSH',
+        'U123 Land Builders RUSH',
 
         -----------------------------------------------------------------------------
         -- ==== Land Units FORMER==== --
@@ -106,6 +106,7 @@ BaseBuilderTemplate {
         -- ==== Air Units BUILDER ==== --
         -----------------------------------------------------------------------------
         'U123 Air Builders',
+        'U123 Air Builders EXPERIMENTAL',
         -- Build Air Transporter
         'U123 Air Transport Builders',
 
@@ -124,9 +125,9 @@ BaseBuilderTemplate {
         'U4 Land Experimental Builders',
         'U4 Air Experimental Builders',
         'U4 Economic Experimental Builders',
---        'Paragon Turbo Builder',
---        'Paragon Turbo Factory',
-
+        'Paragon Turbo Builder',
+        'Paragon Turbo Factory',
+        'Paragon Turbo Air',
         -----------------------------------------------------------------------------
         -- ==== EXPERIMENTALS FORMER ==== --
         -----------------------------------------------------------------------------
@@ -144,32 +145,35 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         'U23 Shields Builder',
         'U23 Shields Upgrader',
+        'U234 Repair Shields Former',                                     
 
         -----------------------------------------------------------------------------
         -- ==== Defenses BUILDER ==== --
         -----------------------------------------------------------------------------
         'U2 Tactical Missile Launcher minimum',
---        'U2 Tactical Missile Launcher maximum',
---        'U2 Tactical Missile Launcher Builder',
+        'U2 Tactical Missile Launcher maximum',
+        'U2 Tactical Missile Launcher Builder',
         'U2 Tactical Missile Defenses Builder',
---        'U3 Strategic Missile Launcher Builder',
---        'U4 Strategic Missile Launcher NukeAI',
+        'U3 Strategic Missile Launcher Builder',
+        'U4 Strategic Missile Launcher NukeAI',
         'U4 Strategic Missile Defense Builders',
         'U4 Strategic Missile Defense Anti-NukeAI',
---        'U4 Artillery Builders',
---        'U4 Artillery Formers',
+        'U4 Artillery Builders',
+        'U4 Artillery Formers', -- also needed for UEF SATELLITE
         -- Build Anti Air near AirFactories
---        'U123 Defense Anti Air Builders',
+        'U123 Defense Anti Air Builders',
+        -- Ground Defense Builder
+        'U123 Defense Anti Ground Builders',
 
         -----------------------------------------------------------------------------
         -- ==== FireBase BUILDER ==== --
         -----------------------------------------------------------------------------
---        'U1 FirebaseBuilders',
+        'U1 FirebaseBuilders',
 
         -----------------------------------------------------------------------------
         -- ==== Sniper Former ==== --
         -----------------------------------------------------------------------------
---        'U3 SACU Teleport Formers',
+        'U3 SACU Teleport Formers',
 
         -- We need this even if we have Omni View to get target informations for experimentals attack.
         -----------------------------------------------------------------------------
@@ -226,8 +230,8 @@ BaseBuilderTemplate {
     FirstBaseFunction = function(aiBrain)
         local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
         if personality == 'uvesorush' or personality == 'uvesorushcheat' then
-            --LOG('### M-FirstBaseFunction '..personality)
-            return 1000, 'uvesorush'
+            LOG('### M-FirstBaseFunction personality: '..personality)
+            return 1000, 'uvesorush' -- AIPersonality
         end
         return -1
     end,

@@ -1,7 +1,12 @@
 
 
--- For AI Patch V5 (patched). Don't check a path if we are in build range
+-- Enhancment for BuildOnMassAI
+UvesoEngineerMoveWithSafePath = EngineerMoveWithSafePath
 function EngineerMoveWithSafePath(aiBrain, unit, destination)
+    -- Only use this with AI-Uveso
+    if not aiBrain.Uveso then
+        return UvesoEngineerMoveWithSafePath(aiBrain, unit, destination)
+    end
     if not destination then
         return false
     end
@@ -10,14 +15,32 @@ function EngineerMoveWithSafePath(aiBrain, unit, destination)
     if VDist2(pos[1], pos[3], destination[1], destination[3]) < 14 then
         return true
     end
-    local result, bestPos = unit:CanPathTo(destination)
+
+    -- first try to find a path with markers. 
+    local result, bestPos
+    local path, reason = AIAttackUtils.EngineerGenerateSafePathTo(aiBrain, 'Amphibious', pos, destination)
+    -- only use CanPathTo for distance closer then 200 and if we can't path with markers
+    if reason ~= 'PathOK' then
+        -- we will crash the game if we use CanPathTo() on all engineer movments on a map without markers. So we don't path at all.
+        if reason == 'NoGraph' then
+            result = true
+        elseif VDist2(pos[1], pos[3], destination[1], destination[3]) < 200 then
+            LOG('* AI-Uveso: EngineerMoveWithSafePath(): executing CanPathTo  because of ('..repr(reason)..') '..VDist2(pos[1], pos[3], destination[1], destination[3]))
+            -- be really sure we don't try a pathing with a destoryed c-object
+            if unit.Dead or unit:BeenDestroyed() or IsDestroyed(unit) then
+                LOG('unit is death before calling CanPathTo()')
+                return false
+            end
+            result, bestPos = unit:CanPathTo(destination)
+        end 
+    end
     local bUsedTransports = false
     -- Increase check to 300 for transports
-    if not result or VDist2Sq(pos[1], pos[3], destination[1], destination[3]) > 300 * 300
+    if (not result and reason ~= 'PathOK') or VDist2Sq(pos[1], pos[3], destination[1], destination[3]) > 200 * 200
     and unit.PlatoonHandle and not EntityCategoryContains(categories.COMMAND, unit) then
         -- If we can't path to our destination, we need, rather than want, transports
-        local needTransports = not result
-        if VDist2Sq(pos[1], pos[3], destination[1], destination[3]) > 300 * 300 then
+        local needTransports = not result and reason ~= 'PathOK'
+        if VDist2Sq(pos[1], pos[3], destination[1], destination[3]) > 200 * 200 then
             needTransports = true
         end
 
@@ -33,9 +56,13 @@ function EngineerMoveWithSafePath(aiBrain, unit, destination)
     end
 
     -- If we're here, we haven't used transports and we can path to the destination
-    if result then
-        local path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, 'Amphibious', pos, destination)
+    if result or reason == 'PathOK' then
+        --LOG('* AI-Uveso: EngineerMoveWithSafePath(): result or reason == PathOK ')
+        if reason ~= 'PathOK' then
+            path, reason = AIAttackUtils.EngineerGenerateSafePathTo(aiBrain, 'Amphibious', pos, destination)
+        end
         if path then
+            --LOG('* AI-Uveso: EngineerMoveWithSafePath(): path 0 true')
             local pathSize = table.getn(path)
             -- Move to way points (but not to destination... leave that for the final command)
             for widx, waypointPath in path do
@@ -50,6 +77,255 @@ function EngineerMoveWithSafePath(aiBrain, unit, destination)
     end
     return false
 end
+
+-- For AI Patch V7. Faster transport drop off
+function UseTransports(units, transports, location, transportPlatoon)
+    local aiBrain
+    for k, v in units do
+        if not v.Dead then
+            aiBrain = v:GetAIBrain()
+            break
+        end
+    end
+
+    if not aiBrain then
+        return false
+    end
+
+    -- Load transports
+    local transportTable = {}
+    local transSlotTable = {}
+    if not transports then
+        return false
+    end
+
+    for num, unit in transports do
+        local id = unit:GetUnitId()
+        if not transSlotTable[id] then
+            transSlotTable[id] = GetNumTransportSlots(unit)
+        end
+        table.insert(transportTable,
+            {
+                Transport = unit,
+                LargeSlots = transSlotTable[id].Large,
+                MediumSlots = transSlotTable[id].Medium,
+                SmallSlots = transSlotTable[id].Small,
+                Units = {}
+            }
+        )
+    end
+
+    local shields = {}
+    local remainingSize3 = {}
+    local remainingSize2 = {}
+    local remainingSize1 = {}
+    local pool = aiBrain:GetPlatoonUniquelyNamed('ArmyPool')
+    for num, unit in units do
+        if not unit.Dead then
+            if unit:IsUnitState('Attached') then
+                aiBrain:AssignUnitsToPlatoon(pool, {unit}, 'Unassigned', 'None')
+            elseif EntityCategoryContains(categories.url0306 + categories.DEFENSE, unit) then
+                table.insert(shields, unit)
+            elseif unit:GetBlueprint().Transport.TransportClass == 3 then
+                table.insert(remainingSize3, unit)
+            elseif unit:GetBlueprint().Transport.TransportClass == 2 then
+                table.insert(remainingSize2, unit)
+            elseif unit:GetBlueprint().Transport.TransportClass == 1 then
+                table.insert(remainingSize1, unit)
+            else
+                table.insert(remainingSize1, unit)
+            end
+        end
+    end
+
+    local needed = GetNumTransports(units)
+    local largeHave = 0
+    for num, data in transportTable do
+        largeHave = largeHave + data.LargeSlots
+    end
+
+    local leftoverUnits = {}
+    local currLeftovers = {}
+    local leftoverShields = {}
+    transportTable, leftoverShields = SortUnitsOnTransports(transportTable, shields, largeHave - needed.Large)
+
+    transportTable, leftoverUnits = SortUnitsOnTransports(transportTable, remainingSize3, -1)
+
+    transportTable, currLeftovers = SortUnitsOnTransports(transportTable, leftoverShields, -1)
+
+    for _, v in currLeftovers do table.insert(leftoverUnits, v) end
+    transportTable, currLeftovers = SortUnitsOnTransports(transportTable, remainingSize2, -1)
+
+    for _, v in currLeftovers do table.insert(leftoverUnits, v) end
+    transportTable, currLeftovers = SortUnitsOnTransports(transportTable, remainingSize1, -1)
+
+    for _, v in currLeftovers do table.insert(leftoverUnits, v) end
+    transportTable, currLeftovers = SortUnitsOnTransports(transportTable, currLeftovers, -1)
+
+    aiBrain:AssignUnitsToPlatoon(pool, currLeftovers, 'Unassigned', 'None')
+    if transportPlatoon then
+        transportPlatoon.UsingTransport = true
+    end
+
+    local monitorUnits = {}
+    for num, data in transportTable do
+        if table.getn(data.Units) > 0 then
+            IssueClearCommands(data.Units)
+            IssueTransportLoad(data.Units, data.Transport)
+            for k, v in data.Units do table.insert(monitorUnits, v) end
+        end
+    end
+
+    local attached = true
+    repeat
+        WaitSeconds(2)
+        local allDead = true
+        local transDead = true
+        for k, v in units do
+            if not v.Dead then
+                allDead = false
+                break
+            end
+        end
+        for k, v in transports do
+            if not v.Dead then
+                transDead = false
+                break
+            end
+        end
+        if allDead or transDead then return false end
+        attached = true
+        for k, v in monitorUnits do
+            if not v.Dead and not v:IsIdleState() then
+                attached = false
+                break
+            end
+        end
+    until attached
+
+    -- Any units that aren't transports and aren't attached send back to pool
+    for k, unit in units do
+        if not unit.Dead and not EntityCategoryContains(categories.TRANSPORTATION, unit) then
+            if not unit:IsUnitState('Attached') then
+                aiBrain:AssignUnitsToPlatoon(pool, {unit}, 'Unassigned', 'None')
+            end
+        elseif not unit.Dead and EntityCategoryContains(categories.TRANSPORTATION, unit) and table.getn(unit:GetCargo()) < 1 then
+            ReturnTransportsToPool({unit}, true)
+            table.remove(transports, k)
+        end
+    end
+
+    -- If some transports have no units return to pool
+    for k, t in transports do
+        if not t.Dead and table.getn(t:GetCargo()) < 1 then
+            aiBrain:AssignUnitsToPlatoon('ArmyPool', {t}, 'Scout', 'None')
+            table.remove(transports, k)
+        end
+    end
+
+    if table.getn(transports) ~= 0 then
+        -- If no location then we have loaded transports then return true
+        if location then
+            -- Adding Surface Height, so the transporter get not confused, because the target is under the map (reduces unload time)
+            location = {location[1], GetSurfaceHeight(location[1],location[3]), location[3]}
+            local safePath = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, 'Air', transports[1]:GetPosition(), location, 200)
+            if safePath then
+                local LastPos
+                for _, p in safePath do
+                    IssueMove(transports, p)
+                    LastPos = p
+                end
+                IssueMove(transports, location)
+                IssueTransportUnload(transports, location)
+            else
+                IssueMove(transports, location)
+                IssueTransportUnload(transports, location)
+            end
+        else
+            return true
+        end
+    else
+        -- If no transports return false
+        return false
+    end
+
+    local attached = true
+    while attached do
+        WaitSeconds(2)
+        local allDead = true
+        for _, v in transports do
+            if not v.Dead then
+                allDead = false
+                break
+            end
+        end
+
+        if allDead then
+            return false
+        end
+
+        attached = false
+        for num, unit in units do
+            if not unit.Dead and unit:IsUnitState('Attached') then
+                attached = true
+                break
+            end
+        end
+    end
+
+    if transportPlatoon then
+        transportPlatoon.UsingTransport = false
+    end
+    ReturnTransportsToPool(transports, true)
+
+    return true
+end
+
+-- For AI Patch V7. fixed return value in case there is reclaim
+function EngineerTryReclaimCaptureArea(aiBrain, eng, pos)
+    if not pos then
+        return false
+    end
+    local Reclaiming = false
+    -- Check if enemy units are at location
+    local checkUnits = aiBrain:GetUnitsAroundPoint( (categories.STRUCTURE + categories.MOBILE) - categories.AIR, pos, 10, 'Enemy')
+    -- reclaim units near our building place.
+    if checkUnits and table.getn(checkUnits) > 0 then
+        for num, unit in checkUnits do
+            if unit.Dead or unit:BeenDestroyed() then
+                continue
+            end
+            if not IsEnemy( aiBrain:GetArmyIndex(), unit:GetAIBrain():GetArmyIndex() ) then
+                continue
+            end
+            if unit:IsCapturable() then 
+                -- if we can capture the unit/building then do so
+                unit.CaptureInProgress = true
+                IssueCapture({eng}, unit)
+            else
+                -- if we can't capture then reclaim
+                unit.ReclaimInProgress = true
+                IssueReclaim({eng}, unit)
+            end
+        end
+        Reclaiming = true
+    end
+    -- reclaim rocks etc or we can't build mexes or hydros
+    local Reclaimables = GetReclaimablesInRect(Rect(pos[1], pos[3], pos[1], pos[3]))
+    if Reclaimables and table.getn( Reclaimables ) > 0 then
+        for k,v in Reclaimables do
+            if v.MaxMassReclaim and v.MaxMassReclaim > 0 or v.MaxEnergyReclaim and v.MaxEnergyReclaim > 0 then
+                IssueReclaim({eng}, v)
+                Reclaiming = true
+            end
+        end
+    end
+    return Reclaiming
+end
+
+
+
+
 
 -- Helper function for targeting
 function ValidateLayer(UnitPos,MovementLayer)

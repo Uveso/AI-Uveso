@@ -1,3 +1,14 @@
+-- squadTypes:
+-- 'Unassigned'
+-- 'Attack'
+-- 'Scout'
+-- 'Support'
+-- 'Guard'
+-- 'Artillery'
+
+-- Formations:
+-- 'AttackFormation',
+-- 'GrowthFormation',
 
 -- ==== Global Form platoons ==== --
 
@@ -47,7 +58,14 @@ PlatoonTemplate {
     Name = 'LandAttackHuntUveso 6 8',
     Plan = 'LandAttackAIUveso',
     GlobalSquads = {
-        { categories.MOBILE * categories.LAND - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND - categories.SUBCOMMANDER, 6, 8, 'Attack', 'none' }
+        { categories.MOBILE * categories.LAND - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND - categories.SUBCOMMANDER, 6, 8, 'Attack', 'none' },
+    }
+}
+PlatoonTemplate {
+    Name = 'LandAttackHuntUveso 15 30',
+    Plan = 'LandAttackAIUveso',
+    GlobalSquads = {
+        { categories.MOBILE * categories.LAND - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND - categories.SUBCOMMANDER, 15, 30, 'Attack', 'none' },
     }
 }
 PlatoonTemplate {
@@ -148,6 +166,13 @@ PlatoonTemplate {
         { categories.MOBILE * categories.LAND - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND - categories.SUBCOMMANDER, 1, 100, 'Attack', 'none' },
     }
 }
+PlatoonTemplate {
+    Name = 'LandAttackInterceptUveso 6 8',
+    Plan = 'InterceptorAIUveso',
+    GlobalSquads = {
+        { categories.MOBILE * categories.LAND - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND - categories.SUBCOMMANDER, 6, 8, 'Attack', 'none' },
+    }
+}
 
 PlatoonTemplate {
     Name = 'U1-ArtyAttack 1 30', 
@@ -169,21 +194,21 @@ PlatoonTemplate {
     Name = 'T4 Interceptor Land 1 1',
     Plan = 'InterceptorAIUveso',
     GlobalSquads = {
-        { categories.EXPERIMENTAL * categories.LAND * categories.MOBILE - categories.INSIGNIFICANTUNIT, 1, 1, 'attack', 'none' },
+        { categories.EXPERIMENTAL * categories.LAND * categories.MOBILE - categories.INSIGNIFICANTUNIT, 1, 1, 'Attack', 'none' },
     },
 }
 PlatoonTemplate {
     Name = 'T4ExperimentalLandUveso 1 1',
     Plan = 'LandAttackAIUveso',
     GlobalSquads = {
-        { categories.EXPERIMENTAL * categories.LAND * categories.MOBILE - categories.INSIGNIFICANTUNIT, 1, 1, 'attack', 'none' },
+        { categories.EXPERIMENTAL * categories.LAND * categories.MOBILE - categories.INSIGNIFICANTUNIT, 1, 1, 'Attack', 'none' },
     },
 }
 PlatoonTemplate {
     Name = 'T4ExperimentalLandGroupUveso 2 2',
     Plan = 'LandAttackAIUveso',
     GlobalSquads = {
-        { categories.EXPERIMENTAL * categories.LAND * categories.MOBILE - categories.INSIGNIFICANTUNIT, 2, 2, 'attack', 'none' },
+        { categories.EXPERIMENTAL * categories.LAND * categories.MOBILE - categories.INSIGNIFICANTUNIT, 2, 2, 'Attack', 'none' },
     },
 }
 
@@ -191,7 +216,7 @@ PlatoonTemplate {
     Name = 'T4ExperimentalLandGroupUveso 3 5',
     Plan = 'LandAttackAIUveso',
     GlobalSquads = {
-        { categories.EXPERIMENTAL * categories.LAND * categories.MOBILE - categories.INSIGNIFICANTUNIT, 3, 5, 'attack', 'none' },
+        { categories.EXPERIMENTAL * categories.LAND * categories.MOBILE - categories.INSIGNIFICANTUNIT, 3, 5, 'Attack', 'none' },
     },
 }
 -- Assist experimentals
@@ -199,8 +224,8 @@ PlatoonTemplate {
     Name = 'T3ExperimentalAAGuard',
     Plan = 'GuardUnit',
     GlobalSquads = {
-        { categories.MOBILE * categories.LAND * (categories.TECH3 + categories.TECH2) * categories.ANTIAIR - categories.SCOUT - categories.ENGINEER, 4, 10, 'guard', 'None' },
-        { categories.MOBILE * categories.LAND * categories.TECH1 * categories.ANTIAIR - categories.SCOUT - categories.ENGINEER, 10, 10, 'guard', 'None' }
+        { categories.MOBILE * categories.LAND * (categories.TECH3 + categories.TECH2) * categories.ANTIAIR - categories.SCOUT - categories.ENGINEER, 4, 10, 'Attack', 'None' },
+        { categories.MOBILE * categories.LAND * categories.TECH1 * categories.ANTIAIR - categories.SCOUT - categories.ENGINEER, 10, 10, 'Guard', 'None' }
     },
 }
 -- Unit cap Trasher
@@ -216,19 +241,40 @@ PlatoonTemplate {
     Name = 'U1 LandDFBot',
     FactionSquads = {
         UEF = {
-            { 'uel0106', 1, 1, 'attack', 'None' }
+            { 'uel0106', 1, 1, 'Attack', 'None' }
         },
         Aeon = {
-            { 'ual0106', 1, 1, 'attack', 'None' }
+            { 'ual0106', 1, 1, 'Attack', 'None' }
         },
         Cybran = {
-            { 'url0106', 1, 1, 'attack', 'None' }
+            { 'url0106', 1, 1, 'Attack', 'None' }
         },
         Seraphim = {
-            { 'xsl0201', 1, 1, 'attack', 'none' }
+            { 'xsl0201', 1, 1, 'Attack', 'none' }
         },
         Nomads = {
-            { 'xnl0106', 1, 1, 'attack', 'none' }
+            { 'xnl0106', 1, 1, 'Attack', 'none' }
+        },
+    }
+}
+
+PlatoonTemplate {
+    Name = 'U3 SACU Engineer preset',
+    FactionSquads = {
+        UEF = {
+            { 'uel0301_engineer', 1, 1, 'Attack', 'None' }
+        },
+        Aeon = {
+            { 'ual0301_engineer', 1, 1, 'Attack', 'None' }
+        },
+        Cybran = {
+            { 'url0301_engineer', 1, 1, 'Attack', 'None' }
+        },
+        Seraphim = {
+            { 'xsl0301_engineer', 1, 1, 'Attack', 'none' }
+        },
+        Nomads = {
+            { 'xnl0301_engineer', 1, 1, 'Attack', 'none' }
         },
     }
 }

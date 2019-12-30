@@ -14,6 +14,7 @@ BuilderGroup {
         BuilderName = 'U4 LandExperimental3',
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 150,
+        DelayEqualBuildPlattons = {'MobileExperimental', 10},
         InstanceCount = 3,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -24,6 +25,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconIncome', { 7.0, 600.0 }},                    -- Base income
             { EBC, 'GreaterThanEconStorageRatio', { 0.95, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'CheckBuildPlattonDelay', { 'MobileExperimental' }},
             { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Any',
@@ -44,6 +46,7 @@ BuilderGroup {
         BuilderName = 'U4 LandExperimental2',
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 150,
+        DelayEqualBuildPlattons = {'MobileExperimental', 10},
         InstanceCount = 3,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -54,6 +57,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconIncome', { 7.0, 600.0 }},                    -- Base income
             { EBC, 'GreaterThanEconStorageRatio', { 0.95, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'CheckBuildPlattonDelay', { 'MobileExperimental' }},
             { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Any',
@@ -74,6 +78,7 @@ BuilderGroup {
         BuilderName = 'U4 LandExperimental1',
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 150,
+        DelayEqualBuildPlattons = {'MobileExperimental', 10},
         InstanceCount = 6,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -85,6 +90,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconIncome', { 7.0, 600.0 }},                    -- Base income
             { EBC, 'GreaterThanEconStorageRatio', { 0.95, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'CheckBuildPlattonDelay', { 'MobileExperimental' }},
             { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Any',
@@ -105,6 +111,7 @@ BuilderGroup {
         BuilderName = 'U4 LandExp1 Minimum',
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 160,
+        DelayEqualBuildPlattons = {'MobileExperimental', 10},
         InstanceCount = 1,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -116,6 +123,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconIncome', { 7.0, 600.0 }},                    -- Base income
             { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'CheckBuildPlattonDelay', { 'MobileExperimental' }},
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -135,6 +143,7 @@ BuilderGroup {
         BuilderName = 'U4 LandExp1 1st',
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 160,
+        DelayEqualBuildPlattons = {'MobileExperimental', 10},
         InstanceCount = 1,
         BuilderConditions = {
             { UCBC, 'GreaterThanGameTimeSeconds', { 60*20 } },
@@ -146,6 +155,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconIncome', { 7.0, 100.0 }},                    -- Base income
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- Don't build it if...
+            { UCBC, 'CheckBuildPlattonDelay', { 'MobileExperimental' }},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.MOBILE * categories.EXPERIMENTAL }},
         },
         BuilderType = 'Any',
@@ -185,7 +195,7 @@ BuilderGroup {
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100000,                                       -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.MOBILE - categories.SCOUT,        -- Only find targets matching these categories.
+            TargetSearchCategory = categories.ALLUNITS - categories.AIR,        -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.EXPERIMENTAL,
                 categories.MOBILE,
@@ -250,7 +260,7 @@ BuilderGroup {
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100000,                                       -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            TargetSearchCategory = categories.ALLUNITS,                                  -- Only find targets matching these categories.
+            TargetSearchCategory = categories.ALLUNITS - categories.AIR,        -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
                 categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
@@ -282,7 +292,7 @@ BuilderGroup {
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100000,                                       -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            TargetSearchCategory = categories.ALLUNITS,                                  -- Only find targets matching these categories.
+            TargetSearchCategory = categories.ALLUNITS - categories.AIR,        -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
                 categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
@@ -315,7 +325,7 @@ BuilderGroup {
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100000,                                       -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            TargetSearchCategory = categories.ALLUNITS,                                  -- Only find targets matching these categories.
+            TargetSearchCategory = categories.ALLUNITS - categories.AIR,        -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
                 categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,

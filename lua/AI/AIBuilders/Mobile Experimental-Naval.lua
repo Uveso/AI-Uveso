@@ -13,6 +13,7 @@ BuilderGroup {
         BuilderName = 'U4 NavalExp1 Minimum',
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 160,
+        DelayEqualBuildPlattons = {'MobileExperimental', 10},
         InstanceCount = 1,
         BuilderConditions = {
             { UCBC, 'GreaterThanGameTimeSeconds', { 60*20 } },
@@ -23,6 +24,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconIncome', { 7.0, 600.0 }},                    -- Base income
             { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'CheckBuildPlattonDelay', { 'MobileExperimental' }},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.MOBILE * categories.EXPERIMENTAL }},
         },
         BuilderType = 'Any',
@@ -42,6 +44,7 @@ BuilderGroup {
         BuilderName = 'U4 SeaExperimental1',
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 150,
+        DelayEqualBuildPlattons = {'MobileExperimental', 10},
         InstanceCount = 3,
         BuilderConditions = {
             -- When do we want to build this ?
@@ -54,6 +57,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconIncome', { 7.0, 600.0 }},                    -- Base income
             { EBC, 'GreaterThanEconStorageRatio', { 0.95, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
+            { UCBC, 'CheckBuildPlattonDelay', { 'MobileExperimental' }},
             { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Any',

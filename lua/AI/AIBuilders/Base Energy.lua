@@ -58,7 +58,7 @@ BuilderGroup {
             -- Do we need additional conditions to build it ?
             { UCBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconIncome',  { 0.5, 0.0}}, -- Absolut Base income
+            { EBC, 'GreaterThanEconIncome',  { 0.2, 0.0}}, -- Absolut Base income
             -- Don't build it if...
             -- Respect UnitCap
         },
@@ -416,7 +416,7 @@ BuilderGroup {
         InstanceCount = 2,
         BuilderConditions = {
             -- When do we want to build this ?
-            { EBC, 'LessThanEconStorageRatio', { 2.00, 0.95}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'LessThanEconStorageRatio', { 2.00, 0.80}}, -- Ratio from 0 to 1. (1=100%)
             -- Do we need additional conditions to build it ?
             { UCBC, 'HasNotParagon', {} },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 2, categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3 }},

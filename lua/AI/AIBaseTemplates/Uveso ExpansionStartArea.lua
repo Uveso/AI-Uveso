@@ -55,7 +55,6 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         'U123 Land Builders Panic',
         'U123 Land Builders ADAPTIVE',
-        'U123 Land Builders Ratio',
 
         -----------------------------------------------------------------------------
         -- ==== Land Units FORMER==== --

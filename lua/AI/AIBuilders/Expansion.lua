@@ -15,7 +15,7 @@ BuilderGroup {
         InstanceCount = 4,                                                      -- Number of plattons that will be formed with this template.
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'ExpansionBaseCheck', { } },
+            { UCBC, 'ExpansionBaseCheck', { } }, -- related to ScenarioInfo.Options.LandExpansionsAllowed
             -- Do we need additional conditions to build it ?
             { UCBC, 'StartLocationNeedsEngineer', { 'LocationType', 1000, -1000, 100, 1, 'StructuresNotMex' } },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.LAND * categories.FACTORY }},
@@ -58,7 +58,7 @@ BuilderGroup {
         InstanceCount = 1,                                                      -- Number of plattons that will be formed with this template.
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'ExpansionBaseCheck', { } },
+            { UCBC, 'ExpansionBaseCheck', { } }, -- related to ScenarioInfo.Options.LandExpansionsAllowed
             -- Do we need additional conditions to build it ?
             { UCBC, 'StartLocationNeedsEngineer', { 'LocationType', 1000, -1000, 100, 1, 'StructuresNotMex' } },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.LAND * categories.FACTORY }},
@@ -101,7 +101,7 @@ BuilderGroup {
         InstanceCount = 4,                                                      -- Number of plattons that will be formed with this template.
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'ExpansionBaseCheck', { } },
+            { UCBC, 'ExpansionBaseCheck', { } }, -- related to ScenarioInfo.Options.LandExpansionsAllowed
             -- Do we need additional conditions to build it ?
             { UCBC, 'ExpansionAreaNeedsEngineer', { 'LocationType', 1000, -1000, 100, 1, 'StructuresNotMex' } },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.LAND * categories.FACTORY }},
@@ -144,7 +144,7 @@ BuilderGroup {
         InstanceCount = 1,                                                      -- Number of plattons that will be formed with this template.
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'ExpansionBaseCheck', { } },
+            { UCBC, 'ExpansionBaseCheck', { } }, -- related to ScenarioInfo.Options.LandExpansionsAllowed
             -- Do we need additional conditions to build it ?
             { UCBC, 'ExpansionAreaNeedsEngineer', { 'LocationType', 1000, -1000, 100, 1, 'StructuresNotMex' } },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.LAND * categories.FACTORY }},
@@ -187,7 +187,7 @@ BuilderGroup {
         InstanceCount = 2,                                                      -- Number of plattons that will be formed with this template.
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'NavalBaseCheck', { } },
+            { UCBC, 'NavalBaseCheck', { } }, -- related to ScenarioInfo.Options.NavalExpansionsAllowed
             -- Do we need additional conditions to build it ?
             { UCBC, 'NavalAreaNeedsEngineer', { 'LocationType', 250, -1000, 100, 1, 'AntiSurface' } },
             -- Have we the eco to build it ?
@@ -225,7 +225,7 @@ BuilderGroup {
         InstanceCount = 2,                                                      -- Number of plattons that will be formed with this template.
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'NavalBaseCheck', { } },
+            { UCBC, 'NavalBaseCheck', { } }, -- related to ScenarioInfo.Options.NavalExpansionsAllowed
             -- Do we need additional conditions to build it ?
             { UCBC, 'NavalAreaNeedsEngineer', { 'LocationType', 1000, -1000, 100, 1, 'AntiSurface' } },
             -- Have we the eco to build it ?
@@ -263,7 +263,7 @@ BuilderGroup {
         InstanceCount = 2,                                                      -- Number of plattons that will be formed with this template.
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'NavalBaseCheck', { } },
+            { UCBC, 'NavalBaseCheck', { } }, -- related to ScenarioInfo.Options.NavalExpansionsAllowed
             -- Do we need additional conditions to build it ?
             { UCBC, 'NavalAreaNeedsEngineer', { 'LocationType', 1000, -1000, 100, 1, 'AntiSurface' } },
             -- Have we the eco to build it ?
@@ -304,7 +304,7 @@ BuilderGroup {
         BuilderConditions = {
             -- When do we want to build this ?
             { MIBC, 'CanPathToCurrentEnemy', { false } },
-            { UCBC, 'NavalBaseCheck', { } },
+            { UCBC, 'NavalBaseCheck', { } }, -- related to ScenarioInfo.Options.NavalExpansionsAllowed
             -- Do we need additional conditions to build it ?
             { UCBC, 'NavalAreaNeedsEngineer', { 'LocationType', 1000, -1000, 100, 1, 'AntiSurface' } },
             -- Have we the eco to build it ?

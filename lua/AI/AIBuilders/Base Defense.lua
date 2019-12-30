@@ -40,7 +40,7 @@ BuilderGroup {
                 AdjacencyCategory = (categories.ENERGYPRODUCTION * categories.TECH3) + (categories.ENERGYPRODUCTION * categories.EXPERIMENTAL) + (categories.STRUCTURE * categories.FACTORY),
                 AvoidCategory = categories.STRUCTURE * categories.SHIELD,
                 maxUnits = 1,
-                maxRadius = 25,
+                maxRadius = 35,
                 LocationType = 'LocationType',
                 BuildStructures = {
                     'T2ShieldDefense',
@@ -76,7 +76,7 @@ BuilderGroup {
                 AdjacencyCategory = (categories.ENERGYPRODUCTION * categories.TECH3) + (categories.ENERGYPRODUCTION * categories.EXPERIMENTAL) + (categories.STRUCTURE * categories.FACTORY),
                 AvoidCategory = categories.STRUCTURE * categories.SHIELD,
                 maxUnits = 1,
-                maxRadius = 25,
+                maxRadius = 35,
                 LocationType = 'LocationType',
                 BuildStructures = {
                     'T3ShieldDefense',
@@ -776,13 +776,18 @@ BuilderGroup {
         BuilderType = 'Any',
         BuilderConditions = {
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 6, categories.STRUCTURE * categories.ARTILLERY * categories.TECH2 }},
-            { EBC, 'GreaterThanEconStorageRatio', { 0.80, 1.00 }}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
         },
         BuilderData = {
             NumAssistees = 2,
             Construction = {
+                BuildClose = false,
+                AdjacencyCategory = (categories.ENERGYPRODUCTION * categories.EXPERIMENTAL) + (categories.STRUCTURE * categories.FACTORY),
+                AvoidCategory = categories.STRUCTURE * categories.ARTILLERY * categories.TECH2,
+                maxUnits = 1,
+                maxRadius = 35,
                 BuildStructures = {
                     'T2Artillery',
                 },
@@ -797,13 +802,13 @@ BuilderGroup {
         DelayEqualBuildPlattons = {'Artillery', 20},
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.EXPERIMENTAL}},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.EXPERIMENTAL}},
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.90, 1.00 }}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             { EBC, 'GreaterThanEconTrend', { 2.0, 300.0 } }, -- relative income
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 2, categories.STRUCTURE * categories.ARTILLERY * categories.TECH3 } },
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ARTILLERY * categories.TECH3 } },
             { UCBC, 'CheckBuildPlattonDelay', { 'Artillery' }},
             -- Respect UnitCap
         },
@@ -825,13 +830,13 @@ BuilderGroup {
         DelayEqualBuildPlattons = {'Artillery', 20},
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 2, categories.EXPERIMENTAL}},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.EXPERIMENTAL}},
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.90, 1.00 }}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             { EBC, 'GreaterThanEconTrend', { 2.0, 300.0 } }, -- relative income
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 2, categories.STRUCTURE * categories.ARTILLERY * categories.TECH3 } },
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ARTILLERY * categories.TECH3 } },
             { UCBC, 'CheckBuildPlattonDelay', { 'Artillery' }},
             -- Respect UnitCap
         },
@@ -853,13 +858,14 @@ BuilderGroup {
         DelayEqualBuildPlattons = {'Artillery', 20},
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 2, categories.EXPERIMENTAL}},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.EXPERIMENTAL}},
             -- Do we need additional conditions to build it ?
+            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 1, categories.STRUCTURE * categories.ARTILLERY * categories.EXPERIMENTAL }},
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.80, 0.95 }}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             { EBC, 'GreaterThanEconTrend', { 2.0, 300.0 } }, -- relative income
             -- Don't build it if...
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 2, categories.STRUCTURE * categories.ARTILLERY * categories.EXPERIMENTAL } },
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ARTILLERY * categories.EXPERIMENTAL } },
             { UCBC, 'CheckBuildPlattonDelay', { 'Artillery' }},
             -- Respect UnitCap
         },
@@ -916,7 +922,7 @@ BuilderGroup {
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH2 }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.45, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.35, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 5, categories.STRUCTURE * categories.DEFENSE - categories.ANTIAIR }},
             -- Respect UnitCap
@@ -927,6 +933,10 @@ BuilderGroup {
             NumAssistees = 1,
             Construction = {
                 BuildClose = false,
+                AdjacencyCategory = (categories.ENERGYPRODUCTION * categories.EXPERIMENTAL) + (categories.STRUCTURE * categories.FACTORY),
+                AvoidCategory = categories.STRUCTURE * categories.DEFENSE - categories.ANTIAIR,
+                maxUnits = 1,
+                maxRadius = 35,
                 BuildStructures = {
                     'T1GroundDefense',
                 },
@@ -938,13 +948,14 @@ BuilderGroup {
         BuilderName = 'U2 Ground Defense always',
         PlatoonTemplate = 'T2EngineerBuilder',
         Priority = 875,
+        InstanceCount = 2,
         BuilderConditions = {
             -- When do we want to build this ?
             -- Do we need additional conditions to build it ?
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH2 }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.45, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.35, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 20, categories.STRUCTURE * categories.DEFENSE - categories.ANTIAIR }},
             -- Respect UnitCap
@@ -955,6 +966,10 @@ BuilderGroup {
             NumAssistees = 1,
             Construction = {
                 BuildClose = false,
+                AdjacencyCategory = (categories.ENERGYPRODUCTION * categories.EXPERIMENTAL) + (categories.STRUCTURE * categories.FACTORY),
+                AvoidCategory = categories.STRUCTURE * categories.DEFENSE - categories.ANTIAIR,
+                maxUnits = 1,
+                maxRadius = 10,
                 BuildStructures = {
                     'T2GroundDefense',
                 },
@@ -966,7 +981,7 @@ BuilderGroup {
         BuilderName = 'U3 Ground Defense always',
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 875,
-        InstanceCount = 3,
+        InstanceCount = 2,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.LAND * categories.EXPERIMENTAL } },
@@ -975,7 +990,7 @@ BuilderGroup {
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH3 }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.45, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.35, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 30, categories.STRUCTURE * categories.DEFENSE - categories.ANTIAIR }},
             -- Respect UnitCap
@@ -986,6 +1001,10 @@ BuilderGroup {
             NumAssistees = 1,
             Construction = {
                 BuildClose = false,
+                AdjacencyCategory = (categories.ENERGYPRODUCTION * categories.EXPERIMENTAL) + (categories.STRUCTURE * categories.FACTORY),
+                AvoidCategory = categories.STRUCTURE * categories.DEFENSE - categories.ANTIAIR,
+                maxUnits = 1,
+                maxRadius = 35,
                 BuildStructures = {
                     'T3GroundDefense',
                 },
@@ -997,7 +1016,7 @@ BuilderGroup {
         BuilderName = 'U3 Ground Defense Paragon',
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 875,
-        InstanceCount = 10,
+        InstanceCount = 6,
         BuilderConditions = {
             -- When do we want to build this ?
             { UCBC, 'HasParagon', {} },
@@ -1016,6 +1035,10 @@ BuilderGroup {
             NumAssistees = 1,
             Construction = {
                 BuildClose = false,
+                AdjacencyCategory = (categories.ENERGYPRODUCTION * categories.EXPERIMENTAL) + (categories.STRUCTURE * categories.FACTORY),
+                AvoidCategory = categories.STRUCTURE * categories.DEFENSE - categories.ANTIAIR,
+                maxUnits = 1,
+                maxRadius = 35,
                 BuildStructures = {
                     'T3GroundDefense',
                 },

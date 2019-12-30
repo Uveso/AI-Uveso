@@ -36,6 +36,7 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- Build MassExtractors / Creators
         'U1 MassBuilders',                           -- Priority = 1100
+        'U1 Mass Capture',
         -- Upgrade MassExtractors from Tech 1 to 2 AND from Tech 2 to 3
         'U123 ExtractorUpgrades',                      -- Priority = 1100
         -- Build Mass Storage (Adjacency)
@@ -205,7 +206,7 @@ BaseBuilderTemplate {
         local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
         if personality == 'uvesoexp' or personality == 'uvesoexpcheat' then
             --LOG('### M-FirstBaseFunction '..personality)
-            return 1000, 'uvesoexp'
+            return 1000, 'uvesoexp' -- AIPersonality
         end
         return -1
     end,

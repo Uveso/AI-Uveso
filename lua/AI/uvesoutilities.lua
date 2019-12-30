@@ -53,7 +53,7 @@ function ExtractorPause(self, aiBrain, MassExtractorUnitList, ratio, techLevel)
     --LOG('* ExtractorPause: Idle= '..UpgradingBuildingNum..'   Upgrading= '..UpgradingBuildingNum..'   Paused= '..PausedUpgradingBuildingNum..'   Disabled= '..DisabledBuildingNum..'   techLevel= '..techLevel)
     --Check for energy stall
     --if aiBrain:GetEconomyStoredRatio('ENERGY') < 0.50 and aiBrain:GetEconomyStoredRatio('MASS') > aiBrain:GetEconomyStoredRatio('ENERGY') then
-    if aiBrain:GetEconomyStoredRatio('ENERGY') < 0.25 or aiBrain:GetEconomyStoredRatio('MASS') > aiBrain:GetEconomyStoredRatio('ENERGY') then
+    if aiBrain:GetEconomyStoredRatio('ENERGY') < 0.25 or aiBrain:GetEconomyStoredRatio('MASS') -0.1 > aiBrain:GetEconomyStoredRatio('ENERGY') then
         -- All buildings that are doing nothing
         if IdleBuilding then
             if IdleBuildingNum <= 1 then

@@ -39,6 +39,7 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- Build MassExtractors / Creators
         'U1 MassBuilders',                           -- Priority = 1100
+        'U1 Mass Capture',
         -- Upgrade MassExtractors from Tech 1 to 2 AND from Tech 2 to 3
 --        'U123 ExtractorUpgrades',                      -- Priority = 1100
         -- Build Mass Storage (Adjacency)
@@ -68,7 +69,6 @@ BaseBuilderTemplate {
         -- Build Land Units
         'U123 Land Builders Panic',
         'U123 Land Builders ADAPTIVE',
-        'U123 Land Builders Ratio',
 
         -----------------------------------------------------------------------------
         -- ==== Land Units FORMER==== --
@@ -152,7 +152,7 @@ BaseBuilderTemplate {
         'U4 Strategic Missile Defense Builders',
         'U4 Strategic Missile Defense Anti-NukeAI',
 --        'U4 Artillery Builders',
---        'U4 Artillery Formers',
+        'U4 Artillery Formers', -- also needed for UEF SATELLITE
         -- Build Anti Air near AirFactories
         'U123 Defense Anti Air Builders',
 
@@ -222,7 +222,7 @@ BaseBuilderTemplate {
         local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
         if personality == 'uvesoeasy' or personality == 'uvesoeasycheat' then
             --LOG('### M-FirstBaseFunction '..personality)
-            return 1000, 'uvesoeasy'
+            return 1000, 'uvesoeasy' -- AIPersonality
         end
         return -1
     end,

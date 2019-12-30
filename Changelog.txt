@@ -1,4 +1,18 @@
 *************************************************************************************************************************************
+v74 (30.Dec.2019)
+
+- New: Added a function to create a threatgrid with waypoint marker.
+- New: Added option for debug the new threat system.
+- Opt: AI program threats are now started sequentially to avoid lag.
+- Opt: Factories will be placed with more space between each factory.
+- Opt: Transporters will unload their cargo faster.
+- Opt: Optimized function to get locations for the AIbuildmanager.
+- Opt: ACU upgrade needs now 90% mass storage for AI Rush
+- Opt: Unit Platoons will change formations on moving and attacking.
+- Opt: Changed land and air attack platoons for earlier attacks and mass hunt.
+- Fix: Nuke launchers will now fire a missile in case the launcher is full.
+
+*************************************************************************************************************************************
 v73 (03.Sep.2019)
 
 - New: Added function for the buildconditionmonitor to balance unit count on different layers.

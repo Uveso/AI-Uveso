@@ -1,7 +1,12 @@
 
--- For AI Patch V5 (patched). validation of building tempaltes, better search for build locations. support for modded units.
+-- Replace factory buildtemplate to find a better buildplace not too close to the center of the base
 local AntiSpamList = {}
+UvesoAIExecuteBuildStructure = AIExecuteBuildStructure
 function AIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder, relative, buildingTemplate, baseTemplate, reference, NearMarkerType)
+    -- Only use this with AI-Uveso
+    if not aiBrain.Uveso then
+        return UvesoAIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder, relative, buildingTemplate, baseTemplate, reference, NearMarkerType)
+    end
     local factionIndex = aiBrain:GetFactionIndex()
     local whatToBuild = aiBrain:DecideWhatToBuild(builder, buildingType, buildingTemplate)
     -- If the c-engine can't decide what to build, then search the build template manually.
@@ -103,22 +108,72 @@ function AIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder,
     local relativeTo
     if closeToBuilder then
         relativeTo = builder:GetPosition()
-    elseif builder.BuilderManagerData and builder.BuilderManagerData.EngineerManager then
-        relativeTo = builder.BuilderManagerData.EngineerManager:GetLocationCoords()
+        --LOG('*AIExecuteBuildStructure: Searching for Buildplace near Engineer'..repr(relativeTo))
     else
-        local startPosX, startPosZ = aiBrain:GetArmyStartPos()
-        relativeTo = {startPosX, 0, startPosZ}
+        if builder.BuilderManagerData and builder.BuilderManagerData.EngineerManager then
+            relativeTo = builder.BuilderManagerData.EngineerManager:GetLocationCoords()
+            --LOG('*AIExecuteBuildStructure: Searching for Buildplace near BuilderManager ')
+        else
+            local startPosX, startPosZ = aiBrain:GetArmyStartPos()
+            relativeTo = {startPosX, 0, startPosZ}
+            --LOG('*AIExecuteBuildStructure: Searching for Buildplace near ArmyStartPos ')
+        end
+        local BBC = __blueprints[whatToBuild].CategoriesHash
+        if BBC.DEFENSE or BBC.NUKE or BBC.EXPERIMENTAL then
+            local X2, Z2 = aiBrain:GetCurrentEnemy():GetArmyStartPos()
+            local elevationX = (X2 - relativeTo[1] / Z2 - relativeTo[3])
+            local elevationZ = (Z2 - relativeTo[3] / X2 - relativeTo[1])
+            --LOG(aiBrain.Nickname..'  Our base: ('..relativeTo[1]..'/'..relativeTo[3]..') - Enemy base: ('..X2..'/'..Z2..')  -  buildingType: '..repr(buildingType))
+            local Hypotenuse = VDist2(relativeTo[1], relativeTo[3], X2, Z2)
+            local HypotenuseScale = 100 / Hypotenuse * 50
+            local aLegScale = (X2 - relativeTo[1]) / 100 * HypotenuseScale
+            local bLegScale = (Z2 - relativeTo[3]) / 100 * HypotenuseScale
+            if BBC.TECH3 then
+                relativeTo[1] = relativeTo[1] + aLegScale
+                relativeTo[3] = relativeTo[3] + bLegScale
+            elseif BBC.TECH1 then
+                relativeTo[1] = relativeTo[1] - aLegScale
+                relativeTo[3] = relativeTo[3] - bLegScale
+            end
+            local playablearea
+            if  ScenarioInfo.MapData.PlayableRect then
+                playablearea = ScenarioInfo.MapData.PlayableRect
+            else
+                playablearea = {0, 0, ScenarioInfo.size[1], ScenarioInfo.size[2]}
+            end
+            if relativeTo[1] < playablearea[1] then
+                relativeTo[1] = 8
+            end
+            if relativeTo[1] > playablearea[3] then
+                relativeTo[1] = playablearea[3] - 8
+            end
+            if relativeTo[3] < playablearea[2] then
+                relativeTo[3] = 8
+            end
+            if relativeTo[3] > playablearea[4] then
+                relativeTo[3] = playablearea[4] - 8
+            end
+        end
     end
     local location = false
+    local buildingTypeReplace
+    local whatToBuildReplace
+
+    -- if we wnat to build a factory use the Seraphim Awassa for a bigger build place
+    if buildingType == 'T1LandFactory' or buildingType == 'T1AirFactory' then
+        buildingTypeReplace = 'T4AirExperimental1'
+        whatToBuildReplace = 'xsa0402'
+    end
+
     if IsResource(buildingType) then
-        location = aiBrain:FindPlaceToBuild(buildingType, whatToBuild, baseTemplate, relative, closeToBuilder, 'Enemy', relativeTo[1], relativeTo[3], 5)
+        location = aiBrain:FindPlaceToBuild(buildingType, whatToBuildReplace or whatToBuild, baseTemplate, relative, closeToBuilder, 'Enemy', relativeTo[1], relativeTo[3], 5)
     else
-        location = aiBrain:FindPlaceToBuild(buildingType, whatToBuild, baseTemplate, relative, closeToBuilder, nil, relativeTo[1], relativeTo[3])
+        location = aiBrain:FindPlaceToBuild(buildingTypeReplace or buildingType, whatToBuildReplace or whatToBuild, baseTemplate, relative, closeToBuilder, nil, relativeTo[1], relativeTo[3])
     end
     -- if it's a reference, look around with offsets
     if not location and reference then
         for num,offsetCheck in RandomIter({1,2,3,4,5,6,7,8}) do
-            location = aiBrain:FindPlaceToBuild(buildingType, whatToBuild, BaseTmplFile['MovedTemplates'..offsetCheck][factionIndex], relative, closeToBuilder, nil, relativeTo[1], relativeTo[3])
+            location = aiBrain:FindPlaceToBuild(buildingTypeReplace or buildingType, whatToBuildReplace or whatToBuild, BaseTmplFile['MovedTemplates'..offsetCheck][factionIndex], relative, closeToBuilder, nil, relativeTo[1], relativeTo[3])
             if location then
                 break
             end
@@ -129,7 +184,7 @@ function AIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder,
         --LOG('*AIExecuteBuildStructure: Find no place to Build! - buildingType '..repr(buildingType)..' - ('..builder.factionCategory..') Trying again with T1LandFactory and RandomIter. Searching near base...')
         relativeTo = builder.BuilderManagerData.EngineerManager:GetLocationCoords()
         for num,offsetCheck in RandomIter({1,2,3,4,5,6,7,8}) do
-            location = aiBrain:FindPlaceToBuild('T1LandFactory', whatToBuild, BaseTmplFile['MovedTemplates'..offsetCheck][factionIndex], relative, closeToBuilder, nil, relativeTo[1], relativeTo[3])
+            location = aiBrain:FindPlaceToBuild('T1LandFactory', whatToBuildReplace or whatToBuild, BaseTmplFile['MovedTemplates'..offsetCheck][factionIndex], relative, closeToBuilder, nil, relativeTo[1], relativeTo[3])
             if location then
                 --LOG('*AIExecuteBuildStructure: Yes! Found a place near base to Build! - buildingType '..repr(buildingType))
                 break
