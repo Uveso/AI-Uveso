@@ -1,5 +1,5 @@
 *************************************************************************************************************************************
-v74 (30.Dec.2019)
+v75 (30.Dec.2019)
 
 - New: Added a function to create a threatgrid with waypoint marker.
 - New: Added option for debug the new threat system.
