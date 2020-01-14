@@ -1,3 +1,4 @@
+local categories = categories
 local EBC = '/lua/editor/EconomyBuildConditions.lua'
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 local MIBC = '/lua/editor/MiscBuildConditions.lua'
@@ -399,51 +400,6 @@ BuilderGroup {
         BuilderType = 'Any',
     },
 }
-BuilderGroup {
-    -- Upgrade MassExtractors from Tech 1 to 2 AND from Tech 2 to 3
-    BuilderGroupName = 'U123 ExtractorUpgrades SWARM',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
-    BuildersType = 'PlatoonFormBuilder',
-    Builder {
-        BuilderName = 'U1S Extractor upgrade >40 mass',
-        PlatoonTemplate = 'AddToMassExtractorUpgradePlatoon',
-        Priority = 18400,
-        InstanceCount = 1,
-        FormRadius = 10000,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 0, categories.MASSEXTRACTION} },
-            -- Do we need additional conditions to build it ?
-            -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconIncome',  { 4.0, -0.0}}, -- Absolut Base income
-            -- Don't build it if...
-        },
-        BuilderData = {
-            AIPlan = 'ExtractorUpgradeAI',
-        },
-        BuilderType = 'Any',
-    },
-    Builder {
-        BuilderName = 'U1S Extractor enemy > T2',
-        PlatoonTemplate = 'AddToMassExtractorUpgradePlatoon',
-        Priority = 18400,
-        InstanceCount = 1,
-        FormRadius = 10000,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 0, categories.MASSEXTRACTION} },
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.MASSEXTRACTION * (categories.TECH2 + categories.TECH3) } },            -- Don't build it if...
-            -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconIncome',  { 4.0, -0.0}}, -- Absolut Base income
-            -- Don't build it if...
-        },
-        BuilderData = {
-            AIPlan = 'ExtractorUpgradeAI',
-        },
-        BuilderType = 'Any',
-    },
-}
-
 -- ===================================================-======================================================== --
 -- ==                                     Build MassStorage/Adjacency                                        == --
 -- ===================================================-======================================================== --

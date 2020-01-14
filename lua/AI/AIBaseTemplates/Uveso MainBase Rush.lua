@@ -106,7 +106,7 @@ BaseBuilderTemplate {
         -- ==== Air Units BUILDER ==== --
         -----------------------------------------------------------------------------
         'U123 Air Builders',
-        'U123 Air Builders EXPERIMENTAL',
+        'U123 Air Builders Anti-Experimental',
         -- Build Air Transporter
         'U123 Air Transport Builders',
 
@@ -230,7 +230,7 @@ BaseBuilderTemplate {
     FirstBaseFunction = function(aiBrain)
         local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
         if personality == 'uvesorush' or personality == 'uvesorushcheat' then
-            LOG('### M-FirstBaseFunction personality: '..personality)
+            --LOG('### M-FirstBaseFunction personality: '..personality)
             return 1000, 'uvesorush' -- AIPersonality
         end
         return -1

@@ -38,25 +38,25 @@ function ExecutePlan(aiBrain)
 
         -- Sorian is using a Thread for watching unitcap and Nukes
         if aiBrain.Sorian then
-            ForkThread(UnitCapWatchThreadSorian, aiBrain)
-            ForkThread(behaviors.NukeCheck, aiBrain)
+            aiBrain:ForkThread(UnitCapWatchThreadSorian, aiBrain)
+            aiBrain:ForkThread(behaviors.NukeCheck, aiBrain)
             -- Debug for Platoon names
             if aiBrain[ScenarioInfo.Options.AIPLatoonNameDebug] or ScenarioInfo.Options.AIPLatoonNameDebug == 'all' then
-                ForkThread(LocationRangeManagerThread, aiBrain)
+                aiBrain:ForkThread(LocationRangeManagerThread, aiBrain)
             end
         -- Uveso is using a locationmanager ecomanager and BaseAlert Thread
         elseif aiBrain.Uveso then
-            ForkThread(LocationRangeManagerThread, aiBrain)
-            ForkThread(EcoManagerThread, aiBrain)
-            ForkThread(BaseTargetManagerThread, aiBrain)
-            ForkThread(MarkerGridThreatManagerThread, aiBrain)
-            ForkThread(MassManagerThread, aiBrain)
+            aiBrain:ForkThread(LocationRangeManagerThread, aiBrain)
+            aiBrain:ForkThread(EcoManagerThread, aiBrain)
+            aiBrain:ForkThread(BaseTargetManagerThread, aiBrain)
+            aiBrain:ForkThread(MarkerGridThreatManagerThread, aiBrain)
+            --aiBrain:ForkThread(MassManagerThread, aiBrain)
         -- Debug for Platoon names
         elseif aiBrain[ScenarioInfo.Options.AIPLatoonNameDebug] or ScenarioInfo.Options.AIPLatoonNameDebug == 'all' then
-            ForkThread(LocationRangeManagerThread, aiBrain)
-            ForkThread(UnitCapWatchThread, aiBrain)
+            aiBrain:ForkThread(LocationRangeManagerThread, aiBrain)
+            aiBrain:ForkThread(UnitCapWatchThread, aiBrain)
         else
-            ForkThread(UnitCapWatchThread, aiBrain)
+            aiBrain:ForkThread(UnitCapWatchThread, aiBrain)
         end
     end
     if aiBrain.PBM then
@@ -103,6 +103,12 @@ function EcoManagerThread(aiBrain)
     local BuildMultOption = tonumber(ScenarioInfo.Options.BuildMult)
     local CheatMult = CheatMultOption
     local BuildMult = BuildMultOption
+    if CheatMultOption ~= BuildMultOption then
+        CheatMultOption = math.max(CheatMultOption,BuildMultOption)
+        BuildMultOption = math.max(CheatMultOption,BuildMultOption)
+        ScenarioInfo.Options.CheatMult = tostring(CheatMultOption)
+        ScenarioInfo.Options.BuildMult = tostring(BuildMultOption)
+    end
     LOG('* AI-Uveso: Function EcoManagerThread() started! CheatFactor:('..repr(CheatMultOption)..') - BuildFactor:('..repr(BuildMultOption)..') ['..aiBrain.Nickname..']')
     local Engineers = {}
     local paragons = {}
@@ -635,8 +641,6 @@ end
 function LocationRangeManagerThread(aiBrain)
     LOG('* AI-Uveso: Function LocationRangeManagerThread() started. ['..aiBrain.Nickname..']')
     local unitcounterdelayer = 0
-    local reclaimdelayer = 1000 -- This value must be high so we will scan the wrecks at gamestart
-    local InitialWrecks
     local ArmyUnits = {}
     -- wait at start of the game for delayed AI message
     while GetGameTimeSeconds() < 20 + aiBrain:GetArmyIndex() do
@@ -649,22 +653,27 @@ function LocationRangeManagerThread(aiBrain)
     while aiBrain.Result ~= "defeat" do
         --LOG('* AI-Uveso: Function LocationRangeManagerThread() beat. ['..aiBrain.Nickname..']')
         -- loop over all location managers
-        for baseLocation, managers in aiBrain.BuilderManagers do
+--        for baseLocation, managers in aiBrain.BuilderManagers do
             -- get all factories from this location
-            local Factories = managers.FactoryManager.FactoryList
+--            local Factories = managers.FactoryManager.FactoryList
             -- loop over all factories
-            for k,factory in Factories do
+--            for k,factory in Factories do
                 -- is our factory not building or upgrading ?
-                if factory and not factory.Dead and not factory:BeenDestroyed() and factory:IsUnitState('Building') == false and factory:IsUnitState('Upgrading') == false then
+--                if factory and not factory.Dead and not factory:BeenDestroyed() and factory:IsUnitState('Building') == false and factory:IsUnitState('Upgrading') == false then
                     -- check if our factory is more then 30 seconds inactice
-                    if factory.LastActive and GetGameTimeSeconds() - factory.LastActive > 30 then
-                        SPEW('* AI-Uveso: LocationRangeManagerThread: "Factory '..k..'" at location "'..baseLocation..'" is not working. Last activity "'.. math.floor(GetGameTimeSeconds() - factory.LastActive) ..'" seconds ago. Reforking FactoryManager.')
+--                    if factory.LastActive and GetGameTimeSeconds() - factory.LastActive > 30 then
+                        --SPEW('* AI-Uveso: LocationRangeManagerThread: "Factory '..k..'" at location "'..baseLocation..'" is not working. Last activity "'.. math.floor(GetGameTimeSeconds() - factory.LastActive) ..'" seconds ago. Reforking FactoryManager.')
                         -- fork a new build thread for our factory
-                        managers.FactoryManager:ForkThread(managers.FactoryManager.DelayBuildOrder, factory, factory.BuilderManagerData.BuilderType, 1)
-                    end
-                end
-            end
-        end
+                        --managers.FactoryManager:ForkThread(managers.FactoryManager.DelayBuildOrder, factory, factory.BuilderManagerData.BuilderType, 1)
+--                        if not factory.ForkedDelayThread then
+--                            LOG('factory.ForkedDelayThread FALSE')
+--                        else
+--                            LOG('factory.ForkedDelayThread true')
+--                        end
+--                    end
+--                end
+--            end
+--        end
         -- Check engineers
         -- at the moment engineers are working well. no need to validate
 --        EngineerUnits = aiBrain:GetListOfUnits(categories.MOBILE * categories.ENGINEER * categories.TECH1, false, false) -- also gets unbuilded units (planed to build)
@@ -793,31 +802,6 @@ function LocationRangeManagerThread(aiBrain)
 --                    local location = unit:GetPosition()
 --                    LOG('K='..k..' - Unit= '..description..' - '..repr(location))
 --                end
-            end
-        end
-        -- Destroy reclaimables after 10 minutes for better game performance
-        if 1 == 1 then
-            reclaimdelayer = reclaimdelayer + 1
-            if reclaimdelayer > 12*6 then -- 12*50 ticks = 60 seconds = 1 minutes (12*6 = 12*6*50 ticks = 360 seconds = 6 minutes) - Means, wrecks will be checked every 6 minutes
-                reclaimdelayer = 0
-                --local count = 0
-                for _, reclaim in GetReclaimablesInRect(Rect(1, 1, ScenarioInfo.size[1], ScenarioInfo.size[2])) do
-                    if reclaim.IsWreckage then
-                        --count = count + 1
-                        if not InitialWrecks then
-                            reclaim.expirationTime = GetGameTimeSeconds() + 60*25
-                        elseif not reclaim.expirationTime then
-                            reclaim.expirationTime = GetGameTimeSeconds() + 60*10
-                        elseif GetGameTimeSeconds() > reclaim.expirationTime then
-                            --LOG('# RECLAIM: Wreck is older then 10 minutes ('..math.floor((GetGameTimeSeconds() - (reclaim.expirationTime - 60*10))/60)..' min.). Deleting it!')
-                            --count = count - 1
-                            reclaim:Destroy()
-                        end
-                    end
-                end
-                -- Set initial wrecks to true after the first pass
-                InitialWrecks = true
-                --LOG('reclaim count:'..count)
             end
         end
         WaitTicks(50)
@@ -1114,6 +1098,11 @@ function MarkerGridThreatManagerThread(aiBrain)
 end
 
 function MassManagerThread(aiBrain)
+    -- This function is not active!
+    if 1 == 1 then
+        return
+    end
+    
     while GetGameTimeSeconds() < 10 do
         WaitTicks(10)
     end

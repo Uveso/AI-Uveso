@@ -1,3 +1,4 @@
+local categories = categories
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 
 local BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua').GetDangerZoneRadii()

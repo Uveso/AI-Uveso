@@ -33,7 +33,6 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- Build MassExtractors / Creators
         'U1 MassBuilders',
-        'U1 Mass Capture',
         -- Upgrade MassExtractors from Tech 1 to 2 AND from Tech 2 to 3
         'U123 ExtractorUpgrades',
         -- Build Mass Storage (Adjacency)
@@ -99,7 +98,7 @@ BaseBuilderTemplate {
         -- ==== Air Units BUILDER ==== --
         -----------------------------------------------------------------------------
         'U123 Air Builders ADAPTIVE',
-        'U123 Air Builders EXPERIMENTAL',
+        'U123 Air Builders Anti-Experimental',
         -- Build Air Transporter
         'U123 Air Transport Builders',
 
@@ -192,6 +191,13 @@ BaseBuilderTemplate {
 
 --        'AeonOptics',
         'CybranOptics',
+
+        -----------------------------------------------------------------------------
+        -- ==== MOD BUILDER ==== --
+        -----------------------------------------------------------------------------
+        'Total Mayhem EngineerBuilder',
+        'Total Mayhem FactoryBuilder',
+        'Total Mayhem PlatoonFormBuilder',
 
     },
     -- Not used by Uveso's AI. We always need intel in case the commander is dead.

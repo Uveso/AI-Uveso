@@ -1,3 +1,4 @@
+local categories = categories
 local EBC = '/lua/editor/EconomyBuildConditions.lua'
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 local MIBC = '/lua/editor/MiscBuildConditions.lua'
@@ -18,7 +19,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Power low trend',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 17870,
+        Priority = 17899,
         InstanceCount = 2,                                                      -- Number of plattons that will be formed with this template.
         DelayEqualBuildPlattons = {'Energy', 3},
         BuilderConditions = {

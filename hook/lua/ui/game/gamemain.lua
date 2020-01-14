@@ -21,4 +21,136 @@ function OnFirstUpdate()
             ConExecute("path_BackgroundUpdate on")                  -- Default on   - on/off
         end
     )
+    ForkThread( 
+        function()
+            --LOG(repr(__EngineStats))
+            WaitSeconds(3)
+            local CTask, CTaskThread, CScriptObject, CLuaTask, Entity, Prop, CDecalHandle, Unit, Platoon, ReconBlip = 0,0,0,0,0,0,0,0,0,0
+            local SCTask, SCTaskThread, SCScriptObject, SCLuaTask, SEntity, SProp, SCDecalHandle, SReconBlip = 0,0,0,0,0,0,0,0
+            local LastPrint, GTS, hours, minutes, seconds, fps, reserved, use, desiredrate, SystemTime, LastSystemTime, simrate, simspeed
+            LastPrint = 0
+            LastSystemTime = GetSystemTimeSeconds() + GetGameTimeSeconds()
+            for k, v in __EngineStats.Children do
+                if v.Name == 'Instance Counts' then
+                    for k2, v2 in v.Children do
+                        if v2.Name == 'class Moho::CTask' then
+                            SCTask = v2.Value or 0
+                        end
+                        if v2.Name == 'class Moho::CTaskThread' then
+                            SCTaskThread = v2.Value or 0
+                        end
+                        if v2.Name == 'class Moho::CScriptObject' then
+                            SCScriptObject = v2.Value or 0
+                        end
+                        if v2.Name == 'class Moho::CLuaTask' then
+                            SCLuaTask = v2.Value or 0
+                        end
+                        if v2.Name == 'class Moho::Entity' then
+                            SEntity = v2.Value or 0
+                        end
+                        if v2.Name == 'class Moho::Prop' then
+                            SProp = v2.Value or 0
+                        end
+                        if v2.Name == 'class Moho::CDecalHandle' then
+                            SCDecalHandle = v2.Value or 0
+                        end
+                        if v2.Name == 'class Moho::ReconBlip' then
+                            SReconBlip = v2.Value or 0
+                        end
+                    end
+                end
+            end
+
+            while true do
+                GTS = GetGameTimeSeconds()
+                if LastPrint + 30 < GTS then
+                    SystemTime = GetSystemTimeSeconds()
+                    LastPrint = LastPrint + 30
+                    timedilatation = (SystemTime - LastSystemTime) *2
+                    LastSystemTime = SystemTime
+                    hours   = math.floor(GTS / 3600);
+                    minutes = math.floor((GTS - (hours * 3600)) / 60);
+                    seconds = GTS - (hours * 3600) - (minutes * 60);
+                    desiredrate = GetGameSpeed()
+                    simrate = GetSimRate()
+                    simspeed = 100/timedilatation*60
+
+                    for k, v in __EngineStats.Children do
+                        if v.Name == 'Instance Counts' then
+                            for k2, v2 in v.Children do
+                                if v2.Name == 'class Moho::CTask' then
+                                    CTask = v2.Value or 0
+                                end
+                                if v2.Name == 'class Moho::CTaskThread' then
+                                    CTaskThread = v2.Value or 0
+                                end
+                                if v2.Name == 'class Moho::CScriptObject' then
+                                    CScriptObject = v2.Value or 0
+                                end
+                                if v2.Name == 'class Moho::CLuaTask' then
+                                    CLuaTask = v2.Value or 0
+                                end
+                                if v2.Name == 'class Moho::Entity' then
+                                    Entity = v2.Value or 0
+                                end
+                                if v2.Name == 'class Moho::Prop' then
+                                    Prop = v2.Value or 0
+                                end
+                                if v2.Name == 'class Moho::CDecalHandle' then
+                                    CDecalHandle = v2.Value or 0
+                                end
+                                if v2.Name == 'class Moho::Unit' then
+                                    Unit = v2.Value or 0
+                                end
+                                if v2.Name == 'class Moho::CPlatoon' then
+                                    Platoon = v2.Value or 0
+                                end
+                                if v2.Name == 'class Moho::ReconBlip' then
+                                    ReconBlip = v2.Value or 0
+                                end
+                            end
+                        elseif v.Name == 'Heap' then
+                            for k2, v2 in v.Children do
+                                if v2.Name == 'Reserved' then
+                                    reserved = v2.Value or 0
+                                end
+                                if v2.Name == 'Committed' then
+                                    use = v2.Value or 0
+                                end
+                            end
+                        elseif v.Name == 'Frame' then
+                            for k2, v2 in v.Children do
+                                if v2.Name == 'FPS' then
+                                    fps = v2.Value or 0
+                                end
+                            end
+                        end
+                    end
+
+                    if desiredrate == 9 then
+                        WARN('RESET')
+                        SEntity = Entity
+                        SProp = Prop
+                        SCScriptObject = CScriptObject
+                        SCTask = CTask
+                        SCTaskThread = CTaskThread
+                        SCLuaTask = CLuaTask
+                        SCDecalHandle = CDecalHandle
+                        SReconBlip = ReconBlip
+                    end
+
+                    SPEW(string.format('Gametime: %02d:%02d:%02d --- Unit: %02d --- Platoon: %02d --- FPS: %02d --- Memory: %s / %s --- Speed: %+d / %+d --- SimSpeed: %02d%% ( 60 Game = %02d System Seconds )'
+                                        , hours, minutes, seconds, Unit, Platoon, fps, reserved, use, desiredrate, simrate, simspeed, timedilatation))
+                    SPEW(string.format(' Entity: %05d --- Prop: %05d --- CScriptObject: %05d --- CTask: %05d --- CTaskThread: %05d --- CLuaTask: %05d --- CDecalHandle: %05d --- ReconBlip: %05d'
+                                        ,Entity, Prop, CScriptObject, CTask, CTaskThread, CLuaTask, CDecalHandle, ReconBlip))
+--                    LOG(string.format(' Entity: %05d --- Prop: %05d --- CScriptObject: %05d --- CTask: %05d --- CTaskThread: %05d --- CLuaTask: %05d --- CDecalHandle: %05d --- ReconBlip: %05d'
+--                                        ,Entity-SEntity, Prop-SProp, CScriptObject-SCScriptObject, CTask-SCTask, CTaskThread-SCTaskThread, CLuaTask-SCLuaTask, CDecalHandle-SCDecalHandle, ReconBlip-SReconBlip))
+                end
+                coroutine.yield(5)
+            end
+        end
+    )
 end
+
+
+

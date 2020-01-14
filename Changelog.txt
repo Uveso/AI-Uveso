@@ -1,4 +1,19 @@
 *************************************************************************************************************************************
+v76 (13.Jan.2019)
+
+- New: Platoons now has different tables for MoveTo and AttackPriorities
+- New: Optimized engineer function to reclaim mass
+- New: Timebased debug print to the log every 30 seconds with memory and task data.
+- Fix: Map validator spots empty adjacentTo table in markers again.
+- Opt: Tweaked the nuke function for better target selection and chainfire (overwhelm)
+- Opt: Cleared all game patch functions that are already merged to FAF game
+- Opt: Cheat build factor will now be equal to cheat eco factor. (they should always be the same!)
+- Opt: Reclaim cleaner function now works global and not for every AI
+- Opt: Factory have now a greater distance to each other when constructed.
+- Opt: Debug view of waypointes now only displays debuginformation from the focussed Army (AI)
+- Opt: changed Air platoons to attack the enemy base more frequently
+
+*************************************************************************************************************************************
 v75 (30.Dec.2019)
 
 - New: Added a function to create a threatgrid with waypoint marker.

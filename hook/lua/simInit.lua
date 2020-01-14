@@ -1,5 +1,7 @@
 --WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] * AI-Uveso: offset simInit.lua' )
 
+local AIAttackUtils = import('/lua/ai/aiattackutilities.lua')
+
 -- hooks for map validation on game start and debugstuff for pathfinding and base ranger.
 local MaxPassableElevation = 48
 local MaxSlope = 0.36 -- 36
@@ -19,12 +21,6 @@ local TraceSouth = false
 local TraceSouthEast = false
 local TraceSouthWest = false
 
-local OldSetupSessionFunction = SetupSession
-function SetupSession()
-    OldSetupSessionFunction()
-    ValidateMapAndMarkers()
-end
-
 local OldBeginSessionFunction = BeginSession
 function BeginSession()
     OldBeginSessionFunction()
@@ -34,6 +30,9 @@ function BeginSession()
     end
     -- show the marker grid and expansions
     ForkThread(RenderMarkerCreatorThread)
+    -- start the reclaim cleaner thread
+    ForkThread(ReclaimCleaner)
+
 
     -- In case we are debugging with linedraw and waits we need to fork this function
     if DebugValidMarkerPosition then
@@ -47,6 +46,7 @@ function BeginSession()
         local END = GetSystemTimeSecondsOnlyForProfileUse()
         LOG(string.format('* AI-Uveso: Function CreateAIMarkers() finished, runtime: %.2f seconds.', END - START  ))
     end
+    ValidateMapAndMarkers()
 end
 
 local OldOnCreateArmyBrainFunction = OnCreateArmyBrain
@@ -202,10 +202,10 @@ function ValidateMapAndMarkers()
                         end
                     end
                 else
-                    --WARN('* AI-Uveso: ValidateMapAndMarkers: adjacentTo is empty in marker ['..k..'] - MarkerType: [\''..v.type..'\']. - Pathmarker must have an adjacent marker for pathing.')
+                    WARN('* AI-Uveso: ValidateMapAndMarkers: adjacentTo is empty in marker ['..k..'] - MarkerType: [\''..v.type..'\']. - Pathmarker must have an adjacent marker for pathing.')
                 end
             else
-                --WARN('* AI-Uveso: ValidateMapAndMarkers: adjacentTo is missing in marker ['..k..'] - MarkerType: [\''..v.type..'\']. - Pathmarker must have an adjacent marker for pathing.')
+                WARN('* AI-Uveso: ValidateMapAndMarkers: adjacentTo is missing in marker ['..k..'] - MarkerType: [\''..v.type..'\']. - Pathmarker must have an adjacent marker for pathing.')
             end
             -- Checking marker type/graph 
             if MarkerDefaults[v.type]['graph'] ~= v.graph then
@@ -358,7 +358,6 @@ function DrawPathGraph(DrawOnly,Blink)
     else
         color = Offsets[DrawOnly]['color']
     end
-    local AIAttackUtils = import('/lua/ai/aiattackutilities.lua')
     local MarkerPosition = {0,0,0}
     local Marker2Position = {0,0,0}
     -- Render the connection between the path nodes for the specific graph
@@ -389,9 +388,9 @@ function DrawPathGraph(DrawOnly,Blink)
     end
 end
 
-local AIAttackUtils = import('/lua/ai/aiattackutilities.lua')
 function DrawMarkerThreats()
     local FocussedArmy = GetFocusArmy()
+    local MarkerPosition = {0,0,0}
     -- Render the threat on each marker
     for Layer, LayerMarkers in AIAttackUtils.GetPathGraphs() do
         for graph, GraphMarkers in LayerMarkers do
@@ -401,7 +400,10 @@ function DrawMarkerThreats()
 --                end
                 -- Draw Threat
                 if Scenario.MasterChain._MASTERCHAIN_.Markers[nodename][FocussedArmy] then
-                    DrawCircle(markerInfo.position, (Scenario.MasterChain._MASTERCHAIN_.Markers[nodename][FocussedArmy] / 20) + 0.1, Offsets[markerInfo.graphName]['color'] )
+                    MarkerPosition[1] = markerInfo.position[1] + (Offsets[markerInfo.graphName][1])
+                    MarkerPosition[2] = markerInfo.position[2] + (Offsets[markerInfo.graphName][2])
+                    MarkerPosition[3] = markerInfo.position[3] + (Offsets[markerInfo.graphName][3])
+                    DrawCircle(MarkerPosition, (Scenario.MasterChain._MASTERCHAIN_.Markers[nodename][FocussedArmy] / 20) + 0.1, Offsets[markerInfo.graphName]['color'] )
                     --DrawCircle(markerInfo.position, (Scenario.MasterChain._MASTERCHAIN_.Markers[nodename].Threat[FocussedArmy] + 1.8) / 5 , 'ff000000' )
                 end
             end
@@ -516,19 +518,23 @@ function RenderMarkerCreatorThread()
         end
         for nodename, markerInfo in Scenario.MasterChain._MASTERCHAIN_.Markers or {} do
             if markerInfo['type'] == 'Blank Marker' then
-                DrawCircle(markerInfo['position'], 8, 'ff000000' )
+                DrawCircle(markerInfo['position'], 8, 'ffFF0000' )
+                DrawCircle(markerInfo['position'], 7.5, 'ff000000' )
                 DrawCircle(markerInfo['position'], 9, 'ffF4A460' )
             end
             if markerInfo['type'] == 'Expansion Area' then
-                DrawCircle(markerInfo['position'], 5, 'ff000000' )
+                DrawCircle(markerInfo['position'], 5, 'ffFF0000' )
+                DrawCircle(markerInfo['position'], 4.5, 'ff000000' )
                 DrawCircle(markerInfo['position'], 6, 'ffF4A460' )
             end
             if markerInfo['type'] == 'Large Expansion Area' then
-                DrawCircle(markerInfo['position'], 10, 'ff000000' )
+                DrawCircle(markerInfo['position'], 10, 'ffFF0000' )
+                DrawCircle(markerInfo['position'], 9.5, 'ff000000' )
                 DrawCircle(markerInfo['position'], 11, 'ffF4A460' )
             end
             if markerInfo['type'] == 'Naval Area' then
-                DrawCircle(markerInfo['position'], 8, 'ff000000' )
+                DrawCircle(markerInfo['position'], 8, 'ffFF0000' )
+                DrawCircle(markerInfo['position'], 7.5, 'ff000000' )
                 DrawCircle(markerInfo['position'], 9, 'ffF0F0FF' )
             end
         end
@@ -695,13 +701,23 @@ function CleanMarkersInMASTERCHAIN(layer)
                                         end
                                     end
                                 end
-                                -- We deleted this marker, so we scan't set it
                                 --LOG('Set new adjacent to marker : '..layer..(X+XD)..'-'..(Y+YD) )
                                 Scenario.MasterChain._MASTERCHAIN_.Markers[layer..(X+XD)..'-'..(Y+YD)].adjacentTo = NewadjacentTo
                                 --LOG('validate: '..repr(Scenario.MasterChain._MASTERCHAIN_.Markers[layer..(X+XD)..'-'..(Y+YD)].adjacentTo))
                             end
                         end
                     end
+                elseif Scenario.MasterChain._MASTERCHAIN_.Markers[layer..X..'-'..Y].adjacentTo then
+                    local adjancents = STR_GetTokens(Scenario.MasterChain._MASTERCHAIN_.Markers[layer..X..'-'..Y].adjacentTo or '', ' ')
+                    if not adjancents[0] then
+                        --LOG('* AI-Uveso: adjacentTo table is empty, deleting node '..X..' '..Y..'')
+                        Scenario.MasterChain._MASTERCHAIN_.Markers[layer..X..'-'..Y] = nil
+                        CREATEDMARKERS['Marker'..X..'-'..Y] = nil
+                    end
+                else
+                    --LOG('* AI-Uveso: no adjacentTo table found, deleting node '..X..' '..Y..'')
+                    Scenario.MasterChain._MASTERCHAIN_.Markers[layer..X..'-'..Y] = nil
+                    CREATEDMARKERS['Marker'..X..'-'..Y] = nil
                 end
             end
         end
@@ -1573,7 +1589,7 @@ function ValidateModFiles()
     local ModName = "* AI-Uveso"
     local ModDirectory = 'AI-Uveso'
     local Files = 79
-    local Bytes = 1485120
+    local Bytes = 1473838
     LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Running from: '..debug.getinfo(1).source..'.')
     LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Checking directory /mods/ for '..ModDirectory..'...')
     local FilesInFolder = DiskFindFiles('/mods/', '*.*')
@@ -1619,5 +1635,41 @@ function ValidateModFiles()
     end
     if not FAIL then
         LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Check OK! files: '..filecount..', bytecount: '..bytecount..'.')
+    end
+end
+
+-- Destroy reclaimables after 10 minutes for better game performance
+function ReclaimCleaner()
+    local InitialWrecks
+    while true do
+        --local count = 0
+        for _, reclaim in GetReclaimablesInRect(Rect(1, 1, ScenarioInfo.size[1], ScenarioInfo.size[2])) or {} do
+            if reclaim.IsWreckage then
+                -- for debug. removing reclaim so we can better count entities
+                --reclaim:Kill()
+                --count = count + 1
+                if not InitialWrecks then
+                    reclaim.expirationTime = GetGameTimeSeconds() + 60*25
+                elseif not reclaim.expirationTime then
+                    reclaim.expirationTime = GetGameTimeSeconds() + 60*10
+                elseif GetGameTimeSeconds() > reclaim.expirationTime then
+                    --LOG('# RECLAIM: Wreck is older then 10 minutes ('..math.floor((GetGameTimeSeconds() - (reclaim.expirationTime - 60*10))/60)..' min.). Deleting it!')
+                    --count = count - 1
+                    reclaim:Kill()
+                end
+            elseif reclaim.TimeReclaim then
+                -- for debug. removing reclaim so we can better count entities
+                --reclaim:Kill()
+            elseif reclaim.Dead and reclaim.Dead == true then
+                --LOG('# RECLAIM: Unit is Dead ')
+                --reclaim:Kill()
+            elseif not reclaim.Dead or reclaim.Dead == false then
+                -- normal unit
+            end
+        end
+        -- Set initial wrecks to true after the first pass
+        InitialWrecks = true
+        --LOG('reclaim count:'..count)
+        WaitTicks(50)
     end
 end

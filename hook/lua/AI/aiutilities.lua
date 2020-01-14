@@ -1,6 +1,6 @@
 
 
--- Enhancment for BuildOnMassAI
+-- Hook For AI-Uveso. Enhancment for BuildOnMassAI
 UvesoEngineerMoveWithSafePath = EngineerMoveWithSafePath
 function EngineerMoveWithSafePath(aiBrain, unit, destination)
     -- Only use this with AI-Uveso
@@ -25,7 +25,7 @@ function EngineerMoveWithSafePath(aiBrain, unit, destination)
         if reason == 'NoGraph' then
             result = true
         elseif VDist2(pos[1], pos[3], destination[1], destination[3]) < 200 then
-            LOG('* AI-Uveso: EngineerMoveWithSafePath(): executing CanPathTo  because of ('..repr(reason)..') '..VDist2(pos[1], pos[3], destination[1], destination[3]))
+            SPEW('* AI-Uveso: EngineerMoveWithSafePath(): executing CanPathTo(). LUA GenerateSafePathTo returned: ('..repr(reason)..') '..VDist2(pos[1], pos[3], destination[1], destination[3]))
             -- be really sure we don't try a pathing with a destoryed c-object
             if unit.Dead or unit:BeenDestroyed() or IsDestroyed(unit) then
                 LOG('unit is death before calling CanPathTo()')
@@ -78,7 +78,7 @@ function EngineerMoveWithSafePath(aiBrain, unit, destination)
     return false
 end
 
--- For AI Patch V7. Faster transport drop off
+-- For AI Patch V8. Faster transport drop off
 function UseTransports(units, transports, location, transportPlatoon)
     local aiBrain
     for k, v in units do
@@ -281,7 +281,7 @@ function UseTransports(units, transports, location, transportPlatoon)
     return true
 end
 
--- For AI Patch V7. fixed return value in case there is reclaim
+-- For AI Patch V8. fixed return value in case there is reclaim
 function EngineerTryReclaimCaptureArea(aiBrain, eng, pos)
     if not pos then
         return false
@@ -302,13 +302,14 @@ function EngineerTryReclaimCaptureArea(aiBrain, eng, pos)
                 -- if we can capture the unit/building then do so
                 unit.CaptureInProgress = true
                 IssueCapture({eng}, unit)
+                Reclaiming = true
             else
                 -- if we can't capture then reclaim
                 unit.ReclaimInProgress = true
                 IssueReclaim({eng}, unit)
+                Reclaiming = true
             end
         end
-        Reclaiming = true
     end
     -- reclaim rocks etc or we can't build mexes or hydros
     local Reclaimables = GetReclaimablesInRect(Rect(pos[1], pos[3], pos[1], pos[3]))
@@ -323,11 +324,7 @@ function EngineerTryReclaimCaptureArea(aiBrain, eng, pos)
     return Reclaiming
 end
 
-
-
-
-
--- Helper function for targeting
+-- AI-Uveso: Helper function for targeting
 function ValidateLayer(UnitPos,MovementLayer)
     if MovementLayer == 'Air' then
         return true
@@ -348,7 +345,7 @@ function ValidateLayer(UnitPos,MovementLayer)
     return false
 end
 
--- Target function
+-- AI-Uveso: Target function
 function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, maxRange, MoveToCategories, TargetSearchCategory, enemyBrain)
     if not maxRange then
         --LOG('* AI-Uveso: AIFindNearestCategoryTargetInRange: function called with empty "maxRange"' )

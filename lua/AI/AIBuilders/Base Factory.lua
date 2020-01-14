@@ -1,3 +1,4 @@
+local categories = categories
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 local EBC = '/lua/editor/EconomyBuildConditions.lua'
 
@@ -734,7 +735,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'UC Air Factory Cap',
         PlatoonTemplate = 'CommanderBuilder',
-        Priority = 15500,
+        Priority = 17880,
         DelayEqualBuildPlattons = {'Factories', 3},
         BuilderConditions = {
             -- When do we want to build this ?
@@ -764,7 +765,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Air Factory Cap',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 15500,
+        Priority = 17880,
         DelayEqualBuildPlattons = {'Factories', 3},
         BuilderConditions = {
             -- When do we want to build this ?

@@ -308,9 +308,9 @@ PlatoonTemplate {
 }
 
 PlatoonTemplate {
-    Name = 'U4-Suicide 1 1',
+    Name = 'U1234-AirSuicide 1 1',
     Plan = 'AirSuicideAI',
     GlobalSquads = {
-        { categories.AIR * categories.MOBILE - categories.SATELLITE - categories.INSIGNIFICANTUNIT, 1, 1, 'attack', 'none' }
+        { categories.MOBILE * categories.AIR * ( categories.GROUNDATTACK + categories.BOMBER ) - categories.SATELLITE - categories.INSIGNIFICANTUNIT, 1, 1, 'attack', 'none' }
     },
 }

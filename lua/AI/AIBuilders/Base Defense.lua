@@ -1,3 +1,4 @@
+local categories = categories
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 local EBC = '/lua/editor/EconomyBuildConditions.lua'
 local MIBC = '/lua/editor/MiscBuildConditions.lua'
@@ -621,14 +622,13 @@ BuilderGroup {
         Priority = 18000,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * categories.TECH3 } },
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.STRUCTURE * categories.NUKE * categories.SILO } },
             -- Do we need additional conditions to build it ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * (categories.TECH3 + categories.EXPERIMENTAL) } },
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.00, 0.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
-            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.STRUCTURE * categories.NUKE * categories.SILO } },
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * (categories.TECH3 + categories.EXPERIMENTAL) } },
         },
         BuilderType = 'Any',
         BuilderData = {

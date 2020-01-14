@@ -1,24 +1,4 @@
 
--- For AI Patch V5 (patched). Repaired function to set platoonbuilder priority
-TheOldBuilder = Builder
-Builder = Class(TheOldBuilder) {
-
-    CalculatePriority = function(self, builderManager)
-        self.PriorityAltered = false
-        if Builders[self.BuilderName].PriorityFunction then
-            --LOG('Calculate new Priority '..self.BuilderName..' - '..self.Priority)
-            local newPri = Builders[self.BuilderName]:PriorityFunction(self.Brain)
-            if newPri != self.Priority then
-                self.Priority = newPri
-                self.PriorityAltered = true
-            end
-            --LOG('New Priority '..self.BuilderName..' - '..self.Priority)
-        end
-        return self.PriorityAltered
-    end,
-
-}
-
 -- For Platoon debugging. Unremarking the debugline will print all platoons with priority inside game.log
 TheOldPlatoonBuilder = PlatoonBuilder
 PlatoonBuilder = Class(TheOldPlatoonBuilder) {
@@ -42,7 +22,6 @@ PlatoonBuilder = Class(TheOldPlatoonBuilder) {
     end,
 
 }
-
 
 -- For Platoon debugging. Unremarking the debugline will print all platoons with priority inside game.log
 TheOldFactoryBuilder = FactoryBuilder

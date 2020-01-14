@@ -1,3 +1,4 @@
+local categories = categories
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 local MABC = '/lua/editor/MarkerBuildConditions.lua'
 

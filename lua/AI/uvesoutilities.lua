@@ -11,10 +11,10 @@ function ExtractorPause(self, aiBrain, MassExtractorUnitList, ratio, techLevel)
     -- loop over all MASSEXTRACTION buildings 
     for unitNum, unit in MassExtractorUnitList do
         if unit
-            and not unit:BeenDestroyed()
             and not unit.Dead
-            and EntityCategoryContains(ParseEntityCategory(techLevel), unit)
+            and not unit:BeenDestroyed()
             and not unit:GetFractionComplete() < 1
+            and EntityCategoryContains(ParseEntityCategory(techLevel), unit)
         then
             -- Is the building upgrading ?
             if unit:IsUnitState('Upgrading') then
