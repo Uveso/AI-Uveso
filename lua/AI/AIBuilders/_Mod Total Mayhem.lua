@@ -1,11 +1,17 @@
+-- categories.HEAVYASSAULT does not exist then we have an older version of TM
+if not categories.HEAVYASSAULT then categories.HEAVYASSAULT = categories.MOBILE end
+
 local categories = categories
 local LoadModBuilder = false
 -- loop over __active_mods table and search for the mod Total Mayhem
 for index, moddata in __active_mods do
     if moddata.name == 'Total Mayhem' then
-        LOG('* AI-Uveso: Total Mayhem is installed. Adding BuilderGroups')
-        LoadModBuilder = true
-        break
+        -- only works for TM v1.37
+        if moddata.uid == "62e2j64a-TOMA-3652-01370-146as555a8u3" then
+            LOG('* AI-Uveso: Total Mayhem is installed. Adding BuilderGroups')
+            LoadModBuilder = true
+            break
+        end
     end
 end
 -- if Total Mayhem is installed, add the following builder

@@ -1589,7 +1589,7 @@ function ValidateModFiles()
     local ModName = "* AI-Uveso"
     local ModDirectory = 'AI-Uveso'
     local Files = 79
-    local Bytes = 1473838
+    local Bytes = 1474137
     LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Running from: '..debug.getinfo(1).source..'.')
     LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Checking directory /mods/ for '..ModDirectory..'...')
     local FilesInFolder = DiskFindFiles('/mods/', '*.*')
