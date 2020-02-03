@@ -28,7 +28,7 @@ function EngineerMoveWithSafePath(aiBrain, unit, destination)
             SPEW('* AI-Uveso: EngineerMoveWithSafePath(): executing CanPathTo(). LUA GenerateSafePathTo returned: ('..repr(reason)..') '..VDist2(pos[1], pos[3], destination[1], destination[3]))
             -- be really sure we don't try a pathing with a destoryed c-object
             if unit.Dead or unit:BeenDestroyed() or IsDestroyed(unit) then
-                LOG('unit is death before calling CanPathTo()')
+                SPEW('* AI-Uveso: Unit is death before calling CanPathTo()')
                 return false
             end
             result, bestPos = unit:CanPathTo(destination)

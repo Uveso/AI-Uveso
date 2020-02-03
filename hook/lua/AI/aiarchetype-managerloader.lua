@@ -249,84 +249,7 @@ function EcoManagerThread(aiBrain)
             end
         end
 
-        if aiBrain:GetEconomyTrend('ENERGY') < 0.0 then
-            -- Emergency Low Energy
-            if aiBrain:GetEconomyStoredRatio('ENERGY') < 0.75 then
-                -- Disable Nuke
-                if DisableUnits(aiBrain, categories.STRUCTURE * categories.NUKE * (categories.TECH3 + categories.EXPERIMENTAL), 'Nuke') then bussy = true
-                -- Disable Massfabricators
-                elseif DisableUnits(aiBrain, categories.STRUCTURE * categories.MASSFABRICATION, 'MassFab') then bussy = true
-                -- Disable AntiNuke
-                elseif DisableUnits(aiBrain, categories.STRUCTURE * categories.ANTIMISSILE * categories.SILO * categories.TECH3, 'AntiNuke') then bussy = true
-                -- Disable Intel
-                elseif DisableUnits(aiBrain, categories.RADAR + categories.OMNI + categories.SONAR, 'Intel') then bussy = true
-                -- Disable ExperimentalShields
-                elseif DisableUnits(aiBrain, categories.STRUCTURE * categories.SHIELD * categories.EXPERIMENTAL, 'ExperimentalShields') then bussy = true
-                -- Disable NormalShields
-                elseif DisableUnits(aiBrain, categories.STRUCTURE * categories.SHIELD - categories.EXPERIMENTAL, 'NormalShields') then bussy = true
-                end
-            end
-        end
-
-        if bussy then
-            continue -- while true do
-        end
-
-        if aiBrain:GetEconomyTrend('MASS') < 0.0 then
-            -- Emergency Low Mass
-            if aiBrain:GetEconomyStoredRatio('MASS') < 0.25 then
-                -- Disable AntiNuke
-                if DisableUnits(aiBrain, categories.STRUCTURE * categories.ANTIMISSILE * categories.SILO * categories.TECH3, 'AntiNuke') then bussy = true
-                end
-            elseif aiBrain:GetEconomyStoredRatio('MASS') < 0.50 then
-                -- Disable Nuke
-                if DisableUnits(aiBrain, categories.STRUCTURE * categories.NUKE * (categories.TECH3 + categories.EXPERIMENTAL), 'Nuke') then bussy = true
-                end
-            end
-        elseif aiBrain:GetEconomyStoredRatio('ENERGY') > 0.95 then
-            if aiBrain:GetEconomyStoredRatio('MASS') > 0.50 then
-                -- Enable NormalShields
-                if EnableUnits(aiBrain, categories.STRUCTURE * categories.SHIELD - categories.EXPERIMENTAL, 'NormalShields') then bussy = true
-                -- Enable ExperimentalShields
-                elseif EnableUnits(aiBrain, categories.STRUCTURE * categories.SHIELD * categories.EXPERIMENTAL, 'ExperimentalShields') then bussy = true
-                -- Enable Intel
-                elseif EnableUnits(aiBrain, categories.RADAR + categories.OMNI + categories.SONAR, 'Intel') then bussy = true
-                -- Enable AntiNuke
-                elseif EnableUnits(aiBrain, categories.STRUCTURE * categories.ANTIMISSILE * categories.SILO * categories.TECH3, 'AntiNuke') then bussy = true
-                -- Enable massfabricators
-                elseif EnableUnits(aiBrain, categories.STRUCTURE * categories.MASSFABRICATION, 'MassFab') then bussy = true
-                -- Enable Nuke
-                elseif EnableUnits(aiBrain, categories.STRUCTURE * categories.NUKE * (categories.TECH3 + categories.EXPERIMENTAL), 'Nuke') then bussy = true
-                end
-            elseif aiBrain:GetEconomyStoredRatio('MASS') > 0.25 then
-                -- Enable NormalShields
-                if EnableUnits(aiBrain, categories.STRUCTURE * categories.SHIELD - categories.EXPERIMENTAL, 'NormalShields') then bussy = true
-                -- Enable ExperimentalShields
-                elseif EnableUnits(aiBrain, categories.STRUCTURE * categories.SHIELD * categories.EXPERIMENTAL, 'ExperimentalShields') then bussy = true
-                -- Enable Intel
-                elseif EnableUnits(aiBrain, categories.RADAR + categories.OMNI + categories.SONAR, 'Intel') then bussy = true
-                -- Enable AntiNuke
-                elseif EnableUnits(aiBrain, categories.STRUCTURE * categories.ANTIMISSILE * categories.SILO * categories.TECH3, 'AntiNuke') then bussy = true
-                -- Enable massfabricators
-                elseif EnableUnits(aiBrain, categories.STRUCTURE * categories.MASSFABRICATION, 'MassFab') then bussy = true
-                end
-            else
-                -- Enable NormalShields
-                if EnableUnits(aiBrain, categories.STRUCTURE * categories.SHIELD - categories.EXPERIMENTAL, 'NormalShields') then bussy = true
-                -- Enable ExperimentalShields
-                elseif EnableUnits(aiBrain, categories.STRUCTURE * categories.SHIELD * categories.EXPERIMENTAL, 'ExperimentalShields') then bussy = true
-                -- Enable Intel
-                elseif EnableUnits(aiBrain, categories.RADAR + categories.OMNI + categories.SONAR, 'Intel') then bussy = true
-                -- Enable massfabricators
-                elseif EnableUnits(aiBrain, categories.STRUCTURE * categories.MASSFABRICATION, 'MassFab') then bussy = true
-                end
-            end
-        end
-
-        if bussy then
-            continue -- while true do
-        end
-
+-- ECO for Assisting engineers
         -- loop over assisting engineers and manage pause / unpause
         for _, unit in Engineers do
             -- if the unit is dead, continue with the next unit
@@ -493,35 +416,7 @@ function EcoManagerThread(aiBrain)
         if bussy then
             continue -- while true do
         end
-        -- loop over Factories and manage pause / unpause
-        for _, unit in Factories do
-            -- if the unit is dead, continue with the next unit
-            if unit.Dead then continue end
-            if aiBrain.HasParagon then
-                if unit:IsPaused() then
-                    unit:SetPaused( false )
-                    bussy = true
-                    break -- for _, unit in Engineers do
-                end
-            -- We have negative eco. Check if we can switch something off
-            elseif aiBrain:GetEconomyStoredRatio('MASS') < 0.01 or aiBrain:GetEconomyStoredRatio('ENERGY') < 0.75 then
-                if unit:IsPaused() then continue end
-                if not unit.UnitBeingBuilt then continue end
-                if EntityCategoryContains(categories.ENGINEER + categories.TECH1, unit.UnitBeingBuilt) then continue end
-                if table.getn(Factories) == 1 then continue end
-                unit:SetPaused( true )
-                bussy = true
-                break -- for _, unit in Engineers do
-            else
-                if not unit:IsPaused() then continue end
-                unit:SetPaused( false )
-                bussy = true
-                break -- for _, unit in Engineers do
-            end
-        end
-        if bussy then
-            continue -- while true do
-        end
+-- ECO for Building engineers
         -- loop over building engineers and manage pause / unpause
         for _, unit in Engineers do
             -- if the unit is dead, continue with the next unit
@@ -575,6 +470,119 @@ function EcoManagerThread(aiBrain)
         if bussy then
             continue -- while true do
         end
+-- ECO for FACTORIES
+        -- loop over Factories and manage pause / unpause
+        for _, unit in Factories do
+            -- if the unit is dead, continue with the next unit
+            if unit.Dead then continue end
+            if aiBrain.HasParagon then
+                if unit:IsPaused() then
+                    unit:SetPaused( false )
+                    bussy = true
+                    break -- for _, unit in Engineers do
+                end
+            -- We have negative eco. Check if we can switch something off
+            elseif aiBrain:GetEconomyStoredRatio('MASS') < 0.01 or aiBrain:GetEconomyStoredRatio('ENERGY') < 0.75 then
+                if unit:IsPaused() or not unit:IsUnitState('Building') then continue end
+                if not unit.UnitBeingBuilt then continue end
+                if EntityCategoryContains(categories.ENGINEER + categories.TECH1, unit.UnitBeingBuilt) then continue end
+                if table.getn(Factories) == 1 then continue end
+                unit:SetPaused( true )
+                bussy = true
+                break -- for _, unit in Engineers do
+            else
+                if not unit:IsPaused() then continue end
+                unit:SetPaused( false )
+                bussy = true
+                break -- for _, unit in Engineers do
+            end
+        end
+        if bussy then
+            continue -- while true do
+        end
+
+-- ECO for STRUCTURES
+
+        if aiBrain:GetEconomyTrend('ENERGY') < 0.0 then
+            -- Emergency Low Energy
+            if aiBrain:GetEconomyStoredRatio('ENERGY') < 0.75 then
+                -- Disable Nuke
+                if DisableUnits(aiBrain, categories.STRUCTURE * categories.NUKE * (categories.TECH3 + categories.EXPERIMENTAL), 'Nuke') then bussy = true
+                -- Disable Massfabricators
+                elseif DisableUnits(aiBrain, categories.STRUCTURE * categories.MASSFABRICATION, 'MassFab') then bussy = true
+                -- Disable AntiNuke
+                elseif DisableUnits(aiBrain, categories.STRUCTURE * categories.ANTIMISSILE * categories.SILO * categories.TECH3, 'AntiNuke') then bussy = true
+                -- Disable Intel
+                elseif DisableUnits(aiBrain, categories.RADAR + categories.OMNI + categories.SONAR, 'Intel') then bussy = true
+                -- Disable ExperimentalShields
+                elseif DisableUnits(aiBrain, categories.STRUCTURE * categories.SHIELD * categories.EXPERIMENTAL, 'ExperimentalShields') then bussy = true
+                -- Disable NormalShields
+                elseif DisableUnits(aiBrain, categories.STRUCTURE * categories.SHIELD - categories.EXPERIMENTAL, 'NormalShields') then bussy = true
+                end
+            end
+        end
+
+        if bussy then
+            continue -- while true do
+        end
+
+        if aiBrain:GetEconomyTrend('MASS') < 0.0 then
+            -- Emergency Low Mass
+            if aiBrain:GetEconomyStoredRatio('MASS') < 0.25 then
+                -- Disable AntiNuke
+                if DisableUnits(aiBrain, categories.STRUCTURE * categories.ANTIMISSILE * categories.SILO * categories.TECH3, 'AntiNuke') then bussy = true
+                end
+            elseif aiBrain:GetEconomyStoredRatio('MASS') < 0.50 then
+                -- Disable Nuke
+                if DisableUnits(aiBrain, categories.STRUCTURE * categories.NUKE * (categories.TECH3 + categories.EXPERIMENTAL), 'Nuke') then bussy = true
+                end
+            end
+        elseif aiBrain:GetEconomyStoredRatio('ENERGY') > 0.95 then
+            if aiBrain:GetEconomyStoredRatio('MASS') > 0.50 then
+                -- Enable NormalShields
+                if EnableUnits(aiBrain, categories.STRUCTURE * categories.SHIELD - categories.EXPERIMENTAL, 'NormalShields') then bussy = true
+                -- Enable ExperimentalShields
+                elseif EnableUnits(aiBrain, categories.STRUCTURE * categories.SHIELD * categories.EXPERIMENTAL, 'ExperimentalShields') then bussy = true
+                -- Enable Intel
+                elseif EnableUnits(aiBrain, categories.RADAR + categories.OMNI + categories.SONAR, 'Intel') then bussy = true
+                -- Enable AntiNuke
+                elseif EnableUnits(aiBrain, categories.STRUCTURE * categories.ANTIMISSILE * categories.SILO * categories.TECH3, 'AntiNuke') then bussy = true
+                -- Enable massfabricators
+                elseif EnableUnits(aiBrain, categories.STRUCTURE * categories.MASSFABRICATION, 'MassFab') then bussy = true
+                -- Enable Nuke
+                elseif EnableUnits(aiBrain, categories.STRUCTURE * categories.NUKE * (categories.TECH3 + categories.EXPERIMENTAL), 'Nuke') then bussy = true
+                end
+            elseif aiBrain:GetEconomyStoredRatio('MASS') > 0.25 then
+                -- Enable NormalShields
+                if EnableUnits(aiBrain, categories.STRUCTURE * categories.SHIELD - categories.EXPERIMENTAL, 'NormalShields') then bussy = true
+                -- Enable ExperimentalShields
+                elseif EnableUnits(aiBrain, categories.STRUCTURE * categories.SHIELD * categories.EXPERIMENTAL, 'ExperimentalShields') then bussy = true
+                -- Enable Intel
+                elseif EnableUnits(aiBrain, categories.RADAR + categories.OMNI + categories.SONAR, 'Intel') then bussy = true
+                -- Enable AntiNuke
+                elseif EnableUnits(aiBrain, categories.STRUCTURE * categories.ANTIMISSILE * categories.SILO * categories.TECH3, 'AntiNuke') then bussy = true
+                -- Enable massfabricators
+                elseif EnableUnits(aiBrain, categories.STRUCTURE * categories.MASSFABRICATION, 'MassFab') then bussy = true
+                end
+            else
+                -- Enable NormalShields
+                if EnableUnits(aiBrain, categories.STRUCTURE * categories.SHIELD - categories.EXPERIMENTAL, 'NormalShields') then bussy = true
+                -- Enable ExperimentalShields
+                elseif EnableUnits(aiBrain, categories.STRUCTURE * categories.SHIELD * categories.EXPERIMENTAL, 'ExperimentalShields') then bussy = true
+                -- Enable Intel
+                elseif EnableUnits(aiBrain, categories.RADAR + categories.OMNI + categories.SONAR, 'Intel') then bussy = true
+                -- Enable massfabricators
+                elseif EnableUnits(aiBrain, categories.STRUCTURE * categories.MASSFABRICATION, 'MassFab') then bussy = true
+                end
+            end
+        end
+
+        if bussy then
+            continue -- while true do
+        end
+
+
+
    end
 end
 
@@ -704,21 +712,22 @@ function LocationRangeManagerThread(aiBrain)
                     local Plan = unit.PlatoonHandle.PlanName
                     local Builder = unit.PlatoonHandle.BuilderName
                     if Plan or Builder then
-                        unit:SetCustomName(''..(Builder or 'Unknown')..' ('..(Plan or 'Unknown')..')')
+                        --unit:SetCustomName(''..(Builder or 'Unknown')..' ('..(Plan or 'Unknown')..')')
+                        unit:SetCustomName(''..(Builder or 'Unknown'))
                         unit.LastPlatoonHandle = {}
                         unit.LastPlatoonHandle.PlanName = unit.PlatoonHandle.PlanName
                         unit.LastPlatoonHandle.BuilderName = unit.PlatoonHandle.BuilderName
-                    else
-                        if unit.LastPlatoonHandle then
-                            local Plan = unit.LastPlatoonHandle.PlanName
-                            local Builder = unit.LastPlatoonHandle.BuilderName
-                            unit:SetCustomName('+ no Plan, Old: '..(Builder or 'Unknown')..' ('..(Plan or 'Unknown')..')')
-                        else
-                            unit:SetCustomName('+ Platoon, no Plan')
-                        end
+--                    else
+--                        if unit.LastPlatoonHandle then
+--                            local Plan = unit.LastPlatoonHandle.PlanName
+--                            local Builder = unit.LastPlatoonHandle.BuilderName
+--                            unit:SetCustomName('+ no Plan, Old: '..(Builder or 'Unknown')..' ('..(Plan or 'Unknown')..')')
+--                        else
+--                            unit:SetCustomName('+ Platoon, no Plan')
+--                        end
                     end
                 else
-                    unit:SetCustomName('- ArmyPool')
+                    unit:SetCustomName('Pool')
                 end
             end
             local WeAreInRange = false

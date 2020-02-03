@@ -258,23 +258,3 @@ PlatoonTemplate {
     }
 }
 
-PlatoonTemplate {
-    Name = 'U3 SACU Engineer preset',
-    FactionSquads = {
-        UEF = {
-            { 'uel0301_engineer', 1, 1, 'Attack', 'None' }
-        },
-        Aeon = {
-            { 'ual0301_engineer', 1, 1, 'Attack', 'None' }
-        },
-        Cybran = {
-            { 'url0301_engineer', 1, 1, 'Attack', 'None' }
-        },
-        Seraphim = {
-            { 'xsl0301_engineer', 1, 1, 'Attack', 'none' }
-        },
-        Nomads = {
-            { 'xnl0301_engineer', 1, 1, 'Attack', 'none' }
-        },
-    }
-}

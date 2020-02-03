@@ -63,24 +63,4 @@ BuilderGroup {
         },
         BuilderType = 'Any',
     },
-    Builder {
-        BuilderName = 'RepairLowShield 16',
-        PlatoonTemplate = 'AddToRepairShieldsPlatoon',
-        Priority = 1,
-        InstanceCount = 1,
-        FormRadius = 10000,
-        BuilderData = {
-            AIPlan = 'ShieldRepairAI',
-        },
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'UnitsLessInPlatoon', { 'ShieldRepairAI', 18 } },
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 1, categories.SUBCOMMANDER} },
-            -- Have we the eco to build it ?
-            { UCBC, 'HasParagon', {} },
-            -- Don't build it if...
-        },
-        BuilderType = 'Any',
-    },
 }

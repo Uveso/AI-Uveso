@@ -17,8 +17,6 @@ BaseBuilderTemplate {
         'U123 Engineer Builders',            -- Priority = 900
         -- Assistees
         'UC123 Assistees',
-        -- Return engineers back to base
-        'U123 Engineer Transfer To MainBase',
 
         -----------------------------------------------------------------------------
         -- ==== Factory ==== --

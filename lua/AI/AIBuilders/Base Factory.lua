@@ -1448,6 +1448,34 @@ BuilderGroup {
         }
     },
     Builder {
+        BuilderName = 'U-T3 Gate 3',
+        PlatoonTemplate = 'T3EngineerBuilder',
+        Priority = 15400,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH3 }},
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
+            -- Don't build it if...
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.STRUCTURE * categories.GATE } },
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { 0.02 , '<', categories.STRUCTURE * categories.GATE } },
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Construction = {
+                BuildClose = false,
+                Location = 'LocationType',
+                AdjacencyCategory = 'ENERGYPRODUCTION',
+                BuildStructures = {
+                    'T3QuantumGate',
+                },
+            }
+        }
+    },
+    Builder {
         BuilderName = 'U-T3 Gate Para',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 15400,

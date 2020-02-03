@@ -1,4 +1,24 @@
 *************************************************************************************************************************************
+v78 (31.Jan.2019)
+
+- New: SCU enhance function can now also remove already installed enhancements.
+- New: Added presetcategory to all preset SCUs. (Blueprint.lua)
+- New: Added TECH2 platoon to assist factories.
+- New: Added platonbuilder & former for all SCU presets (incl. nomads)
+- New: Added attackplatoons for SCU in case they can't teleport.
+- Fix: Ecomanager now first pause assisting engineers instead of factories.
+- Fix: SCU teleporter platoon is now able to use preset enhanced SCUs
+- Fix: OnDestroy function clears all trashbacks from a unit for better gameperformance
+- Opt: Added better error message in case the AI can't build or place a building on the map.
+- Opt: Engineers from naval expansions will no longer return/move to the mainbase
+- Opt: massextracors will now unpaused earlier on low eco.
+
+*************************************************************************************************************************************
+v77 (13.Jan.2019)
+
+- Fix: Removed Platoonbuilders for Total Mayhem (needs updated Total Mayhem version)
+
+*************************************************************************************************************************************
 v76 (13.Jan.2019)
 
 - New: Platoons now has different tables for MoveTo and AttackPriorities

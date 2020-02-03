@@ -7,6 +7,7 @@ function ExtractorPause(self, aiBrain, MassExtractorUnitList, ratio, techLevel)
     local DisabledBuilding = nil
     local DisabledBuildingNum = 0
     local IdleBuilding = nil
+    local BussyBuilding = nil
     local IdleBuildingNum = 0
     -- loop over all MASSEXTRACTION buildings 
     for unitNum, unit in MassExtractorUnitList do
@@ -53,21 +54,26 @@ function ExtractorPause(self, aiBrain, MassExtractorUnitList, ratio, techLevel)
     --LOG('* ExtractorPause: Idle= '..UpgradingBuildingNum..'   Upgrading= '..UpgradingBuildingNum..'   Paused= '..PausedUpgradingBuildingNum..'   Disabled= '..DisabledBuildingNum..'   techLevel= '..techLevel)
     --Check for energy stall
     --if aiBrain:GetEconomyStoredRatio('ENERGY') < 0.50 and aiBrain:GetEconomyStoredRatio('MASS') > aiBrain:GetEconomyStoredRatio('ENERGY') then
-    if aiBrain:GetEconomyStoredRatio('ENERGY') < 0.25 or aiBrain:GetEconomyStoredRatio('MASS') -0.1 > aiBrain:GetEconomyStoredRatio('ENERGY') then
-        -- All buildings that are doing nothing
-        if IdleBuilding then
-            if IdleBuildingNum <= 1 then
-            else
-                IdleBuilding:SetScriptBit('RULEUTC_ProductionToggle', true)
-                return true
-            end
+    if aiBrain:GetEconomyStoredRatio('MASS') -0.1 > aiBrain:GetEconomyStoredRatio('ENERGY') then
         -- Have we a building that is actual upgrading
-        elseif UpgradingBuilding then
+        if UpgradingBuilding then
             -- Its upgrading, now check fist if we only have 1 building that is upgrading
             if UpgradingBuildingNum <= 1 and table.getn(MassExtractorUnitList) >= 6 then
             else
                 -- we don't have the eco to upgrade the extractor. Pause it!
                 UpgradingBuilding:SetPaused( true )
+                --UpgradingBuilding:SetCustomName('Upgrading paused')
+                --LOG('Upgrading paused')
+                return true
+            end
+        end
+        -- All buildings that are doing nothing
+        if IdleBuilding then
+            if IdleBuildingNum <= 1 then
+            else
+                IdleBuilding:SetScriptBit('RULEUTC_ProductionToggle', true)
+                --IdleBuilding:SetCustomName('Production off')
+                --LOG('Production off')
                 return true
             end
         end
@@ -75,6 +81,8 @@ function ExtractorPause(self, aiBrain, MassExtractorUnitList, ratio, techLevel)
     else
         if DisabledBuilding then
             DisabledBuilding:SetScriptBit('RULEUTC_ProductionToggle', false)
+            --DisabledBuilding:SetCustomName('Production on')
+            --LOG('Production on')
             return true
         end
     end
@@ -85,9 +93,13 @@ function ExtractorPause(self, aiBrain, MassExtractorUnitList, ratio, techLevel)
         if MassRatioCheckPositive then
             -- We have good Mass ratio. We can unpause an extractor
             PausedUpgradingBuilding:SetPaused( false )
+            --PausedUpgradingBuilding:SetCustomName('PausedUpgradingBuilding2 unpaused')
+            --LOG('PausedUpgradingBuilding2 unpaused')
             return true
         elseif not MassRatioCheckPositive and UpgradingBuildingNum < 1 and table.getn(MassExtractorUnitList) >= 6 then
             PausedUpgradingBuilding:SetPaused( false )
+            --PausedUpgradingBuilding:SetCustomName('PausedUpgradingBuilding1 unpaused')
+            --LOG('PausedUpgradingBuilding1 unpaused')
             return true
         end
     end
@@ -97,15 +109,21 @@ function ExtractorPause(self, aiBrain, MassExtractorUnitList, ratio, techLevel)
     if MassRatioCheckNegative then
         if UpgradingBuildingNum > 1 then
             -- we don't have the eco to upgrade the extractor. Pause it!
-            UpgradingBuilding:SetPaused( true )
-            --LOG('* ExtractorPause: Pausing upgrading extractor')
-            return true
+            if aiBrain:GetEconomyTrend('MASS') <= 0 and aiBrain:GetEconomyStored('MASS') <= 0.80  then
+                UpgradingBuilding:SetPaused( true )
+                --UpgradingBuilding:SetCustomName('UpgradingBuilding paused')
+                --LOG('UpgradingBuilding paused')
+                --LOG('* ExtractorPause: Pausing upgrading extractor')
+                return true
+            end
         end
         if PausedUpgradingBuilding then
             -- if we stall mass, then cancel the upgrade
             if aiBrain:GetEconomyTrend('MASS') <= 0 and aiBrain:GetEconomyStored('MASS') <= 0  then
                 IssueClearCommands({PausedUpgradingBuilding})
                 PausedUpgradingBuilding:SetPaused( false )
+                --PausedUpgradingBuilding:SetCustomName('Upgrade canceled')
+                --LOG('Upgrade canceled')
                 --LOG('* ExtractorPause: Cancel upgrading extractor')
                 return true
             end 

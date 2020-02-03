@@ -1588,8 +1588,8 @@ end
 function ValidateModFiles()
     local ModName = "* AI-Uveso"
     local ModDirectory = 'AI-Uveso'
-    local Files = 79
-    local Bytes = 1474137
+    local Files = 80
+    local Bytes = 1519434
     LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Running from: '..debug.getinfo(1).source..'.')
     LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Checking directory /mods/ for '..ModDirectory..'...')
     local FilesInFolder = DiskFindFiles('/mods/', '*.*')
@@ -1658,12 +1658,16 @@ function ReclaimCleaner()
                     reclaim:Kill()
                 end
             elseif reclaim.TimeReclaim then
-                -- for debug. removing reclaim so we can better count entities
-                --reclaim:Kill()
-            elseif reclaim.Dead and reclaim.Dead == true then
-                --LOG('# RECLAIM: Unit is Dead ')
-                --reclaim:Kill()
-            elseif not reclaim.Dead or reclaim.Dead == false then
+                if not InitialWrecks then
+                    reclaim.expirationTime = GetGameTimeSeconds() + 60*25
+                elseif not reclaim.expirationTime then
+                    reclaim.expirationTime = GetGameTimeSeconds() + 60*10
+                elseif GetGameTimeSeconds() > reclaim.expirationTime then
+                    --LOG('# RECLAIM: Tree is older then 10 minutes ('..math.floor((GetGameTimeSeconds() - (reclaim.expirationTime - 60*10))/60)..' min.). Deleting it!')
+                    --count = count - 1
+                    reclaim:Kill()
+                end
+--            elseif not reclaim.Dead or reclaim.Dead == false then
                 -- normal unit
             end
         end

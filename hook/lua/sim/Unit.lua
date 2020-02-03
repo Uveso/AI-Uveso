@@ -9,13 +9,11 @@ Unit = Class(UvesoUnit) {
 
         WaitSeconds(utilities.GetRandomFloat(self.DestructionExplosionWaitDelayMin, self.DestructionExplosionWaitDelayMax))
 
-        -- we destroy this with buildeffects
-        --self:DestroyAllDamageEffects()
-        --self:DestroyTopSpeedEffects()
-        --self:DestroyIdleEffects()
-        --self:DestroyBeamExhaust()
-        -- we have this already in OnDestroy function
-        --self:DestroyAllBuildEffects()
+        if not self.BagsDestroyed then
+            self:DestroyAllBuildEffects()
+            self:DestroyAllTrashBags()
+            self.BagsDestroyed = true
+        end
 
         -- Stop any motion sounds we may have
         self:StopUnitAmbientSound('AmbientMove')
@@ -65,7 +63,6 @@ Unit = Class(UvesoUnit) {
         end
 
         -- If we're not doing fancy sinking rubbish, just blow the damn thing up.
-        self:PlayUnitSound('Destroyed')
         self:DestroyUnit(overkillRatio)
     end,
     -- For AI Patch V8 add function to clear bags
@@ -88,72 +85,77 @@ Unit = Class(UvesoUnit) {
 
         -- Destroy everything added to the trash
         self.Trash:Destroy()
-        self:DestroyAllTrashBags()
-        self:DestroyAllBuildEffects()
-
+        -- Destroy all extra trashbags in case the DeathTread() has not already destroyed it (modded DeathThread etc.)
+        if not self.BagsDestroyed then
+            self:DestroyAllBuildEffects()
+            self:DestroyAllTrashBags()
+        end
+        
         if self.TeleportDrain then
             RemoveEconomyEvent(self, self.TeleportDrain)
         end
 
         RemoveAllUnitEnhancements(self)
+
+        -- remove all callbacks from the unit
+        if self.EventCallbacks then
+            self.EventCallbacks = nil
+        end
+
         ChangeState(self, self.DeadState)
     end,
     -- For AI Patch V8 sestroy also all bags
     DestroyAllTrashBags = function(self)
         -- Some bags should really be managed by their classes
         -- but for mod compatibility reasons we delete them all here.
-            for _, v in self.EffectsBag or {} do
+        for _, v in self.EffectsBag or {} do
+            v:Destroy()
+        end
+        for k, v in self.ShieldEffectsBag or {} do
+            v:Destroy()
+        end
+        for _, v in self.ReleaseEffectsBag or {} do
+            v:Destroy()
+        end
+        for _, v in self.AmbientExhaustEffectsBag or {} do
+            v:Destroy()
+        end
+        for k, v in self.OmniEffectsBag or {} do
+            v:Destroy()
+        end
+        for k, v in self.AdjacencyBeamsBag or {} do
+            v.Trash:Destroy()
+            self.AdjacencyBeamsBag[k] = nil
+        end
+        for _, v in self.IntelEffectsBag or {} do
+            v:Destroy()
+        end
+        for _, v in self.TeleportDestChargeBag or {} do
+            v:Destroy()
+        end
+        for _, v in self.TeleportSoundChargeBag or {} do
+            v:Destroy()
+        end
+        for _, EffectsBag in self.DamageEffectsBag or {} do
+            for _, v in EffectsBag do
                 v:Destroy()
             end
-            for k, v in self.ShieldEffectsBag or {} do
-                v:Destroy()
-            end
-            for _, v in self.ReleaseEffectsBag or {} do
-                v:Destroy()
-            end
-            for _, v in self.AmbientExhaustEffectsBag or {} do
-                v:Destroy()
-            end
-            for k, v in self.OmniEffectsBag or {} do
-                v:Destroy()
-            end
-            for k, v in self.AdjacencyBeamsBag or {} do
-                v.Trash:Destroy()
-                self.AdjacencyBeamsBag[k] = nil
-            end
-            for _, v in self.IntelEffectsBag or {} do
-                v:Destroy()
-            end
-            for _, v in self.TeleportDestChargeBag or {} do
-                v:Destroy()
-            end
-            for _, v in self.TeleportSoundChargeBag or {} do
-                v:Destroy()
-            end
-        -- executed in DeathThread before
-            for _, EffectsBag in self.DamageEffectsBag or {} do
-                for _, v in EffectsBag do
-                    v:Destroy()
-                end
-            end
-        -- executed in DeathThread before
-            for _, v in self.IdleEffectsBag or {} do
-                v:Destroy()
-            end
-        -- executed in DeathThread before
-            for _, v in self.TopSpeedEffectsBag or {} do
-                v:Destroy()
-            end
-        -- executed in DeathThread before
-            for _, v in self.BeamExhaustEffectsBag or {} do
-                v:Destroy()
-            end
-            for _, v in self.MovementEffectsBag or {} do
-                v:Destroy()
-            end
-            for _, v in self.TransportBeamEffectsBag or {} do
-                v:Destroy()
-            end
+        end
+        for _, v in self.IdleEffectsBag or {} do
+            v:Destroy()
+        end
+        for _, v in self.TopSpeedEffectsBag or {} do
+            v:Destroy()
+        end
+        for _, v in self.BeamExhaustEffectsBag or {} do
+            v:Destroy()
+        end
+        for _, v in self.MovementEffectsBag or {} do
+            v:Destroy()
+        end
+        for _, v in self.TransportBeamEffectsBag or {} do
+            v:Destroy()
+        end
     end,
 
     -- Hook For AI-Uveso. prevent capturing

@@ -19,6 +19,7 @@ function OnFirstUpdate()
             ConExecute("path_BackgroundBudget 1000")                -- default 1000 - Maximum number of steps to run pathfinder in background
             ConExecute("path_UnreachableTimeoutSearchSteps 1000")   -- default 1000 - Maximum number of ticks to allow a single pathfind to take for an unreachable path 
             ConExecute("path_BackgroundUpdate on")                  -- Default on   - on/off
+--            ConExecute("WLD_GameSpeed 10")                          -- increase gamespeed for testing
         end
     )
     ForkThread( 
@@ -63,10 +64,10 @@ function OnFirstUpdate()
 
             while true do
                 GTS = GetGameTimeSeconds()
-                if LastPrint + 30 < GTS then
+                if LastPrint + 60 < GTS then
                     SystemTime = GetSystemTimeSeconds()
-                    LastPrint = LastPrint + 30
-                    timedilatation = (SystemTime - LastSystemTime) *2
+                    LastPrint = LastPrint + 60
+                    timedilatation = (SystemTime - LastSystemTime)
                     LastSystemTime = SystemTime
                     hours   = math.floor(GTS / 3600);
                     minutes = math.floor((GTS - (hours * 3600)) / 60);

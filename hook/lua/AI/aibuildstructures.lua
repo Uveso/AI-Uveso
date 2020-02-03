@@ -10,14 +10,14 @@ function AIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder,
     end
     local factionIndex = aiBrain:GetFactionIndex()
     local whatToBuild = aiBrain:DecideWhatToBuild(builder, buildingType, buildingTemplate)
+    local FactionIndexToName = {[1] = 'UEF', [2] = 'AEON', [3] = 'CYBRAN', [4] = 'SERAPHIM', [5] = 'NOMADS' }
+    local AIFactionName = FactionIndexToName[factionIndex] or 'Unknown'
     -- If the c-engine can't decide what to build, then search the build template manually.
     if not whatToBuild then
         if AntiSpamList[buildingType] then
             return false
         end
-        local FactionIndexToName = {[1] = 'UEF', [2] = 'AEON', [3] = 'CYBRAN', [4] = 'SERAPHIM', [5] = 'NOMADS' }
-        local AIFactionName = FactionIndexToName[factionIndex]
-        SPEW('*AIExecuteBuildStructure: c-function DecideWhatToBuild() failed! AI-faction: '..AIFactionName..', Building Type: '..repr(buildingType)..', engineer-faction: '..repr(builder.factionCategory))
+        SPEW('*AIExecuteBuildStructure: c-function DecideWhatToBuild() failed! - AI-faction: index('..factionIndex..') '..AIFactionName..', Building Type: '..repr(buildingType)..', engineer-faction: '..repr(builder.factionCategory))
         -- Get the UnitId for the actual buildingType
         local BuildUnitWithID
         for Key, Data in buildingTemplate do
@@ -217,6 +217,6 @@ function AIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder,
         return true
     end
     -- At this point we're out of options, so move on to the next thing
-    WARN('*AIExecuteBuildStructure: c-function FindPlaceToBuild() failed! AI-faction: '..AIFactionName..', Building Type: '..repr(buildingType)..', engineer-faction: '..repr(builder.factionCategory))
+    WARN('*AIExecuteBuildStructure: c-function FindPlaceToBuild() failed! AI-faction: index('..factionIndex..') '..repr(AIFactionName)..', Building Type: '..repr(buildingType)..', engineer-faction: '..repr(builder.factionCategory))
     return false
 end

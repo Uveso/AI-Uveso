@@ -30,6 +30,7 @@ BuilderGroup {
                 AssistRange = 80,
                 BeingBuiltCategories = {'STRUCTURE LAND FACTORY TECH2'},        -- Unitcategories must be type string
                 AssistUntilFinished = true,
+                PermanentAssist = true,
                 Time = 0,
             },
         }
@@ -53,6 +54,7 @@ BuilderGroup {
                 AssistRange = 80,
                 BeingBuiltCategories = {'STRUCTURE LAND FACTORY TECH3'},        -- Unitcategories must be type string
                 AssistUntilFinished = true,
+                PermanentAssist = true,
                 Time = 0,
             },
         }
@@ -75,6 +77,7 @@ BuilderGroup {
                 AssistRange = 80,
                 BeingBuiltCategories = {'STRUCTURE LAND FACTORY TECH3'},        -- Unitcategories must be type string
                 AssistUntilFinished = true,
+                PermanentAssist = true,
                 Time = 0,
             },
         }
@@ -97,33 +100,56 @@ BuilderGroup {
                 AssistClosestUnit = true,                                       -- Assist the closest unit instead unit with the least number of assisters
                 BeingBuiltCategories = {'STRUCTURE FACTORY'},                   -- Unitcategories must be type string
                 AssistUntilFinished = true,
+                PermanentAssist = true,
                 Time = 0,
             },
         }
     },
     -- Permanent assist
     Builder {
+        BuilderName = 'T2 Gate Assist',
+        PlatoonTemplate = 'T2EngineerAssist',
+        Priority = 900,
+        InstanceCount = 10,
+        BuilderConditions = {
+            { UCBC, 'LocationFactoriesBuildingGreater', { 'LocationType', 0, categories.SUBCOMMANDER } },
+        },
+        BuilderData = {
+            Assist = {
+                AssistLocation = 'LocationType',
+                AssistRange = 120,
+                AssisteeType = 'Factory',
+                BeingBuiltCategories = {'SUBCOMMANDER'},
+                PermanentAssist = true,
+                AssistClosestUnit = false,                                       -- Assist the closest unit instead unit with the least number of assisters
+                AssistUntilFinished = true,
+                Time = 0,
+            },
+        },
+        BuilderType = 'Any',
+    },
+    Builder {
         BuilderName = 'T1 Assist Factory unit build',
         PlatoonTemplate = 'EngineerAssist',
         Priority = 600,
         InstanceCount = 6,
         BuilderConditions = {
-            { UCBC, 'LocationFactoriesBuildingGreater', { 'LocationType', 0, categories.MOBILE } },
+            { UCBC, 'LocationFactoriesBuildingGreater', { 'LocationType', 0, categories.MOBILE - categories.SUBCOMMANDER } },
             { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.80}}, -- Ratio from 0 to 1. (1=100%)
             { UCBC, 'GreaterThanGameTimeSeconds', { 60*15 } },
         },
-        BuilderType = 'Any',
         BuilderData = {
             Assist = {
                 AssistLocation = 'LocationType',
                 AssisteeType = 'Factory',
                 AssistRange = 120,
-                BeingBuiltCategories = {'STRUCTURE FACTORY'},                   -- Unitcategories must be type string
+                BeingBuiltCategories = {'MOBILE INDIRECTFIRE, MOBILE DIRECTFIRE, MOBILE ANTIAIR'},                   -- Unitcategories must be type string
                 AssistClosestUnit = false,                                       -- Assist the closest unit instead unit with the least number of assisters
                 AssistUntilFinished = true,
                 Time = 0,
             },
-        }
+        },
+        BuilderType = 'Any',
     },
     Builder {
         BuilderName = 'T2 Assist Factory unit build',
@@ -131,22 +157,22 @@ BuilderGroup {
         Priority = 600,
         InstanceCount = 6,
         BuilderConditions = {
-            { UCBC, 'LocationFactoriesBuildingGreater', { 'LocationType', 0, categories.MOBILE } },
+            { UCBC, 'LocationFactoriesBuildingGreater', { 'LocationType', 0, categories.MOBILE - categories.SUBCOMMANDER } },
             { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.80}}, -- Ratio from 0 to 1. (1=100%)
             { UCBC, 'GreaterThanGameTimeSeconds', { 60*15 } },
         },
-        BuilderType = 'Any',
         BuilderData = {
             Assist = {
                 AssistLocation = 'LocationType',
                 AssisteeType = 'Factory',
                 AssistRange = 120,
-                BeingBuiltCategories = {'STRUCTURE FACTORY'},                   -- Unitcategories must be type string
+                BeingBuiltCategories = {'MOBILE INDIRECTFIRE, MOBILE DIRECTFIRE, MOBILE ANTIAIR'},                   -- Unitcategories must be type string
                 AssistClosestUnit = true,                                       -- Assist the closest unit instead unit with the least number of assisters
                 AssistUntilFinished = true,
                 Time = 0,
             },
-        }
+        },
+        BuilderType = 'Any',
     },
 
     -- ============ --
