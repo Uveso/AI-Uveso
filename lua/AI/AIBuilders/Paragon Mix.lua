@@ -19,14 +19,13 @@ BuilderGroup {
         Priority = 1100,
         InstanceCount = 5,
         BuilderConditions = {
+            -- Have we the eco to build it ?
+            { MIBC, 'HasParagon', {} },
+            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
-            { UCBC, 'HasParagon', {} },
+            { UCBC, 'CanBuildCategory', { categories.MOBILE * categories.AIR * categories.EXPERIMENTAL - categories.SATELLITE } },
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.ENGINEER * categories.TECH3 }},
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.ENGINEER * categories.TECH3 }},
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'CanBuildCategory', { categories.MOBILE * categories.AIR * categories.EXPERIMENTAL - categories.SATELLITE } },
-            -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- Don't build it if...
             { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
@@ -50,15 +49,14 @@ BuilderGroup {
         Priority = 1100,
         InstanceCount = 3,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HasParagon', {} },
-            { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.ENGINEER * categories.TECH3 }},
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.ENGINEER * categories.TECH3 }},
-            -- Do we need additional conditions to build it ?
-            { SBC, 'IsWaterMap', { true } },
-            { UCBC, 'CanBuildCategory', { categories.MOBILE * categories.NAVAL * categories.EXPERIMENTAL } },
             -- Have we the eco to build it ?
+            { MIBC, 'HasParagon', {} },
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'CanBuildCategory', { categories.MOBILE * categories.NAVAL * categories.EXPERIMENTAL } },
+            { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.ENGINEER * categories.TECH3 }},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.NAVAL } },
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.ENGINEER * categories.TECH3 }},
             -- Don't build it if...
             { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
@@ -82,14 +80,12 @@ BuilderGroup {
         Priority = 1100,
         InstanceCount = 5,
         BuilderConditions = {
+            -- Have we the eco to build it ?
+            { MIBC, 'HasParagon', {} },
+            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
-            { UCBC, 'HasParagon', {} },
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.ENGINEER * categories.TECH3 }},
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.ENGINEER * categories.TECH3 }},
-            -- Do we need additional conditions to build it ?
-            -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
             { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Any',
@@ -112,14 +108,12 @@ BuilderGroup {
         Priority = 1100,
         InstanceCount = 10,
         BuilderConditions = {
+            -- Have we the eco to build it ?
+            { MIBC, 'HasParagon', {} },
+            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
-            { UCBC, 'HasParagon', {} },
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.ENGINEER * categories.TECH3 }},
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.ENGINEER * categories.TECH3 }},
-            -- Do we need additional conditions to build it ?
-            -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
             { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Any',
@@ -144,14 +138,12 @@ BuilderGroup {
         PlatoonTemplate = 'T2EngineerBuilder',
         Priority = 1000,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HasParagon', {} },
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH3 }},
             -- Have we the eco to build it ?
+            { MIBC, 'HasParagon', {} },
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 30, categories.STRUCTURE * categories.TACTICALMISSILEPLATFORM }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH3 }},
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<', categories.STRUCTURE * categories.DEFENSE } },
             { UCBC, 'UnitCapCheckLess', { 0.99 } },
@@ -179,14 +171,12 @@ BuilderGroup {
         InstanceCount = 2,
         DelayEqualBuildPlattons = {'Artillery', 20},
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HasParagon', {} },
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH3 }},
             -- Have we the eco to build it ?
+            { MIBC, 'HasParagon', {} },
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 20, categories.STRUCTURE * categories.LAND * categories.ARTILLERY * categories.TECH3 }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH3 }},
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<', categories.STRUCTURE * categories.DEFENSE } },
             { UCBC, 'UnitCapCheckLess', { 0.99 } },
@@ -209,14 +199,12 @@ BuilderGroup {
         InstanceCount = 2,
         DelayEqualBuildPlattons = {'Artillery', 20},
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HasParagon', {} },
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH3 }},
             -- Have we the eco to build it ?
+            { MIBC, 'HasParagon', {} },
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 10, categories.STRUCTURE * categories.LAND * categories.ARTILLERY * categories.EXPERIMENTAL }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH3 }},
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<', categories.STRUCTURE * categories.DEFENSE } },
             { UCBC, 'UnitCapCheckLess', { 0.99 } },
@@ -239,14 +227,12 @@ BuilderGroup {
         InstanceCount = 2,
         DelayEqualBuildPlattons = {'Artillery', 20},
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HasParagon', {} },
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH3 }},
             -- Have we the eco to build it ?
+            { MIBC, 'HasParagon', {} },
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 10, categories.STRUCTURE * categories.LAND * categories.ARTILLERY * categories.EXPERIMENTAL }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH3 }},
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<', categories.STRUCTURE * categories.DEFENSE } },
             { UCBC, 'UnitCapCheckLess', { 0.99 } },
@@ -268,15 +254,13 @@ BuilderGroup {
         Priority = 1100,
         InstanceCount = 2,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HasParagon', {} },
-            -- Do we need additional conditions to build it ?
             { MIBC, 'FactionIndex', { 1 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH3 }},
+            { MIBC, 'HasParagon', {} },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 30, categories.STRUCTURE * categories.ORBITALSYSTEM }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH3 }},
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<', categories.STRUCTURE * categories.DEFENSE } },
             { UCBC, 'UnitCapCheckLess', { 0.99 } },
@@ -305,12 +289,10 @@ BuilderGroup {
         PlatoonTemplate = 'T1LandFactoryUpgrade',
         Priority = 15400,
         BuilderConditions = {
-            -- When do we want to build this ?
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.FACTORY * categories.LAND  * categories.TECH1} },
             -- Have we the eco to build it ?
-            { UCBC, 'HasParagon', {} },
-            -- Don't build it if...
+            { MIBC, 'HasParagon', {} },
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.FACTORY * categories.LAND  * categories.TECH1} },
         },
         BuilderType = 'Any',
     },
@@ -319,12 +301,10 @@ BuilderGroup {
         PlatoonTemplate = 'T2LandFactoryUpgrade',
         Priority = 15400,
         BuilderConditions = {
-            -- When do we want to build this ?
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.FACTORY * categories.LAND  * categories.TECH2} },
             -- Have we the eco to build it ?
-            { UCBC, 'HasParagon', {} },
-            -- Don't build it if...
+            { MIBC, 'HasParagon', {} },
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.FACTORY * categories.LAND  * categories.TECH2} },
         },
         BuilderType = 'Any',
     },
@@ -334,12 +314,10 @@ BuilderGroup {
         PlatoonTemplate = 'T1AirFactoryUpgrade',
         Priority = 15400,
         BuilderConditions = {
-            -- When do we want to build this ?
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.FACTORY * categories.AIR  * categories.TECH1} },
             -- Have we the eco to build it ?
-            { UCBC, 'HasParagon', {} },
-            -- Don't build it if...
+            { MIBC, 'HasParagon', {} },
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.FACTORY * categories.AIR  * categories.TECH1} },
         },
         BuilderType = 'Any',
     },
@@ -348,12 +326,10 @@ BuilderGroup {
         PlatoonTemplate = 'T2AirFactoryUpgrade',
         Priority = 15400,
         BuilderConditions = {
-            -- When do we want to build this ?
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.FACTORY * categories.AIR  * categories.TECH1} },
             -- Have we the eco to build it ?
-            { UCBC, 'HasParagon', {} },
-            -- Don't build it if...
+            { MIBC, 'HasParagon', {} },
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.FACTORY * categories.AIR  * categories.TECH1} },
         },
         BuilderType = 'Any',
     },
@@ -363,12 +339,10 @@ BuilderGroup {
         PlatoonTemplate = 'T1SeaFactoryUpgrade',
         Priority = 15400,
         BuilderConditions = {
-            -- When do we want to build this ?
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.FACTORY * categories.NAVAL  * categories.TECH1} },
             -- Have we the eco to build it ?
-            { UCBC, 'HasParagon', {} },
-            -- Don't build it if...
+            { MIBC, 'HasParagon', {} },
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.FACTORY * categories.NAVAL  * categories.TECH1} },
         },
         BuilderType = 'Any',
     },
@@ -377,12 +351,10 @@ BuilderGroup {
         PlatoonTemplate = 'T2SeaFactoryUpgrade',
         Priority = 15400,
         BuilderConditions = {
-            -- When do we want to build this ?
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.FACTORY * categories.NAVAL  * categories.TECH1} },
-            -- Have we the eco to build it ?
-            { UCBC, 'HasParagon', {} },
+            { MIBC, 'HasParagon', {} },
             -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.FACTORY * categories.NAVAL  * categories.TECH1} },
         },
         BuilderType = 'Any',
     },
@@ -398,7 +370,9 @@ BuilderGroup {
         PlatoonTemplate = 'T3AirScout',
         Priority = 1000,
         BuilderConditions = {
-            { UCBC, 'HasParagon', {} },
+            -- Have we the eco to build it ?
+            { MIBC, 'HasParagon', {} },
+            -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 8, categories.INTELLIGENCE * categories.AIR * categories.TECH3 }},
             { UCBC, 'UnitCapCheckLess', { 0.95 } },
         },
@@ -409,12 +383,10 @@ BuilderGroup {
         PlatoonTemplate = 'T3AirFighter',
         Priority = 350,
         BuilderConditions = {
+            -- Have we the eco to build it ?
+            { MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioUveso', { 3.00, categories.MOBILE * categories.AIR * categories.HIGHALTAIR * categories.ANTIAIR * categories.TECH3 - categories.GROUNDATTACK, '<=',categories.MOBILE * categories.AIR * categories.GROUNDATTACK * categories.TECH3 - categories.HIGHALTAIR } },
-            -- Do we need additional conditions to build it ?
-            -- Have we the eco to build it ?
-            { UCBC, 'HasParagon', {} },
-            -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'UnitCapCheckLess', { 0.99 } },
@@ -426,12 +398,10 @@ BuilderGroup {
         PlatoonTemplate = 'T3AirGunship',
         Priority = 350,
         BuilderConditions = {
+            -- Have we the eco to build it ?
+            { MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioUveso', { 3.00, categories.MOBILE * categories.AIR * categories.GROUNDATTACK * categories.TECH3 - categories.HIGHALTAIR, '<=',categories.MOBILE * categories.AIR * categories.HIGHALTAIR * categories.ANTIAIR - categories.GROUNDATTACK } },
-            -- Do we need additional conditions to build it ?
-            -- Have we the eco to build it ?
-            { UCBC, 'HasParagon', {} },
-            -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'UnitCapCheckLess', { 0.99 } },
@@ -443,13 +413,11 @@ BuilderGroup {
         PlatoonTemplate = 'T3AirBomber',
         Priority = 350,
         BuilderConditions = {
+            -- Have we the eco to build it ?
+            { MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 20, categories.MOBILE * categories.AIR * categories.BOMBER }},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.MOBILE * categories.AIR  * categories.BOMBER }},
-            -- Do we need additional conditions to build it ?
-            -- Have we the eco to build it ?
-            { UCBC, 'HasParagon', {} },
-            -- Don't build it if...
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<', categories.MOBILE - categories.ENGINEER } },
             { UCBC, 'UnitCapCheckLess', { 0.99 } },

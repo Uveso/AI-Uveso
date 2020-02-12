@@ -76,3 +76,19 @@ function IsBrainPersonality(aiBrain, neededPersonality, bool)
     end
     return false
 end
+
+--            { UCBC, 'HasParagon', {} },
+function HasParagon(aiBrain)
+    if aiBrain.HasParagon then
+        return true
+    end
+    return false
+end
+
+--            { UCBC, 'HasNotParagon', {} },
+function HasNotParagon(aiBrain)
+    if not aiBrain.HasParagon then
+        return true
+    end
+    return false
+end

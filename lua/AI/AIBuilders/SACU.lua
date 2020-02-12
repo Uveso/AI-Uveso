@@ -12,13 +12,11 @@ BuilderGroup {
         PlatoonTemplate = 'U3 SACU RAMBO preset 12345',
         Priority = 18400,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 10, categories.RAMBOPRESET } },
-            -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.75}}, -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 10, categories.RAMBOPRESET } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.RAMBOPRESET }},
             -- Respect UnitCap
         },
@@ -29,13 +27,11 @@ BuilderGroup {
         PlatoonTemplate = 'U3 SACU ENGINEER preset 12345',
         Priority = 18399,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 12, categories.ENGINEERPRESET + categories.RASPRESET } },
-            -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.75}}, -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 12, categories.ENGINEERPRESET + categories.RASPRESET } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.ENGINEERPRESET + categories.RASPRESET }},
             -- Respect UnitCap
         },
@@ -46,13 +42,11 @@ BuilderGroup {
         PlatoonTemplate = 'U3 SACU RAS preset 123x5',
         Priority = 18400,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 12, categories.ENGINEERPRESET + categories.RASPRESET } },
-            -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.75}}, -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 12, categories.ENGINEERPRESET + categories.RASPRESET } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.ENGINEERPRESET + categories.RASPRESET }},
             -- Respect UnitCap
         },
@@ -63,13 +57,11 @@ BuilderGroup {
         PlatoonTemplate = 'U3 SACU COMBAT preset 1x34x',
         Priority = 18400,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.COMBATPRESET } },
-            -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.75}}, -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.COMBATPRESET } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.COMBATPRESET }},
             -- Respect UnitCap
         },
@@ -80,13 +72,11 @@ BuilderGroup {
         PlatoonTemplate = 'U3 SACU NANOCOMBAT preset x2x4x',
         Priority = 18400,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.NANOCOMBATPRESET } },
-            -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.75}}, -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.NANOCOMBATPRESET } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.NANOCOMBATPRESET }},
             -- Respect UnitCap
         },
@@ -97,13 +87,11 @@ BuilderGroup {
         PlatoonTemplate = 'U3 SACU BUBBLESHIELD preset 1xxxx',
         Priority = 18400,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.BUBBLESHIELDPRESET } },
-            -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.75}}, -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.BUBBLESHIELDPRESET } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.BUBBLESHIELDPRESET }},
             -- Respect UnitCap
         },
@@ -114,13 +102,11 @@ BuilderGroup {
         PlatoonTemplate = 'U3 SACU INTELJAMMER preset 1xxxx',
         Priority = 18400,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.INTELJAMMERPRESET } },
-            -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.75}}, -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.INTELJAMMERPRESET } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.INTELJAMMERPRESET }},
             -- Respect UnitCap
         },
@@ -131,13 +117,11 @@ BuilderGroup {
         PlatoonTemplate = 'U3 SACU SIMPLECOMBAT preset x2xxx',
         Priority = 18400,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.SIMPLECOMBATPRESET } },
-            -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.75}}, -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.SIMPLECOMBATPRESET } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.SIMPLECOMBATPRESET }},
             -- Respect UnitCap
         },
@@ -148,13 +132,11 @@ BuilderGroup {
         PlatoonTemplate = 'U3 SACU SHIELDCOMBAT preset x2xxx',
         Priority = 18400,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.SHIELDCOMBATPRESET } },
-            -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.75}}, -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.SHIELDCOMBATPRESET } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.SHIELDCOMBATPRESET }},
             -- Respect UnitCap
         },
@@ -165,13 +147,11 @@ BuilderGroup {
         PlatoonTemplate = 'U3 SACU ANTIAIR preset xx3xx',
         Priority = 18400,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.ANTIAIRPRESET } },
-            -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.75}}, -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.ANTIAIRPRESET } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.ANTIAIRPRESET }},
             -- Respect UnitCap
         },
@@ -182,13 +162,11 @@ BuilderGroup {
         PlatoonTemplate = 'U3 SACU STEALTH preset xx3xx',
         Priority = 18400,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.STEALTHPRESET } },
-            -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.75}}, -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.STEALTHPRESET } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STEALTHPRESET }},
             -- Respect UnitCap
         },
@@ -199,13 +177,11 @@ BuilderGroup {
         PlatoonTemplate = 'U3 SACU CLOAK preset xx3xx',
         Priority = 18400,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.CLOAKPRESET } },
-            -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.75}}, -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.CLOAKPRESET } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.CLOAKPRESET }},
             -- Respect UnitCap
         },
@@ -216,13 +192,11 @@ BuilderGroup {
         PlatoonTemplate = 'U3 SACU MISSILE preset xxx4x',
         Priority = 18400,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MISSILEPRESET } },
-            -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.75}}, -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MISSILEPRESET } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.MISSILEPRESET }},
             -- Respect UnitCap
         },
@@ -233,13 +207,11 @@ BuilderGroup {
         PlatoonTemplate = 'U3 SACU ADVANCEDCOMBAT preset xxx4x',
         Priority = 18400,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.ADVANCEDCOMBATPRESET } },
-            -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.75}}, -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.ADVANCEDCOMBATPRESET } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.ADVANCEDCOMBATPRESET }},
             -- Respect UnitCap
         },
@@ -250,13 +222,11 @@ BuilderGroup {
         PlatoonTemplate = 'U3 SACU ROCKET preset xxxx5',
         Priority = 18400,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.ROCKETPRESET } },
-            -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.75}}, -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.ROCKETPRESET } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.ROCKETPRESET }},
             -- Respect UnitCap
         },
@@ -267,13 +237,11 @@ BuilderGroup {
         PlatoonTemplate = 'U3 SACU ANTINAVAL preset xxxx5',
         Priority = 18400,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.ANTINAVALPRESET } },
-            -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.75}}, -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.ANTINAVALPRESET } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.ANTINAVALPRESET }},
             -- Respect UnitCap
         },
@@ -284,13 +252,11 @@ BuilderGroup {
         PlatoonTemplate = 'U3 SACU AMPHIBIOUS preset xxxx5',
         Priority = 18400,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.AMPHIBIOUSPRESET } },
-            -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.75}}, -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.AMPHIBIOUSPRESET } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.AMPHIBIOUSPRESET }},
             -- Respect UnitCap
         },
@@ -301,13 +267,11 @@ BuilderGroup {
         PlatoonTemplate = 'U3 SACU GUNSLINGER preset  xxxx5',
         Priority = 18400,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.GUNSLINGERPRESET } },
-            -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.75}}, -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.GUNSLINGERPRESET } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.GUNSLINGERPRESET }},
             -- Respect UnitCap
         },
@@ -318,13 +282,11 @@ BuilderGroup {
         PlatoonTemplate = 'U3 SACU NATURALPRODUCER preset xxxx5',
         Priority = 18400,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.NATURALPRODUCERPRESET } },
-            -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.75}}, -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.NATURALPRODUCERPRESET } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.NATURALPRODUCERPRESET }},
             -- Respect UnitCap
         },
@@ -335,13 +297,11 @@ BuilderGroup {
         PlatoonTemplate = 'U3 SACU DEFAULT preset xxxx5',
         Priority = 18400,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.DEFAULTPRESET } },
-            -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.75}}, -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.DEFAULTPRESET } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.DEFAULTPRESET }},
             -- Respect UnitCap
         },
@@ -352,13 +312,11 @@ BuilderGroup {
         PlatoonTemplate = 'U3 SACU HEAVYTROOPER preset xxxx5',
         Priority = 18400,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.HEAVYTROOPERPRESET } },
-            -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.75}}, -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.HEAVYTROOPERPRESET } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.HEAVYTROOPERPRESET }},
             -- Respect UnitCap
         },
@@ -369,13 +327,11 @@ BuilderGroup {
         PlatoonTemplate = 'U3 SACU FASTCOMBAT preset xxxx5',
         Priority = 18400,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.FASTCOMBATPRESET } },
-            -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.75}}, -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.FASTCOMBATPRESET } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.FASTCOMBATPRESET }},
             -- Respect UnitCap
         },

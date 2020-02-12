@@ -20,16 +20,15 @@ BuilderGroup {
         Priority = 1000,
         DelayEqualBuildPlattons = {'Scouts', 30},
         BuilderConditions = {
+            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { UCBC, 'CheckBuildPlattonDelay', { 'Scouts' }},
+            -- Have we the eco to build it ?
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER}},
             -- Do we need additional conditions to build it ?
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
-            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, categories.SCOUT * categories.LAND } },
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-            { UCBC, 'CheckBuildPlattonDelay', { 'Scouts' }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.LAND * categories.SCOUT }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.AIR * categories.SCOUT }},
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, categories.SCOUT * categories.LAND } },
             -- Respect UnitCap
         },
         BuilderType = 'Land',
@@ -54,12 +53,10 @@ BuilderGroup {
         PlatoonTemplate = 'T1LandArtillery',
         Priority = 0,
         BuilderConditions = {
-            -- When do we want to build this ?
-            -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
             -- Respect UnitCap
         },
         BuilderType = 'Land',
@@ -70,12 +67,10 @@ BuilderGroup {
         PlatoonTemplate = 'T1LandDFTank',
         Priority = 150,
         BuilderConditions = {
-            -- When do we want to build this ?
-            -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
@@ -86,14 +81,12 @@ BuilderGroup {
         PlatoonTemplate = 'T1LandDFBot',
         Priority = 150,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatioUveso', { 0.2, categories.MOBILE * categories.LAND * categories.BOT * categories.TECH1, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE - categories.BOT } },
-            -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             { MIBC, 'FactionIndex', { 1, 2, 3 , 5 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatioUveso', { 0.2, categories.MOBILE * categories.LAND * categories.BOT * categories.TECH1, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE - categories.BOT } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
@@ -104,13 +97,11 @@ BuilderGroup {
         PlatoonTemplate = 'T1LandArtillery',
         Priority = 150,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatioUveso', { 1.0, categories.MOBILE * categories.LAND * categories.INDIRECTFIRE * categories.TECH1, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE } },
-            -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.00, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatioUveso', { 1.0, categories.MOBILE * categories.LAND * categories.INDIRECTFIRE * categories.TECH1, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
@@ -121,13 +112,11 @@ BuilderGroup {
         PlatoonTemplate = 'T1LandAA',
         Priority = 150,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatioUveso', { 0.05, categories.MOBILE * categories.LAND * categories.ANTIAIR * categories.TECH1, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE } },
-            -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatioUveso', { 0.05, categories.MOBILE * categories.LAND * categories.ANTIAIR * categories.TECH1, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
@@ -141,13 +130,11 @@ BuilderGroup {
         PlatoonTemplate = 'T2LandDFTank',
         Priority = 250,
         BuilderConditions = {
-            -- When do we want to build this ?
-            -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
@@ -158,13 +145,11 @@ BuilderGroup {
         PlatoonTemplate = 'T2AttackTank',
         Priority = 250,
         BuilderConditions = {
-            -- When do we want to build this ?
-            -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
@@ -175,14 +160,12 @@ BuilderGroup {
         PlatoonTemplate = 'T2LandArtillery',
         Priority = 250,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatioUveso', { 0.1, categories.MOBILE * categories.LAND * categories.INDIRECTFIRE * categories.TECH2, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE } },
-            -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatioUveso', { 0.1, categories.MOBILE * categories.LAND * categories.INDIRECTFIRE * categories.TECH2, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
@@ -193,14 +176,12 @@ BuilderGroup {
         PlatoonTemplate = 'T2LandAA',
         Priority = 250,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatioUveso', { 0.05, categories.MOBILE * categories.LAND * categories.ANTIAIR * categories.TECH2, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE } },
-            -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatioUveso', { 0.05, categories.MOBILE * categories.LAND * categories.ANTIAIR * categories.TECH2, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
@@ -214,14 +195,12 @@ BuilderGroup {
         PlatoonTemplate = 'T3LandBot',
         Priority = 350,
         BuilderConditions = {
-            -- When do we want to build this ?
-            -- Do we need additional conditions to build it ?
-            { MIBC, 'FactionIndex', { 1, 3, 4, 5 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'FactionIndex', { 1, 3, 4, 5 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
@@ -232,13 +211,11 @@ BuilderGroup {
         PlatoonTemplate = 'T3SniperBots',
         Priority = 350,
         BuilderConditions = {
-            -- When do we want to build this ?
-            -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
@@ -249,13 +226,11 @@ BuilderGroup {
         PlatoonTemplate = 'T3ArmoredAssault',
         Priority = 350,
         BuilderConditions = {
-            -- When do we want to build this ?
-            -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
@@ -266,14 +241,12 @@ BuilderGroup {
         PlatoonTemplate = 'T3LandArtillery',
         Priority = 350,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatioUveso', { 0.1, categories.MOBILE * categories.LAND * categories.INDIRECTFIRE * categories.TECH3, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE } },
-            -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatioUveso', { 0.1, categories.MOBILE * categories.LAND * categories.INDIRECTFIRE * categories.TECH3, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
@@ -284,14 +257,12 @@ BuilderGroup {
         PlatoonTemplate = 'T3LandAA',
         Priority = 350,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatioUveso', { 0.05, categories.MOBILE * categories.LAND * categories.ANTIAIR * categories.TECH3, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE } },
-            -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatioUveso', { 0.05, categories.MOBILE * categories.LAND * categories.ANTIAIR * categories.TECH3, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
@@ -302,15 +273,13 @@ BuilderGroup {
         PlatoonTemplate = 'T3MobileShields',
         Priority = 350,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatioUveso', { 0.1, categories.MOBILE * categories.LAND * categories.SHIELD, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE * categories.TECH3 } },
-            { UCBC, 'HaveUnitRatioUveso', { 0.1, categories.MOBILE * categories.LAND * categories.STEALTHFIELD, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE * categories.TECH3 } },
-            -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatioUveso', { 0.1, categories.MOBILE * categories.LAND * categories.SHIELD, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE * categories.TECH3 } },
+            { UCBC, 'HaveUnitRatioUveso', { 0.1, categories.MOBILE * categories.LAND * categories.STEALTHFIELD, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE * categories.TECH3 } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
@@ -333,12 +302,10 @@ BuilderGroup {
         PlatoonTemplate = 'T1LandArtillery',
         Priority = 0,
         BuilderConditions = {
-            -- When do we want to build this ?
-            -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
-            -- Don't build it if...
+            -- When do we want to build this ?
             -- Respect UnitCap
         },
         BuilderType = 'Land',
@@ -349,15 +316,13 @@ BuilderGroup {
         PlatoonTemplate = 'T1LandDFTank',
         Priority = 150,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.LAND - categories.ENGINEER, '<=', (categories.MOBILE * categories.LAND * (categories.DIRECTFIRE + categories.INDIRECTFIRE)) } },
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER } },
-            -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER } },
+            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.LAND - categories.ENGINEER, '<=', (categories.MOBILE * categories.LAND * (categories.DIRECTFIRE + categories.INDIRECTFIRE)) } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
@@ -368,15 +333,13 @@ BuilderGroup {
         PlatoonTemplate = 'T1LandDFBot',
         Priority = 150,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatioUveso', { 0.2, categories.MOBILE * categories.LAND * categories.BOT * categories.TECH1, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE - categories.BOT } },
-            -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             { MIBC, 'FactionIndex', { 1, 2, 3 , 5 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatioUveso', { 0.2, categories.MOBILE * categories.LAND * categories.BOT * categories.TECH1, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE - categories.BOT } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
@@ -387,14 +350,12 @@ BuilderGroup {
         PlatoonTemplate = 'T1LandArtillery',
         Priority = 150,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatioUveso', { 0.1, categories.MOBILE * categories.LAND * categories.INDIRECTFIRE * categories.TECH1, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE } },
-            -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatioUveso', { 0.1, categories.MOBILE * categories.LAND * categories.INDIRECTFIRE * categories.TECH1, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
@@ -405,14 +366,12 @@ BuilderGroup {
         PlatoonTemplate = 'T1LandAA',
         Priority = 150,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatioUveso', { 0.05, categories.MOBILE * categories.LAND * categories.ANTIAIR * categories.TECH1, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE } },
-            -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatioUveso', { 0.05, categories.MOBILE * categories.LAND * categories.ANTIAIR * categories.TECH1, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
@@ -426,14 +385,12 @@ BuilderGroup {
         PlatoonTemplate = 'T2LandDFTank',
         Priority = 250,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.LAND - categories.ENGINEER, '<=', (categories.MOBILE * categories.LAND * (categories.DIRECTFIRE + categories.INDIRECTFIRE)) } },
-            -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.11, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.LAND - categories.ENGINEER, '<=', (categories.MOBILE * categories.LAND * (categories.DIRECTFIRE + categories.INDIRECTFIRE)) } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
@@ -444,14 +401,12 @@ BuilderGroup {
         PlatoonTemplate = 'T2AttackTank',
         Priority = 250,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.LAND - categories.ENGINEER, '<=', (categories.MOBILE * categories.LAND * (categories.DIRECTFIRE + categories.INDIRECTFIRE)) } },
-            -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.11, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.LAND - categories.ENGINEER, '<=', (categories.MOBILE * categories.LAND * (categories.DIRECTFIRE + categories.INDIRECTFIRE)) } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
@@ -462,14 +417,12 @@ BuilderGroup {
         PlatoonTemplate = 'T2LandArtillery',
         Priority = 250,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatioUveso', { 0.1, categories.MOBILE * categories.LAND * categories.INDIRECTFIRE * categories.TECH2, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE } },
-            -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.11, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatioUveso', { 0.1, categories.MOBILE * categories.LAND * categories.INDIRECTFIRE * categories.TECH2, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
@@ -480,14 +433,12 @@ BuilderGroup {
         PlatoonTemplate = 'T2LandAA',
         Priority = 250,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatioUveso', { 0.05, categories.MOBILE * categories.LAND * categories.ANTIAIR * categories.TECH2, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE } },
-            -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.11, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatioUveso', { 0.05, categories.MOBILE * categories.LAND * categories.ANTIAIR * categories.TECH2, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
@@ -501,15 +452,13 @@ BuilderGroup {
         PlatoonTemplate = 'T3LandBot',
         Priority = 350,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.LAND - categories.ENGINEER, '<=', (categories.MOBILE * categories.LAND * (categories.DIRECTFIRE + categories.INDIRECTFIRE)) } },
-            -- Do we need additional conditions to build it ?
-            { MIBC, 'FactionIndex', { 1, 3, 4, 5 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'FactionIndex', { 1, 3, 4, 5 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.12, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.LAND - categories.ENGINEER, '<=', (categories.MOBILE * categories.LAND * (categories.DIRECTFIRE + categories.INDIRECTFIRE)) } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
@@ -520,14 +469,12 @@ BuilderGroup {
         PlatoonTemplate = 'T3SniperBots',
         Priority = 350,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.LAND - categories.ENGINEER, '<=', (categories.MOBILE * categories.LAND * (categories.DIRECTFIRE + categories.INDIRECTFIRE)) } },
-            -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.12, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.LAND - categories.ENGINEER, '<=', (categories.MOBILE * categories.LAND * (categories.DIRECTFIRE + categories.INDIRECTFIRE)) } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
@@ -538,14 +485,12 @@ BuilderGroup {
         PlatoonTemplate = 'T3ArmoredAssault',
         Priority = 350,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.LAND - categories.ENGINEER, '<=', (categories.MOBILE * categories.LAND * (categories.DIRECTFIRE + categories.INDIRECTFIRE)) } },
-            -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.12, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.LAND - categories.ENGINEER, '<=', (categories.MOBILE * categories.LAND * (categories.DIRECTFIRE + categories.INDIRECTFIRE)) } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
@@ -556,14 +501,12 @@ BuilderGroup {
         PlatoonTemplate = 'T3LandArtillery',
         Priority = 350,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatioUveso', { 0.1, categories.MOBILE * categories.LAND * categories.INDIRECTFIRE * categories.TECH3, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE } },
-            -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.12, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatioUveso', { 0.1, categories.MOBILE * categories.LAND * categories.INDIRECTFIRE * categories.TECH3, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
@@ -574,14 +517,12 @@ BuilderGroup {
         PlatoonTemplate = 'T3LandAA',
         Priority = 350,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatioUveso', { 0.05, categories.MOBILE * categories.LAND * categories.ANTIAIR * categories.TECH3, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE } },
-            -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.12, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatioUveso', { 0.05, categories.MOBILE * categories.LAND * categories.ANTIAIR * categories.TECH3, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
@@ -592,15 +533,13 @@ BuilderGroup {
         PlatoonTemplate = 'T3MobileShields',
         Priority = 350,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatioUveso', { 0.1, categories.MOBILE * categories.LAND * categories.SHIELD, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE * categories.TECH3 } },
-            { UCBC, 'HaveUnitRatioUveso', { 0.1, categories.MOBILE * categories.LAND * categories.STEALTHFIELD, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE * categories.TECH3 } },
-            -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.12, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatioUveso', { 0.1, categories.MOBILE * categories.LAND * categories.SHIELD, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE * categories.TECH3 } },
+            { UCBC, 'HaveUnitRatioUveso', { 0.1, categories.MOBILE * categories.LAND * categories.STEALTHFIELD, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE * categories.TECH3 } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
@@ -621,13 +560,11 @@ BuilderGroup {
         PlatoonTemplate = 'T1LandArtillery',
         Priority = 18600,
         BuilderConditions = {
+            -- Have we the eco to build it ?
+            { MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 1, categories.MOBILE * categories.LAND - categories.SCOUT }}, -- radius, LocationType, unitCount, categoryEnemy
-            -- Do we need additional conditions to build it ?
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 20, (categories.STRUCTURE + categories.MOBILE) * (categories.DIRECTFIRE + categories.INDIRECTFIRE) }},
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-            { UCBC, 'HasNotParagon', {} },
             -- Respect UnitCap
         },
         BuilderType = 'Land',
@@ -637,13 +574,11 @@ BuilderGroup {
         PlatoonTemplate = 'T1LandAA',
         Priority = 18600,
         BuilderConditions = {
+            -- Have we the eco to build it ?
+            { MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 1, categories.MOBILE * categories.AIR - categories.SCOUT - categories.SATELLITE}}, -- radius, LocationType, unitCount, categoryEnemy
-            -- Do we need additional conditions to build it ?
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 6, (categories.STRUCTURE + categories.MOBILE) * categories.ANTIAIR }},
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-            { UCBC, 'HasNotParagon', {} },
             -- Respect UnitCap
         },
         BuilderType = 'Land',
@@ -660,12 +595,10 @@ BuilderGroup {
         PlatoonTemplate = 'T1LandArtillery',
         Priority = 160,
         BuilderConditions = {
+            -- Have we the eco to build it ?
+            { MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  50, 'LocationType', 1, categories.MOBILE * categories.LAND - categories.SCOUT}}, -- radius, LocationType, unitCount, categoryEnemy
-            -- Do we need additional conditions to build it ?
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-            { UCBC, 'HasNotParagon', {} },
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 10, (categories.STRUCTURE + categories.MOBILE) * (categories.DIRECTFIRE + categories.INDIRECTFIRE) }},
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
@@ -677,12 +610,10 @@ BuilderGroup {
         PlatoonTemplate = 'T1LandAA',
         Priority = 160,
         BuilderConditions = {
+            -- Have we the eco to build it ?
+            { MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  50, 'LocationType', 1, categories.MOBILE * categories.AIR - categories.SCOUT - categories.SATELLITE}}, -- radius, LocationType, unitCount, categoryEnemy
-            -- Do we need additional conditions to build it ?
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-            { UCBC, 'HasNotParagon', {} },
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 10, categories.ANTIAIR }},
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },

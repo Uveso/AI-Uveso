@@ -18,15 +18,13 @@ BuilderGroup {
         DelayEqualBuildPlattons = {'MobileExperimental', 10},
         InstanceCount = 3,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, categories.ENGINEER * categories.TECH3 }},
+            { UCBC, 'CheckBuildPlattonDelay', { 'MobileExperimental' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome', { 7.0, 600.0 }},                    -- Base income
             { EBC, 'GreaterThanEconStorageRatio', { 0.95, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
-            { UCBC, 'CheckBuildPlattonDelay', { 'MobileExperimental' }},
+            -- When do we want to build this ?
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, categories.ENGINEER * categories.TECH3 }},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
             { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Any',
@@ -50,15 +48,13 @@ BuilderGroup {
         DelayEqualBuildPlattons = {'MobileExperimental', 10},
         InstanceCount = 3,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, categories.ENGINEER * categories.TECH3 }},
+            { UCBC, 'CheckBuildPlattonDelay', { 'MobileExperimental' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome', { 7.0, 600.0 }},                    -- Base income
             { EBC, 'GreaterThanEconStorageRatio', { 0.95, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
-            { UCBC, 'CheckBuildPlattonDelay', { 'MobileExperimental' }},
+            -- When do we want to build this ?
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, categories.ENGINEER * categories.TECH3 }},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
             { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Any',
@@ -82,16 +78,14 @@ BuilderGroup {
         DelayEqualBuildPlattons = {'MobileExperimental', 10},
         InstanceCount = 6,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
-            -- Do we need additional conditions to build it ?
             { MIBC, 'CanPathToCurrentEnemy', { true } },
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, categories.ENGINEER * categories.TECH3 }},
+            { UCBC, 'CheckBuildPlattonDelay', { 'MobileExperimental' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome', { 7.0, 600.0 }},                    -- Base income
             { EBC, 'GreaterThanEconStorageRatio', { 0.95, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
-            -- Don't build it if...
-            { UCBC, 'CheckBuildPlattonDelay', { 'MobileExperimental' }},
+            -- When do we want to build this ?
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, categories.ENGINEER * categories.TECH3 }},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
             { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Any',
@@ -115,16 +109,15 @@ BuilderGroup {
         DelayEqualBuildPlattons = {'MobileExperimental', 10},
         InstanceCount = 1,
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.MOBILE * categories.EXPERIMENTAL }},
-            -- Do we need additional conditions to build it ?
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
+            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { UCBC, 'CheckBuildPlattonDelay', { 'MobileExperimental' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome', { 7.0, 600.0 }},                    -- Base income
             { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.MOBILE * categories.EXPERIMENTAL }},
             -- Don't build it if...
-            { UCBC, 'CheckBuildPlattonDelay', { 'MobileExperimental' }},
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -147,17 +140,15 @@ BuilderGroup {
         DelayEqualBuildPlattons = {'MobileExperimental', 10},
         InstanceCount = 1,
         BuilderConditions = {
-            { UCBC, 'GreaterThanGameTimeSeconds', { 60*20 } },
-            -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
-            -- Do we need additional conditions to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
+            { UCBC, 'CheckBuildPlattonDelay', { 'MobileExperimental' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome', { 7.0, 100.0 }},                    -- Base income
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            -- Don't build it if...
-            { UCBC, 'CheckBuildPlattonDelay', { 'MobileExperimental' }},
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.MOBILE * categories.EXPERIMENTAL }},
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60*20 } },
         },
         BuilderType = 'Any',
         BuilderData = {

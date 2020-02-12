@@ -14,12 +14,10 @@ BuilderGroup {
             AIPlan = 'ShieldRepairAI',
         },
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'UnitsLessInPlatoon', { 'ShieldRepairAI', 3 } },
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 1, categories.SUBCOMMANDER} },
             -- Have we the eco to build it ?
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 1, categories.SUBCOMMANDER} },
+            { UCBC, 'UnitsLessInPlatoon', { 'ShieldRepairAI', 3 } },
         },
         BuilderType = 'Any',
     },
@@ -33,13 +31,11 @@ BuilderGroup {
             AIPlan = 'ShieldRepairAI',
         },
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.EXPERIMENTAL } },
-            { UCBC, 'UnitsLessInPlatoon', { 'ShieldRepairAI', 8 } },
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 1, categories.SUBCOMMANDER} },
             -- Have we the eco to build it ?
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 1, categories.SUBCOMMANDER} },
+            { UCBC, 'UnitsLessInPlatoon', { 'ShieldRepairAI', 8 } },
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.EXPERIMENTAL } },
         },
         BuilderType = 'Any',
     },
@@ -53,13 +49,11 @@ BuilderGroup {
             AIPlan = 'ShieldRepairAI',
         },
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 2, categories.STRUCTURE * categories.SHIELD * categories.EXPERIMENTAL } },
-            { UCBC, 'UnitsLessInPlatoon', { 'ShieldRepairAI', 12 } },
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 1, categories.SUBCOMMANDER} },
             -- Have we the eco to build it ?
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 1, categories.SUBCOMMANDER} },
+            { UCBC, 'UnitsLessInPlatoon', { 'ShieldRepairAI', 12 } },
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 2, categories.STRUCTURE * categories.SHIELD * categories.EXPERIMENTAL } },
         },
         BuilderType = 'Any',
     },

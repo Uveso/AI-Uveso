@@ -1,5 +1,4 @@
-WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] * AI-Uveso: offset platoon.lua' )
---6692
+--WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] * AI-Uveso: offset platoon.lua' )
 
 local UUtils = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua')
 
@@ -428,12 +427,10 @@ Platoon = Class(OldPlatoonClass) {
         end
 
         -- wait in case we're still on a base
-        if not eng.Dead then
-            local count = 0
-            while eng:IsUnitState('Attached') and count < 2 do
-                WaitSeconds(6)
-                count = count + 1
-            end
+        local count = 0
+        while not eng.Dead and eng:IsUnitState('Attached') and count < 2 do
+            WaitSeconds(6)
+            count = count + 1
         end
 
         if not eng:IsUnitState('Building') then
@@ -780,6 +777,10 @@ Platoon = Class(OldPlatoonClass) {
                     return
                 end
             end
+            -- delete the repeat flag so the engineer will not repeat on its next task
+            self.PlatoonData.Construction.RepeatBuild = nil
+            self:MoveToLocation(aiBrain.BuilderManagers['MAIN'].Position, false)
+            return
         end
         OldPlatoonClass.PlatoonDisband(self)
     end,
@@ -925,7 +926,8 @@ Platoon = Class(OldPlatoonClass) {
             WaitTicks(1)
             if aiBrain:PlatoonExists(self) and target and not target.Dead then
                 LastTargetPos = target:GetPosition()
-                if VDist2(basePosition[1] or 0, basePosition[3] or 0, LastTargetPos[1] or 0, LastTargetPos[3] or 0) < maxRadius then
+                -- check if we are still inside the attack radius and be sure the area is not a nuke blast area
+                if VDist2(basePosition[1] or 0, basePosition[3] or 0, LastTargetPos[1] or 0, LastTargetPos[3] or 0) < maxRadius and not AIUtils.IsNukeBlastArea(aiBrain, LastTargetPos) then
                     self:Stop()
                     if self.PlatoonData.IgnorePathing or VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, LastTargetPos[1] or 0, LastTargetPos[3] or 0) < 60 then
                         self:AttackTarget(target)
@@ -1062,8 +1064,14 @@ Platoon = Class(OldPlatoonClass) {
                 end
             else
                 if aiBrain:PlatoonExists(self) and target and not target.Dead and not target:BeenDestroyed() then
-                    self:SetPlatoonFormationOverride('AttackFormation')
-                    self:AttackTarget(target)
+                    LastTargetPos = target:GetPosition()
+                    -- check if the target is not in a nuke blast area
+                    if AIUtils.IsNukeBlastArea(aiBrain, LastTargetPos) then
+                        target = nil
+                    else
+                        self:SetPlatoonFormationOverride('AttackFormation')
+                        self:AttackTarget(target)
+                    end
                     WaitSeconds(2)
                 end
             end
@@ -1176,7 +1184,14 @@ Platoon = Class(OldPlatoonClass) {
                 end
             else
                 if aiBrain:PlatoonExists(self) and target and not target.Dead and not target:BeenDestroyed() then
-                    self:AttackTarget(target)
+                    LastTargetPos = target:GetPosition()
+                    -- check if the target is not in a nuke blast area
+                    if AIUtils.IsNukeBlastArea(aiBrain, LastTargetPos) then
+                        target = nil
+                    else
+                        self:SetPlatoonFormationOverride('AttackFormation')
+                        self:AttackTarget(target)
+                    end
                     WaitSeconds(2)
                 end
             end

@@ -42,14 +42,12 @@ BuilderGroup {
             },
         },
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 0, categories.SUBCOMMANDER} },
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'UnitsGreaterAtEnemy', { 1 , categories.STRUCTURE } },
             { MIBC, 'FactionIndex', { 2, 4 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 1000.0 } }, -- relative income (wee need 10000 energy for a teleport. x3 SACU's
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 0, categories.SUBCOMMANDER} },
+            { UCBC, 'UnitsGreaterAtEnemy', { 1 , categories.STRUCTURE } },
             -- Respect UnitCap
         },
         BuilderType = 'Any',
@@ -77,14 +75,12 @@ BuilderGroup {
             },
         },
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 3, categories.SUBCOMMANDER} },
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'UnitsGreaterAtEnemy', { 1 , categories.STRUCTURE } },
             { MIBC, 'FactionIndex', { 2, 4 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 3000.0 } }, -- relative income (wee need 10000 energy for a teleport. x3 SACU's
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 3, categories.SUBCOMMANDER} },
+            { UCBC, 'UnitsGreaterAtEnemy', { 1 , categories.STRUCTURE } },
             -- Respect UnitCap
         },
         BuilderType = 'Any',
@@ -112,14 +108,12 @@ BuilderGroup {
             },
         },
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 6, categories.SUBCOMMANDER} },
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'UnitsGreaterAtEnemy', { 1 , categories.STRUCTURE } },
             { MIBC, 'FactionIndex', { 2, 4 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 6000.0 } }, -- relative income (wee need 10000 energy for a teleport. x3 SACU's
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 6, categories.SUBCOMMANDER} },
+            { UCBC, 'UnitsGreaterAtEnemy', { 1 , categories.STRUCTURE } },
             -- Respect UnitCap
         },
         BuilderType = 'Any',
@@ -147,14 +141,12 @@ BuilderGroup {
             },
         },
         BuilderConditions = {
-            -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 9, categories.SUBCOMMANDER} },
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'UnitsGreaterAtEnemy', { 1 , categories.STRUCTURE } },
             { MIBC, 'FactionIndex', { 2, 4 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 12000.0 } }, -- relative income (wee need 10000 energy for a teleport. x3 SACU's
-            -- Don't build it if...
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 9, categories.SUBCOMMANDER} },
+            { UCBC, 'UnitsGreaterAtEnemy', { 1 , categories.STRUCTURE } },
             -- Respect UnitCap
         },
         BuilderType = 'Any',
@@ -182,12 +174,9 @@ BuilderGroup {
             },
         },
         BuilderConditions = {
+            -- Have we the eco to build it ?
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 9, categories.SUBCOMMANDER} },
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'UnitsGreaterAtEnemy', { 1 , categories.STRUCTURE } },
-            -- Have we the eco to build it ?
-            -- Don't build it if...
             -- Respect UnitCap
         },
         BuilderType = 'Any',

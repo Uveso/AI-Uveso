@@ -1,4 +1,16 @@
 *************************************************************************************************************************************
+v79 (12.Feb.2019)
+
+- New: Added a function to the targetmanager to get high threat areas for nuke/arty fire
+- New: Units will now evade the area of a nuke blast (only evading own nukes)
+- Fix: Added patch for enginermanager (Improved game speed at late game)
+- Fix: Ecomanager no longer pauses wrong buildings
+- Opt: Engineer will now return to base instead idling on mass spots
+- Opt: Hydros will now be build earlier if available
+- Opt: Changed priority for all assisters to match new eco manager settings
+- Opt: Optimized buildconditions for better gamespeed
+
+*************************************************************************************************************************************
 v78 (31.Jan.2019)
 
 - New: SCU enhance function can now also remove already installed enhancements.

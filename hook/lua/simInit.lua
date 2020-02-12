@@ -403,7 +403,7 @@ function DrawMarkerThreats()
                     MarkerPosition[1] = markerInfo.position[1] + (Offsets[markerInfo.graphName][1])
                     MarkerPosition[2] = markerInfo.position[2] + (Offsets[markerInfo.graphName][2])
                     MarkerPosition[3] = markerInfo.position[3] + (Offsets[markerInfo.graphName][3])
-                    DrawCircle(MarkerPosition, (Scenario.MasterChain._MASTERCHAIN_.Markers[nodename][FocussedArmy] / 20) + 0.1, Offsets[markerInfo.graphName]['color'] )
+                    DrawCircle(MarkerPosition, (Scenario.MasterChain._MASTERCHAIN_.Markers[nodename][FocussedArmy] / 120) + 0.1, Offsets[markerInfo.graphName]['color'] )
                     --DrawCircle(markerInfo.position, (Scenario.MasterChain._MASTERCHAIN_.Markers[nodename].Threat[FocussedArmy] + 1.8) / 5 , 'ff000000' )
                 end
             end
@@ -1588,8 +1588,8 @@ end
 function ValidateModFiles()
     local ModName = "* AI-Uveso"
     local ModDirectory = 'AI-Uveso'
-    local Files = 80
-    local Bytes = 1519434
+    local Files = 82
+    local Bytes = 1508494
     LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Running from: '..debug.getinfo(1).source..'.')
     LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Checking directory /mods/ for '..ModDirectory..'...')
     local FilesInFolder = DiskFindFiles('/mods/', '*.*')

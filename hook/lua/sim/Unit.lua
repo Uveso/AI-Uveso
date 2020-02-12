@@ -2,6 +2,13 @@
 local UvesoUnit = Unit
 Unit = Class(UvesoUnit) {
 
+    -- For AI Patch V8. Only fork a thread if we need to
+    StopRocking = function(self)
+        if self.StartRockThread then
+            KillThread(self.StartRockThread)
+            self.StopRockThread = self:ForkThread(self.EndRockingThread)
+        end
+    end,
     -- For AI Patch V8. Need to hook the deathThread to remoce the DestroyAllBuildEffects() call
     DeathThread = function(self, overkillRatio, instigator)
         local isNaval = EntityCategoryContains(categories.NAVAL, self)

@@ -326,6 +326,7 @@ end
 
 -- AI-Uveso: Helper function for targeting
 function ValidateLayer(UnitPos,MovementLayer)
+    -- Air can go everywhere
     if MovementLayer == 'Air' then
         return true
     end
@@ -336,12 +337,27 @@ function ValidateLayer(UnitPos,MovementLayer)
         --LOG('AttackLayer '..MovementLayer..' - TerrainHeight > SurfaceHeight. = Target is on land ')
         return true
     end
-    -- Terrain > Surface = Target is underwater
+    -- Terrain < Surface = Target is underwater
     if TerrainHeight < SurfaceHeight and ( MovementLayer == 'Water' or MovementLayer == 'Amphibious' ) then
         --LOG('AttackLayer '..MovementLayer..' - TerrainHeight < SurfaceHeight. = Target is on water ')
         return true
     end
 
+    return false
+end
+
+-- AI-Uveso: Helper function for targeting
+function IsNukeBlastArea(aiBrain, TargetPosition)
+    -- check if the target is inside a nuke blast radius
+    if aiBrain.NukedArea then
+        for i, data in aiBrain.NukedArea or {} do
+            if data.NukeTime + 50 <  GetGameTimeSeconds() then
+                table.remove(aiBrain.NukedArea, i)
+            elseif VDist2(TargetPosition[1], TargetPosition[3], data.Location[1], data.Location[3]) < 40 then
+                return true
+            end
+        end
+    end
     return false
 end
 
@@ -425,9 +441,11 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
                 end
                 TargetPosition = Target:GetPosition()
                 EnemyStrength = 0
+                -- check if the target is inside a nuke blast radius
+                if IsNukeBlastArea(aiBrain, TargetPosition) then continue end
                 -- check if the target is on the same layer then the attacker
                 if not ValidateLayer(TargetPosition, platoon.MovementLayer) then continue end
-                -- check if we have a special player index as enemy
+                -- check if we have a special player as enemy
                 if enemyBrain and enemyIndex and enemyBrain ~= enemyIndex then continue end
                 -- check if the Target is still alive, matches our target priority and can be attacked from our platoon
                 canAttack = platoon:CanAttackTarget(squad, Target) or false
@@ -553,8 +571,9 @@ function AIFindNearestCategoryTargetInRangeCDR(aiBrain, position, maxRange, Move
                 end
                 TargetPosition = Target:GetPosition()
                 EnemyStrength = 0
-                -- check if the target is on the same layer then the attacker
-                -- check if we have a special player index as enemy
+                -- check if the target is inside a nuke blast radius
+                if IsNukeBlastArea(aiBrain, TargetPosition) then continue end
+                -- check if we have a special player as enemy
                 if enemyBrain and enemyIndex and enemyBrain ~= enemyIndex then continue end
                 -- check if the Target is still alive, matches our target priority and can be attacked from our platoon
                 if not Target.Dead and EntityCategoryContains(category, Target) then
@@ -612,8 +631,9 @@ function AIFindNearestCategoryTeleportLocation(aiBrain, position, maxRange, Move
                 continue
             end
             TargetPosition = Target:GetPosition()
-            -- check if the target is on the same layer then the attacker
-            -- check if we have a special player index as enemy
+            -- check if the target is inside a nuke blast radius
+            if IsNukeBlastArea(aiBrain, TargetPosition) then continue end
+            -- check if we have a special player as enemy
             if enemyBrain and enemyIndex and enemyBrain ~= enemyIndex then continue end
             -- check if the Target is still alive, matches our target priority and can be attacked from our platoon
             if not Target.Dead and EntityCategoryContains(category, Target) then

@@ -10,29 +10,10 @@
 BaseBuilderTemplate {
     BaseTemplateName = 'uvesonull',
     Builders = {
-        'UC ACU Attack Former',
-        'U123 Engineer Builders',
-        'UC123 Assistees',
-        'U1 MassBuilders',
-        'U123 ExtractorUpgrades',
-        'U1 MassStorage Builder',
-        'U123 Energy Builders',
-        'U1 Factory Builders 1st',
-        'U1 Factory Builders EXPERIMENTAL',
-        'U1 Factory Builders RECOVER',
-        'U1 Gate Builders',
-        'U123 Factory Upgrader Rush',
-        'U3 SACU Builder',
-        'U3 SACU Teleport Formers',
-        'U234 Repair Shields Former',
-
-        'U123 Land Formers PanicZone',
-        'U123 Land Formers MilitaryZone',
-        'U123 Land Formers EnemyZone',
-        'U123 Land Formers Trasher',
-        'U123 Land Formers Guards',
-
-        'U4 Economic Experimental Builders',
+        'N1 1 Factory Builders',
+--        'N1 1 Engineer Builders',
+--        'N1 1 Energy Builders',
+--        'N1 MassBuilders', 
 },
     -- Not used by Uveso's AI. We always need intel in case the commander is dead.
     NonCheatBuilders = {
