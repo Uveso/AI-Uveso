@@ -60,7 +60,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER } },
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD } },
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.BOMBER, '<=', categories.MOBILE * categories.AIR } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
@@ -111,7 +111,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.11, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.BOMBER, '<=', categories.MOBILE * categories.AIR } },
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER } },
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
@@ -368,7 +368,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.70 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 6, categories.MOBILE * categories.ENGINEER}},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 6, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD}},
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.LAND * categories.FACTORY * categories.TECH1 }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.TECH3 - categories.ENGINEER }},
              -- Respect UnitCap
@@ -388,7 +388,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.TECH3 - categories.ENGINEER }},
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.LAND * categories.FACTORY * categories.TECH1 }},
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 6, categories.MOBILE * categories.ENGINEER}},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 6, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD}},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 2, categories.MOBILE * categories.AIR  * categories.GROUNDATTACK }},
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
             -- Respect UnitCap
@@ -407,7 +407,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.70 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.TECH3 - categories.ENGINEER }},
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 6, categories.MOBILE * categories.ENGINEER}},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 6, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD}},
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.LAND * categories.FACTORY * categories.TECH1 }},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 2, categories.MOBILE * categories.AIR  * categories.BOMBER }},
             { UCBC, 'HaveUnitRatioUveso', { 1.0, categories.MOBILE * categories.AIR * categories.BOMBER, '<',categories.MOBILE * categories.AIR * categories.HIGHALTAIR * categories.ANTIAIR } },
@@ -1053,9 +1053,13 @@ BuilderGroup {
             AttackEnemyStrength = 1000000,                                      -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = false,                                              -- If true, the platoon will not use AI pathmarkers and move directly to the target
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
-            TargetSearchCategory = categories.MOBILE * categories.AIR - categories.SCOUT , -- Only find targets matching these categories.
+            TargetSearchCategory = categories.MOBILE * categories.AIR - categories.SCOUT, -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.MOBILE * categories.EXPERIMENTAL,
+                categories.MOBILE * categories.AIR * categories.TRANSPORTFOCUS,
+                categories.MOBILE * categories.AIR * categories.BOMBER,
+                categories.MOBILE * categories.AIR * categories.GROUNDATTACK,
+                categories.MOBILE * categories.AIR * categories.ANTIAIR * categories.HIGHALTAIR,
                 categories.MOBILE * categories.AIR,
             },
         },
@@ -1080,10 +1084,10 @@ BuilderGroup {
             TargetSearchCategory = categories.MOBILE * categories.AIR - categories.SCOUT, -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.MOBILE * categories.EXPERIMENTAL,
-                categories.MOBILE * categories.AIR * categories.ANTIAIR * categories.HIGHALTAIR,
-                categories.MOBILE * categories.AIR * categories.ANTIAIR,
-                categories.MOBILE * categories.AIR * categories.BOMBER,
                 categories.MOBILE * categories.AIR * categories.TRANSPORTFOCUS,
+                categories.MOBILE * categories.AIR * categories.BOMBER,
+                categories.MOBILE * categories.AIR * categories.GROUNDATTACK,
+                categories.MOBILE * categories.AIR * categories.ANTIAIR * categories.HIGHALTAIR,
                 categories.MOBILE * categories.AIR,
             },
         },
@@ -1108,10 +1112,10 @@ BuilderGroup {
             TargetSearchCategory = categories.MOBILE * categories.AIR - categories.SCOUT, -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.MOBILE * categories.EXPERIMENTAL,
-                categories.MOBILE * categories.AIR * categories.ANTIAIR * categories.HIGHALTAIR,
-                categories.MOBILE * categories.AIR * categories.ANTIAIR,
-                categories.MOBILE * categories.AIR * categories.BOMBER,
                 categories.MOBILE * categories.AIR * categories.TRANSPORTFOCUS,
+                categories.MOBILE * categories.AIR * categories.BOMBER,
+                categories.MOBILE * categories.AIR * categories.GROUNDATTACK,
+                categories.MOBILE * categories.AIR * categories.ANTIAIR * categories.HIGHALTAIR,
                 categories.MOBILE * categories.AIR,
             },
         },
@@ -1198,7 +1202,7 @@ BuilderGroup {
                 categories.INDIRECTFIRE * categories.TECH2,
                 categories.INDIRECTFIRE * categories.TECH1,
                 categories.COMMAND,
-                categories.ENGINEER,
+                categories.ENGINEER - categories.STATIONASSISTPOD,
                 categories.SHIELD,
                 categories.ANTIAIR,
                 categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
@@ -1214,6 +1218,7 @@ BuilderGroup {
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to form this ?
+            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 1, categories.MOBILE * categories.EXPERIMENTAL }}, -- radius, LocationType, unitCount, categoryEnemy
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 0, categories.MOBILE * categories.LAND * categories.INDIRECTFIRE }}, -- radius, LocationType, unitCount, categoryEnemy
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
@@ -1279,6 +1284,7 @@ BuilderGroup {
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
+            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 1, categories.MOBILE * categories.EXPERIMENTAL }}, -- radius, LocationType, unitCount, categoryEnemy
             -- When do we want to form this ?
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
@@ -1309,6 +1315,7 @@ BuilderGroup {
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
+            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 1, categories.MOBILE * categories.EXPERIMENTAL }}, -- radius, LocationType, unitCount, categoryEnemy
             -- When do we want to form this ?
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
@@ -1324,10 +1331,10 @@ BuilderGroup {
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 0,                                            -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = false,                                              -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.STRUCTURE + categories.ENGINEER,                        -- Only find targets matching these categories.
+            TargetSearchCategory = categories.STRUCTURE + categories.ENGINEER - categories.STATIONASSISTPOD,                        -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.MASSEXTRACTION,
-                categories.ENGINEER,
+                categories.ENGINEER - categories.STATIONASSISTPOD,
                 categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
                 categories.STRUCTURE * categories.ARTILLERY,
                 categories.STRUCTURE * categories.NUKE,
@@ -1341,7 +1348,7 @@ BuilderGroup {
             WeaponTargetCategories = {                                          -- Override weapon target priorities
                 categories.MASSEXTRACTION,
                 categories.COMMAND,
-                categories.ENGINEER,
+                categories.ENGINEER - categories.STATIONASSISTPOD,
                 categories.SHIELD,
                 categories.ANTIAIR,
                 categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
@@ -1356,6 +1363,7 @@ BuilderGroup {
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
+            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 1, categories.MOBILE * categories.EXPERIMENTAL }}, -- radius, LocationType, unitCount, categoryEnemy
             -- When do we want to form this ?
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
@@ -1371,10 +1379,10 @@ BuilderGroup {
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 0,                                            -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = false,                                              -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.STRUCTURE + categories.ENGINEER,                        -- Only find targets matching these categories.
+            TargetSearchCategory = categories.STRUCTURE + categories.ENGINEER - categories.STATIONASSISTPOD,                        -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.MASSEXTRACTION,
-                categories.ENGINEER,
+                categories.ENGINEER - categories.STATIONASSISTPOD,
                 categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
                 categories.STRUCTURE * categories.ARTILLERY,
                 categories.STRUCTURE * categories.NUKE,
@@ -1388,7 +1396,7 @@ BuilderGroup {
             WeaponTargetCategories = {                                          -- Override weapon target priorities
                 categories.MASSEXTRACTION,
                 categories.COMMAND,
-                categories.ENGINEER,
+                categories.ENGINEER - categories.STATIONASSISTPOD,
                 categories.SHIELD,
                 categories.ANTIAIR,
                 categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
@@ -1403,6 +1411,7 @@ BuilderGroup {
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
+            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 1, categories.MOBILE * categories.EXPERIMENTAL }}, -- radius, LocationType, unitCount, categoryEnemy
             -- When do we want to form this ?
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
@@ -1430,7 +1439,7 @@ BuilderGroup {
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to form this ?
-            { UCBC, 'UnitsLessAtEnemy', { 1 , categories.MOBILE * categories.EXPERIMENTAL * categories.AIR } },
+            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 1, categories.MOBILE * categories.AIR * categories.EXPERIMENTAL }}, -- radius, LocationType, unitCount, categoryEnemy
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 60, categories.MOBILE * categories.AIR * categories.ANTIAIR * categories.HIGHALTAIR - categories.EXPERIMENTAL - categories.SCOUT }},
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
@@ -1461,7 +1470,7 @@ BuilderGroup {
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to form this ?
-            { UCBC, 'UnitsLessAtEnemy', { 1 , categories.MOBILE * categories.EXPERIMENTAL * categories.AIR } },
+            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 1, categories.MOBILE * categories.AIR * categories.EXPERIMENTAL }}, -- radius, LocationType, unitCount, categoryEnemy
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 60, categories.MOBILE * categories.AIR * categories.ANTIAIR * categories.HIGHALTAIR - categories.EXPERIMENTAL - categories.SCOUT }},
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
@@ -1506,7 +1515,7 @@ BuilderGroup {
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to form this ?
-            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.EXPERIMENTAL + categories.STRUCTURE } },
+            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 1, categories.MOBILE * categories.EXPERIMENTAL }}, -- radius, LocationType, unitCount, categoryEnemy
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 30, categories.MOBILE * categories.AIR * categories.BOMBER - categories.EXPERIMENTAL }},
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
@@ -1553,7 +1562,7 @@ BuilderGroup {
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to form this ?
-            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.EXPERIMENTAL + categories.STRUCTURE } },
+            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 1, categories.MOBILE * categories.EXPERIMENTAL }}, -- radius, LocationType, unitCount, categoryEnemy
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 30, categories.MOBILE * categories.AIR * categories.GROUNDATTACK - categories.EXPERIMENTAL }},
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
@@ -1579,7 +1588,7 @@ BuilderGroup {
             TargetSearchCategory = categories.ALLUNITS,                         -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.MASSEXTRACTION,
-                categories.ENGINEER,
+                categories.ENGINEER - categories.STATIONASSISTPOD,
                 categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
                 categories.STRUCTURE * categories.ARTILLERY,
                 categories.STRUCTURE * categories.NUKE,
@@ -1593,7 +1602,7 @@ BuilderGroup {
             WeaponTargetCategories = {                                          -- Override weapon target priorities
                 categories.MASSEXTRACTION,
                 categories.COMMAND,
-                categories.ENGINEER,
+                categories.ENGINEER - categories.STATIONASSISTPOD,
                 categories.SHIELD,
                 categories.ANTIAIR,
                 categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
@@ -1651,7 +1660,7 @@ BuilderGroup {
             TargetSearchCategory = categories.ALLUNITS,                         -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.MASSEXTRACTION,
-                categories.ENGINEER,
+                categories.ENGINEER - categories.STATIONASSISTPOD,
                 categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
                 categories.STRUCTURE * categories.ARTILLERY,
                 categories.STRUCTURE * categories.NUKE,
@@ -1665,7 +1674,7 @@ BuilderGroup {
             WeaponTargetCategories = {                                          -- Override weapon target priorities
                 categories.MASSEXTRACTION,
                 categories.COMMAND,
-                categories.ENGINEER,
+                categories.ENGINEER - categories.STATIONASSISTPOD,
                 categories.SHIELD,
                 categories.ANTIAIR,
                 categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
@@ -1748,7 +1757,7 @@ BuilderGroup {
             TargetSearchCategory = categories.ALLUNITS,                         -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.MASSEXTRACTION,
-                categories.ENGINEER,
+                categories.ENGINEER - categories.STATIONASSISTPOD,
                 categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
                 categories.STRUCTURE * categories.ARTILLERY,
                 categories.STRUCTURE * categories.NUKE,
@@ -1762,7 +1771,7 @@ BuilderGroup {
             WeaponTargetCategories = {                                          -- Override weapon target priorities
                 categories.MASSEXTRACTION,
                 categories.COMMAND,
-                categories.ENGINEER,
+                categories.ENGINEER - categories.STATIONASSISTPOD,
                 categories.SHIELD,
                 categories.ANTIAIR,
                 categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,

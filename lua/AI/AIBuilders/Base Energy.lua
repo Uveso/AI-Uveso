@@ -19,6 +19,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Power low trend',
         PlatoonTemplate = 'EngineerBuilder',
+        TechRoot = 'ENERGY1',
         Priority = 17899,
         InstanceCount = 2,                                                      -- Number of plattons that will be formed with this template.
         DelayEqualBuildPlattons = {'Energy', 3},
@@ -150,7 +151,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'GreaterThanGameTimeSeconds', { 180 } },
-            { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.ENGINEER * categories.TECH1 }},
+            { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
@@ -326,7 +327,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.15, -0.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION * ( categories.TECH2 + categories.TECH3 ) }},
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH2 }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH2 - categories.STATIONASSISTPOD }},
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 2, categories.ENERGYPRODUCTION * ( categories.TECH2 + categories.TECH3 + categories.EXPERIMENTAL ) } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.ENERGYPRODUCTION * categories.TECH3 } },
             -- Respect UnitCap

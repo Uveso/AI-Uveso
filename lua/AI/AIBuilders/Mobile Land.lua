@@ -24,7 +24,7 @@ BuilderGroup {
             { UCBC, 'CheckBuildPlattonDelay', { 'Scouts' }},
             -- Have we the eco to build it ?
             -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER}},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD }},
             -- Do we need additional conditions to build it ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.LAND * categories.SCOUT }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.AIR * categories.SCOUT }},
@@ -321,7 +321,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER } },
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD } },
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.LAND - categories.ENGINEER, '<=', (categories.MOBILE * categories.LAND * (categories.DIRECTFIRE + categories.INDIRECTFIRE)) } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
@@ -800,6 +800,7 @@ BuilderGroup {
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
+            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 1, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }}, -- radius, LocationType, unitCount, categoryEnemy
             { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.MOBILE * categories.LAND - categories.SCOUT } },
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
@@ -827,6 +828,7 @@ BuilderGroup {
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
+            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 1, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }}, -- radius, LocationType, unitCount, categoryEnemy
             { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.MOBILE * categories.LAND - categories.SCOUT } },
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
@@ -854,6 +856,7 @@ BuilderGroup {
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
+            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 1, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }}, -- radius, LocationType, unitCount, categoryEnemy
             { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.MOBILE * categories.LAND - categories.SCOUT } },
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
@@ -862,17 +865,17 @@ BuilderGroup {
         BuilderName = 'U123 Enemy Unprotected Land 1 2',                              -- Random Builder Name.
         PlatoonTemplate = 'LandAttackHuntUveso 2 2',                            -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates"
         Priority = 130,                                                          -- Priority. 1000 is normal.
-        InstanceCount = 0,                                                      -- Number of plattons that will be formed.
+        InstanceCount = 1,                                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
             RequireTransport = true,                                            -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 0,                                            -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            TargetSearchCategory = categories.STRUCTURE + categories.ENGINEER,                        -- Only find targets matching these categories.
+            TargetSearchCategory = categories.STRUCTURE + categories.ENGINEER - categories.STATIONASSISTPOD,                        -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.MASSEXTRACTION,
-                categories.ENGINEER,
+                categories.ENGINEER - categories.STATIONASSISTPOD,
                 categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
                 categories.STRUCTURE * categories.ARTILLERY,
                 categories.STRUCTURE * categories.NUKE,
@@ -885,6 +888,7 @@ BuilderGroup {
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
+            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 1, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }}, -- radius, LocationType, unitCount, categoryEnemy
             -- When do we want to form this ?
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
@@ -913,6 +917,7 @@ BuilderGroup {
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to form this ?
+            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 1, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }}, -- radius, LocationType, unitCount, categoryEnemy
             { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.DEFENSE } },
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
@@ -942,6 +947,7 @@ BuilderGroup {
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
              -- When do we want to form this ?
+            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 1, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }}, -- radius, LocationType, unitCount, categoryEnemy
             { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.MASSEXTRACTION } },
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.

@@ -14,9 +14,34 @@ BuilderGroup {
     BuilderGroupName = 'N1 1 Factory Builders',                             -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
-        BuilderName = 'N Land Factory',
+        BuilderName = 'NC Land Factory',
         PlatoonTemplate = 'CommanderBuilder',
+        TechRoot = 'FACTORY1',
         Priority = 600,
+        DelayEqualBuildPlattons = {'Factories', 3},
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 4, categories.STRUCTURE * categories.FACTORY * categories.LAND } },
+            -- Do we need additional conditions to build it ?
+            -- Have we the eco to build it ?
+            -- Don't build it if...
+            -- Respect UnitCap
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Construction = {
+                Location = 'LocationType',
+                BuildStructures = {
+                    'T1LandFactory',
+                },
+            }
+        }
+    },
+    Builder {
+        BuilderName = 'N1 Land Factory',
+        PlatoonTemplate = 'EngineerBuilder',
+        TechRoot = 'FACTORY1',
+        Priority = 700,
         DelayEqualBuildPlattons = {'Factories', 3},
         BuilderConditions = {
             -- When do we want to build this ?
@@ -50,7 +75,7 @@ BuilderGroup {
         Priority = 700,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 102, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 102, categories.MOBILE * categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             -- Don't build it if...

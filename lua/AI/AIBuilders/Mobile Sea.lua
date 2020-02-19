@@ -47,6 +47,7 @@ BuilderGroup {
         PlatoonTemplate = 'T1SeaSub',
         Priority = 150,
         BuilderConditions = {
+            { UCBC, 'CanPathNavalBaseToNavalTargets', {  'LocationType', categories.STRUCTURE * categories.FACTORY * categories.NAVAL }}, -- LocationType, categoryUnits
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
@@ -64,6 +65,7 @@ BuilderGroup {
         PlatoonTemplate = 'T1SeaFrigate',
         Priority = 150,
         BuilderConditions = {
+            { UCBC, 'CanPathNavalBaseToNavalTargets', {  'LocationType', categories.STRUCTURE * categories.FACTORY * categories.NAVAL }}, -- LocationType, categoryUnits
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
@@ -84,6 +86,7 @@ BuilderGroup {
         PlatoonTemplate = 'T2SeaDestroyer',
         Priority = 250,
         BuilderConditions = {
+            { UCBC, 'CanPathNavalBaseToNavalTargets', {  'LocationType', categories.STRUCTURE * categories.FACTORY * categories.NAVAL }}, -- LocationType, categoryUnits
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.11, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
@@ -118,6 +121,7 @@ BuilderGroup {
         PlatoonTemplate = 'T2SubKiller',
         Priority = 250,
         BuilderConditions = {
+            { UCBC, 'CanPathNavalBaseToNavalTargets', {  'LocationType', categories.STRUCTURE * categories.FACTORY * categories.NAVAL }}, -- LocationType, categoryUnits
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.11, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
@@ -135,6 +139,7 @@ BuilderGroup {
         PlatoonTemplate = 'T2ShieldBoat',
         Priority = 250,
         BuilderConditions = {
+            { UCBC, 'CanPathNavalBaseToNavalTargets', {  'LocationType', categories.STRUCTURE * categories.FACTORY * categories.NAVAL }}, -- LocationType, categoryUnits
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.11, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
@@ -152,6 +157,7 @@ BuilderGroup {
         PlatoonTemplate = 'T2CounterIntelBoat',
         Priority = 250,
         BuilderConditions = {
+            { UCBC, 'CanPathNavalBaseToNavalTargets', {  'LocationType', categories.STRUCTURE * categories.FACTORY * categories.NAVAL }}, -- LocationType, categoryUnits
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.11, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
@@ -172,6 +178,7 @@ BuilderGroup {
         PlatoonTemplate = 'T3SeaBattleship',
         Priority = 350,
         BuilderConditions = {
+            { UCBC, 'CanPathNavalBaseToNavalTargets', {  'LocationType', categories.STRUCTURE * categories.FACTORY * categories.NAVAL }}, -- LocationType, categoryUnits
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.12, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
@@ -189,6 +196,7 @@ BuilderGroup {
         PlatoonTemplate = 'T3SeaNukeSub',
         Priority = 350,
         BuilderConditions = {
+            { UCBC, 'CanPathNavalBaseToNavalTargets', {  'LocationType', categories.STRUCTURE * categories.FACTORY * categories.NAVAL }}, -- LocationType, categoryUnits
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.12, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
@@ -223,6 +231,7 @@ BuilderGroup {
         PlatoonTemplate = 'T3SubKiller',
         Priority = 350,
         BuilderConditions = {
+            { UCBC, 'CanPathNavalBaseToNavalTargets', {  'LocationType', categories.STRUCTURE * categories.FACTORY * categories.NAVAL }}, -- LocationType, categoryUnits
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.12, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
@@ -240,6 +249,7 @@ BuilderGroup {
         PlatoonTemplate = 'T3Battlecruiser',
         Priority = 350,
         BuilderConditions = {
+            { UCBC, 'CanPathNavalBaseToNavalTargets', {  'LocationType', categories.STRUCTURE * categories.FACTORY * categories.NAVAL }}, -- LocationType, categoryUnits
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.12, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
@@ -268,7 +278,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 1, (categories.STRUCTURE * categories.SONAR) + categories.MOBILESONAR } }, -- TECH3 sonar is MOBILE not STRUCTURE!!!
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.NAVAL } },
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH1 }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD }},
             -- Respect UnitCap
         },
         BuilderType = 'Any',

@@ -23,7 +23,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconIncome', { 7.0, 600.0 }},                    -- Base income
             { EBC, 'GreaterThanEconStorageRatio', { 0.95, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, categories.ENGINEER * categories.TECH3 }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, categories.ENGINEER * categories.TECH3 - categories.STATIONASSISTPOD }},
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
             { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
@@ -53,7 +53,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconIncome', { 7.0, 600.0 }},                    -- Base income
             { EBC, 'GreaterThanEconStorageRatio', { 0.95, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, categories.ENGINEER * categories.TECH3 }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, categories.ENGINEER * categories.TECH3 - categories.STATIONASSISTPOD }},
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
             { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
@@ -84,7 +84,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconIncome', { 7.0, 600.0 }},                    -- Base income
             { EBC, 'GreaterThanEconStorageRatio', { 0.95, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, categories.ENGINEER * categories.TECH3 }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, categories.ENGINEER * categories.TECH3 - categories.STATIONASSISTPOD }},
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
             { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },

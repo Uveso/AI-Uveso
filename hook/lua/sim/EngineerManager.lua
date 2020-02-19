@@ -39,7 +39,7 @@ EngineerManager = Class(TheOldEngineerManager) {
 
                     import('/lua/scenariotriggers.lua').CreateUnitCapturedTrigger(nil, newlyCapturedFunction, unit)
 
-                    if EntityCategoryContains(categories.ENGINEER, unit) then
+                    if EntityCategoryContains(categories.ENGINEER - categories.STATIONASSISTPOD, unit) then
                         local unitConstructionFinished = function(unit, finishedUnit)
                                                     -- Call function on builder manager; let it handle the finish of work
                                                     local aiBrain = unit:GetAIBrain()

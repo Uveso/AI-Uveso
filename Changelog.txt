@@ -1,4 +1,11 @@
 *************************************************************************************************************************************
+v80 (19.Feb.2019)
+
+- New: Added buildplatoons for Hive and Kennel (Cybran and UEF Engineerstations)
+- New: Added new naval buildcondition for 2 lake maps
+- Opt: Changed ecomanager logic for assisting engineers
+
+*************************************************************************************************************************************
 v79 (12.Feb.2019)
 
 - New: Added a function to the targetmanager to get high threat areas for nuke/arty fire

@@ -15,7 +15,7 @@ function CanBuildOnMass(aiBrain, locationType, distance, threatMin, threatMax, t
             --WARN('*AI WARNING: CanBuildOnMass: Invalid location - ' .. locationType)
             return false
         end
-        local position = engineerManager:GetLocationCoords()
+        local position = engineerManager.Location
         MassMarker = {}
         for _, v in Scenario.MasterChain._MASTERCHAIN_.Markers do
             if v.type == 'Mass' then
@@ -64,7 +64,7 @@ function CanBuildOnHydro(aiBrain, locationType, distance, threatMin, threatMax, 
             --WARN('*AI WARNING: CanBuildOnHydro: Invalid location - ' .. locationType)
             return false
         end
-        local position = engineerManager:GetLocationCoords()
+        local position = engineerManager.Location
         HydroMarker = {}
         for _, v in Scenario.MasterChain._MASTERCHAIN_.Markers do
             if v.type == 'Hydrocarbon' then

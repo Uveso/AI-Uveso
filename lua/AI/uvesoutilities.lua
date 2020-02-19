@@ -308,7 +308,7 @@ function ReclaimAIThread(platoon,self,aiBrain)
         MassStorageRatio = aiBrain:GetEconomyStoredRatio('MASS')
         EnergyStorageRatio = aiBrain:GetEconomyStoredRatio('ENERGY')
         -- 1==1 is always true, i use this to clean up the base from wreckages even if we have full eco.
-        if (MassStorageRatio < 1.00 or EnergyStorageRatio < 1.00) then
+        if (MassStorageRatio < 1.00 or EnergyStorageRatio < 1.00) and not aiBrain.HasParagon then
             --LOG('Searching for reclaimables')
             local x1 = SelfPos[1]-scanrange
             local y1 = SelfPos[3]-scanrange
@@ -542,7 +542,7 @@ function FindTargetUnit(self, minRadius, maxRadius, MaxLoad)
             elseif not v:BeenDestroyed() and v:IsMoving() == false then
                 if (not AllTargets[4] or v.distance < AllTargets[4].distance) and EntityCategoryContains(categories.TECH3 * categories.MOBILE * categories.INDIRECTFIRE, v) and (not IsProtected(self,v:GetPosition())) then
                     AllTargets[4] = v
-                elseif (not AllTargets[6] or v.distance < AllTargets[6].distance) and EntityCategoryContains(categories.ENGINEER, v) and (not IsProtected(self,v:GetPosition())) then
+                elseif (not AllTargets[6] or v.distance < AllTargets[6].distance) and EntityCategoryContains(categories.ENGINEER - categories.STATIONASSISTPOD, v) and (not IsProtected(self,v:GetPosition())) then
                     AllTargets[6] = v
                 elseif (not AllTargets[7] or v.distance < AllTargets[7].distance) and EntityCategoryContains(categories.MOBILE, v) and (not IsProtected(self,v:GetPosition())) then
                     AllTargets[7] = v

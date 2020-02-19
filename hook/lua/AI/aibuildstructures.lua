@@ -114,48 +114,12 @@ function AIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder,
         --LOG('*AIExecuteBuildStructure: Searching for Buildplace near Engineer'..repr(relativeTo))
     else
         if builder.BuilderManagerData and builder.BuilderManagerData.EngineerManager then
-            relativeTo = builder.BuilderManagerData.EngineerManager:GetLocationCoords()
+            relativeTo = builder.BuilderManagerData.EngineerManager.Location
             --LOG('*AIExecuteBuildStructure: Searching for Buildplace near BuilderManager ')
         else
             local startPosX, startPosZ = aiBrain:GetArmyStartPos()
             relativeTo = {startPosX, 0, startPosZ}
             --LOG('*AIExecuteBuildStructure: Searching for Buildplace near ArmyStartPos ')
-        end
-        local BBC = __blueprints[whatToBuild].CategoriesHash
-        if BBC.DEFENSE or BBC.NUKE or BBC.EXPERIMENTAL then
-            local X2, Z2 = aiBrain:GetCurrentEnemy():GetArmyStartPos()
-            local elevationX = (X2 - relativeTo[1] / Z2 - relativeTo[3])
-            local elevationZ = (Z2 - relativeTo[3] / X2 - relativeTo[1])
-            --LOG(aiBrain.Nickname..'  Our base: ('..relativeTo[1]..'/'..relativeTo[3]..') - Enemy base: ('..X2..'/'..Z2..')  -  buildingType: '..repr(buildingType))
-            local Hypotenuse = VDist2(relativeTo[1], relativeTo[3], X2, Z2)
-            local HypotenuseScale = 100 / Hypotenuse * 50
-            local aLegScale = (X2 - relativeTo[1]) / 100 * HypotenuseScale
-            local bLegScale = (Z2 - relativeTo[3]) / 100 * HypotenuseScale
-            if BBC.TECH3 then
-                relativeTo[1] = relativeTo[1] + aLegScale
-                relativeTo[3] = relativeTo[3] + bLegScale
-            elseif BBC.TECH1 then
-                relativeTo[1] = relativeTo[1] - aLegScale
-                relativeTo[3] = relativeTo[3] - bLegScale
-            end
-            local playablearea
-            if  ScenarioInfo.MapData.PlayableRect then
-                playablearea = ScenarioInfo.MapData.PlayableRect
-            else
-                playablearea = {0, 0, ScenarioInfo.size[1], ScenarioInfo.size[2]}
-            end
-            if relativeTo[1] < playablearea[1] then
-                relativeTo[1] = 8
-            end
-            if relativeTo[1] > playablearea[3] then
-                relativeTo[1] = playablearea[3] - 8
-            end
-            if relativeTo[3] < playablearea[2] then
-                relativeTo[3] = 8
-            end
-            if relativeTo[3] > playablearea[4] then
-                relativeTo[3] = playablearea[4] - 8
-            end
         end
     end
     local location = false
@@ -166,13 +130,17 @@ function AIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder,
     if buildingType == 'T1LandFactory' or buildingType == 'T1AirFactory' then
         buildingTypeReplace = 'T4AirExperimental1'
         whatToBuildReplace = 'xsa0402'
+    elseif buildingType == 'T1SeaFactory' then
+        buildingTypeReplace = 'T4SeaExperimental1'
+        whatToBuildReplace = 'ues0401'
     end
 
     if IsResource(buildingType) then
-        location = aiBrain:FindPlaceToBuild(buildingType, whatToBuildReplace or whatToBuild, baseTemplate, relative, closeToBuilder, 'Enemy', relativeTo[1], relativeTo[3], 5)
+        location = aiBrain:FindPlaceToBuild(buildingType, whatToBuild, baseTemplate, relative, closeToBuilder, 'Enemy', relativeTo[1], relativeTo[3], 5)
     else
         location = aiBrain:FindPlaceToBuild(buildingTypeReplace or buildingType, whatToBuildReplace or whatToBuild, baseTemplate, relative, closeToBuilder, nil, relativeTo[1], relativeTo[3])
     end
+
     -- if it's a reference, look around with offsets
     if not location and reference then
         for num,offsetCheck in RandomIter({1,2,3,4,5,6,7,8}) do
@@ -182,10 +150,19 @@ function AIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder,
             end
         end
     end
+    -- fallback in case we cant find a place to build with experimental template
+    if not location and not IsResource(buildingType) then
+        for num,offsetCheck in RandomIter({1,2,3,4,5,6,7,8}) do
+            location = aiBrain:FindPlaceToBuild(buildingType, whatToBuild, BaseTmplFile['MovedTemplates'..offsetCheck][factionIndex], relative, closeToBuilder, nil, relativeTo[1], relativeTo[3])
+            if location then
+                break
+            end
+        end
+    end
     -- if we have no place to build, then maybe we have a modded/new buildingType. Lets try 'T1LandFactory' as dummy and search for a place to build near base
     if not location and not IsResource(buildingType) and builder.BuilderManagerData and builder.BuilderManagerData.EngineerManager then
         --LOG('*AIExecuteBuildStructure: Find no place to Build! - buildingType '..repr(buildingType)..' - ('..builder.factionCategory..') Trying again with T1LandFactory and RandomIter. Searching near base...')
-        relativeTo = builder.BuilderManagerData.EngineerManager:GetLocationCoords()
+        relativeTo = builder.BuilderManagerData.EngineerManager.Location
         for num,offsetCheck in RandomIter({1,2,3,4,5,6,7,8}) do
             location = aiBrain:FindPlaceToBuild('T1LandFactory', whatToBuildReplace or whatToBuild, BaseTmplFile['MovedTemplates'..offsetCheck][factionIndex], relative, closeToBuilder, nil, relativeTo[1], relativeTo[3])
             if location then

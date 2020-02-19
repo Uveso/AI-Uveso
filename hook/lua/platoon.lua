@@ -116,7 +116,7 @@ Platoon = Class(OldPlatoonClass) {
 
         local eng
         for k, v in platoonUnits do
-            if not v.Dead and EntityCategoryContains(categories.ENGINEER, v) then --DUNCAN - was construction
+            if not v.Dead and EntityCategoryContains(categories.ENGINEER - categories.STATIONASSISTPOD, v) then --DUNCAN - was construction
                 IssueClearCommands({v})
                 if not eng then
                     eng = v
@@ -337,7 +337,7 @@ Platoon = Class(OldPlatoonClass) {
             buildFunction = AIBuildStructures.AIExecuteBuildStructure
         elseif cons.AvoidCategory then
             relative = false
-            local pos = aiBrain.BuilderManagers[eng.BuilderManagerData.LocationType].EngineerManager:GetLocationCoords()
+            local pos = aiBrain.BuilderManagers[eng.BuilderManagerData.LocationType].EngineerManager.Location
             local cat = cons.AdjacencyCategory
             -- convert text categories like 'MOBILE AIR' to 'categories.MOBILE * categories.AIR'
             if type(cat) == 'string' then
@@ -359,7 +359,7 @@ Platoon = Class(OldPlatoonClass) {
             table.insert(baseTmplList, baseTmpl)
         elseif cons.AdjacencyCategory then
             relative = false
-            local pos = aiBrain.BuilderManagers[eng.BuilderManagerData.LocationType].EngineerManager:GetLocationCoords()
+            local pos = aiBrain.BuilderManagers[eng.BuilderManagerData.LocationType].EngineerManager.Location
             local cat = cons.AdjacencyCategory
             -- convert text categories like 'MOBILE AIR' to 'categories.MOBILE * categories.AIR'
             if type(cat) == 'string' then
@@ -668,7 +668,7 @@ Platoon = Class(OldPlatoonClass) {
             buildFunction = AIBuildStructures.AIExecuteBuildStructure
         elseif cons.AvoidCategory then
             relative = false
-            local pos = aiBrain.BuilderManagers[eng.BuilderManagerData.LocationType].EngineerManager:GetLocationCoords()
+            local pos = aiBrain.BuilderManagers[eng.BuilderManagerData.LocationType].EngineerManager.Location
             local cat = ParseEntityCategory(cons.AdjacencyCategory)
             local avoidCat = ParseEntityCategory(cons.AvoidCategory)
             local radius = (cons.AdjacencyDistance or 50)
@@ -682,7 +682,7 @@ Platoon = Class(OldPlatoonClass) {
             table.insert(baseTmplList, baseTmpl)
         elseif cons.AdjacencyCategory then
             relative = false
-            local pos = aiBrain.BuilderManagers[eng.BuilderManagerData.LocationType].EngineerManager:GetLocationCoords()
+            local pos = aiBrain.BuilderManagers[eng.BuilderManagerData.LocationType].EngineerManager.Location
             local cat = ParseEntityCategory(cons.AdjacencyCategory)
             local radius = (cons.AdjacencyDistance or 50)
             if not pos or not pos then
@@ -1832,7 +1832,7 @@ Platoon = Class(OldPlatoonClass) {
         local platoonUnits = self:GetPlatoonUnits()
         local eng
         for k, v in platoonUnits do
-            if not v.Dead and EntityCategoryContains(categories.MOBILE * categories.ENGINEER, v) then
+            if not v.Dead and EntityCategoryContains(categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD, v) then
                 eng = v
                 break
             end
@@ -1858,7 +1858,7 @@ Platoon = Class(OldPlatoonClass) {
             self:PlatoonDisband()
             return
         end
-        local unfinishedUnits = aiBrain:GetUnitsAroundPoint(categories.STRUCTURE + categories.EXPERIMENTAL, engineerManager:GetLocationCoords(), engineerManager.Radius, 'Ally')
+        local unfinishedUnits = aiBrain:GetUnitsAroundPoint(categories.STRUCTURE + categories.EXPERIMENTAL, engineerManager.Location, engineerManager.Radius, 'Ally')
         for k,v in unfinishedUnits do
             local FractionComplete = v:GetFractionComplete()
             if FractionComplete < 1 and table.getn(v:GetGuards()) < 1 then

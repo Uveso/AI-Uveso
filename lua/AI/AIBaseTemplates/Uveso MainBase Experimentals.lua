@@ -105,8 +105,6 @@ BaseBuilderTemplate {
         'U4 Land Experimental Builders',
         'U4 Air Experimental Builders',
         'U4 Economic Experimental Builders',
-        'Paragon Turbo Builder',
-        'Paragon Turbo Factory',
 
         -----------------------------------------------------------------------------
         -- ==== EXPERIMENTALS FORMER ==== --
@@ -149,6 +147,7 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== Sniper Former ==== --
         -----------------------------------------------------------------------------
+        'U3 SACU Teleport Formers',
 
         -- We need this even if we have Omni View to get target informations for experimentals attack.
         -----------------------------------------------------------------------------

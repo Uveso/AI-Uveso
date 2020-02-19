@@ -11,7 +11,7 @@ local MaxAttackForce = 0.45                                                     
 -- ==                                 Mobile Experimental Land/Air/Sea                                       == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'Paragon Turbo Builder',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'Paragon Turbo Experimentals',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'Turbo T4AirExperimental1',
@@ -24,8 +24,8 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'CanBuildCategory', { categories.MOBILE * categories.AIR * categories.EXPERIMENTAL - categories.SATELLITE } },
-            { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.ENGINEER * categories.TECH3 }},
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.ENGINEER * categories.TECH3 }},
+            { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.ENGINEER * categories.TECH3 - categories.STATIONASSISTPOD }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.ENGINEER * categories.TECH3 - categories.STATIONASSISTPOD }},
             -- Don't build it if...
             { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
@@ -54,9 +54,9 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'CanBuildCategory', { categories.MOBILE * categories.NAVAL * categories.EXPERIMENTAL } },
-            { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.ENGINEER * categories.TECH3 }},
+            { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.ENGINEER * categories.TECH3 - categories.STATIONASSISTPOD }},
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.NAVAL } },
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.ENGINEER * categories.TECH3 }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.ENGINEER * categories.TECH3 - categories.STATIONASSISTPOD }},
             -- Don't build it if...
             { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
@@ -84,8 +84,8 @@ BuilderGroup {
             { MIBC, 'HasParagon', {} },
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
-            { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.ENGINEER * categories.TECH3 }},
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.ENGINEER * categories.TECH3 }},
+            { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.ENGINEER * categories.TECH3 - categories.STATIONASSISTPOD }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.ENGINEER * categories.TECH3 - categories.STATIONASSISTPOD }},
             { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Any',
@@ -112,8 +112,8 @@ BuilderGroup {
             { MIBC, 'HasParagon', {} },
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
-            { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.ENGINEER * categories.TECH3 }},
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.ENGINEER * categories.TECH3 }},
+            { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.ENGINEER * categories.TECH3 - categories.STATIONASSISTPOD }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.ENGINEER * categories.TECH3 - categories.STATIONASSISTPOD }},
             { UCBC, 'UnitCapCheckLess', { 0.99 } },
         },
         BuilderType = 'Any',
@@ -134,7 +134,7 @@ BuilderGroup {
 -- ==                                    T2 Tactical Missile LAUNCHER                                       == --
 -- ===================================================-======================================================== --
     Builder {
-        BuilderName = 'Turbo U2 TML',
+        BuilderName = 'Paragon Turbo U2 TML',
         PlatoonTemplate = 'T2EngineerBuilder',
         Priority = 1000,
         BuilderConditions = {
@@ -143,7 +143,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 30, categories.STRUCTURE * categories.TACTICALMISSILEPLATFORM }},
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH3 }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH3 - categories.STATIONASSISTPOD }},
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<', categories.STRUCTURE * categories.DEFENSE } },
             { UCBC, 'UnitCapCheckLess', { 0.99 } },
@@ -165,7 +165,7 @@ BuilderGroup {
 -- ==                                          T3/T4 Artillery                                               == --
 -- ===================================================-======================================================== --
     Builder {
-        BuilderName = 'Turbo U3 Artillery',
+        BuilderName = 'Paragon Turbo U34 Artillery',
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 1100,
         InstanceCount = 2,
@@ -176,7 +176,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 20, categories.STRUCTURE * categories.LAND * categories.ARTILLERY * categories.TECH3 }},
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH3 }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH3 - categories.STATIONASSISTPOD }},
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<', categories.STRUCTURE * categories.DEFENSE } },
             { UCBC, 'UnitCapCheckLess', { 0.99 } },
@@ -204,7 +204,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 10, categories.STRUCTURE * categories.LAND * categories.ARTILLERY * categories.EXPERIMENTAL }},
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH3 }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH3 - categories.STATIONASSISTPOD }},
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<', categories.STRUCTURE * categories.DEFENSE } },
             { UCBC, 'UnitCapCheckLess', { 0.99 } },
@@ -232,7 +232,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 10, categories.STRUCTURE * categories.LAND * categories.ARTILLERY * categories.EXPERIMENTAL }},
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH3 }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH3 - categories.STATIONASSISTPOD }},
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<', categories.STRUCTURE * categories.DEFENSE } },
             { UCBC, 'UnitCapCheckLess', { 0.99 } },
@@ -260,7 +260,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 30, categories.STRUCTURE * categories.ORBITALSYSTEM }},
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH3 }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH3 - categories.STATIONASSISTPOD }},
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<', categories.STRUCTURE * categories.DEFENSE } },
             { UCBC, 'UnitCapCheckLess', { 0.99 } },
@@ -281,7 +281,7 @@ BuilderGroup {
 -- ==                             Upgrade Factories Land/Air/Sea                                             == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'Paragon Turbo Factory',                      -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'Paragon Turbo FactoryUpgrader',                      -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
 -- LAND HQ Factories
     Builder {
@@ -374,7 +374,7 @@ BuilderGroup {
             { MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 8, categories.INTELLIGENCE * categories.AIR * categories.TECH3 }},
-            { UCBC, 'UnitCapCheckLess', { 0.95 } },
+            { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
         BuilderType = 'Air',
     },
@@ -386,10 +386,10 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatioUveso', { 3.00, categories.MOBILE * categories.AIR * categories.HIGHALTAIR * categories.ANTIAIR * categories.TECH3 - categories.GROUNDATTACK, '<=',categories.MOBILE * categories.AIR * categories.GROUNDATTACK * categories.TECH3 - categories.HIGHALTAIR } },
+--            { UCBC, 'HaveUnitRatioUveso', { 3.00, categories.MOBILE * categories.AIR * categories.HIGHALTAIR * categories.ANTIAIR * categories.TECH3 - categories.GROUNDATTACK, '<=',categories.MOBILE * categories.AIR * categories.GROUNDATTACK * categories.TECH3 - categories.HIGHALTAIR } },
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<', categories.MOBILE - categories.ENGINEER } },
-            { UCBC, 'UnitCapCheckLess', { 0.99 } },
+--            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
         BuilderType = 'Air',
     },
@@ -401,10 +401,10 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatioUveso', { 3.00, categories.MOBILE * categories.AIR * categories.GROUNDATTACK * categories.TECH3 - categories.HIGHALTAIR, '<=',categories.MOBILE * categories.AIR * categories.HIGHALTAIR * categories.ANTIAIR - categories.GROUNDATTACK } },
+--            { UCBC, 'HaveUnitRatioUveso', { 3.00, categories.MOBILE * categories.AIR * categories.GROUNDATTACK * categories.TECH3 - categories.HIGHALTAIR, '<=',categories.MOBILE * categories.AIR * categories.HIGHALTAIR * categories.ANTIAIR - categories.GROUNDATTACK } },
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<', categories.MOBILE - categories.ENGINEER } },
-            { UCBC, 'UnitCapCheckLess', { 0.99 } },
+--            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<', categories.MOBILE - categories.ENGINEER } },
+            { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
         BuilderType = 'Air',
     },
@@ -416,12 +416,107 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 20, categories.MOBILE * categories.AIR * categories.BOMBER }},
+--            { UCBC, 'HaveLessThanUnitsWithCategory', { 20, categories.MOBILE * categories.AIR * categories.BOMBER }},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.MOBILE * categories.AIR  * categories.BOMBER }},
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<', categories.MOBILE - categories.ENGINEER } },
-            { UCBC, 'UnitCapCheckLess', { 0.99 } },
+            { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
         BuilderType = 'Air',
+    },
+}
+-- ===================================================-======================================================== --
+-- ==                                           Land builder                                                 == --
+-- ===================================================-======================================================== --
+BuilderGroup {
+    BuilderGroupName = 'Paragon Turbo Land',                      -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuildersType = 'FactoryBuilder',
+    Builder {
+        BuilderName = 'U3P Siege Assault Bot',
+        PlatoonTemplate = 'T3LandBot',
+        Priority = 350,
+        BuilderConditions = {
+            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'FactionIndex', { 1, 3, 4, 5 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
+            -- Have we the eco to build it ?
+            { MIBC, 'HasParagon', {} },
+            -- When do we want to build this ?
+            -- Respect UnitCap
+            { UCBC, 'UnitCapCheckLess', { 0.98 } },
+        },
+        BuilderType = 'Land',
+    },
+    Builder {
+        BuilderName = 'U3P SniperBots',
+        PlatoonTemplate = 'T3SniperBots',
+        Priority = 350,
+        BuilderConditions = {
+            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            -- Have we the eco to build it ?
+            { MIBC, 'HasParagon', {} },
+            -- When do we want to build this ?
+            -- Respect UnitCap
+            { UCBC, 'UnitCapCheckLess', { 0.98 } },
+        },
+        BuilderType = 'Land',
+    },
+    Builder {
+        BuilderName = 'U3P ArmoredAssault',
+        PlatoonTemplate = 'T3ArmoredAssault',
+        Priority = 350,
+        BuilderConditions = {
+            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            -- Have we the eco to build it ?
+            { MIBC, 'HasParagon', {} },
+            -- When do we want to build this ?
+            -- Respect UnitCap
+            { UCBC, 'UnitCapCheckLess', { 0.98 } },
+        },
+        BuilderType = 'Land',
+    },
+    Builder {
+        BuilderName = 'U3P Mobile Artillery',
+        PlatoonTemplate = 'T3LandArtillery',
+        Priority = 350,
+        BuilderConditions = {
+            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            -- Have we the eco to build it ?
+            { MIBC, 'HasParagon', {} },
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatioUveso', { 0.1, categories.MOBILE * categories.LAND * categories.INDIRECTFIRE * categories.TECH3, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE } },
+            -- Respect UnitCap
+            { UCBC, 'UnitCapCheckLess', { 0.98 } },
+        },
+        BuilderType = 'Land',
+    },
+    Builder {
+        BuilderName = 'U3P Mobile AA',
+        PlatoonTemplate = 'T3LandAA',
+        Priority = 350,
+        BuilderConditions = {
+            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            -- Have we the eco to build it ?
+            { MIBC, 'HasParagon', {} },
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatioUveso', { 0.05, categories.MOBILE * categories.LAND * categories.ANTIAIR * categories.TECH3, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE } },
+            -- Respect UnitCap
+            { UCBC, 'UnitCapCheckLess', { 0.98 } },
+        },
+        BuilderType = 'Land',
+    },
+    Builder {
+        BuilderName = 'U3P MobileShields',
+        PlatoonTemplate = 'T3MobileShields',
+        Priority = 350,
+        BuilderConditions = {
+            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            -- Have we the eco to build it ?
+            { MIBC, 'HasParagon', {} },
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatioUveso', { 0.1, categories.MOBILE * categories.LAND * categories.SHIELD, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE * categories.TECH3 } },
+            { UCBC, 'HaveUnitRatioUveso', { 0.1, categories.MOBILE * categories.LAND * categories.STEALTHFIELD, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE * categories.TECH3 } },
+            -- Respect UnitCap
+            { UCBC, 'UnitCapCheckLess', { 0.98 } },
+        },
+        BuilderType = 'Land',
     },
 }

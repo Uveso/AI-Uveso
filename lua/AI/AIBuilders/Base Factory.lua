@@ -322,7 +322,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH1 }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD }},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 2, categories.STRUCTURE * categories.FACTORY * categories.TECH1 }},
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapFactory , '<', categories.STRUCTURE * categories.FACTORY * categories.LAND } }, -- Maximal 3 factories at 125 unitcap, 12 factories at 500 unitcap...
@@ -376,7 +376,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, -0.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH1 }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD }},
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapFactory , '<', categories.STRUCTURE * categories.FACTORY * categories.LAND } }, -- Maximal 3 factories at 125 unitcap, 12 factories at 500 unitcap...
         },
@@ -492,7 +492,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.35, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'FactoryCapCheck', { 'LocationType', 'Land' } },
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH1 }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD }},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 2, categories.STRUCTURE * categories.FACTORY * categories.TECH1 }},
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapFactory , '<', categories.STRUCTURE * categories.FACTORY * categories.LAND } }, -- Maximal 3 factories at 125 unitcap, 12 factories at 500 unitcap...
@@ -694,7 +694,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- When do we want to build this ?
             { UCBC, 'FactoryCapCheck', { 'LocationType', 'Air' } },
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH1 }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD }},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.FACTORY * categories.AIR * categories.TECH1 }},
             { UCBC, 'HaveUnitRatioUveso', { 1.0, categories.STRUCTURE * categories.FACTORY * categories.AIR, '<',categories.STRUCTURE * categories.FACTORY * categories.LAND } },
             -- Respect UnitCap
@@ -722,7 +722,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- When do we want to build this ?
             { UCBC, 'FactoryCapCheck', { 'LocationType', 'Air' } },
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH1 }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD }},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.FACTORY * categories.AIR * categories.TECH1 }},
             { UCBC, 'HaveUnitRatioUveso', { 1.0, categories.STRUCTURE * categories.FACTORY * categories.AIR, '<',categories.STRUCTURE * categories.FACTORY * categories.LAND } },
             -- Respect UnitCap
@@ -887,6 +887,21 @@ BuilderGroup {
     -- LAND Factories --
     --------------------
     Builder {
+        BuilderName = 'U1 L UP HQ 1->2 1st Emergency',
+        PlatoonTemplate = 'T1LandFactoryUpgrade',
+        Priority = 15400,
+        DelayEqualBuildPlattons = {'FactoryUpgrade', 3},
+        BuilderConditions = {
+            { UCBC, 'CheckBuildPlattonDelay', { 'FactoryUpgrade' }},
+            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
+            -- Have we the eco to build it ?
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND * (categories.TECH2 + categories.TECH3) * categories.SUPPORTFACTORY } },
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND * (categories.TECH2 + categories.TECH3) - categories.SUPPORTFACTORY } },
+        },
+        BuilderType = 'Any',
+    },
+    Builder {
         BuilderName = 'U1 L UP HQ 1->2 1st Enemy',
         PlatoonTemplate = 'T1LandFactoryUpgrade',
         Priority = 15400,
@@ -958,6 +973,23 @@ BuilderGroup {
         },
         BuilderType = 'Any',
     },
+
+    Builder {
+        BuilderName = 'U2 L UP HQ 2->3 1st Emergency',
+        PlatoonTemplate = 'T2LandFactoryUpgrade',
+        Priority = 15400,
+        DelayEqualBuildPlattons = {'FactoryUpgrade', 3},
+        BuilderConditions = {
+            { UCBC, 'CheckBuildPlattonDelay', { 'FactoryUpgrade' }},
+            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
+            -- Have we the eco to build it ?
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH3 * categories.SUPPORTFACTORY } },
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH3 - categories.SUPPORTFACTORY } },
+        },
+        BuilderType = 'Any',
+    },
+
     Builder {
         BuilderName = 'U2 L UP HQ 2->3 1st Enemy',
         PlatoonTemplate = 'T2LandFactoryUpgrade',
@@ -1346,7 +1378,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH3 }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH3 - categories.STATIONASSISTPOD }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.STRUCTURE * categories.GATE } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { 0.02 , '<', categories.STRUCTURE * categories.GATE } },
@@ -1371,7 +1403,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH3 }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH3 - categories.STATIONASSISTPOD }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 6, categories.STRUCTURE * categories.GATE } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { 0.02 , '<', categories.STRUCTURE * categories.GATE } },

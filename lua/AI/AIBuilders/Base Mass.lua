@@ -249,42 +249,10 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioUveso', { 0.3, categories.STRUCTURE * categories.MASSFABRICATION, '<=',categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3 } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.MASSFABRICATION } },
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingUpgrade', { 1, categories.STRUCTURE * categories.MASSEXTRACTION * categories.TECH2 }},
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<', categories.STRUCTURE * (categories.MASSEXTRACTION + categories.MASSFABRICATION) } },
 
-        },
-        BuilderType = 'Any',
-        BuilderData = {
-            Construction = {
-                DesiresAssist = true,
-                NumAssistees = 4,
-                AdjacencyCategory = categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
-                AdjacencyDistance = 50,
-                AvoidCategory = categories.MASSFABRICATION,
-                maxUnits = 1,
-                maxRadius = 15,
-                BuildClose = true,
-                BuildStructures = {
-                    'T3MassCreation',
-                },
-            }
-        }
-    },
-    Builder {
-        BuilderName = 'U3 Mass Fab Adja',
-        PlatoonTemplate = 'T3EngineerBuilderNoSUB',
-        Priority = 16200,
-        BuilderConditions = {
-            -- Have we the eco to build it ?
-            { MIBC, 'HasNotParagon', {} },
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.95}}, -- Ratio from 0 to 1. (1=100%)
-            -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3 }},
-            { UCBC, 'HaveUnitRatioUveso', { 0.5, categories.STRUCTURE * categories.MASSFABRICATION, '<=',categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3 } },
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.MASSFABRICATION } },
-            -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<', categories.STRUCTURE * (categories.MASSEXTRACTION + categories.MASSFABRICATION) } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -520,7 +488,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH1 }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD }},
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 2, categories.STRUCTURE * categories.MASSSTORAGE }},
         },
         BuilderData = {
@@ -559,7 +527,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { MABC, 'CanBuildOnMass', { 'LocationType', 1000, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Do we need additional conditions to build it ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 4, categories.ENGINEER * categories.TECH1 }},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 4, categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD }},
             -- Have we the eco to build it ?
             -- Don't build it if...
         },
@@ -575,7 +543,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { MABC, 'CanBuildOnMass', { 'LocationType', 1000, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Do we need additional conditions to build it ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.ENGINEER * categories.TECH1 }},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD }},
             -- Have we the eco to build it ?
             -- Don't build it if...
         },
@@ -591,7 +559,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { MABC, 'CanBuildOnMass', { 'LocationType', 1000, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Do we need additional conditions to build it ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 6, categories.ENGINEER * categories.TECH1 }},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 6, categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD }},
             -- Have we the eco to build it ?
             -- Don't build it if...
         },
@@ -607,7 +575,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { MABC, 'CanBuildOnMass', { 'LocationType', 1000, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Do we need additional conditions to build it ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 8, categories.ENGINEER * categories.TECH1 }},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 8, categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD }},
             -- Have we the eco to build it ?
             -- Don't build it if...
         },
@@ -623,7 +591,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { MABC, 'CanBuildOnMass', { 'LocationType', 1000, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Do we need additional conditions to build it ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 9, categories.ENGINEER * categories.TECH1 }},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 9, categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD }},
             -- Have we the eco to build it ?
             -- Don't build it if...
         },
@@ -639,7 +607,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { MABC, 'CanBuildOnMass', { 'LocationType', 1000, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Do we need additional conditions to build it ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 12, categories.ENGINEER * categories.TECH1 }},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 12, categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD }},
             -- Have we the eco to build it ?
             -- Don't build it if...
         },

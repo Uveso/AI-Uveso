@@ -1,4 +1,24 @@
 
+local originalCreateUI = CreateUI
+function CreateUI(isReplay)
+    -- call the original function first to set up the rest of the game UI
+    originalCreateUI(isReplay)
+    -- inject keybinding to call functions on the fly
+    if not isReplay then
+        local replacementMap = {
+            ['Ctrl-q']         = {action = 'UI_Lua import("/lua/ui/game/gamemain.lua").KeyTestFunction("Test123abc")'},
+        }
+        IN_AddKeyMapTable(replacementMap)
+    end
+end
+
+function KeyTestFunction(value)
+    LOG('KeyTestFunction('..value..')')
+    ConExecute("AI_RunOpponentAI")
+
+end
+
+
 -- executing beats without throttling any beat.
 -- FAF way of throttling beats is desyncing the economic window and shows odd numbers.
 function OnBeat()

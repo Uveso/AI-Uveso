@@ -108,6 +108,10 @@ BaseBuilderTemplate {
         'U4 Land Experimental Builders',
         'U4 Air Experimental Builders',
         'U4 Economic Experimental Builders',
+        'Paragon Turbo Experimentals', -- land, air and naval experimentals
+        'Paragon Turbo FactoryUpgrader',
+        'Paragon Turbo Air', -- T3 scouts, Fighter, Gunships, Bomber
+        'Paragon Turbo Land',
         
         -----------------------------------------------------------------------------
         -- ==== EXPERIMENTALS FORMER ==== --

@@ -475,6 +475,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.NUKE * categories.STRUCTURE}},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.NUKE * (categories.TECH3 + categories.EXPERIMENTAL) }},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.ENERGYPRODUCTION * categories.TECH3 } },
             -- Respect UnitCap
         },
         BuilderType = 'Any',
@@ -501,6 +502,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 4.0, 1000.0}}, -- Absolut Base income 60 1800
             -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 4, categories.ENERGYPRODUCTION * categories.TECH3 } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.NUKE * categories.STRUCTURE}},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.STRUCTURE * categories.NUKE * (categories.TECH3 + categories.EXPERIMENTAL) }},
             -- Respect UnitCap
@@ -530,9 +532,12 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 8.0, 500.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.90, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 4, categories.ENERGYPRODUCTION * categories.TECH3 } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.NUKE * categories.STRUCTURE}},
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.NUKE } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 8, categories.STRUCTURE * categories.NUKE * (categories.TECH3 + categories.EXPERIMENTAL) }},
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<', categories.STRUCTURE * categories.DEFENSE } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -813,12 +818,14 @@ BuilderGroup {
         Priority = 1000,
         DelayEqualBuildPlattons = {'Artillery', 20},
         BuilderConditions = {
+            { MIBC, 'FactionIndex', { 2 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             { UCBC, 'CheckBuildPlattonDelay', { 'Artillery' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 2.0, 300.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ARTILLERY * categories.TECH3 } },
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ARTILLERY } },
+            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 3, categories.STRUCTURE * categories.ARTILLERY * categories.EXPERIMENTAL }},
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.EXPERIMENTAL}},
             -- Respect UnitCap
         },
@@ -839,13 +846,14 @@ BuilderGroup {
         Priority = 1000,
         DelayEqualBuildPlattons = {'Artillery', 20},
         BuilderConditions = {
+            { MIBC, 'FactionIndex', { 1 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             { UCBC, 'CheckBuildPlattonDelay', { 'Artillery' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 2.0, 300.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ARTILLERY * categories.EXPERIMENTAL } },
-            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 1, categories.STRUCTURE * categories.ARTILLERY * categories.EXPERIMENTAL }},
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ARTILLERY } },
+            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 3, categories.STRUCTURE * categories.ARTILLERY * categories.EXPERIMENTAL }},
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.EXPERIMENTAL}},
         },
         BuilderType = 'Any',
@@ -898,7 +906,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.35, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH2 }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH2 - categories.STATIONASSISTPOD }},
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 5, categories.STRUCTURE * categories.DEFENSE - categories.ANTIAIR }},
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<', categories.STRUCTURE * categories.DEFENSE } },
@@ -929,7 +937,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.35, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH2 }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH2 - categories.STATIONASSISTPOD }},
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 20, categories.STRUCTURE * categories.DEFENSE - categories.ANTIAIR }},
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<', categories.STRUCTURE * categories.DEFENSE } },
@@ -961,7 +969,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.35, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'CanBuildCategory', { categories.STRUCTURE * categories.LAND * categories.DEFENSE * categories.DIRECTFIRE * categories.TECH3 } },
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH3 }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH3 - categories.STATIONASSISTPOD }},
             { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.LAND * categories.EXPERIMENTAL } },
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 30, categories.STRUCTURE * categories.DEFENSE - categories.ANTIAIR }},
             -- Respect UnitCap
@@ -994,7 +1002,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- When do we want to build this ?
             { UCBC, 'CanBuildCategory', { categories.STRUCTURE * categories.LAND * categories.DEFENSE * categories.DIRECTFIRE * categories.TECH3 } },
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH3 }},
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH3 - categories.STATIONASSISTPOD }},
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 40, categories.STRUCTURE * categories.DEFENSE - categories.ANTIAIR }},
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<', categories.STRUCTURE * categories.DEFENSE } },
