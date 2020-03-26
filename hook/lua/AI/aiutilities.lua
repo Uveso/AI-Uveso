@@ -178,7 +178,7 @@ function UseTransports(units, transports, location, transportPlatoon)
 
     local attached = true
     repeat
-        WaitSeconds(2)
+        coroutine.yield(20)
         local allDead = true
         local transDead = true
         for k, v in units do
@@ -251,7 +251,7 @@ function UseTransports(units, transports, location, transportPlatoon)
 
     local attached = true
     while attached do
-        WaitSeconds(2)
+        coroutine.yield(20)
         local allDead = true
         for _, v in transports do
             if not v.Dead then
@@ -326,10 +326,6 @@ end
 
 -- AI-Uveso: Helper function for targeting
 function ValidateLayer(UnitPos,MovementLayer)
-    -- Air can go everywhere
-    if MovementLayer == 'Air' then
-        return true
-    end
     local TerrainHeight = GetTerrainHeight( UnitPos[1], UnitPos[3] ) -- terran high
     local SurfaceHeight = GetSurfaceHeight( UnitPos[1], UnitPos[3] ) -- water high
     -- Terrain > Surface = Target is on land
@@ -342,7 +338,10 @@ function ValidateLayer(UnitPos,MovementLayer)
         --LOG('AttackLayer '..MovementLayer..' - TerrainHeight < SurfaceHeight. = Target is on water ')
         return true
     end
-
+    -- Air can go everywhere
+    if MovementLayer == 'Air' then
+        return true
+    end
     return false
 end
 
@@ -424,7 +423,7 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
     local UnitWithPath = false
     local UnitNoPath = false
     local count = 0
-    local TargetsInRange, EnemyStrength, TargetPosition, category, distance, targetRange, success, bestGoalPos, canAttack
+    local TargetsInRange, EnemyStrength, TargetPosition, category, distance, targetRange, success, bestGoalPos
     for _, range in RangeList do
         TargetsInRange = aiBrain:GetUnitsAroundPoint(TargetSearchCategory, position, range, 'Enemy')
         --DrawCircle(position, range, '0000FF')
@@ -440,30 +439,32 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
                     continue
                 end
                 TargetPosition = Target:GetPosition()
-                EnemyStrength = 0
-                -- check if the target is inside a nuke blast radius
-                if IsNukeBlastArea(aiBrain, TargetPosition) then continue end
-                -- check if the target is on the same layer then the attacker
-                if not ValidateLayer(TargetPosition, platoon.MovementLayer) then continue end
-                -- check if we have a special player as enemy
-                if enemyBrain and enemyIndex and enemyBrain ~= enemyIndex then continue end
-                -- check if the Target is still alive, matches our target priority and can be attacked from our platoon
-                canAttack = platoon:CanAttackTarget(squad, Target) or false
-                --LOG('* AIFindNearestCategoryTargetInRange: canAttack '..repr(canAttack))
-                if not Target.Dead and EntityCategoryContains(category, Target) and canAttack then
-                    -- yes... we need to check if we got friendly units with GetUnitsAroundPoint(_, _, _, 'Enemy')
-                    if not IsEnemy( MyArmyIndex, Target:GetAIBrain():GetArmyIndex() ) then continue end
-                    if Target.ReclaimInProgress then
-                        --WARN('* AIFindNearestCategoryTargetInRange: ReclaimInProgress !!! Ignoring the target.')
-                        continue
-                    end
-                    if Target.CaptureInProgress then
-                        --WARN('* AIFindNearestCategoryTargetInRange: CaptureInProgress !!! Ignoring the target.')
-                        continue
-                    end
-                    targetRange = VDist2(position[1],position[3],TargetPosition[1],TargetPosition[3])
-                    --LOG('* AIFindNearestCategoryTargetInRange: targetRange '..repr(targetRange))
-                    if targetRange < distance then
+                targetRange = VDist2(position[1],position[3],TargetPosition[1],TargetPosition[3])
+                --LOG('* AIFindNearestCategoryTargetInRange: targetRange '..repr(targetRange))
+                if targetRange < distance then
+                    EnemyStrength = 0
+                    -- check if thisis the right enemy
+                    if not EntityCategoryContains(category, Target) then continue end
+                    -- check if the target is on the same layer then the attacker
+                    if platoon.MovementLayer ~= 'Air' and not ValidateLayer(TargetPosition, platoon.MovementLayer) then continue end
+                    -- check if the Target is still alive, matches our target priority and can be attacked from our platoon
+                    if not platoon:CanAttackTarget(squad, Target) then continue end
+                    --LOG('* AIFindNearestCategoryTargetInRange: canAttack '..repr(canAttack))
+                    if not Target.Dead then
+                        -- yes... we need to check if we got friendly units with GetUnitsAroundPoint(_, _, _, 'Enemy')
+                        if not IsEnemy( MyArmyIndex, Target:GetAIBrain():GetArmyIndex() ) then continue end
+                        -- check if the target is inside a nuke blast radius
+                        if IsNukeBlastArea(aiBrain, TargetPosition) then continue end
+                        -- check if we have a special player as enemy
+                        if enemyBrain and enemyIndex and enemyBrain ~= enemyIndex then continue end
+                        if Target.ReclaimInProgress then
+                            --WARN('* AIFindNearestCategoryTargetInRange: ReclaimInProgress !!! Ignoring the target.')
+                            continue
+                        end
+                        if Target.CaptureInProgress then
+                            --WARN('* AIFindNearestCategoryTargetInRange: CaptureInProgress !!! Ignoring the target.')
+                            continue
+                        end
                         if not aiBrain:PlatoonExists(platoon) then
                             return false, false, false, 'NoPlatoonExists'
                         end
@@ -479,7 +480,7 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
                         --LOG('PlatoonStrength / 100 * AttackEnemyStrength <= '..(PlatoonStrength / 100 * AttackEnemyStrength)..' || EnemyStrength = '..EnemyStrength)
                         -- Only attack if we have a chance to win
                         if PlatoonStrength / 100 * AttackEnemyStrength < EnemyStrength then continue end
-                        --WaitTicks(1)
+                        --coroutine.yield(1)
                         --LOG('* AIFindNearestCategoryTargetInRange: PlatoonGenerateSafePathTo ')
                         path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, platoon.MovementLayer, position, TargetPosition, platoon.PlatoonData.NodeWeight or 10 )
                         -- Check if we found a path with markers
@@ -496,7 +497,7 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
                                 --LOG('* AIFindNearestCategoryTargetInRange: Possible target no path. distance '..distance..'  ')
                             -- NoGraph means we have no Map markers. Lets try to path with c-engine command CanPathTo()
                             elseif reason == 'NoGraph' then
-                                --WaitTicks(1)
+                                --coroutine.yield(1)
                                 local success, bestGoalPos = AIAttackUtils.CheckPlatoonPathingEx(platoon, TargetPosition)
                                 -- check if we found a path with c-engine command.
                                 if success then
@@ -517,7 +518,7 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
                 end
                 count = count + 1
                 if count > 300 then -- 300 
-                    WaitTicks(1)
+                    coroutine.yield(1)
                     count = 0
                 end
                 -- DEBUG; use the first target if we can path to it.
@@ -599,9 +600,9 @@ function AIFindNearestCategoryTargetInRangeCDR(aiBrain, position, maxRange, Move
             if TargetUnit then
                 return TargetUnit
             end
-           WaitTicks(10)
+           coroutine.yield(10)
         end
-        WaitTicks(1)
+        coroutine.yield(1)
     end
     return TargetUnit
 end
@@ -674,7 +675,7 @@ function AIFindNearestCategoryTeleportLocation(aiBrain, position, maxRange, Move
         if TargetUnit then
             return TargetUnit
         end
-       WaitTicks(10)
+       coroutine.yield(10)
     end
     return TargetUnit
 end

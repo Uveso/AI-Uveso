@@ -150,7 +150,13 @@ function AIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder,
             end
         end
     end
-    -- fallback in case we cant find a place to build with experimental template
+
+    -- fallback in case we can't find a place to build with experimental template
+    if not location and not IsResource(buildingType) then
+        location = aiBrain:FindPlaceToBuild(buildingType, whatToBuild, baseTemplate, relative, closeToBuilder, nil, relativeTo[1], relativeTo[3])
+    end
+
+    -- fallback in case we can't find a place to build with experimental template
     if not location and not IsResource(buildingType) then
         for num,offsetCheck in RandomIter({1,2,3,4,5,6,7,8}) do
             location = aiBrain:FindPlaceToBuild(buildingType, whatToBuild, BaseTmplFile['MovedTemplates'..offsetCheck][factionIndex], relative, closeToBuilder, nil, relativeTo[1], relativeTo[3])
@@ -159,30 +165,33 @@ function AIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder,
             end
         end
     end
+
     -- if we have no place to build, then maybe we have a modded/new buildingType. Lets try 'T1LandFactory' as dummy and search for a place to build near base
     if not location and not IsResource(buildingType) and builder.BuilderManagerData and builder.BuilderManagerData.EngineerManager then
         --LOG('*AIExecuteBuildStructure: Find no place to Build! - buildingType '..repr(buildingType)..' - ('..builder.factionCategory..') Trying again with T1LandFactory and RandomIter. Searching near base...')
         relativeTo = builder.BuilderManagerData.EngineerManager.Location
         for num,offsetCheck in RandomIter({1,2,3,4,5,6,7,8}) do
-            location = aiBrain:FindPlaceToBuild('T1LandFactory', whatToBuildReplace or whatToBuild, BaseTmplFile['MovedTemplates'..offsetCheck][factionIndex], relative, closeToBuilder, nil, relativeTo[1], relativeTo[3])
+            location = aiBrain:FindPlaceToBuild('T1LandFactory', 'ueb0101', BaseTmplFile['MovedTemplates'..offsetCheck][factionIndex], relative, closeToBuilder, nil, relativeTo[1], relativeTo[3])
             if location then
                 --LOG('*AIExecuteBuildStructure: Yes! Found a place near base to Build! - buildingType '..repr(buildingType))
                 break
             end
         end
     end
+
     -- if we still have no place to build, then maybe we have really no place near the base to build. Lets search near engineer position
     if not location and not IsResource(buildingType) then
         --LOG('*AIExecuteBuildStructure: Find still no place to Build! - buildingType '..repr(buildingType)..' - ('..builder.factionCategory..') Trying again with T1LandFactory and RandomIter. Searching near Engineer...')
         relativeTo = builder:GetPosition()
         for num,offsetCheck in RandomIter({1,2,3,4,5,6,7,8}) do
-            location = aiBrain:FindPlaceToBuild('T1LandFactory', whatToBuild, BaseTmplFile['MovedTemplates'..offsetCheck][factionIndex], relative, closeToBuilder, nil, relativeTo[1], relativeTo[3])
+            location = aiBrain:FindPlaceToBuild('T1LandFactory', 'ueb0101', BaseTmplFile['MovedTemplates'..offsetCheck][factionIndex], relative, closeToBuilder, nil, relativeTo[1], relativeTo[3])
             if location then
                 --LOG('*AIExecuteBuildStructure: Yes! Found a place near engineer to Build! - buildingType '..repr(buildingType))
                 break
             end
         end
     end
+
     -- if we have a location, build!
     if location then
         local relativeLoc = BuildToNormalLocation(location)

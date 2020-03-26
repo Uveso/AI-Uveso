@@ -206,7 +206,7 @@ function ExtractorUpgrade(self, aiBrain, MassExtractorUnitList, ratio, techLevel
     if upgradeID and upgradeBuilding then
         --LOG('* UnitUpgradeAIUveso: Upgrading Building in DistanceToBase '..(LowestDistanceToBase or 'Unknown ???')..' '..techLevel..' - UnitId '..upgradeBuilding:GetUnitId()..' - upgradeID '..upgradeID..' - GlobalUpgrading '..techLevel..': '..(UpgradingBuilding + 1) )
         IssueUpgrade({upgradeBuilding}, upgradeID)
-        WaitTicks(10)
+        coroutine.yield(10)
         return true
     end
     return false
@@ -411,11 +411,11 @@ function ReclaimAIThread(platoon,self,aiBrain)
                     StartMoveDestination(self, NearestWreckPos)
                 end
             end 
-            WaitTicks(10)
+            coroutine.yield(10)
             if not self.Dead and self:IsUnitState("Moving") then
                 --LOG('Moving to Wreckage.')
                 while self and not self.Dead and self:IsUnitState("Moving") do
-                    WaitTicks(10)
+                    coroutine.yield(10)
                 end
                 scanrange = 25
             end
@@ -428,13 +428,13 @@ function ReclaimAIThread(platoon,self,aiBrain)
             if HomeDist > 36 then
                 --LOG('full, moving home')
                 StartMoveDestination(self, {basePosition[1], basePosition[2], basePosition[3]})
-                WaitTicks(10)
+                coroutine.yield(10)
                 if not self.Dead and self:IsUnitState("Moving") then
                     while self and not self.Dead and self:IsUnitState("Moving") and (MassStorageRatio == 1 or EnergyStorageRatio == 1) and HomeDist > 30 do
                         MassStorageRatio = aiBrain:GetEconomyStoredRatio('MASS')
                         EnergyStorageRatio = aiBrain:GetEconomyStoredRatio('ENERGY')
                         HomeDist = VDist2(SelfPos[1], SelfPos[3], basePosition[1], basePosition[3])
-                        WaitTicks(30)
+                        coroutine.yield(30)
                     end
                     IssueClearCommands({self})
                     scanrange = 25
@@ -444,7 +444,7 @@ function ReclaimAIThread(platoon,self,aiBrain)
                 return
             end
         end
-        WaitTicks(10)
+        coroutine.yield(10)
     end
 end
 
@@ -457,7 +457,7 @@ function StartMoveDestination(self,destination)
         count = count + 1
         IssueClearCommands({self})
         IssueMove( {self}, destination )
-        WaitTicks(10)
+        coroutine.yield(10)
     end
 end
 
@@ -475,17 +475,17 @@ function TMLAIThread(platoon,self,aiBrain)
     while aiBrain:PlatoonExists(platoon) and self and not self.Dead do
         local target = false
         while self and not self.Dead and self:GetTacticalSiloAmmoCount() < 2 do
-            WaitTicks(10)
+            coroutine.yield(10)
         end
         while self and not self.Dead and self:IsPaused() do
-            WaitTicks(10)
+            coroutine.yield(10)
         end
         while self and not self.Dead and self:GetTacticalSiloAmmoCount() > 1 and not target and not self:IsPaused() do
             target = false
             while self and not self.Dead and not target do
-                WaitTicks(10)
+                coroutine.yield(10)
                 while self and not self.Dead and not self:IsIdleState() do
-                    WaitTicks(10)
+                    coroutine.yield(10)
                 end
                 if self.Dead then return end
                 target = FindTargetUnit(self, minRadius, maxRadius, MaxLoad)
@@ -508,7 +508,7 @@ function TMLAIThread(platoon,self,aiBrain)
                 end
             end
         end
-        WaitTicks(10)
+        coroutine.yield(10)
     end
 end
 function FindTargetUnit(self, minRadius, maxRadius, MaxLoad)
@@ -598,13 +598,13 @@ function LeadTarget(launcher, target)
         -- 1st position of target
         TargetPos = target:GetPosition()
         TargetStartPosition = {TargetPos[1], 0, TargetPos[3]}
-        WaitTicks(10)
+        coroutine.yield(10)
         -- 2nd position of target after 1 second
         TargetPos = target:GetPosition()
         Target1SecPos = {TargetPos[1], 0, TargetPos[3]}
         XmovePerSec = (TargetStartPosition[1] - Target1SecPos[1])
         YmovePerSec = (TargetStartPosition[3] - Target1SecPos[3])
-        WaitTicks(10)
+        coroutine.yield(10)
         -- 3rd position of target after 2 seconds to verify straight movement
         TargetPos = target:GetPosition()
         Target2SecPos = {TargetPos[1], TargetPos[2], TargetPos[3]}
@@ -696,12 +696,12 @@ function GetEnemyUnitsInSphereOnRadar(aiBrain, position, minRadius, maxRadius)
     end
     local SelfArmyIndex = aiBrain:GetArmyIndex()
     local RadEntities = {}
-    WaitTicks(1)
+    coroutine.yield(1)
     local lagstopper = 0
     for Index, EnemyUnit in UnitsinRec do
         lagstopper = lagstopper + 1
         if lagstopper > 20 then
-            WaitTicks(1)
+            coroutine.yield(1)
             lagstopper = 0
         end
         if (not EnemyUnit.Dead) and IsEnemy( SelfArmyIndex, EnemyUnit:GetArmy() ) then
@@ -737,14 +737,14 @@ function IsProtected(self,position)
     if not UnitsinRec then
         return false
     end
-    WaitTicks(1)
+    coroutine.yield(1)
     local lagstopper = 0
     local counter = 0
     for _, EnemyUnit in UnitsinRec do
         counter = counter + 1
         lagstopper = lagstopper + 1
         if lagstopper > 20 then
-            WaitTicks(1)
+            coroutine.yield(1)
             lagstopper = 0
         end
         if (not EnemyUnit.Dead) and IsEnemy( self:GetArmy(), EnemyUnit:GetArmy() ) then
@@ -795,9 +795,9 @@ function CDRRunHomeEnemyNearBase(platoon,cdr,UnitsInBasePanicZone)
             cdrNewPos[2] = cdr.CDRHome[2]
             cdrNewPos[3] = cdr.CDRHome[3] + Random(-6, 6)
             platoon:Stop()
-            WaitTicks(1)
+            coroutine.yield(1)
             platoon:MoveToLocation(cdrNewPos, false)
-            WaitTicks(50)
+            coroutine.yield(50)
             return true
         end
     end
@@ -811,9 +811,9 @@ function CDRRunHomeHealthRange(platoon,cdr,maxRadius)
         cdrNewPos[2] = cdr.CDRHome[2]
         cdrNewPos[3] = cdr.CDRHome[3] + Random(-6, 6)
         platoon:Stop()
-        WaitTicks(1)
+        coroutine.yield(1)
         platoon:MoveToLocation(cdrNewPos, false)
-        WaitTicks(50)
+        coroutine.yield(50)
         return true
     end
     return false
@@ -829,9 +829,9 @@ function CDRRunHomeAtDamage(platoon,cdr)
         cdrNewPos[2] = cdr.CDRHome[2]
         cdrNewPos[3] = cdr.CDRHome[3] + Random(-6, 6)
         platoon:Stop()
-        WaitTicks(1)
+        coroutine.yield(1)
         platoon:MoveToLocation(cdrNewPos, false)
-        WaitTicks(10)
+        coroutine.yield(10)
         cdr.HealthOLD = CDRHealth
         return true
     end    
@@ -845,9 +845,9 @@ function CDRForceRunHome(platoon,cdr)
     cdrNewPos[2] = cdr.CDRHome[2]
     cdrNewPos[3] = cdr.CDRHome[3] + Random(-6, 6)
     platoon:Stop()
-    WaitTicks(1)
+    coroutine.yield(1)
     platoon:MoveToLocation(cdrNewPos, false)
-    WaitTicks(30)
+    coroutine.yield(30)
     if VDist2(cdr.position[1], cdr.position[3], cdr.CDRHome[1], cdr.CDRHome[3]) > 20 then
         return true
     end
@@ -862,9 +862,9 @@ function CDRParkingHome(platoon,cdr)
         cdrNewPos[2] = cdr.CDRHome[2]
         cdrNewPos[3] = cdr.CDRHome[3] + Random(-6, 6)
         platoon:Stop()
-        WaitTicks(1)
+        coroutine.yield(1)
         platoon:MoveToLocation(cdrNewPos, false)
-        WaitTicks(30)
+        coroutine.yield(30)
     end
     return
 end

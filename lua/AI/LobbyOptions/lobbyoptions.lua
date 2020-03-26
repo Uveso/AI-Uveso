@@ -72,9 +72,15 @@ AIOpts = {
                 key = 'pathlocation',
             },
             {
-                text = "<LOC aisettingsUveso_0204>Pathfinding and threat",
-                help = "<LOC aisettingsUveso_0205>Show pathfinding and threats",
+                text = "<LOC aisettingsUveso_0204>Pathfinding and marker threat",
+                help = "<LOC aisettingsUveso_0205>Show pathfinding and threats saved in AI markers",
                 key = 'paththreats',
+            },
+
+            {
+                text = "<LOC aisettingsUveso_0209>Pathfinding and IMap threat",
+                help = "<LOC aisettingsUveso_0210>Show pathfinding and threats from ingame threatmap",
+                key = 'imapthreats',
             },
             {
                 text = "<LOC aisettingsUveso_0159>Path and land marker",

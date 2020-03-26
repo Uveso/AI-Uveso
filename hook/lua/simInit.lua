@@ -149,7 +149,7 @@ function ValidateMapAndMarkers()
 
     -- Check map markers
     local TEMP = {}
-    local UNKNOWNMARKER
+    local UNKNOWNMARKER = {}
     local dist
     for k, v in Scenario.MasterChain._MASTERCHAIN_.Markers do
         -- Check if the marker is known. If not, send a debug message
@@ -216,7 +216,7 @@ function ValidateMapAndMarkers()
             -- Checking colors (for debug)
             if MarkerDefaults[v.type]['color'] ~= v.color then
                 -- we actual don't print a debugmessage here. This message is for debuging a debug function :)
-                --LOG('* AI-Uveso: ValidateMapAndMarkers: color missmatch in marker ['..k..'] - MarkerType: [\''..v.type..'\']. marker.color is ('..repr(v.color)..'), but should be ('..MarkerDefaults[v.type]['color']..').')
+                LOG('* AI-Uveso: ValidateMapAndMarkers: color missmatch in marker ['..k..'] - MarkerType: [\''..v.type..'\']. marker.color is ('..repr(v.color)..'), but should be ('..MarkerDefaults[v.type]['color']..').')
                 v.color = MarkerDefaults[v.type]['color']
             end
         -- Check BaseLocations distances to other locations
@@ -246,12 +246,16 @@ end
 
 function GraphRenderThread()
     -- wait 10 seconds at gamestart before we start debuging
-    WaitTicks(100)
+    coroutine.yield(100)
     LOG('* AI-Uveso: Function GraphRenderThread() started.')
     while true do
         --LOG('* AI-Uveso: Function GraphRenderThread() beat.')
         -- draw all paths with location radius and AI Pathfinding
-        if ScenarioInfo.Options.AIPathingDebug == 'pathlocation' or ScenarioInfo.Options.AIPathingDebug == 'path' or ScenarioInfo.Options.AIPathingDebug == 'paththreats' then
+        if ScenarioInfo.Options.AIPathingDebug == 'pathlocation'
+        or ScenarioInfo.Options.AIPathingDebug == 'path'
+        or ScenarioInfo.Options.AIPathingDebug == 'paththreats' 
+        or ScenarioInfo.Options.AIPathingDebug == 'imapthreats' 
+        then
             -- display first all land nodes (true will let them blink)
             if GetGameTimeSeconds() < 15 then
                 DrawPathGraph('DefaultLand', false)
@@ -290,10 +294,12 @@ function GraphRenderThread()
             -- Draw the radius of each base(manager)
             if ScenarioInfo.Options.AIPathingDebug == 'pathlocation' then
                 DrawBaseRanger()
-            end
             -- Draw the Marker threat
-            if ScenarioInfo.Options.AIPathingDebug == 'paththreats' then
+            elseif ScenarioInfo.Options.AIPathingDebug == 'paththreats' then
                 DrawMarkerThreats()
+            -- Draw the IMAP threat
+            elseif ScenarioInfo.Options.AIPathingDebug == 'imapthreats' then
+                DrawIMAPThreats()
             end
             DrawAIPathCache()
         -- Display land path permanent
@@ -313,7 +319,7 @@ function GraphRenderThread()
             DrawPathGraph('DefaultAir', false)
             DrawAIPathCache('DefaultAir')
         end
-        WaitTicks(2)
+        coroutine.yield(2)
     end
 end
 
@@ -411,6 +417,60 @@ function DrawMarkerThreats()
     end
 end
 
+local treatScale = 1
+function DrawIMAPThreats()
+    local MCountX = 48
+    local MCountY = 48
+    local PosX
+    local PosY
+    local enemyThreat
+    -- Playable area
+    local playablearea
+    if  ScenarioInfo.MapData.PlayableRect then
+        playablearea = ScenarioInfo.MapData.PlayableRect
+    else
+        playablearea = {0, 0, ScenarioInfo.size[1], ScenarioInfo.size[2]}
+    end
+
+    local FocussedArmy = GetFocusArmy()
+    local highestTreat = treatScale - 0.1
+    for ArmyIndex, aiBrain in ArmyBrains do
+        -- only draw the pathcache from the focussed army
+        if FocussedArmy ~= ArmyIndex then
+            continue
+        end
+        local DistanceBetweenMarkers = ScenarioInfo.size[1] / ( MCountX )
+        for Y = 0, MCountY - 1 do
+            for X = 0, MCountX - 1 do
+                PosX = X * DistanceBetweenMarkers + DistanceBetweenMarkers / 2
+                PosY = Y * DistanceBetweenMarkers + DistanceBetweenMarkers / 2
+                PosZ = GetTerrainHeight( PosX, PosY )
+                -- -------------------------------------------------------------------------------- --
+                enemyThreat = aiBrain:GetThreatAtPosition({PosX, 0, PosY}, 0, true, 'AntiSurface')
+                if highestTreat < enemyThreat then
+                    highestTreat = enemyThreat
+                end
+                DrawCircle({PosX, PosZ, PosY}, (enemyThreat * treatScale) + 0.1, 'fff4a460' )
+                -- -------------------------------------------------------------------------------- --
+                enemyThreat = aiBrain:GetThreatAtPosition({PosX, 0, PosY}, 0, true, 'AntiAir')
+                if highestTreat < enemyThreat then
+                    highestTreat = enemyThreat
+                end
+                DrawCircle({PosX, PosZ, PosY}, (enemyThreat * treatScale) + 0.1, 'ffffffff' )
+                -- -------------------------------------------------------------------------------- --
+                enemyThreat = aiBrain:GetThreatAtPosition({PosX, 0, PosY}, 0, true, 'AntiSub')
+                if highestTreat < enemyThreat then
+                    highestTreat = enemyThreat
+                end
+                DrawCircle({PosX, PosZ, PosY}, (enemyThreat * treatScale) + 0.1, 'ff27408b' )
+                -- -------------------------------------------------------------------------------- --
+            end
+        end
+        -- max radius for a circle is DistanceBetweenMarkers / 2
+        treatScale = DistanceBetweenMarkers / 2 / highestTreat
+    end
+end
+
 function DrawAIPathCache(DrawOnly)
     -- loop over all players in the game
     local FocussedArmy = GetFocusArmy()
@@ -477,7 +537,7 @@ function RenderMarkerCreatorThread()
     local MarkerPosition = {}
     local Marker2Position = {}
     while GetGameTimeSeconds() < 5 do
-        WaitTicks(10)
+        coroutine.yield(10)
     end
     while true do
         --LOG('* AI-Uveso: Function RenderMarkerCreatorThread() beat.')
@@ -539,7 +599,7 @@ function RenderMarkerCreatorThread()
             end
         end
         
-        WaitTicks(2)
+        coroutine.yield(2)
         -- only display all markers at the start of the game
         if GetGameTimeSeconds() > 10 and not DebugValidMarkerPosition then
             return
@@ -794,7 +854,7 @@ function CheckValidMarkerPosition(MarkerIndex)
         for X = -4, 4, ScanResolution do
 --            if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
 --                --DrawLine( {MarkerPos[1] -4, MarkerPos[2], MarkerPos[3] + Y}, {MarkerPos[1] + X, MarkerPos[2], MarkerPos[3] + Y}, 'ffFFE0E0' )
---                --WaitTicks(1)
+--                --coroutine.yield(1)
 --            end
             local Block = false
             -- Check a square with FootprintSize if it has less then MaxPassableElevation ((circle 16:20  1:20*16 = 0.8))
@@ -874,7 +934,7 @@ function CheckValidMarkerPosition(MarkerIndex)
         for Y = -4, 4, ScanResolution do
 --            if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
 --                --DrawLine( {MarkerPos[1] + X , MarkerPos[2], MarkerPos[3] -4}, {MarkerPos[1] + X, MarkerPos[2], MarkerPos[3] + Y}, 'ffFFE0E0' )
---                --WaitTicks(1)
+--                --coroutine.yield(1)
 --            end
             local Block = false
             -- Check a square with FootprintSize if it has less then MaxPassableElevation ((circle 16:20  1:20*16 = 0.8))
@@ -974,7 +1034,7 @@ function ConnectMarker(X,Y)
             for X = MarkerPos[1], CREATEDMARKERS[EastMarkerIndex].position[1], ScanResolution do
 --                if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceEast then
 --                    DrawLine( {MarkerPos[1], MarkerPos[2], MarkerPos[3] + Y}, { X, MarkerPos[2], MarkerPos[3] + Y}, 'ffFFE0E0' )
---                    WaitTicks(1)
+--                    coroutine.yield(1)
 --                end
                 local Block = false
                 -- Check a square with FootprintSize if it has less then MaxSlope/MaxAngle ((circle 16:20  1:20*16 = 0.8))
@@ -1057,7 +1117,7 @@ function ConnectMarker(X,Y)
             for Y = MarkerPos[3], CREATEDMARKERS[SouthMarkerIndex].position[3], ScanResolution do
 --                if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceSouth then
 --                    DrawLine( {MarkerPos[1] + X, MarkerPos[2], MarkerPos[3]}, { MarkerPos[1] + X, MarkerPos[2], Y}, 'ffFFE0E0' )
---                    WaitTicks(1)
+--                    coroutine.yield(1)
 --                end
                 local Block = false
                 -- Check a square with FootprintSize if it has less then MaxSlope/MaxAngle ((circle 16:20  1:20*16 = 0.8))
@@ -1141,7 +1201,7 @@ function ConnectMarker(X,Y)
             for XY = 0, CREATEDMARKERS[SouthEastMarkerIndex].position[3] - MarkerPos[3] , ScanResolution do
 --                if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
 --                    --DrawLine( {MarkerPos[1] + X, MarkerPos[2], MarkerPos[3] - X}, { MarkerPos[1] + X+XY, MarkerPos[2], MarkerPos[3] + XY - X}, 'ffFFE0E0' )
---                    --WaitTicks(1)
+--                    --coroutine.yield(1)
 --                end
                 local Block = false
                 -- Check a square with FootprintSize if it has less then MaxPassableElevation ((circle 16:20  1:20*16 = 0.8))
@@ -1224,7 +1284,7 @@ function ConnectMarker(X,Y)
             for XY = 0, CREATEDMARKERS[SouthWestMarkerIndex].position[3] - MarkerPos[3] , ScanResolution do
 --                if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
 --                    --DrawLine( {MarkerPos[1] + X, MarkerPos[2], MarkerPos[3] + X}, { MarkerPos[1] + X-XY, MarkerPos[2], MarkerPos[3] + XY + X}, 'ffFFE0E0' )
---                    --WaitTicks(1)
+--                    --coroutine.yield(1)
 --                end
                 local Block = false
                 -- Check a square with FootprintSize if it has less then MaxPassableElevation ((circle 16:20  1:20*16 = 0.8))
@@ -1589,7 +1649,7 @@ function ValidateModFiles()
     local ModName = "* AI-Uveso"
     local ModDirectory = 'AI-Uveso'
     local Files = 84
-    local Bytes = 1544081
+    local Bytes = 1550735
     LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Running from: '..debug.getinfo(1).source..'.')
     LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Checking directory /mods/ for '..ModDirectory..'...')
     local FilesInFolder = DiskFindFiles('/mods/', '*.*')
@@ -1674,6 +1734,6 @@ function ReclaimCleaner()
         -- Set initial wrecks to true after the first pass
         InitialWrecks = true
         --LOG('reclaim count:'..count)
-        WaitTicks(50)
+        coroutine.yield(50)
     end
 end

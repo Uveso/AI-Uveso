@@ -70,12 +70,12 @@ EngineerManager = Class(TheOldEngineerManager) {
         end
     end,
 -- For AI Patch V8 self:ForkEngineerTask(unit)
-    TaskFinished = function(self, unit)
+    TaskFinished = function(manager, unit)
         --LOG('+ TaskFinished')
-        if VDist3(self.Location, unit:GetPosition()) > self.Radius and not EntityCategoryContains(categories.COMMAND, unit) then
-            self:ReassignUnit(unit)
+        if VDist3(manager.Location, unit:GetPosition()) > manager.Radius and not EntityCategoryContains(categories.COMMAND, unit) then
+            manager:ReassignUnit(unit)
         else
-            self:ForkEngineerTask(unit)
+            manager:ForkEngineerTask(unit)
         end
     end,
 -- For AI Patch V8 KillThread

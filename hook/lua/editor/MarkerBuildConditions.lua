@@ -4,7 +4,7 @@
 --Optimized
 -- Condition Actual:0.000244140625 name: CanBuildOnMass
 local LastGetMassMarker = 0
-local LastCheckMassMarker = 0
+local LastCheckMassMarker = {}
 local MassMarker = {}
 local LastMassBOOL = false
 function CanBuildOnMass(aiBrain, locationType, distance, threatMin, threatMax, threatRings, threatType, maxNum )
@@ -28,14 +28,18 @@ function CanBuildOnMass(aiBrain, locationType, distance, threatMin, threatMax, t
         end
         table.sort(MassMarker, function(a,b) return a.Distance < b.Distance end)
     end
-    if LastCheckMassMarker < GetGameTimeSeconds() then
-        LastCheckMassMarker = GetGameTimeSeconds()
+    if not LastCheckMassMarker[distance] or LastCheckMassMarker[distance] < GetGameTimeSeconds() then
+        LastCheckMassMarker[distance] = GetGameTimeSeconds()
         local threatCheck = false
         if threatMin and threatMax and threatRings then
             threatCheck = true
         end
         LastMassBOOL = false
         for _, v in MassMarker do
+            if v.Distance > distance then
+                break
+            end
+            --LOG(_..'Checking marker with max distance ['..distance..']. Actual marker has distance: ('..(v.Distance)..').')
             if aiBrain:CanBuildStructureAt('ueb1103', v.Position) then
                 if threatCheck then
                     threat = aiBrain:GetThreatAtPosition(v.Position, threatRings, true, threatType or 'Overall')

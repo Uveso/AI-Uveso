@@ -13,11 +13,9 @@ function CreateUI(isReplay)
 end
 
 function KeyTestFunction(value)
-    LOG('KeyTestFunction('..value..')')
-    ConExecute("AI_RunOpponentAI")
-
+    LOG('** "Ctrl-q" KeyTestFunction('..value..')')
+--    local selection = ValidateUnitsList(GetSelectedUnits())
 end
-
 
 -- executing beats without throttling any beat.
 -- FAF way of throttling beats is desyncing the economic window and shows odd numbers.
@@ -33,7 +31,7 @@ function OnFirstUpdate()
     ForkThread( 
         function()
             LOG('* AI-Uveso: Changing path calculating budget') 
-            WaitSeconds(3)
+            coroutine.yield(30)
             ConExecute("path_MaxInstantWorkUnits 500")              -- default 500  - Budget for instant pathfinds by the AI
             ConExecute("path_ArmyBudget 1000")                      -- default 1000 - Budget for each army to do pathfinding each tick
             ConExecute("path_BackgroundBudget 1000")                -- default 1000 - Maximum number of steps to run pathfinder in background
@@ -45,7 +43,7 @@ function OnFirstUpdate()
     ForkThread( 
         function()
             --LOG(repr(__EngineStats))
-            WaitSeconds(3)
+            coroutine.yield(30)
             local CTask, CTaskThread, CScriptObject, CLuaTask, Entity, Prop, CDecalHandle, Unit, Platoon, ReconBlip = 0,0,0,0,0,0,0,0,0,0
             local SCTask, SCTaskThread, SCScriptObject, SCLuaTask, SEntity, SProp, SCDecalHandle, SReconBlip = 0,0,0,0,0,0,0,0
             local LastPrint, GTS, hours, minutes, seconds, fps, reserved, use, desiredrate, SystemTime, LastSystemTime, simrate, simspeed

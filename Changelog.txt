@@ -1,12 +1,22 @@
 *************************************************************************************************************************************
-v80 (19.Feb.2019)
+v81 (26.Mar.2020)
+
+- Fix: function CanBuildOnMass no longer ignores max distance to find available mass spots
+- New: Added option to view the ingame IMap (threat map)
+- Fix: Added a failsafe for factory placing in case the start location is very small
+- Opt: Optimized the platoon target function for better gamespeed
+- Fix: fixed a bug with unknown AI markers
+- Opt: Code refactoring; changed all WaitSeconds() to WaitTicks() function calls for better gamespeed
+
+*************************************************************************************************************************************
+v80 (19.Feb.2020)
 
 - New: Added buildplatoons for Hive and Kennel (Cybran and UEF Engineerstations)
 - New: Added new naval buildcondition for 2 lake maps
 - Opt: Changed ecomanager logic for assisting engineers
 
 *************************************************************************************************************************************
-v79 (12.Feb.2019)
+v79 (12.Feb.2020)
 
 - New: Added a function to the targetmanager to get high threat areas for nuke/arty fire
 - New: Units will now evade the area of a nuke blast (only evading own nukes)
@@ -18,7 +28,7 @@ v79 (12.Feb.2019)
 - Opt: Optimized buildconditions for better gamespeed
 
 *************************************************************************************************************************************
-v78 (31.Jan.2019)
+v78 (31.Jan.2020)
 
 - New: SCU enhance function can now also remove already installed enhancements.
 - New: Added presetcategory to all preset SCUs. (Blueprint.lua)
@@ -33,12 +43,12 @@ v78 (31.Jan.2019)
 - Opt: massextracors will now unpaused earlier on low eco.
 
 *************************************************************************************************************************************
-v77 (13.Jan.2019)
+v77 (13.Jan.2020)
 
 - Fix: Removed Platoonbuilders for Total Mayhem (needs updated Total Mayhem version)
 
 *************************************************************************************************************************************
-v76 (13.Jan.2019)
+v76 (13.Jan.2020)
 
 - New: Platoons now has different tables for MoveTo and AttackPriorities
 - New: Optimized engineer function to reclaim mass

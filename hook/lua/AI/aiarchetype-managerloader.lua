@@ -9,7 +9,7 @@ OldExecutePlanFunction = ExecutePlan
 function ExecutePlan(aiBrain)
     aiBrain:SetConstantEvaluate(false)
     local behaviors = import('/lua/ai/AIBehaviors.lua')
-    WaitSeconds(1)
+    coroutine.yield(10)
     if not aiBrain.BuilderManagers.MAIN.FactoryManager:HasBuilderList() then
         aiBrain:SetResourceSharing(true)
 
@@ -97,7 +97,7 @@ end
 
 function EcoManagerThread(aiBrain)
     while GetGameTimeSeconds() < 15 + aiBrain:GetArmyIndex() do
-        WaitTicks(10)
+        coroutine.yield(10)
     end
     local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
     local CheatMultOption = tonumber(ScenarioInfo.Options.CheatMult)
@@ -122,7 +122,7 @@ function EcoManagerThread(aiBrain)
     local bussy
     while aiBrain.Result ~= "defeat" do
         --LOG('* AI-Uveso: Function EcoManagerThread() beat. ['..aiBrain.Nickname..']')
-        WaitTicks(5)
+        coroutine.yield(5)
         Engineers = aiBrain:GetListOfUnits(categories.ENGINEER - categories.STATIONASSISTPOD - categories.COMMAND - categories.SUBCOMMANDER, false, false) -- also gets unbuilded units (planed to build)
         StationPods = aiBrain:GetListOfUnits(categories.STATIONASSISTPOD, false, false) -- also gets unbuilded units (planed to build)
         paragons = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC * categories.ENERGYPRODUCTION * categories.MASSPRODUCTION, false, false)
@@ -698,7 +698,7 @@ function LocationRangeManagerThread(aiBrain)
     local ArmyUnits = {}
     -- wait at start of the game for delayed AI message
     while GetGameTimeSeconds() < 20 + aiBrain:GetArmyIndex() do
-        WaitTicks(10)
+        coroutine.yield(10)
     end
     if not import('/lua/AI/sorianutilities.lua').CheckForMapMarkers(aiBrain) then
         import('/lua/AI/sorianutilities.lua').AISendChat('all', ArmyBrains[aiBrain:GetArmyIndex()].Nickname, 'badmap')
@@ -828,7 +828,7 @@ function LocationRangeManagerThread(aiBrain)
             LoopDelay = LoopDelay + 1
             if LoopDelay > 50 then
                 LoopDelay = 0
-                WaitTicks(1)
+                coroutine.yield(1)
             end
         end
         if 1 == 2 then
@@ -859,7 +859,7 @@ function LocationRangeManagerThread(aiBrain)
 --                end
             end
         end
-        WaitTicks(50)
+        coroutine.yield(50)
         
 --        local SUtils = import('/lua/AI/sorianutilities.lua')
 --        SUtils.AIRandomizeTaunt(aiBrain)
@@ -970,7 +970,7 @@ end
 function BaseTargetManagerThread(aiBrain)
 --        LOG('location manager '..repr(aiBrain.NukedArea))
     while GetGameTimeSeconds() < 25 + aiBrain:GetArmyIndex() do
-        WaitTicks(10)
+        coroutine.yield(10)
     end
     LOG('* AI-Uveso: Function BaseTargetManagerThread() started. ['..aiBrain.Nickname..']')
     local BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua').GetDangerZoneRadii()
@@ -983,7 +983,7 @@ function BaseTargetManagerThread(aiBrain)
         --LOG('* AI-Uveso: Function BaseTargetManagerThread() beat. ['..aiBrain.Nickname..']')
         ClosestTarget = nil
         distance = 8192
-        WaitTicks(50)
+        coroutine.yield(50)
         if not baseposition then
             if aiBrain:PBMHasPlatoonList() then
                 for k,v in aiBrain.PBM.Locations do
@@ -1014,7 +1014,7 @@ function BaseTargetManagerThread(aiBrain)
                 end
             end
         end
-        WaitTicks(1)
+        coroutine.yield(1)
         -- Search for experimentals in BaseMilitaryZone
         if not ClosestTarget then
             targets = aiBrain:GetUnitsAroundPoint(categories.EXPERIMENTAL - categories.AIR - categories.INSIGNIFICANTUNIT, baseposition, BaseMilitaryZone, 'Enemy')
@@ -1030,7 +1030,7 @@ function BaseTargetManagerThread(aiBrain)
                 end
             end
         end
-        WaitTicks(1)
+        coroutine.yield(1)
         -- Search for Paragons in EnemyZone
         if not ClosestTarget then
             targets = aiBrain:GetUnitsAroundPoint(categories.EXPERIMENTAL * categories.ECONOMIC, baseposition, BaseEnemyZone, 'Enemy')
@@ -1046,7 +1046,7 @@ function BaseTargetManagerThread(aiBrain)
                 end
             end
         end
-        WaitTicks(1)
+        coroutine.yield(1)
         -- Search for High Threat Area
         if not ClosestTarget and HighestThread[armyIndex].TargetLocation then
             -- search for any unit in this area
@@ -1066,7 +1066,7 @@ function BaseTargetManagerThread(aiBrain)
                 end
             end
         end
-        WaitTicks(1)
+        coroutine.yield(1)
         -- Search for Shields in EnemyZone
         if not ClosestTarget then
             targets = aiBrain:GetUnitsAroundPoint(categories.STRUCTURE * categories.SHIELD, baseposition, BaseEnemyZone, 'Enemy')
@@ -1082,7 +1082,7 @@ function BaseTargetManagerThread(aiBrain)
                 end
             end
         end
-        WaitTicks(1)
+        coroutine.yield(1)
         -- Search for experimentals in EnemyZone
         if not ClosestTarget then
             targets = aiBrain:GetUnitsAroundPoint(categories.EXPERIMENTAL - categories.AIR - categories.INSIGNIFICANTUNIT, baseposition, BaseEnemyZone, 'Enemy')
@@ -1098,7 +1098,7 @@ function BaseTargetManagerThread(aiBrain)
                 end
             end
         end
-        WaitTicks(1)
+        coroutine.yield(1)
         -- Search for T3 Factories / Gates in EnemyZone
         if not ClosestTarget then
             targets = aiBrain:GetUnitsAroundPoint((categories.STRUCTURE * categories.GATE) + (categories.STRUCTURE * categories.FACTORY * categories.TECH3 - categories.SUPPORTFACTORY), baseposition, BaseEnemyZone, 'Enemy')
@@ -1120,7 +1120,7 @@ end
 
 function MarkerGridThreatManagerThread(aiBrain)
     while GetGameTimeSeconds() < 30 + aiBrain:GetArmyIndex() do
-        WaitTicks(10)
+        coroutine.yield(10)
     end
     LOG('* AI-Uveso: Function MarkerGridThreatManagerThread() started. ['..aiBrain.Nickname..']')
     local AIAttackUtils = import('/lua/ai/aiattackutilities.lua')
@@ -1195,7 +1195,7 @@ function MassManagerThread(aiBrain)
     end
     
     while GetGameTimeSeconds() < 10 do
-        WaitTicks(10)
+        coroutine.yield(10)
     end
     LOG('* AI-Uveso: Function MassManagerThread() started. ['..aiBrain.Nickname..']')
     local PlatoonList

@@ -73,7 +73,7 @@ AIBrain = Class(UvesoAIBrainClass) {
         if not self.Uveso then
             return UvesoAIBrainClass.BaseMonitorThread(self)
         end
-        WaitTicks(10)
+        coroutine.yield(10)
         -- We are leaving this forked thread here because we don't need it.
         KillThread(CurrentThread())
     end,
@@ -83,7 +83,7 @@ AIBrain = Class(UvesoAIBrainClass) {
         if not self.Uveso then
             return UvesoAIBrainClass.EconomyMonitor(self)
         end
-        WaitTicks(10)
+        coroutine.yield(10)
         -- We are leaving this forked thread here because we don't need it.
         KillThread(self.EconomyMonitorThread)
         self.EconomyMonitorThread = nil
@@ -94,7 +94,7 @@ AIBrain = Class(UvesoAIBrainClass) {
         if not self.Uveso then
             return UvesoAIBrainClass.ExpansionHelpThread(self)
         end
-        WaitTicks(10)
+        coroutine.yield(10)
         -- We are leaving this forked thread here because we don't need it.
         KillThread(CurrentThread())
     end,
@@ -118,7 +118,7 @@ AIBrain = Class(UvesoAIBrainClass) {
         if not self.Uveso then
             return UvesoAIBrainClass.SetupAttackVectorsThread(self)
         end
-        WaitTicks(10)
+        coroutine.yield(10)
         -- We are leaving this forked thread here because we don't need it.
         KillThread(CurrentThread())
     end,
@@ -128,7 +128,7 @@ AIBrain = Class(UvesoAIBrainClass) {
         if not self.Uveso then
             return UvesoAIBrainClass.ParseIntelThread(self)
         end
-        WaitTicks(10)
+        coroutine.yield(10)
         -- We are leaving this forked thread here because we don't need it.
         KillThread(CurrentThread())
     end,

@@ -79,14 +79,14 @@ PlatoonTemplate {
 }
 PlatoonTemplate {
     Name = 'T3EngineerAssistNoSUB',
-    Plan = 'ManagerEngineerAssistAI',
+    Plan = 'EngineerAssistAI',
     GlobalSquads = {
         { categories.ENGINEER * categories.TECH3 - categories.SUBCOMMANDER - categories.STATIONASSISTPOD, 1, 1, 'support', 'None' }
     },
 }
 PlatoonTemplate {
     Name = 'EngineerAssistGROUP',
-    Plan = 'ManagerEngineerAssistAI',
+    Plan = 'EngineerAssistAI',
     GlobalSquads = {
         { categories.ENGINEER * categories.TECH1 - categories.SUBCOMMANDER - categories.STATIONASSISTPOD, 1, 10, 'support', 'None' }
     },

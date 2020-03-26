@@ -53,7 +53,7 @@ Platoon = Class(OldPlatoonClass) {
             if eng:IsUnitState('BlockCommandQueue') then
                 while not eng.Dead and eng:IsUnitState('BlockCommandQueue') do
                     --LOG('* AI-DEBUG: Unit BlockCommandQueue is true, delaying build')
-                    WaitTicks(1)
+                    coroutine.yield(1)
                 end
             end
             local whatToBuild = eng.EngineerBuildQueue[1][1]
@@ -72,7 +72,7 @@ Platoon = Class(OldPlatoonClass) {
 
                 local engpos = eng:GetPosition()
                 while not eng.Dead and eng:IsUnitState("Moving") and VDist2(engpos[1], engpos[3], buildLocation[1], buildLocation[3]) > 15 do
-                    WaitTicks(10)
+                    coroutine.yield(10)
                 end
 
                 -- check to see if we need to reclaim or capture...
@@ -127,7 +127,7 @@ Platoon = Class(OldPlatoonClass) {
         end
 
         if not eng or eng.Dead then
-            WaitTicks(1)
+            coroutine.yield(1)
             self:PlatoonDisband()
             return
         end
@@ -161,7 +161,7 @@ Platoon = Class(OldPlatoonClass) {
 
         -- if we have nothing to build, disband!
         if not cons.BuildStructures then
-            WaitTicks(1)
+            coroutine.yield(1)
             self:PlatoonDisband()
             return
         end
@@ -350,7 +350,7 @@ Platoon = Class(OldPlatoonClass) {
             end
             local radius = (cons.AdjacencyDistance or 50)
             if not pos or not pos then
-                WaitTicks(1)
+                coroutine.yield(1)
                 self:PlatoonDisband()
                 return
             end
@@ -368,7 +368,7 @@ Platoon = Class(OldPlatoonClass) {
             local radius = (cons.AdjacencyDistance or 50)
             local radius = (cons.AdjacencyDistance or 50)
             if not pos or not pos then
-                WaitTicks(1)
+                coroutine.yield(1)
                 self:PlatoonDisband()
                 return
             end
@@ -417,7 +417,7 @@ Platoon = Class(OldPlatoonClass) {
                         end
                     else
                         if aiBrain:PlatoonExists(self) then
-                            WaitTicks(1)
+                            coroutine.yield(1)
                             self:PlatoonDisband()
                             return
                         end
@@ -429,7 +429,7 @@ Platoon = Class(OldPlatoonClass) {
         -- wait in case we're still on a base
         local count = 0
         while not eng.Dead and eng:IsUnitState('Attached') and count < 2 do
-            WaitSeconds(6)
+            coroutine.yield(60)
             count = count + 1
         end
 
@@ -461,7 +461,7 @@ Platoon = Class(OldPlatoonClass) {
         end
 
         if not eng or eng.Dead then
-            WaitTicks(1)
+            coroutine.yield(1)
             self:PlatoonDisband()
             return
         end
@@ -494,7 +494,7 @@ Platoon = Class(OldPlatoonClass) {
 
         -- if we have nothing to build, disband!
         if not cons.BuildStructures then
-            WaitTicks(1)
+            coroutine.yield(1)
             self:PlatoonDisband()
             return
         end
@@ -673,7 +673,7 @@ Platoon = Class(OldPlatoonClass) {
             local avoidCat = ParseEntityCategory(cons.AvoidCategory)
             local radius = (cons.AdjacencyDistance or 50)
             if not pos or not pos then
-                WaitTicks(1)
+                coroutine.yield(1)
                 self:PlatoonDisband()
                 return
             end
@@ -686,7 +686,7 @@ Platoon = Class(OldPlatoonClass) {
             local cat = ParseEntityCategory(cons.AdjacencyCategory)
             local radius = (cons.AdjacencyDistance or 50)
             if not pos or not pos then
-                WaitTicks(1)
+                coroutine.yield(1)
                 self:PlatoonDisband()
                 return
             end
@@ -735,7 +735,7 @@ Platoon = Class(OldPlatoonClass) {
                         end
                     else
                         if aiBrain:PlatoonExists(self) then
-                            WaitTicks(1)
+                            coroutine.yield(1)
                             self:PlatoonDisband()
                             return
                         end
@@ -748,7 +748,7 @@ Platoon = Class(OldPlatoonClass) {
         if not eng.Dead then
             local count = 0
             while eng:IsUnitState('Attached') and count < 2 do
-                WaitSeconds(6)
+                coroutine.yield(60)
                 count = count + 1
             end
         end
@@ -790,7 +790,7 @@ Platoon = Class(OldPlatoonClass) {
         if not self.Uveso then
             return OldPlatoonClass.BaseManagersDistressAI(self)
         end
-        WaitTicks(10)
+        coroutine.yield(10)
         -- We are leaving this forked thread here because we don't need it.
         KillThread(CurrentThread())
     end,
@@ -923,7 +923,7 @@ Platoon = Class(OldPlatoonClass) {
                 end
             -- targed exists and is not dead
             end
-            WaitTicks(1)
+            coroutine.yield(1)
             if aiBrain:PlatoonExists(self) and target and not target.Dead then
                 LastTargetPos = target:GetPosition()
                 -- check if we are still inside the attack radius and be sure the area is not a nuke blast area
@@ -934,12 +934,12 @@ Platoon = Class(OldPlatoonClass) {
                     else
                         self:MoveToLocation(LastTargetPos, false)
                     end
-                    WaitTicks(10)
+                    coroutine.yield(10)
                 else
                     target = nil
                 end
             end
-            WaitTicks(10)
+            coroutine.yield(10)
         end
     end,
 
@@ -1072,10 +1072,10 @@ Platoon = Class(OldPlatoonClass) {
                         self:SetPlatoonFormationOverride('AttackFormation')
                         self:AttackTarget(target)
                     end
-                    WaitSeconds(2)
+                    coroutine.yield(20)
                 end
             end
-            WaitSeconds(1)
+            coroutine.yield(10)
         end
     end,
 
@@ -1192,10 +1192,10 @@ Platoon = Class(OldPlatoonClass) {
                         self:SetPlatoonFormationOverride('AttackFormation')
                         self:AttackTarget(target)
                     end
-                    WaitSeconds(2)
+                    coroutine.yield(20)
                 end
             end
-            WaitSeconds(1)
+            coroutine.yield(10)
         end
     end,
     
@@ -1208,7 +1208,7 @@ Platoon = Class(OldPlatoonClass) {
         -- There should be only the commander inside this platoon. Check it.
         if not cdr then
             WARN('* ACUAttackAIUveso: Platoon formed but Commander unit not found!')
-            WaitTicks(1)
+            coroutine.yield(1)
             for k,v in self:GetPlatoonUnits() or {} do
                 if EntityCategoryContains(categories.COMMAND, v) then
                     WARN('* ACUAttackAIUveso: Commander found in platoon on index: '..k)
@@ -1329,7 +1329,7 @@ Platoon = Class(OldPlatoonClass) {
                         cdrNewPos[2] = targetPos[2]
                         cdrNewPos[3] = targetPos[3] + Random(-3, 3)
                         self:MoveToLocation(cdrNewPos, false)
-                        WaitTicks(1)
+                        coroutine.yield(1)
                         if TargetUnit and not TargetUnit.Dead and not TargetUnit:BeenDestroyed() then
                             self:AttackTarget(TargetUnit)
                         end
@@ -1347,7 +1347,7 @@ Platoon = Class(OldPlatoonClass) {
                 end
             end
             --DrawCircle(cdr.CDRHome, maxRadius, '00FFFF')
-            WaitTicks(10)
+            coroutine.yield(10)
             --------------------------------------------
             --- This is the end of the main ACU loop ---
             --------------------------------------------
@@ -1467,7 +1467,7 @@ Platoon = Class(OldPlatoonClass) {
                 --LOG('* AI-Uveso: * ACUAttackAIUveso: Found enhancement ['..unitEnhancements[tempEnhanceBp.Slot]..'] in Slot ['..tempEnhanceBp.Slot..']. - Removing...')
                 local order = { TaskName = "EnhanceTask", Enhancement = unitEnhancements[tempEnhanceBp.Slot]..'Remove' }
                 IssueScript({cdr}, order)
-                WaitTicks(10)
+                coroutine.yield(10)
             end
             --LOG('* AI-Uveso: * ACUAttackAIUveso: BuildEnhancement: '..platoon:GetBrain().Nickname..' IssueScript: '..enhancement)
             local order = { TaskName = "EnhanceTask", Enhancement = enhancement }
@@ -1480,7 +1480,7 @@ Platoon = Class(OldPlatoonClass) {
                 IssueClearCommands({cdr})
                 return false
             end
-            WaitTicks(10)
+            coroutine.yield(10)
         end
         --LOG('* AI-Uveso: * ACUAttackAIUveso: BuildEnhancement: '..platoon:GetBrain().Nickname..' Upgrade finished '..enhancement)
         return true
@@ -1565,7 +1565,7 @@ Platoon = Class(OldPlatoonClass) {
                 --LOG('* AI-Uveso: * MoveDirect: Lost target while moving to target. ')
                 return
             end
-            WaitTicks(10)
+            coroutine.yield(10)
         end
     end,
 
@@ -1629,7 +1629,7 @@ Platoon = Class(OldPlatoonClass) {
                     --LOG('* AI-Uveso: * MovePath: Lost target while moving to Waypoint. '..repr(path[i]))
                     return
                 end
-                WaitTicks(10)
+                coroutine.yield(10)
             end
         end
     end,
@@ -1723,7 +1723,7 @@ Platoon = Class(OldPlatoonClass) {
                             self:Stop()
                             return
                         end
-                        WaitTicks(10)
+                        coroutine.yield(10)
                     end
                 end
             else
@@ -1767,7 +1767,7 @@ Platoon = Class(OldPlatoonClass) {
                                 self:Stop()
                                 return
                             end
-                            WaitTicks(10)
+                            coroutine.yield(10)
                         end
                     else
                         --LOG('* AI-Uveso: * MoveToLocationInclTransport: CanPathTo() failed for '..repr(TargetPosition)..' forcing SendPlatoonWithTransportsNoCheck.')
@@ -1869,7 +1869,7 @@ Platoon = Class(OldPlatoonClass) {
         end
         local count = 0
         repeat
-            WaitSeconds(2)
+            coroutine.yield(20)
             if not aiBrain:PlatoonExists(self) then
                 return
             end
@@ -1976,14 +1976,14 @@ Platoon = Class(OldPlatoonClass) {
                 end
             end
             -- Check the Eco every x Ticks
-            WaitTicks(10)
+            coroutine.yield(10)
             -- find dead units inside the platoon and disband if we find one
             for k,v in self:GetPlatoonUnits() do
                 if not v or v.Dead or v:BeenDestroyed() then
                     -- We found a dead unit inside this platoon. Disband the platton; It will be reformed
                     --LOG('* AI-Uveso: +++ ExtractorUpgradeAI: Found Dead unit, self:PlatoonDisbandNoAssign()')
                     -- needs PlatoonDisbandNoAssign, or extractors will stop upgrading if the platton is disbanded
-                    WaitTicks(1)
+                    coroutine.yield(1)
                     self:PlatoonDisbandNoAssign()
                     return
                 end
@@ -2022,7 +2022,7 @@ Platoon = Class(OldPlatoonClass) {
                     break
                 end
             end
-            WaitTicks(10)
+            coroutine.yield(10)
         end
         self:PlatoonDisband()
     end,
@@ -2053,7 +2053,7 @@ Platoon = Class(OldPlatoonClass) {
         self:Stop()
         self:MoveToLocationInclTransport(true, nearestbase.Pos, false, false, nearestbase.Pos, false)
         -- Disband the platoon so the locationmanager can assign a new task to the units.
-        WaitTicks(30)
+        coroutine.yield(30)
         self:PlatoonDisband()
     end,
 
@@ -2096,7 +2096,7 @@ Platoon = Class(OldPlatoonClass) {
                             break
                         end
                     end
-                    WaitTicks(10)
+                    coroutine.yield(10)
                 end
             end
         else
@@ -2122,7 +2122,7 @@ Platoon = Class(OldPlatoonClass) {
             if dist < 20 then
                 --LOG('* AI-Uveso: * ForceReturnToNavalBaseAIUveso: We are home! disband!')
                 -- Wait some second, so all platoon units have time to reach the base.
-                WaitSeconds(5)
+                coroutine.yield(50)
                 self:Stop()
                 break
             end
@@ -2136,10 +2136,10 @@ Platoon = Class(OldPlatoonClass) {
                 self:Stop()
                 break
             end
-            WaitSeconds(5)
+            coroutine.yield(50)
         end
         -- Disband the platoon so the locationmanager can assign a new task to the units.
-        WaitTicks(30)
+        coroutine.yield(30)
         self:PlatoonDisband()
     end,
 
@@ -2159,7 +2159,7 @@ Platoon = Class(OldPlatoonClass) {
                     unit:SetAutoMode(true)
                 end
             end
-            WaitTicks(50)
+            coroutine.yield(50)
         end
     end,
 
@@ -2202,18 +2202,18 @@ Platoon = Class(OldPlatoonClass) {
                             --Arty:SetCustomName('Attacking '..BlueprintID)
                             --IssueStop({v})
                             IssueClearCommands({Arty})
-                            WaitTicks(1)
+                            coroutine.yield(1)
                             if ClosestTarget and not ClosestTarget.Dead then
                                 IssueAttack({Arty}, ClosestTarget)
                             end
                         end
                     end
-                    WaitSeconds(5)
+                    coroutine.yield(50)
                 end
             end
             -- Reaching this point means we have no special target and our arty is using it's own weapon target priorities.
             -- So we are still attacking targets at this point.
-            WaitSeconds(5)
+            coroutine.yield(50)
         end
     end,
 
@@ -2250,7 +2250,7 @@ Platoon = Class(OldPlatoonClass) {
             if numSUB ~= lastSUB or numSHIELD ~= lastSHIELD then
                 self:Stop()
                 -- Wait for stopping assist
-                WaitTicks(1)
+                coroutine.yield(1)
                 lastSUB = numSUB
                 lastSHIELD = numSHIELD
                 for i,unit in self:GetPlatoonUnits() do
@@ -2313,15 +2313,15 @@ Platoon = Class(OldPlatoonClass) {
                         break
                     end
                     IssueClearCommands({bestUnit})
-                    WaitTicks(1)
+                    coroutine.yield(1)
                     IssueGuard({bestUnit}, ShieldWithleastAssisters)
                     bestUnit.AssistSet = true
                     bestUnit.UnitBeingAssist = ShieldWithleastAssisters
-                    WaitTicks(1)
+                    coroutine.yield(1)
                 end
 
             end
-            WaitTicks(30)
+            coroutine.yield(30)
         end
     end,
 
@@ -2356,7 +2356,7 @@ Platoon = Class(OldPlatoonClass) {
             LauncherCount = 0
             HighestMissileCount = 0
             NukeSiloAmmoCount = 0
-            WaitTicks(100)
+            coroutine.yield(100)
             NukeLaunched = false
             for _, Launcher in platoonUnits do
                 -- We found a dead unit inside this platoon. Disband the platton; It will be reformed
@@ -2709,7 +2709,7 @@ Platoon = Class(OldPlatoonClass) {
             end
             if NukeLaunched == true then
                 --LOG('* AI-Uveso: Fired nuke(s), waiting...')
-                WaitTicks(450)-- wait 45 seconds for the missile flight, then get new targets
+                coroutine.yield(450)-- wait 45 seconds for the missile flight, then get new targets
             end
         end -- while aiBrain:PlatoonExists(self) do
     end,
@@ -2734,13 +2734,13 @@ Platoon = Class(OldPlatoonClass) {
             -- 1st position of target
             TargetPos = target:GetPosition()
             TargetStartPosition = {TargetPos[1], 0, TargetPos[3]}
-            WaitTicks(10)
+            coroutine.yield(10)
             -- 2nd position of target after 1 second
             TargetPos = target:GetPosition()
             Target1SecPos = {TargetPos[1], 0, TargetPos[3]}
             XmovePerSec = (TargetStartPosition[1] - Target1SecPos[1])
             YmovePerSec = (TargetStartPosition[3] - Target1SecPos[3])
-            WaitTicks(10)
+            coroutine.yield(10)
             -- 3rd position of target after 2 seconds to verify straight movement
             TargetPos = target:GetPosition()
             Target2SecPos = {TargetPos[1], TargetPos[2], TargetPos[3]}
@@ -2880,7 +2880,7 @@ Platoon = Class(OldPlatoonClass) {
     SACUTeleportAI = function(self)
         --LOG('* AI-Uveso: * SACUTeleportAI: Start ')
         -- SACU need to move out of the gate first
-        WaitTicks(50)
+        coroutine.yield(50)
         local aiBrain = self:GetBrain()
         local platoonUnits
         local platoonPosition = self:GetPlatoonPosition()
@@ -2893,7 +2893,7 @@ Platoon = Class(OldPlatoonClass) {
             for k, unit in platoonUnits do
                 IssueStop({unit})
                 IssueClearCommands({unit})
-                WaitTicks(1)
+                coroutine.yield(1)
                 if not unit.Dead then
                     for k, Assister in platoonUnits do
                         if not Assister.Dead and Assister ~= unit then
@@ -2905,7 +2905,7 @@ Platoon = Class(OldPlatoonClass) {
                         end
                     end
                     self:BuildSACUEnhancements(unit)
-                    WaitTicks(1)
+                    coroutine.yield(1)
                     if not unit:HasEnhancement('Teleporter') then
                         --LOG('* AI-Uveso: * SACUTeleportAI: Not teleporter enhanced')
                         allEnhanced = false
@@ -2918,7 +2918,7 @@ Platoon = Class(OldPlatoonClass) {
                 --LOG('* AI-Uveso: * SACUTeleportAI: allEnhanced == true ')
                 break
             end
-            WaitTicks(50)
+            coroutine.yield(50)
         end
         --
         local MoveToCategories = {}
@@ -2943,7 +2943,7 @@ Platoon = Class(OldPlatoonClass) {
         -- search for a target
         local Target
         while not Target do
-            WaitTicks(50)
+            coroutine.yield(50)
             Target, _, _, _ = AIUtils.AIFindNearestCategoryTeleportLocation(aiBrain, platoonPosition, maxRadius, MoveToCategories, TargetSearchCategory, false)
         end
         platoonUnits = self:GetPlatoonUnits()
@@ -2956,7 +2956,7 @@ Platoon = Class(OldPlatoonClass) {
                         continue
                     end
                     --IssueStop({unit})
-                    WaitTicks(2)
+                    coroutine.yield(2)
                     IssueTeleport({unit}, UUtils.RandomizePosition(TargetPosition))
                 end
             end
@@ -2965,7 +2965,7 @@ Platoon = Class(OldPlatoonClass) {
             self:PlatoonDisband()
             return
         end
-        WaitTicks(30)
+        coroutine.yield(30)
         -- wait for the teleport of all unit
         local count = 0
         local UnitTeleporting = 0
@@ -2983,18 +2983,18 @@ Platoon = Class(OldPlatoonClass) {
             if UnitTeleporting == 0 then
                 break
             end
-            WaitTicks(10)
+            coroutine.yield(10)
         end        
         -- Fight
-        WaitTicks(1)
+        coroutine.yield(1)
         for k, unit in platoonUnits do
             if not unit.Dead then
                 IssueStop({unit})
-                WaitTicks(2)
+                coroutine.yield(2)
                 IssueMove({unit}, TargetPosition)
             end
         end
-        WaitTicks(50)
+        coroutine.yield(50)
         self:LandAttackAIUveso()
         self:PlatoonDisband()
     end,
@@ -3179,7 +3179,7 @@ Platoon = Class(OldPlatoonClass) {
                 end
             -- targed exists and is not dead
             end
-            WaitTicks(1)
+            coroutine.yield(1)
             -- forece all units inside the platoon to move to the target
             for k, v in platoonUnits do
                 if self.AirSuicideTargetPos then
@@ -3213,11 +3213,11 @@ Platoon = Class(OldPlatoonClass) {
                                 end
                             end
                         end
-                        WaitTicks(1)
+                        coroutine.yield(1)
                     end
 
                 end
-                WaitTicks(1)
+                coroutine.yield(1)
             end
         end
     end,
@@ -3270,9 +3270,9 @@ Platoon = Class(OldPlatoonClass) {
                 if AIUtils.EngineerMoveWithSafePath(aiBrain, engineer, engineer.MexToCap.Position) then
 
                     if AIUtils.EngineerTryReclaimCaptureArea(aiBrain, engineer, engineer.MexToCap.Position) then
-                        WaitTicks(3)
+                        coroutine.yield(3)
                         while  not engineer.Dead and (engineer:IsUnitState('Building') or not engineer:IsIdleState()) do
-                            WaitTicks(5)
+                            coroutine.yield(5)
                         end
                     end
 
@@ -3285,7 +3285,7 @@ Platoon = Class(OldPlatoonClass) {
                         aiBrain:BuildStructure(engineer, T1ResourceUnitID, {engineer.MexToCap.Position[1], engineer.MexToCap.Position[3], 0} , false)
                     end
 
-                    WaitTicks(5)
+                    coroutine.yield(5)
 
                     if not engineer:IsUnitState('Building') and engineer:IsIdleState() then
                         --LOG('* AI-Uveso: BuildOnMassAI: Build failed, searching for an alternative building place ')
@@ -3294,15 +3294,15 @@ Platoon = Class(OldPlatoonClass) {
                         aiBrain:BuildStructure(engineer, T1ResourceUnitID, {location[1], location[3], 0} , false)
                      end
 
-                    WaitTicks(5)
+                    coroutine.yield(5)
 
                     while not engineer.Dead and (engineer:IsUnitState('Building') or not engineer:IsIdleState()) do
-                        WaitTicks(5)
+                        coroutine.yield(5)
                     end
                 end
                 engineer.MexToCap = nil
             end
-            WaitTicks(1)
+            coroutine.yield(1)
         end
     end,
 }
