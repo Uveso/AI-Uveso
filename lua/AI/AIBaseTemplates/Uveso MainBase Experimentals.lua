@@ -203,7 +203,7 @@ BaseBuilderTemplate {
     end,
     FirstBaseFunction = function(aiBrain)
         local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
-        if personality == 'uvesoexp' or personality == 'uvesoexpcheat' then
+        if personality == ('uvesoexp' or 'uvesoexpcheat') then
             --LOG('### M-FirstBaseFunction '..personality)
             return 1000, 'uvesoexp' -- AIPersonality
         end

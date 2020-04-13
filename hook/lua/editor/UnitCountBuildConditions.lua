@@ -1,6 +1,6 @@
 -- hook for additional build conditions used from AIBuilders
 
-local BASEPOSTITIONS = {}
+local MAPBASEPOSTITIONS = {}
 local mapSizeX, mapSizeZ = GetMapSize()
 
 --{ UCBC, 'ReturnTrue', {} },
@@ -87,21 +87,21 @@ end
 function HaveUnitRatioAtLocation(aiBrain, locType, ratio, categoryNeed, compareType, categoryHave)
     local AIName = ArmyBrains[aiBrain:GetArmyIndex()].Nickname
     local baseposition, radius
-    if BASEPOSTITIONS[AIName][locType] then
-        baseposition = BASEPOSTITIONS[AIName][locType].Pos
-        radius = BASEPOSTITIONS[AIName][locType].Rad
+    if MAPBASEPOSTITIONS[AIName][locType] then
+        baseposition = MAPBASEPOSTITIONS[AIName][locType].Pos
+        radius = MAPBASEPOSTITIONS[AIName][locType].Rad
     elseif aiBrain.BuilderManagers[locType] then
         baseposition = aiBrain.BuilderManagers[locType].FactoryManager.Location
         radius = aiBrain.BuilderManagers[locType].FactoryManager:GetLocationRadius()
-        BASEPOSTITIONS[AIName] = BASEPOSTITIONS[AIName] or {} 
-        BASEPOSTITIONS[AIName][locType] = {Pos=baseposition, Rad=radius}
+        MAPBASEPOSTITIONS[AIName] = MAPBASEPOSTITIONS[AIName] or {} 
+        MAPBASEPOSTITIONS[AIName][locType] = {Pos=baseposition, Rad=radius}
     elseif aiBrain:PBMHasPlatoonList() then
         for k,v in aiBrain.PBM.Locations do
             if v.LocationType == locType then
                 baseposition = v.Location
                 radius = v.Radius
-                BASEPOSTITIONS[AIName] = BASEPOSTITIONS[AIName] or {} 
-                BASEPOSTITIONS[AIName][locType] = {baseposition, radius}
+                MAPBASEPOSTITIONS[AIName] = MAPBASEPOSTITIONS[AIName] or {} 
+                MAPBASEPOSTITIONS[AIName][locType] = {baseposition, radius}
                 break
             end
         end
@@ -119,21 +119,21 @@ end
 function HaveUnitRatioAtLocationRadiusVersusEnemy(aiBrain, ratio, locType, radius, categoryOwn, compareType, categoryEnemy)
     local AIName = ArmyBrains[aiBrain:GetArmyIndex()].Nickname
     local baseposition, radius
-    if BASEPOSTITIONS[AIName][locType] then
-        baseposition = BASEPOSTITIONS[AIName][locType].Pos
-        radius = BASEPOSTITIONS[AIName][locType].Rad
+    if MAPBASEPOSTITIONS[AIName][locType] then
+        baseposition = MAPBASEPOSTITIONS[AIName][locType].Pos
+        radius = MAPBASEPOSTITIONS[AIName][locType].Rad
     elseif aiBrain.BuilderManagers[locType] then
         baseposition = aiBrain.BuilderManagers[locType].FactoryManager.Location
         radius = aiBrain.BuilderManagers[locType].FactoryManager:GetLocationRadius()
-        BASEPOSTITIONS[AIName] = BASEPOSTITIONS[AIName] or {} 
-        BASEPOSTITIONS[AIName][locType] = {Pos=baseposition, Rad=radius}
+        MAPBASEPOSTITIONS[AIName] = MAPBASEPOSTITIONS[AIName] or {} 
+        MAPBASEPOSTITIONS[AIName][locType] = {Pos=baseposition, Rad=radius}
     elseif aiBrain:PBMHasPlatoonList() then
         for k,v in aiBrain.PBM.Locations do
             if v.LocationType == locType then
                 baseposition = v.Location
                 radius = v.Radius
-                BASEPOSTITIONS[AIName] = BASEPOSTITIONS[AIName] or {} 
-                BASEPOSTITIONS[AIName][locType] = {baseposition, radius}
+                MAPBASEPOSTITIONS[AIName] = MAPBASEPOSTITIONS[AIName] or {} 
+                MAPBASEPOSTITIONS[AIName][locType] = {baseposition, radius}
                 break
             end
         end
@@ -257,21 +257,21 @@ end
 function GetUnitsBeingBuiltLocation(aiBrain, locType, buildingCategory, builderCategory)
     local AIName = ArmyBrains[aiBrain:GetArmyIndex()].Nickname
     local baseposition, radius
-    if BASEPOSTITIONS[AIName][locType] then
-        baseposition = BASEPOSTITIONS[AIName][locType].Pos
-        radius = BASEPOSTITIONS[AIName][locType].Rad
+    if MAPBASEPOSTITIONS[AIName][locType] then
+        baseposition = MAPBASEPOSTITIONS[AIName][locType].Pos
+        radius = MAPBASEPOSTITIONS[AIName][locType].Rad
     elseif aiBrain.BuilderManagers[locType] then
         baseposition = aiBrain.BuilderManagers[locType].FactoryManager.Location
         radius = aiBrain.BuilderManagers[locType].FactoryManager:GetLocationRadius()
-        BASEPOSTITIONS[AIName] = BASEPOSTITIONS[AIName] or {} 
-        BASEPOSTITIONS[AIName][locType] = {Pos=baseposition, Rad=radius}
+        MAPBASEPOSTITIONS[AIName] = MAPBASEPOSTITIONS[AIName] or {} 
+        MAPBASEPOSTITIONS[AIName][locType] = {Pos=baseposition, Rad=radius}
     elseif aiBrain:PBMHasPlatoonList() then
         for k,v in aiBrain.PBM.Locations do
             if v.LocationType == locType then
                 baseposition = v.Location
                 radius = v.Radius
-                BASEPOSTITIONS[AIName] = BASEPOSTITIONS[AIName] or {} 
-                BASEPOSTITIONS[AIName][locType] = {baseposition, radius}
+                MAPBASEPOSTITIONS[AIName] = MAPBASEPOSTITIONS[AIName] or {} 
+                MAPBASEPOSTITIONS[AIName][locType] = {baseposition, radius}
                 break
             end
         end

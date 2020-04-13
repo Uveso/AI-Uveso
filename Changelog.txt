@@ -1,11 +1,14 @@
 *************************************************************************************************************************************
+v82 (26.Mar.2020)
+
+*************************************************************************************************************************************
 v81 (26.Mar.2020)
 
-- Fix: function CanBuildOnMass no longer ignores max distance to find available mass spots
 - New: Added option to view the ingame IMap (threat map)
+- Fix: function CanBuildOnMass no longer ignores max distance to find available mass spots
 - Fix: Added a failsafe for factory placing in case the start location is very small
-- Opt: Optimized the platoon target function for better gamespeed
 - Fix: fixed a bug with unknown AI markers
+- Opt: Optimized the platoon target function for better gamespeed
 - Opt: Code refactoring; changed all WaitSeconds() to WaitTicks() function calls for better gamespeed
 
 *************************************************************************************************************************************

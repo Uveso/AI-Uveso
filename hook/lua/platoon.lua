@@ -2,29 +2,19 @@
 
 local UUtils = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua')
 
-OldPlatoonClass = Platoon
-Platoon = Class(OldPlatoonClass) {
+CopyOfOldPlatoonClass = Platoon
+Platoon = Class(CopyOfOldPlatoonClass) {
 
 -- For AI Patch V8 if eng:IsUnitState('BlockCommandQueue') then
     ProcessBuildCommand = function(eng, removeLastBuild)
-        if not eng or not eng.PlatoonHandle or eng.Dead then
-            return
-        end
-        if eng:BeenDestroyed() then
-            WARN('* AI-DEBUG: ProcessBuildCommand: eng is not dead but destroyed')
+        if not eng or eng.Dead or not eng.PlatoonHandle then
             return
         end
         local aiBrain = eng.PlatoonHandle:GetBrain()
 
-       -- Only use this with AI-Uveso
-        if not aiBrain.Uveso then
-            return OldPlatoonClass.ProcessBuildCommand(eng, removeLastBuild)
-        end
-
         if not aiBrain or eng.Dead or not eng.EngineerBuildQueue or table.getn(eng.EngineerBuildQueue) == 0 then
             if aiBrain:PlatoonExists(eng.PlatoonHandle) then
-                --LOG("*AI DEBUG: Disbanding Engineer Platoon in ProcessBuildCommand top " .. eng.Sync.id)
-                --if eng.CDRHome then LOG('*AI DEBUG: Commander process build platoon disband...') end
+                --LOG("* AI-DEBUG: ProcessBuildCommand: Disbanding Engineer Platoon in ProcessBuildCommand top " .. eng.Sync.id)
                 if not eng.AssistSet and not eng.AssistPlatoon and not eng.UnitBeingAssist then
                     eng.PlatoonHandle:PlatoonDisband()
                 end
@@ -35,15 +25,8 @@ Platoon = Class(OldPlatoonClass) {
 
         -- it wasn't a failed build, so we just finished something
         if removeLastBuild then
+            --LOG('* AI-DEBUG: ProcessBuildCommand: table.remove(eng.EngineerBuildQueue, 1) removeLastBuild')
             table.remove(eng.EngineerBuildQueue, 1)
-        end
-
-        function BuildToNormalLocation(location)
-            return {location[1], 0, location[2]}
-        end
-
-        function NormalToBuildLocation(location)
-            return {location[1], location[3], 0}
         end
 
         eng.ProcessBuildDone = false
@@ -52,13 +35,17 @@ Platoon = Class(OldPlatoonClass) {
         while not eng.Dead and not commandDone and table.getn(eng.EngineerBuildQueue) > 0  do
             if eng:IsUnitState('BlockCommandQueue') then
                 while not eng.Dead and eng:IsUnitState('BlockCommandQueue') do
-                    --LOG('* AI-DEBUG: Unit BlockCommandQueue is true, delaying build')
+                    --LOG('* AI-DEBUG: ProcessBuildCommand: Unit BlockCommandQueue is true, delaying build')
                     coroutine.yield(1)
                 end
             end
             local whatToBuild = eng.EngineerBuildQueue[1][1]
-            local buildLocation = BuildToNormalLocation(eng.EngineerBuildQueue[1][2])
+            local buildLocation = {eng.EngineerBuildQueue[1][2][1], 0, eng.EngineerBuildQueue[1][2][2]}
             local buildRelative = eng.EngineerBuildQueue[1][3]
+            --LOG('* AI-DEBUG: ProcessBuildCommand: whatToBuild = '..repr(whatToBuild))
+            if not eng.NotBuildingThread then
+                eng.NotBuildingThread = eng:ForkThread(eng.PlatoonHandle.WatchForNotBuilding)
+            end
             -- see if we can move there first
             if AIUtils.EngineerMoveWithSafePath(aiBrain, eng, buildLocation) then
                 if not eng or eng.Dead or not eng.PlatoonHandle or not aiBrain:PlatoonExists(eng.PlatoonHandle) then
@@ -66,21 +53,12 @@ Platoon = Class(OldPlatoonClass) {
                     return
                 end
 
-                if not eng.NotBuildingThread then
-                    eng.NotBuildingThread = eng:ForkThread(eng.PlatoonHandle.WatchForNotBuilding)
-                end
-
-                local engpos = eng:GetPosition()
-                while not eng.Dead and eng:IsUnitState("Moving") and VDist2(engpos[1], engpos[3], buildLocation[1], buildLocation[3]) > 15 do
-                    coroutine.yield(10)
-                end
-
                 -- check to see if we need to reclaim or capture...
                 if not AIUtils.EngineerTryReclaimCaptureArea(aiBrain, eng, buildLocation) then
                     -- check to see if we can repair
                     if not AIUtils.EngineerTryRepair(aiBrain, eng, whatToBuild, buildLocation) then
                         -- otherwise, go ahead and build the next structure there
-                        aiBrain:BuildStructure(eng, whatToBuild, NormalToBuildLocation(buildLocation), buildRelative)
+                        aiBrain:BuildStructure(eng, whatToBuild, {buildLocation[1], buildLocation[3], 0}, buildRelative)
                         if not eng.NotBuildingThread then
                             eng.NotBuildingThread = eng:ForkThread(eng.PlatoonHandle.WatchForNotBuilding)
                         end
@@ -96,7 +74,6 @@ Platoon = Class(OldPlatoonClass) {
         -- final check for if we should disband
         if not eng or eng.Dead or table.getn(eng.EngineerBuildQueue) <= 0 then
             if eng.PlatoonHandle and aiBrain:PlatoonExists(eng.PlatoonHandle) then
-                --LOG("*AI DEBUG: Disbanding Engineer Platoon in ProcessBuildCommand bottom " .. eng.Sync.id)
                 eng.PlatoonHandle:PlatoonDisband()
             end
             if eng then eng.ProcessBuild = nil end
@@ -104,7 +81,28 @@ Platoon = Class(OldPlatoonClass) {
         end
         if eng then eng.ProcessBuild = nil end
     end,
-    
+-- For AI Patch V8 fixed issue with AI cdr not building at game start
+    WatchForNotBuilding = function(eng)
+        WaitTicks(5)
+        local aiBrain = eng:GetAIBrain()
+
+        while not eng.Dead
+            and eng.GoingHome
+            or eng.UnitBeingBuiltBehavior
+            or eng.ProcessBuild != nil
+            or not eng:IsIdleState()
+        do
+            WaitTicks(30)
+        end
+
+        eng.NotBuildingThread = nil
+        if not eng.Dead and eng:IsIdleState() and table.getn(eng.EngineerBuildQueue) != 0 and eng.PlatoonHandle then
+            eng.PlatoonHandle.SetupEngineerCallbacks(eng)
+            if not eng.ProcessBuild then
+                eng.ProcessBuild = eng:ForkThread(eng.PlatoonHandle.ProcessBuildCommand, true)
+            end
+        end
+    end,
 -- For AI Patch V8 emoved old sorian delay platoon method
     EngineerBuildAI = function(self)
         local aiBrain = self:GetBrain()
@@ -433,7 +431,7 @@ Platoon = Class(OldPlatoonClass) {
             count = count + 1
         end
 
-        if not eng:IsUnitState('Building') then
+        if not eng.Dead and not eng:IsUnitState('Building') then
             return self.ProcessBuildCommand(eng, false)
         end
     end,
@@ -753,7 +751,7 @@ Platoon = Class(OldPlatoonClass) {
             end
         end
 
-        if not eng:IsUnitState('Building') then
+        if not eng.Dead and not eng:IsUnitState('Building') then
             return self.ProcessBuildCommandSorian(eng, false)
         end
     end,
@@ -782,13 +780,13 @@ Platoon = Class(OldPlatoonClass) {
             self:MoveToLocation(aiBrain.BuilderManagers['MAIN'].Position, false)
             return
         end
-        OldPlatoonClass.PlatoonDisband(self)
+        CopyOfOldPlatoonClass.PlatoonDisband(self)
     end,
 
     BaseManagersDistressAI = function(self)
        -- Only use this with AI-Uveso
         if not self.Uveso then
-            return OldPlatoonClass.BaseManagersDistressAI(self)
+            return CopyOfOldPlatoonClass.BaseManagersDistressAI(self)
         end
         coroutine.yield(10)
         -- We are leaving this forked thread here because we don't need it.

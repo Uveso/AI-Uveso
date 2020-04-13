@@ -25,7 +25,7 @@ function EngineerMoveWithSafePath(aiBrain, unit, destination)
         if reason == 'NoGraph' then
             result = true
         elseif VDist2(pos[1], pos[3], destination[1], destination[3]) < 200 then
-            SPEW('* AI-Uveso: EngineerMoveWithSafePath(): executing CanPathTo(). LUA GenerateSafePathTo returned: ('..repr(reason)..') '..VDist2(pos[1], pos[3], destination[1], destination[3]))
+            SPEW('* AI-Uveso: EngineerMoveWithSafePath(): GenerateSafePathTo returned: ('..repr(reason)..') -> executing c-engine function CanPathTo().')
             -- be really sure we don't try a pathing with a destoryed c-object
             if unit.Dead or unit:BeenDestroyed() or IsDestroyed(unit) then
                 SPEW('* AI-Uveso: Unit is death before calling CanPathTo()')
@@ -302,13 +302,12 @@ function EngineerTryReclaimCaptureArea(aiBrain, eng, pos)
                 -- if we can capture the unit/building then do so
                 unit.CaptureInProgress = true
                 IssueCapture({eng}, unit)
-                Reclaiming = true
             else
                 -- if we can't capture then reclaim
                 unit.ReclaimInProgress = true
                 IssueReclaim({eng}, unit)
-                Reclaiming = true
             end
+            Reclaiming = true
         end
     end
     -- reclaim rocks etc or we can't build mexes or hydros
