@@ -1,10 +1,11 @@
 -- Don't disable units on low energy/mass for AI-Uveso
 
-TheOldEngineerManager = EngineerManager
-EngineerManager = Class(TheOldEngineerManager) {
+UvesoEngineerManager = EngineerManager
+EngineerManager = Class(UvesoEngineerManager) {
 
 -- For AI Patch V8 self:ForkEngineerTask(unit)
     AddUnit = function(self, unit, dontAssign)
+        --LOG('+ AddUnit')
         for k,v in self.ConsumptionUnits do
             if EntityCategoryContains(v.Category, unit) then
                 table.insert(v.Units, { Unit = unit, Status = true })
@@ -199,7 +200,7 @@ EngineerManager = Class(TheOldEngineerManager) {
     LowMass = function(self)
         -- Only use this with AI-Uveso
         if not self.Brain.Uveso then
-            return TheOldEngineerManager.LowMass(self)
+            return UvesoEngineerManager.LowMass(self)
         end
     end,
 
@@ -207,7 +208,7 @@ EngineerManager = Class(TheOldEngineerManager) {
     LowEnergy = function(self)
         -- Only use this with AI-Uveso
         if not self.Brain.Uveso then
-            return TheOldEngineerManager.LowEnergy(self)
+            return UvesoEngineerManager.LowEnergy(self)
         end
     end,
 
