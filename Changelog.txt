@@ -1,5 +1,9 @@
 *************************************************************************************************************************************
-v82 (26.Mar.2020)
+v82 (14.Apr.2020)
+
+- Fix: Added files for game patch V8 for testing
+- Fix: Optimized personaly name handle in AI base templates
+- Fix: fixed some functions for compatibility with AI-Swarm and RNGAI
 
 *************************************************************************************************************************************
 v81 (26.Mar.2020)
