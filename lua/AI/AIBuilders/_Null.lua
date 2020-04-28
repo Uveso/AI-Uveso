@@ -21,7 +21,7 @@ BuilderGroup {
         DelayEqualBuildPlattons = {'Factories', 3},
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 4, categories.STRUCTURE * categories.FACTORY * categories.LAND } },
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             -- Don't build it if...
@@ -45,7 +45,7 @@ BuilderGroup {
         DelayEqualBuildPlattons = {'Factories', 3},
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 4, categories.STRUCTURE * categories.FACTORY * categories.LAND } },
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             -- Don't build it if...
@@ -75,7 +75,7 @@ BuilderGroup {
         Priority = 700,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 102, categories.MOBILE * categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD } },
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.MOBILE * categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             -- Don't build it if...
@@ -94,21 +94,23 @@ BuilderGroup {
     --    TECH 1    --
     -- ============ --
     Builder {
-        BuilderName = 'N Power',
-        PlatoonTemplate = 'EngineerBuilder',
-        Priority = 800,
-        InstanceCount = 40,                                                      -- Number of plattons that will be formed with this template.
+        BuilderName = 'UC Power low trend',
+        PlatoonTemplate = 'CommanderBuilder',
+        Priority = 17900,
         BuilderConditions = {
-            -- When do we want to build this ?
-            -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
-            -- Don't build it if...
+            { EBC, 'LessThanEnergyTrend', { 0.0 } },
+            { EBC, 'GreaterThanEconIncome',  { 0.2, 0.0}}, -- Absolut Base income
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
             -- Respect UnitCap
         },
+        InstanceCount = 1,
         BuilderType = 'Any',
         BuilderData = {
-            NumAssistees = 1,
             Construction = {
+                AdjacencyCategory = categories.STRUCTURE * categories.FACTORY * (categories.LAND + categories.AIR),
+                AdjacencyDistance = 50,
                 BuildClose = true,
                 LocationType = 'LocationType',
                 BuildStructures = {
@@ -116,21 +118,6 @@ BuilderGroup {
                 },
             }
         }
-    },
-    Builder {
-        BuilderName = 'N Reclaim T1 Pgens',
-        PlatoonTemplate = 'EngineerBuilder',
-        PlatoonAIPlan = 'ReclaimStructuresAI',
-        Priority = 1100,
-        InstanceCount = 60,
-        BuilderConditions = {
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH1}},
-        },
-        BuilderData = {
-            Location = 'LocationType',
-            Reclaim = {categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH1},
-        },
-        BuilderType = 'Any',
     },
 }
 
@@ -145,7 +132,7 @@ BuilderGroup {
         InstanceCount = 2,
         BuilderConditions = {
             -- When do we want to build this ?
-            { MABC, 'CanBuildOnMass', { 'LocationType', 30, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
+            { MABC, 'CanBuildOnMass', { 'LocationType', 1000, -500, 50, 1, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             -- Don't build it if...

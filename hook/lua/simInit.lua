@@ -446,19 +446,19 @@ function DrawIMAPThreats()
                 PosY = Y * DistanceBetweenMarkers + DistanceBetweenMarkers / 2
                 PosZ = GetTerrainHeight( PosX, PosY )
                 -- -------------------------------------------------------------------------------- --
-                enemyThreat = aiBrain:GetThreatAtPosition({PosX, 0, PosY}, 0, true, 'AntiSurface')
+                enemyThreat = aiBrain:GetThreatAtPosition({PosX, PosZ, PosY}, 0, true, 'AntiSurface')
                 if highestTreat < enemyThreat then
                     highestTreat = enemyThreat
                 end
                 DrawCircle({PosX, PosZ, PosY}, (enemyThreat * treatScale) + 0.1, 'fff4a460' )
                 -- -------------------------------------------------------------------------------- --
-                enemyThreat = aiBrain:GetThreatAtPosition({PosX, 0, PosY}, 0, true, 'AntiAir')
+                enemyThreat = aiBrain:GetThreatAtPosition({PosX, PosZ, PosY}, 0, true, 'AntiAir')
                 if highestTreat < enemyThreat then
                     highestTreat = enemyThreat
                 end
                 DrawCircle({PosX, PosZ, PosY}, (enemyThreat * treatScale) + 0.1, 'ffffffff' )
                 -- -------------------------------------------------------------------------------- --
-                enemyThreat = aiBrain:GetThreatAtPosition({PosX, 0, PosY}, 0, true, 'AntiSub')
+                enemyThreat = aiBrain:GetThreatAtPosition({PosX, PosZ, PosY}, 0, true, 'AntiSub')
                 if highestTreat < enemyThreat then
                     highestTreat = enemyThreat
                 end
@@ -481,7 +481,7 @@ function DrawAIPathCache(DrawOnly)
             continue
         end
         -- is the player an AI-Uveso ?
-        if (aiBrain.Uveso or aiBrain.RNG) and aiBrain.PathCache then
+        if aiBrain.PathCache then
             local LineCountOffset = 0
             local Pos1 = {}
             local Pos2 = {}
@@ -1648,8 +1648,8 @@ end
 function ValidateModFiles()
     local ModName = "* AI-Uveso"
     local ModDirectory = 'AI-Uveso'
-    local Files = 85
-    local Bytes = 1573873
+    local Files = 86
+    local Bytes = 1583577
     LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Running from: '..debug.getinfo(1).source..'.')
     LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Checking directory /mods/ for '..ModDirectory..'...')
     local FilesInFolder = DiskFindFiles('/mods/', '*.*')

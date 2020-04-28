@@ -1,84 +1,4 @@
-
-
--- Hook For AI-Uveso. Enhancment for BuildOnMassAI
-UvesoEngineerMoveWithSafePath = EngineerMoveWithSafePath
-function EngineerMoveWithSafePath(aiBrain, unit, destination)
-    -- Only use this with AI-Uveso
-    if not aiBrain.Uveso then
-        return UvesoEngineerMoveWithSafePath(aiBrain, unit, destination)
-    end
-    if not destination then
-        return false
-    end
-    local pos = unit:GetPosition()
-    -- don't check a path if we are in build range
-    if VDist2(pos[1], pos[3], destination[1], destination[3]) < 14 then
-        return true
-    end
-
-    -- first try to find a path with markers. 
-    local result, bestPos
-    local path, reason = AIAttackUtils.EngineerGenerateSafePathTo(aiBrain, 'Amphibious', pos, destination)
-    -- only use CanPathTo for distance closer then 200 and if we can't path with markers
-    if reason ~= 'PathOK' then
-        -- we will crash the game if we use CanPathTo() on all engineer movments on a map without markers. So we don't path at all.
-        if reason == 'NoGraph' then
-            result = true
-        elseif VDist2(pos[1], pos[3], destination[1], destination[3]) < 200 then
-            SPEW('* AI-Uveso: EngineerMoveWithSafePath(): GenerateSafePathTo returned: ('..repr(reason)..') -> executing c-engine function CanPathTo().')
-            -- be really sure we don't try a pathing with a destoryed c-object
-            if unit.Dead or unit:BeenDestroyed() or IsDestroyed(unit) then
-                SPEW('* AI-Uveso: Unit is death before calling CanPathTo()')
-                return false
-            end
-            result, bestPos = unit:CanPathTo(destination)
-        end 
-    end
-    local bUsedTransports = false
-    -- Increase check to 300 for transports
-    if (not result and reason ~= 'PathOK') or VDist2Sq(pos[1], pos[3], destination[1], destination[3]) > 200 * 200
-    and unit.PlatoonHandle and not EntityCategoryContains(categories.COMMAND, unit) then
-        -- If we can't path to our destination, we need, rather than want, transports
-        local needTransports = not result and reason ~= 'PathOK'
-        if VDist2Sq(pos[1], pos[3], destination[1], destination[3]) > 200 * 200 then
-            needTransports = true
-        end
-
-        -- Skip the last move... we want to return and do a build
-        bUsedTransports = AIAttackUtils.SendPlatoonWithTransportsNoCheck(aiBrain, unit.PlatoonHandle, destination, needTransports, true, false)
-
-        if bUsedTransports then
-            return true
-        elseif VDist2Sq(pos[1], pos[3], destination[1], destination[3]) > 512 * 512 then
-            -- If over 512 and no transports dont try and walk!
-            return false
-        end
-    end
-
-    -- If we're here, we haven't used transports and we can path to the destination
-    if result or reason == 'PathOK' then
-        --LOG('* AI-Uveso: EngineerMoveWithSafePath(): result or reason == PathOK ')
-        if reason ~= 'PathOK' then
-            path, reason = AIAttackUtils.EngineerGenerateSafePathTo(aiBrain, 'Amphibious', pos, destination)
-        end
-        if path then
-            --LOG('* AI-Uveso: EngineerMoveWithSafePath(): path 0 true')
-            local pathSize = table.getn(path)
-            -- Move to way points (but not to destination... leave that for the final command)
-            for widx, waypointPath in path do
-                if pathSize ~= widx then
-                    IssueMove({unit}, waypointPath)
-                end
-            end
-        end
-        -- If there wasn't a *safe* path (but dest was pathable), then the last move would have been to go there directly
-        -- so don't bother... the build/capture/reclaim command will take care of that after we return
-        return true
-    end
-    return false
-end
-
--- For AI Patch V8. Faster transport drop off
+-- For AI Patch V8. (Patched) Faster transport drop off
 function UseTransports(units, transports, location, transportPlatoon)
     local aiBrain
     for k, v in units do
@@ -281,7 +201,7 @@ function UseTransports(units, transports, location, transportPlatoon)
     return true
 end
 
--- For AI Patch V8. fixed return value in case there is reclaim
+-- For AI Patch V8. (Patched) fixed return value in case there is reclaim
 function EngineerTryReclaimCaptureArea(aiBrain, eng, pos)
     if not pos then
         return false
@@ -321,6 +241,88 @@ function EngineerTryReclaimCaptureArea(aiBrain, eng, pos)
         end
     end
     return Reclaiming
+end
+
+-- Hook For AI-Uveso.
+UvesoEngineerMoveWithSafePath = EngineerMoveWithSafePath
+function EngineerMoveWithSafePath(aiBrain, unit, destination)
+    -- Only use this with AI-Uveso
+    if not aiBrain.Uveso then
+        return UvesoEngineerMoveWithSafePath(aiBrain, unit, destination)
+    end
+    if not destination then
+        return false
+    end
+    local pos = unit:GetPosition()
+    -- don't check a path if we are in build range
+    if VDist2(pos[1], pos[3], destination[1], destination[3]) < 14 then
+        return true
+    end
+
+    -- first try to find a path with markers. 
+    local result, bestPos
+    local path, reason = AIAttackUtils.EngineerGenerateSafePathTo(aiBrain, 'Amphibious', pos, destination)
+    -- only use CanPathTo for distance closer then 200 and if we can't path with markers
+    if reason ~= 'PathOK' then
+        -- we will crash the game if we use CanPathTo() on all engineer movments on a map without markers. So we don't path at all.
+        if reason == 'NoGraph' then
+            result = true
+        -- if we have a Graph (AI markers) but not a path, then there is no path. We need a transporter.
+        elseif reason == 'NoPath' then
+            --SPEW('* AI-Uveso: EngineerMoveWithSafePath(): No path found ('..math.floor(pos[1])..'/'..math.floor(pos[3])..') to ('..math.floor(destination[1])..'/'..math.floor(destination[3])..')')
+        elseif VDist2(pos[1], pos[3], destination[1], destination[3]) < 200 then
+            SPEW('* AI-Uveso: EngineerMoveWithSafePath(): GenerateSafePathTo returned: ('..repr(reason)..') -> executing c-engine function CanPathTo().')
+            -- be really sure we don't try a pathing with a destroyed c-object
+            if unit.Dead or unit:BeenDestroyed() or IsDestroyed(unit) then
+                SPEW('* AI-Uveso: Unit is death before calling CanPathTo()')
+                return false
+            end
+            result, bestPos = unit:CanPathTo(destination)
+        end 
+    end
+    local bUsedTransports = false
+    -- Increase check to 300 for transports
+    if (not result and reason ~= 'PathOK') or VDist2Sq(pos[1], pos[3], destination[1], destination[3]) > 200 * 200
+    and unit.PlatoonHandle and not EntityCategoryContains(categories.COMMAND, unit) then
+        -- If we can't path to our destination, we need, rather than want, transports
+        local needTransports = not result and reason ~= 'PathOK'
+        if VDist2Sq(pos[1], pos[3], destination[1], destination[3]) > 200 * 200 then
+            needTransports = true
+        end
+        --SPEW('* AI-Uveso: EngineerMoveWithSafePath():  needTransports = ('..repr(needTransports)..')')
+
+        bUsedTransports = AIAttackUtils.SendPlatoonWithTransportsNoCheck(aiBrain, unit.PlatoonHandle, destination, needTransports, true, false)
+        --SPEW('* AI-Uveso: EngineerMoveWithSafePath():  bUsedTransports = ('..repr(bUsedTransports)..')')
+
+        if bUsedTransports then
+            return true
+        elseif VDist2Sq(pos[1], pos[3], destination[1], destination[3]) > 512 * 512 then
+            -- If over 512 and no transports dont try and walk!
+            return false
+        end
+    end
+
+    -- If we're here, we haven't used transports and we can path to the destination
+    if result or reason == 'PathOK' then
+        --LOG('* AI-Uveso: EngineerMoveWithSafePath(): result or reason == PathOK ')
+        if reason ~= 'PathOK' then
+            path, reason = AIAttackUtils.EngineerGenerateSafePathTo(aiBrain, 'Amphibious', pos, destination)
+        end
+        if path then
+            --LOG('* AI-Uveso: EngineerMoveWithSafePath(): path 0 true')
+            local pathSize = table.getn(path)
+            -- Move to way points (but not to destination... leave that for the final command)
+            for widx, waypointPath in path do
+                if pathSize ~= widx then
+                    IssueMove({unit}, waypointPath)
+                end
+            end
+        end
+        -- If there wasn't a *safe* path (but dest was pathable), then the last move would have been to go there directly
+        -- so don't bother... the build/capture/reclaim command will take care of that after we return
+        return true
+    end
+    return false
 end
 
 -- AI-Uveso: Helper function for targeting

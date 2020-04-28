@@ -1,4 +1,4 @@
--- For AI Patch V8 fixed issue with AI cdr not building at game start
+-- For AI Patch V8 (Patched) fixed issue with AI cdr not building at game start
 function CommanderThread(cdr, platoon)
     SetCDRHome(cdr, platoon)
 
@@ -29,7 +29,7 @@ function CommanderThread(cdr, platoon)
         end
     end
 end
--- For AI Patch V8 fixed issue with AI cdr not building at game start
+-- For AI Patch V8 (Patched) fixed issue with AI cdr not building at game start
 function CommanderThreadImproved(cdr, platoon)
     local aiBrain = cdr:GetAIBrain()
     aiBrain:BuildScoutLocations()
@@ -76,7 +76,7 @@ function CommanderThreadImproved(cdr, platoon)
         WaitTicks(1)
     end
 end
--- For AI Patch V8 fixed issue with AI cdr not building at game start
+-- For AI Patch V8 (Patched) fixed issue with AI cdr not building at game start
 function CommanderThreadSorian(cdr, platoon)
     if platoon.PlatoonData.aggroCDR then
         local mapSizeX, mapSizeZ = GetMapSize()

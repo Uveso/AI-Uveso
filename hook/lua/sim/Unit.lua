@@ -2,14 +2,14 @@
 local UvesoUnit = Unit
 Unit = Class(UvesoUnit) {
 
-    -- For AI Patch V8. Only fork a thread if we need to
+    -- For AI Patch V8. (Patched) Only fork a thread if we need to
     StopRocking = function(self)
         if self.StartRockThread then
             KillThread(self.StartRockThread)
             self.StopRockThread = self:ForkThread(self.EndRockingThread)
         end
     end,
-    -- For AI Patch V8. Need to hook the deathThread to remoce the DestroyAllBuildEffects() call
+    -- For AI Patch V8. (Patched) Need to hook the deathThread to remoce the DestroyAllBuildEffects() call
     DeathThread = function(self, overkillRatio, instigator)
         local isNaval = EntityCategoryContains(categories.NAVAL, self)
         local shallSink = self:ShallSink()
@@ -72,7 +72,7 @@ Unit = Class(UvesoUnit) {
         -- If we're not doing fancy sinking rubbish, just blow the damn thing up.
         self:DestroyUnit(overkillRatio)
     end,
-    -- For AI Patch V8 add function to clear bags
+    -- For AI Patch V8 (Patched) add function to clear bags
     OnDestroy = function(self)
         self.Dead = true
 
@@ -111,7 +111,7 @@ Unit = Class(UvesoUnit) {
 
         ChangeState(self, self.DeadState)
     end,
-    -- For AI Patch V8 sestroy also all bags
+    -- For AI Patch V8 (Patched) sestroy also all bags
     DestroyAllTrashBags = function(self)
         -- Some bags should really be managed by their classes
         -- but for mod compatibility reasons we delete them all here.

@@ -3,7 +3,6 @@
 local Buff = import('/lua/sim/Buff.lua')
 local HighestThread = {}
 
-
 -- This hook is for debug-option Platoon-Names. Hook for all AI's
 OldExecutePlanFunction = ExecutePlan
 function ExecutePlan(aiBrain)
@@ -17,7 +16,7 @@ function ExecutePlan(aiBrain)
         if aiBrain.Sorian then
             aiBrain:SetupUnderEnergyStatTriggerSorian(0.1)
             aiBrain:SetupUnderMassStatTriggerSorian(0.1)
-        -- Set eco triggers for all AI's exept AI-Uveso.
+        -- Set eco triggers for all AI's except AI-Uveso.
         elseif not aiBrain.Uveso then
             aiBrain:SetupUnderEnergyStatTrigger(0.1)
             aiBrain:SetupUnderMassStatTrigger(0.1)
@@ -248,6 +247,7 @@ function EcoManagerThread(aiBrain)
                     --LOG('* ECO + ally('..allyScore..') enemy('..enemyScore..') - ArmyRatio: '..math.floor(MyArmyRatio)..'% - Build/CheatMult old: '..math.floor(tonumber(ScenarioInfo.Options.BuildMult)*10)..' '..math.floor(tonumber(ScenarioInfo.Options.CheatMult)*10)..' - new: '..math.floor(BuildMult*10)..' '..math.floor(CheatMult*10)..'')
                     SetArmyPoolBuff(aiBrain, CheatMult, BuildMult)
                 end
+                --LOG('* ECO + ally('..allyScore..') enemy('..enemyScore..') - ArmyRatio: '..math.floor(MyArmyRatio)..'% - Build/CheatMult old: '..math.floor(tonumber(ScenarioInfo.Options.BuildMult)*10)..' '..math.floor(tonumber(ScenarioInfo.Options.CheatMult)*10)..' - new: '..math.floor(BuildMult*10)..' '..math.floor(CheatMult*10)..'')
             end
         end
 

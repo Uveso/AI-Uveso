@@ -3,7 +3,7 @@
 UvesoEngineerManager = EngineerManager
 EngineerManager = Class(UvesoEngineerManager) {
 
--- For AI Patch V8 self:ForkEngineerTask(unit)
+-- For AI Patch V8 (Patched) self:ForkEngineerTask(unit)
     AddUnit = function(self, unit, dontAssign)
         --LOG('+ AddUnit')
         for k,v in self.ConsumptionUnits do
@@ -70,7 +70,7 @@ EngineerManager = Class(UvesoEngineerManager) {
             end
         end
     end,
--- For AI Patch V8 self:ForkEngineerTask(unit)
+-- For AI Patch V8 (Patched) self:ForkEngineerTask(unit)
     TaskFinished = function(manager, unit)
         --LOG('+ TaskFinished')
         if VDist3(manager.Location, unit:GetPosition()) > manager.Radius and not EntityCategoryContains(categories.COMMAND, unit) then
@@ -79,7 +79,7 @@ EngineerManager = Class(UvesoEngineerManager) {
             manager:ForkEngineerTask(unit)
         end
     end,
--- For AI Patch V8 KillThread
+-- For AI Patch V8 (Patched) KillThread
     ForkEngineerTask = function(manager, unit)
         --LOG('+ ForkEngineerTask')
         if unit.ForkedEngineerTask then
@@ -89,7 +89,7 @@ EngineerManager = Class(UvesoEngineerManager) {
             unit.ForkedEngineerTask = unit:ForkThread(manager.Wait, manager, 20)
         end
     end,
--- For AI Patch V8 KillThread
+-- For AI Patch (Patched) V8 KillThread
     DelayAssign = function(manager, unit, delaytime)
         --LOG('+ DelayAssign')
         if unit.ForkedEngineerTask then
@@ -97,7 +97,7 @@ EngineerManager = Class(UvesoEngineerManager) {
         end
         unit.ForkedEngineerTask = unit:ForkThread(manager.Wait, manager, delaytime or 10)
     end,
--- For AI Patch V8 manager:AssignEngineerTask(unit)
+-- For AI Patch V8 (Patched) manager:AssignEngineerTask(unit)
     Wait = function(unit, manager, ticks)
         --LOG('+ Wait')
         coroutine.yield(ticks)
@@ -105,7 +105,7 @@ EngineerManager = Class(UvesoEngineerManager) {
             manager:AssignEngineerTask(unit)
         end
     end,
--- For AI Patch V8 self:ForkEngineerTask(unit)
+-- For AI Patch V8 (Patched) self:ForkEngineerTask(unit)
     AssignEngineerTask = function(self, unit)
         --LOG('+ AssignEngineerTask')
         if unit.UnitBeingAssist or unit.UnitBeingBuilt then

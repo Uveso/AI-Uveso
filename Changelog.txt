@@ -1,5 +1,16 @@
 *************************************************************************************************************************************
-v82 (14.Apr.2020)
+v83 (28.Apr.2020)
+
+- New: Added special air builder for the Rush sub AI. Should now build way more air.
+- Opt: Engineers will no longer path with c-engine function if AI markers are present.
+- Opt: AI-Rush air units will be build at lower mass storage than before.
+- Opt: AI-Rush will build more air factories now. (50% of land factory count)
+- Fix: Fixed a bug inside the engineer mass build recall function
+- Fix: Debugfunction for AI pathing now also shows the pathing of AI-Swarm
+- Fix: Buildcondition for mass spots was reporting wrong distance for the closest mex point.
+
+*************************************************************************************************************************************
+v82 (not public released, only on Git-Hub)
 
 - Fix: Added files for game patch V8 for testing
 - Fix: Optimized personaly name handle in AI base templates

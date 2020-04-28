@@ -2,7 +2,7 @@
 UvesoAIBrainClass = AIBrain
 AIBrain = Class(UvesoAIBrainClass) {
 
-    -- For AI Patch V8 add BaseType for function GetManagerCount
+    -- For AI Patch V8 (Patched) add BaseType for function GetManagerCount
     -- Hook AI-Uveso. Removing the StrategyManager
     AddBuilderManagers = function(self, position, radius, baseName, useCenter)
        -- Only use this with AI-Uveso
@@ -32,7 +32,7 @@ AIBrain = Class(UvesoAIBrainClass) {
         self.NumBases = self.NumBases + 1
     end,
 
-    -- For AI Patch V8. patch for faster location search, needs AddBuilderManagers
+    -- For AI Patch V8. (Patched) patch for faster location search, needs AddBuilderManagers
     GetManagerCount = function(self, type)
         local count = 0
         for k, v in self.BuilderManagers do

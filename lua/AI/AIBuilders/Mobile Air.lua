@@ -9,7 +9,6 @@ local MaxAttackForce = 0.45                                                     
 -- ===================================================-======================================================== --
 -- ==                           Adaptive - Air Fighter/Bomber T1 T2 T3 Builder                               == --
 -- ===================================================-======================================================== --
-
 BuilderGroup {
     BuilderGroupName = 'U123 Air Builders ADAPTIVE',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'FactoryBuilder',
@@ -269,6 +268,276 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.12, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatioUveso', { 0.5, categories.MOBILE * categories.AIR * categories.ANTINAVY, '<',categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.BOMBER } },
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
+        },
+        BuilderType = 'Air',
+    },
+}
+-- ===================================================-======================================================== --
+-- ==                              Rush - Air Fighter/Bomber T1 T2 T3 Builder                                == --
+-- ===================================================-======================================================== --
+BuilderGroup {
+    BuilderGroupName = 'U123 Air Builders RUSH',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuildersType = 'FactoryBuilder',
+    -- ============ --
+    --    TECH 1    --
+    -- ============ --
+    Builder {
+        BuilderName = 'U1S Interceptors Minimum',
+        PlatoonTemplate = 'T1AirFighter',
+        Priority = 150,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            { MIBC, 'HasNotParagon', {} },
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.ANTIAIR }},
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.TECH3 - categories.ENGINEER }},
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
+        },
+        BuilderType = 'Air',
+    },
+    Builder {
+        BuilderName = 'U1S Bomber Minimum',
+        PlatoonTemplate = 'T1AirBomber',
+        Priority = 150,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            { MIBC, 'HasNotParagon', {} },
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.TECH3 - categories.ENGINEER }},
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 2, categories.MOBILE * categories.AIR  * categories.BOMBER }},
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
+        },
+        BuilderType = 'Air',
+    },
+    Builder {
+        BuilderName = 'U1S Interceptors',
+        PlatoonTemplate = 'T1AirFighter',
+        Priority = 150,
+        BuilderConditions = {
+            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.02, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD } },
+            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.BOMBER, '<=', categories.MOBILE * categories.AIR } },
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
+        },
+        BuilderType = 'Air',
+    },
+    Builder {
+        BuilderName = 'U1S Gunship',
+        PlatoonTemplate = 'T1Gunship',
+        Priority = 150,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.02, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatioUveso', { 0.5, categories.MOBILE * categories.AIR * categories.GROUNDATTACK, '<',categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.BOMBER - categories.GROUNDATTACK } },
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
+        },
+        BuilderType = 'Air',
+    },
+    Builder {
+        BuilderName = 'U1S Bomber',
+        PlatoonTemplate = 'T1AirBomber',
+        Priority = 150,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.02, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatioUveso', { 0.3, categories.MOBILE * categories.AIR * categories.BOMBER, '<',categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK } },
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
+        },
+        BuilderType = 'Air',
+    },
+    -- ============ --
+    --    TECH 2    --
+    -- ============ --
+    Builder {
+        BuilderName = 'U2S Air Fighter',
+        PlatoonTemplate = 'T2FighterBomber',
+        Priority = 250,
+        BuilderConditions = {
+            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.02, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.BOMBER, '<=', categories.MOBILE * categories.AIR } },
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD } },
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
+        },
+        BuilderType = 'Air',
+    },
+    Builder {
+        BuilderName = 'U2S Air Gunship',
+        PlatoonTemplate = 'T2AirGunship',
+        Priority = 250,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.02, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatioUveso', { 0.5, categories.MOBILE * categories.AIR * categories.GROUNDATTACK, '<',categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.BOMBER - categories.GROUNDATTACK } },
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
+        },
+        BuilderType = 'Air',
+    },
+    Builder {
+        BuilderName = 'U2S TorpedoBomber',
+        PlatoonTemplate = 'T2AirTorpedoBomber',
+        Priority = 250,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.02, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 11, categories.MOBILE * categories.AIR * categories.ANTINAVY }},
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.NAVAL * categories.FACTORY } },
+            { UCBC, 'HaveUnitRatioUveso', { 0.5, categories.MOBILE * categories.AIR * categories.ANTINAVY, '<',categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.BOMBER } },
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
+        },
+        BuilderType = 'Air',
+    },
+    Builder {
+        BuilderName = 'U2S TorpedoBomber WaterMap',
+        PlatoonTemplate = 'T2AirTorpedoBomber',
+        Priority = 250,
+        BuilderConditions = {
+            { MIBC, 'CanPathToCurrentEnemy', { false } },
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.02, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 80, categories.MOBILE * categories.AIR * categories.ANTINAVY }},
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.NAVAL * categories.FACTORY } },
+            { UCBC, 'HaveUnitRatioUveso', { 0.5, categories.MOBILE * categories.AIR * categories.ANTINAVY, '<',categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.BOMBER } },
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
+        },
+        BuilderType = 'Air',
+    },
+    -- ============ --
+    --    TECH 3    --
+    -- ============ --
+    Builder {
+        BuilderName = 'U3S Air Fighter min',
+        PlatoonTemplate = 'T3AirFighter',
+        Priority = 360,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.02, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.HIGHALTAIR * categories.ANTIAIR * categories.TECH3 - categories.GROUNDATTACK }},
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
+        },
+        BuilderType = 'Air',
+    },
+    Builder {
+        BuilderName = 'U3S Air Gunship min',
+        PlatoonTemplate = 'T3AirGunship',
+        Priority = 360,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.02, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.GROUNDATTACK * categories.TECH3 - categories.HIGHALTAIR }},
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
+        },
+        BuilderType = 'Air',
+    },
+    Builder {
+        BuilderName = 'U3S Air Fighter',
+        PlatoonTemplate = 'T3AirFighter',
+        Priority = 350,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.02, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.BOMBER, '<=', categories.MOBILE * categories.AIR } },
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
+        },
+        BuilderType = 'Air',
+    },
+    Builder {
+        BuilderName = 'U3S Air Gunship',
+        PlatoonTemplate = 'T3AirGunship',
+        Priority = 340,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.02, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatioUveso', { 0.5, categories.MOBILE * categories.AIR * categories.GROUNDATTACK, '<',categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.BOMBER - categories.GROUNDATTACK } },
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
+        },
+        BuilderType = 'Air',
+    },
+    Builder {
+        BuilderName = 'U3S Air Bomber',
+        PlatoonTemplate = 'T3AirBomber',
+        Priority = 350,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.02, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatioUveso', { 0.1, categories.MOBILE * categories.AIR * categories.BOMBER, '<',categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.BOMBER } },
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
+        },
+        BuilderType = 'Air',
+    },
+    Builder {
+        BuilderName = 'U3S TorpedoBomber',
+        PlatoonTemplate = 'T3TorpedoBomber',
+        Priority = 350,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.02, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'HaveUnitRatioUveso', { 0.3, categories.MOBILE * categories.AIR * categories.ANTINAVY, '<',categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.BOMBER } },
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
+        },
+        BuilderType = 'Air',
+    },
+    Builder {
+        BuilderName = 'U3S TorpedoBomber WaterMap',
+        PlatoonTemplate = 'T3TorpedoBomber',
+        Priority = 350,
+        BuilderConditions = {
+            { MIBC, 'CanPathToCurrentEnemy', { false } },
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.02, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioUveso', { 0.5, categories.MOBILE * categories.AIR * categories.ANTINAVY, '<',categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.BOMBER } },
             -- Respect UnitCap
@@ -687,7 +956,7 @@ BuilderGroup {
         BuilderType = 'Air',
     },
     Builder {
-        BuilderName = 'U1 Air Transport',
+        BuilderName = 'U1 Air Transport pool',
         PlatoonTemplate = 'T1AirTransport',
         Priority = 400, 
         BuilderConditions = {
@@ -698,6 +967,21 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'PoolLessAtLocation', { 'LocationType', 3, categories.MOBILE * categories.AIR * categories.TRANSPORTFOCUS - categories.uea0203 } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.MOBILE * categories.AIR * categories.TECH1 }},
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 10, categories.MOBILE * categories.AIR * categories.TRANSPORTFOCUS - (categories.uea0203 + categories.EXPERIMENTAL)  }},
+            -- Respect UnitCap
+        },
+        BuilderType = 'Air',
+    },
+    Builder {
+        BuilderName = 'U1 Air Transport requested',
+        PlatoonTemplate = 'T1AirTransport',
+        Priority = 400, 
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.80}}, -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { MIBC, 'ArmyNeedsTransports', {} },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 10, categories.MOBILE * categories.AIR * categories.TRANSPORTFOCUS - (categories.uea0203 + categories.EXPERIMENTAL)  }},
             -- Respect UnitCap
         },

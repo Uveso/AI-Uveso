@@ -364,6 +364,23 @@ BuilderGroup {
         },
         BuilderType = 'Any',
     },
+    Builder {
+        BuilderName = 'Extractors > Full storage',
+        PlatoonTemplate = 'AddToMassExtractorUpgradePlatoon',
+        Priority = 18400,
+        InstanceCount = 1,
+        FormRadius = 10000,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            -- When do we want to build this ?
+            { EBC, 'GreaterThanEconTrend', { 0.1, 0.1 } },                      -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.99, 0.70 } },             -- Ratio from 0 to 1. (1=100%)
+        },
+        BuilderData = {
+            AIPlan = 'ExtractorUpgradeAI',
+        },
+        BuilderType = 'Any',
+    },
 }
 -- ===================================================-======================================================== --
 -- ==                                     Build MassStorage/Adjacency                                        == --

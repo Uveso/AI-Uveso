@@ -105,7 +105,7 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== Air Units BUILDER ==== --
         -----------------------------------------------------------------------------
-        'U123 Air Builders',
+        'U123 Air Builders RUSH',
         'U123 Air Builders Anti-Experimental',
         -- Build Air Transporter
         'U123 Air Transport Builders',

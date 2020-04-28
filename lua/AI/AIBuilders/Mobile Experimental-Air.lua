@@ -87,6 +87,8 @@ BuilderGroup {
         BuilderType = 'Any',
         BuilderData = {
             Construction = {
+                DesiresAssist = true,
+                NumAssistees = 10,
                 BuildClose = true,
                 BuildStructures = {
                     'T4SatelliteExperimental',

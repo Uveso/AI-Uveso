@@ -5,7 +5,7 @@ local UUtils = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua')
 CopyOfOldPlatoonClass = Platoon
 Platoon = Class(CopyOfOldPlatoonClass) {
 
--- For AI Patch V8 if eng:IsUnitState('BlockCommandQueue') then
+-- For AI Patch V8 (Patched) if eng:IsUnitState('BlockCommandQueue') then
     ProcessBuildCommand = function(eng, removeLastBuild)
         if not eng or eng.Dead or not eng.PlatoonHandle then
             return
@@ -33,12 +33,6 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         IssueClearCommands({eng})
         local commandDone = false
         while not eng.Dead and not commandDone and table.getn(eng.EngineerBuildQueue) > 0  do
-            if eng:IsUnitState('BlockCommandQueue') then
-                while not eng.Dead and eng:IsUnitState('BlockCommandQueue') do
-                    --LOG('* AI-DEBUG: ProcessBuildCommand: Unit BlockCommandQueue is true, delaying build')
-                    coroutine.yield(1)
-                end
-            end
             local whatToBuild = eng.EngineerBuildQueue[1][1]
             local buildLocation = {eng.EngineerBuildQueue[1][2][1], 0, eng.EngineerBuildQueue[1][2][2]}
             local buildRelative = eng.EngineerBuildQueue[1][3]
@@ -54,15 +48,13 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                 end
 
                 -- check to see if we need to reclaim or capture...
-                if not AIUtils.EngineerTryReclaimCaptureArea(aiBrain, eng, buildLocation) then
+                AIUtils.EngineerTryReclaimCaptureArea(aiBrain, eng, buildLocation)
                     -- check to see if we can repair
-                    if not AIUtils.EngineerTryRepair(aiBrain, eng, whatToBuild, buildLocation) then
+                AIUtils.EngineerTryRepair(aiBrain, eng, whatToBuild, buildLocation)
                         -- otherwise, go ahead and build the next structure there
-                        aiBrain:BuildStructure(eng, whatToBuild, {buildLocation[1], buildLocation[3], 0}, buildRelative)
-                        if not eng.NotBuildingThread then
-                            eng.NotBuildingThread = eng:ForkThread(eng.PlatoonHandle.WatchForNotBuilding)
-                        end
-                    end
+                aiBrain:BuildStructure(eng, whatToBuild, {buildLocation[1], buildLocation[3], 0}, buildRelative)
+                if not eng.NotBuildingThread then
+                    eng.NotBuildingThread = eng:ForkThread(eng.PlatoonHandle.WatchForNotBuilding)
                 end
                 commandDone = true
             else
@@ -81,18 +73,13 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         end
         if eng then eng.ProcessBuild = nil end
     end,
--- For AI Patch V8 fixed issue with AI cdr not building at game start
+-- For AI Patch V8 (Patched) fixed issue with AI cdr not building at game start
     WatchForNotBuilding = function(eng)
-        WaitTicks(5)
+        coroutine.yield(10)
         local aiBrain = eng:GetAIBrain()
 
-        while not eng.Dead
-            and eng.GoingHome
-            or eng.UnitBeingBuiltBehavior
-            or eng.ProcessBuild != nil
-            or not eng:IsIdleState()
-        do
-            WaitTicks(30)
+        while not eng.Dead and (eng.GoingHome or eng.UnitBeingBuiltBehavior or eng.ProcessBuild != nil or not eng:IsIdleState()) do
+            coroutine.yield(30)
         end
 
         eng.NotBuildingThread = nil
@@ -103,7 +90,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
             end
         end
     end,
--- For AI Patch V8 emoved old sorian delay platoon method
+-- For AI Patch V8 (Patched) emoved old sorian delay platoon method
     EngineerBuildAI = function(self)
         local aiBrain = self:GetBrain()
         local platoonUnits = self:GetPlatoonUnits()
@@ -435,8 +422,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
             return self.ProcessBuildCommand(eng, false)
         end
     end,
-
--- For AI Patch V8 emoved old sorian delay platoon method
+-- For AI Patch V8 (Patched) emoved old sorian delay platoon method
     EngineerBuildAISorian = function(self)
         self:Stop()
         local aiBrain = self:GetBrain()
@@ -764,14 +750,16 @@ Platoon = Class(CopyOfOldPlatoonClass) {
 --        LOG('* AI-Uveso: PlatoonDisband = '..repr(self.PlatoonData.Construction.BuildStructures))
 --        LOG('* AI-Uveso: PlatoonDisband = '..repr(self.PlatoonData.Construction))
         if self.PlatoonData.Construction.RepeatBuild then
---            LOG('* AI-Uveso: Repeat build = '..repr(self.PlatoonData.Construction.BuildStructures[1]))
+            --LOG('* AI-Uveso: PlatoonDisband: Repeat build = '..repr(self.PlatoonData.Construction.BuildStructures[1]))
             -- only repeat build if less then 10% of all structures are extractors
             local UCBC = import('/lua/editor/UnitCountBuildConditions.lua')
             if UCBC.HaveUnitRatioVersusCap(aiBrain, 0.10, '<', categories.STRUCTURE * categories.MASSEXTRACTION) then
+                --LOG('* AI-Uveso: PlatoonDisband: HaveUnitRatioVersusCap < ')
                 -- only repeat if we have a free mass spot
                 local MABC = import('/lua/editor/MarkerBuildConditions.lua')
                 if MABC.CanBuildOnMass(aiBrain, 'MAIN', 1000, -500, 1, 0, 'AntiSurface', 1) then  -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
-                    self:SetAIPlan('EngineerBuildAI')
+                    --LOG('* AI-Uveso: PlatoonDisband: CanBuildOnMass')
+                    self:EngineerBuildAI()
                     return
                 end
             end

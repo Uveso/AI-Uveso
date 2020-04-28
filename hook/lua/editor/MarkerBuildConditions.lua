@@ -3,8 +3,7 @@
 -- Condition Actual:0.001953125 name: CanBuildOnMass
 --Optimized
 -- Condition Actual:0.000244140625 name: CanBuildOnMass
-local LastGetMassMarker = 0
-local LastCheckMassMarker = {}
+local LastGetMassMarker = -1
 local MassMarker = {}
 local LastMassBOOL = false
 function CanBuildOnMass(aiBrain, locationType, distance, threatMin, threatMax, threatRings, threatType, maxNum )
@@ -23,35 +22,30 @@ function CanBuildOnMass(aiBrain, locationType, distance, threatMin, threatMax, t
                     -- mass marker is too close to border, skip it.
                     continue
                 end 
-                table.insert(MassMarker, {Position = v.position, Distance = VDist3( v.position, position ) })
+                table.insert(MassMarker, {Position = v.position, Distance = VDist2( v.position[1], v.position[3], position[1], position[3] ) })
             end
         end
         table.sort(MassMarker, function(a,b) return a.Distance < b.Distance end)
     end
-    if not LastCheckMassMarker[distance] or LastCheckMassMarker[distance] < GetGameTimeSeconds() then
-        LastCheckMassMarker[distance] = GetGameTimeSeconds()
-        local threatCheck = false
-        if threatMin and threatMax and threatRings then
-            threatCheck = true
+    LastMassBOOL = false
+    for _, v in MassMarker do
+        if v.Distance > distance then
+            break
         end
-        LastMassBOOL = false
-        for _, v in MassMarker do
-            if v.Distance > distance then
-                break
-            end
-            --LOG(_..'Checking marker with max distance ['..distance..']. Actual marker has distance: ('..(v.Distance)..').')
-            if aiBrain:CanBuildStructureAt('ueb1103', v.Position) then
-                if threatCheck then
-                    threat = aiBrain:GetThreatAtPosition(v.Position, threatRings, true, threatType or 'Overall')
-                    if threat < threatMin or threat > threatMax then
-                        continue
-                    end
+        if aiBrain:CanBuildStructureAt('ueb1103', v.Position) then
+            if threatMin and threatMax and threatRings then
+                threat = aiBrain:GetThreatAtPosition(v.Position, threatRings, true, threatType or 'Overall')
+                --LOG(_..' Checking marker with max distance ['..distance..']. Actual marker has distance: ('..(v.Distance)..'). threat '..threat)
+                if threat < threatMin or threat > threatMax then
+                    continue
                 end
-                LastMassBOOL = true
-                break
             end
+            LastMassBOOL = true
+            break
         end
     end
+    --LOG('*AI WARNING: CanBuildOnMass: for distance ('..distance..')returned - ' .. repr(LastMassBOOL))
+
     return LastMassBOOL
 end
 
