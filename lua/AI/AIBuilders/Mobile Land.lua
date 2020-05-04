@@ -1076,7 +1076,7 @@ BuilderGroup {
         },
         BuilderConditions = {
             -- When do we want to form this ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 3, categories.MOBILE * categories.LAND * categories.ANTIAIR - categories.SCOUT - categories.ENGINEER } },
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 3, categories.MOBILE * categories.LAND * categories.ANTIAIR - categories.EXPERIMENTAL - categories.SCOUT - categories.ENGINEER } },
             { UCBC, 'UnitsNeedGuard', { categories.MOBILE * categories.EXPERIMENTAL * categories.LAND} },
         },
         BuilderType = 'Any',

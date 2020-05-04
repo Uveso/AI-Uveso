@@ -196,7 +196,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'UC Assist Energy',
         PlatoonTemplate = 'CommanderAssist',
-        Priority = 16300,
+        Priority = 17900,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.25}}, -- Ratio from 0 to 1. (1=100%)

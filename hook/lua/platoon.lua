@@ -1,5 +1,5 @@
---WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] * AI-Uveso: offset platoon.lua' )
-
+WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] * AI-Uveso: offset platoon.lua' )
+--6544
 local UUtils = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua')
 
 CopyOfOldPlatoonClass = Platoon
@@ -16,6 +16,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
             if aiBrain:PlatoonExists(eng.PlatoonHandle) then
                 --LOG("* AI-DEBUG: ProcessBuildCommand: Disbanding Engineer Platoon in ProcessBuildCommand top " .. eng.Sync.id)
                 if not eng.AssistSet and not eng.AssistPlatoon and not eng.UnitBeingAssist then
+                    --LOG('* AI-DEBUG: ProcessBuildCommand: eng.PlatoonHandle:PlatoonDisband() 1')
                     eng.PlatoonHandle:PlatoonDisband()
                 end
             end
@@ -37,6 +38,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
             local buildLocation = {eng.EngineerBuildQueue[1][2][1], 0, eng.EngineerBuildQueue[1][2][2]}
             local buildRelative = eng.EngineerBuildQueue[1][3]
             --LOG('* AI-DEBUG: ProcessBuildCommand: whatToBuild = '..repr(whatToBuild))
+
             if not eng.NotBuildingThread then
                 eng.NotBuildingThread = eng:ForkThread(eng.PlatoonHandle.WatchForNotBuilding)
             end
@@ -65,11 +67,10 @@ Platoon = Class(CopyOfOldPlatoonClass) {
 
         -- final check for if we should disband
         if not eng or eng.Dead or table.getn(eng.EngineerBuildQueue) <= 0 then
-            if eng.PlatoonHandle and aiBrain:PlatoonExists(eng.PlatoonHandle) then
+            if eng.PlatoonHandle and aiBrain:PlatoonExists(eng.PlatoonHandle) and not eng.PlatoonHandle.UsingTransport then
+                --LOG('* AI-DEBUG: ProcessBuildCommand: eng.PlatoonHandle:PlatoonDisband() 2')
                 eng.PlatoonHandle:PlatoonDisband()
             end
-            if eng then eng.ProcessBuild = nil end
-            return
         end
         if eng then eng.ProcessBuild = nil end
     end,
@@ -78,7 +79,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         coroutine.yield(10)
         local aiBrain = eng:GetAIBrain()
 
-        while not eng.Dead and (eng.GoingHome or eng.UnitBeingBuiltBehavior or eng.ProcessBuild != nil or not eng:IsIdleState()) do
+        while not eng.Dead and not eng.PlatoonHandle.UsingTransport and (eng.GoingHome or eng.UnitBeingBuiltBehavior or eng.ProcessBuild != nil or not eng:IsIdleState()) do
             coroutine.yield(30)
         end
 
@@ -747,8 +748,25 @@ Platoon = Class(CopyOfOldPlatoonClass) {
     -- Hook for Mass RepeatBuild
     PlatoonDisband = function(self)
         local aiBrain = self:GetBrain()
---        LOG('* AI-Uveso: PlatoonDisband = '..repr(self.PlatoonData.Construction.BuildStructures))
---        LOG('* AI-Uveso: PlatoonDisband = '..repr(self.PlatoonData.Construction))
+--        if not aiBrain.Uveso then
+--            return CopyOfOldPlatoonClass.PlatoonDisband(self)
+--        end
+        local eng = self:GetPlatoonUnits()[1]
+        --LOG('* AI-Uveso: PlatoonDisband = '..repr(self.PlatoonData.Construction.BuildStructures))
+        --LOG('* AI-Uveso: PlatoonDisband = '..repr(self.PlatoonData.Construction))
+        if self.UsingTransport then
+            WARN('* AI-Uveso: PlatoonDisband: Disbanding platoon while transporting!!! Disbanding Blocked!')
+            WARN('* AI-Uveso: PlatoonDisband: PlanName '..repr(self.PlanName)..'  -  BuilderName: '..repr(self.BuilderName)..'.' )
+            if not self.PlanName or not self.BuilderName then
+                WARN('* AI-Uveso: PlatoonDisband: PlatoonData = '..repr(self.PlatoonData))
+            end
+            local FuncData = debug.getinfo(2)
+            if FuncData.name and FuncData.name ~= "" then
+                WARN('* AI-Uveso: PlatoonDisband: Called from '..FuncData.name..'.')
+            else
+                WARN('* AI-Uveso: PlatoonDisband: Called from '..FuncData.source..' - line: '..FuncData.currentline.. '  -  (Offset AI-Uveso: ['..(FuncData.currentline - 6543)..'])')
+            end
+        end
         if self.PlatoonData.Construction.RepeatBuild then
             --LOG('* AI-Uveso: PlatoonDisband: Repeat build = '..repr(self.PlatoonData.Construction.BuildStructures[1]))
             -- only repeat build if less then 10% of all structures are extractors
@@ -759,21 +777,35 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                 local MABC = import('/lua/editor/MarkerBuildConditions.lua')
                 if MABC.CanBuildOnMass(aiBrain, 'MAIN', 1000, -500, 1, 0, 'AntiSurface', 1) then  -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
                     --LOG('* AI-Uveso: PlatoonDisband: CanBuildOnMass')
-                    self:EngineerBuildAI()
+                    coroutine.yield(10)
+                    local count = 1
+                    while eng and not eng.Dead and not eng:IsIdleState() and count < 120 do
+                        coroutine.yield(10)
+                        count = count + 1
+                    end
+                    if aiBrain:PlatoonExists(self) and eng and not eng.Dead then
+                        self:EngineerBuildAI()
+                    end
                     return
                 end
             end
             -- delete the repeat flag so the engineer will not repeat on its next task
             self.PlatoonData.Construction.RepeatBuild = nil
             self:MoveToLocation(aiBrain.BuilderManagers['MAIN'].Position, false)
-            return
+            coroutine.yield(10)
+            while eng and not eng.Dead and eng:IsUnitState("Moving") do
+                coroutine.yield(10)
+            end
         end
-        CopyOfOldPlatoonClass.PlatoonDisband(self)
+        if aiBrain:PlatoonExists(self) then
+            CopyOfOldPlatoonClass.PlatoonDisband(self)
+        end
     end,
 
     BaseManagersDistressAI = function(self)
        -- Only use this with AI-Uveso
-        if not self.Uveso then
+        local aiBrain = self:GetBrain()
+        if not aiBrain.Uveso then
             return CopyOfOldPlatoonClass.BaseManagersDistressAI(self)
         end
         coroutine.yield(10)
@@ -1639,7 +1671,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         end
         -- don't use a transporter if we have a path and the target is closer then 100 map units
         if path and VDist2( PlatoonPosition[1], PlatoonPosition[3], TargetPosition[1], TargetPosition[3] ) < 100 then
-            --LOG('* AI-Uveso: * MoveToLocationInclTransport: no trasnporter used for target distance '..VDist2( PlatoonPosition[1], PlatoonPosition[3], TargetPosition[1], TargetPosition[3] ) )
+            --LOG('* AI-Uveso: * MoveToLocationInclTransport: no transporter used for target distance '..VDist2( PlatoonPosition[1], PlatoonPosition[3], TargetPosition[1], TargetPosition[3] ) )
         -- use a transporter if we don't have a path, or if we want a transport
         elseif not ExperimentalInPlatoon and ((not path and reason ~= 'NoGraph') or WantsTransport)  then
             --LOG('* AI-Uveso: * MoveToLocationInclTransport: SendPlatoonWithTransportsNoCheck')

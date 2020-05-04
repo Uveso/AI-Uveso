@@ -50,7 +50,6 @@ function CanBuildOnMass(aiBrain, locationType, distance, threatMin, threatMax, t
 end
 
 local LastGetHydroMarker = 0
-local LastCheckHydroMarker = 0
 local HydroMarker = {}
 local LastHydroBOOL = false
 --                { MABC, 'CanBuildOnHydro', { 'LocationType', 1000, -1000, 100, 1, 'AntiSurface', 1 }},
@@ -66,29 +65,26 @@ function CanBuildOnHydro(aiBrain, locationType, distance, threatMin, threatMax, 
         HydroMarker = {}
         for _, v in Scenario.MasterChain._MASTERCHAIN_.Markers do
             if v.type == 'Hydrocarbon' then
-                table.insert(HydroMarker, {Position = v.position, Distance = VDist3( v.position, position ) })
+                table.insert(HydroMarker, {Position = v.position, Distance = VDist2( v.position[1], v.position[3], position[1], position[3] ) })
             end
         end
         table.sort(HydroMarker, function(a,b) return a.Distance < b.Distance end)
     end
-    if LastCheckHydroMarker < GetGameTimeSeconds() then
-        LastCheckHydroMarker = GetGameTimeSeconds()
-        local threatCheck = false
-        if threatMin and threatMax and threatRings then
-            threatCheck = true
-        end
-        LastHydroBOOL = false
-        for _, v in HydroMarker do
-            if aiBrain:CanBuildStructureAt('ueb1102', v.Position) then
-                if threatCheck then
-                    threat = aiBrain:GetThreatAtPosition(v.Position, threatRings, true, threatType or 'Overall')
-                    if threat < threatMin or threat > threatMax then
-                        continue
-                    end
+    local threatCheck = false
+    if threatMin and threatMax and threatRings then
+        threatCheck = true
+    end
+    LastHydroBOOL = false
+    for _, v in HydroMarker do
+        if aiBrain:CanBuildStructureAt('ueb1102', v.Position) then
+            if threatCheck then
+                threat = aiBrain:GetThreatAtPosition(v.Position, threatRings, true, threatType or 'Overall')
+                if threat < threatMin or threat > threatMax then
+                    continue
                 end
-                LastHydroBOOL = true
-                break
             end
+            LastHydroBOOL = true
+            break
         end
     end
     return LastHydroBOOL

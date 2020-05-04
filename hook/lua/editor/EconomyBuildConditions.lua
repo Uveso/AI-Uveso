@@ -1,9 +1,9 @@
 
-OldGreaterThanEconStorageRatioFunction = GreaterThanEconStorageRatio
+UvesoGreaterThanEconStorageRatioFunction = GreaterThanEconStorageRatio
 function GreaterThanEconStorageRatio(aiBrain, mStorageRatio, eStorageRatio)
    -- Only use this with AI-Uveso
     if not aiBrain.Uveso then
-        return OldGreaterThanEconStorageRatioFunction(aiBrain, mStorageRatio, eStorageRatio)
+        return UvesoGreaterThanEconStorageRatioFunction(aiBrain, mStorageRatio, eStorageRatio)
     end
     local econ = AIUtils.AIGetEconomyNumbers(aiBrain)
     -- If a paragon is present and we not stall mass or energy, return true
@@ -15,11 +15,11 @@ function GreaterThanEconStorageRatio(aiBrain, mStorageRatio, eStorageRatio)
     return false
 end
 
-OldGreaterThanEconTrendFunction = GreaterThanEconTrend
+UvesoGreaterThanEconTrendFunction = GreaterThanEconTrend
 function GreaterThanEconTrend(aiBrain, MassTrend, EnergyTrend)
    -- Only use this with AI-Uveso
     if not aiBrain.Uveso then
-        return OldGreaterThanEconTrendFunction(aiBrain, MassTrend, EnergyTrend)
+        return UvesoGreaterThanEconTrendFunction(aiBrain, MassTrend, EnergyTrend)
     end
     local econ = AIUtils.AIGetEconomyNumbers(aiBrain)
     -- If a paragon is present and we have at least a neutral m+e trend, return true
@@ -31,11 +31,11 @@ function GreaterThanEconTrend(aiBrain, MassTrend, EnergyTrend)
     return false
 end
 
-OldGreaterThanEconIncomeFunction = GreaterThanEconIncome
+UvesoGreaterThanEconIncomeFunction = GreaterThanEconIncome
 function GreaterThanEconIncome(aiBrain, MassIncome, EnergyIncome)
    -- Only use this with AI-Uveso
     if not aiBrain.Uveso then
-        return OldGreaterThanEconIncomeFunction(aiBrain, MassIncome, EnergyIncome)
+        return UvesoGreaterThanEconIncomeFunction(aiBrain, MassIncome, EnergyIncome)
     end
     -- If a paragon is present, return true
     if aiBrain.HasParagon then

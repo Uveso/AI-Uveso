@@ -1,4 +1,18 @@
 *************************************************************************************************************************************
+v84 (04.May.2020)
+
+- Fix: Changed distance check from 3D to 2D. Position data has no high information.
+- Fix: Renamed some hooks from shared functions to be compatible with other AI mods.
+- Fix: Adaptive sub AI will now build much more units when Omni-View is disabled.
+- Fix: Hook for BaseManagersDistressAI was disabling the manager for all AIs.
+- Opt: Added Tech2 engineer to reclaim Tech 1 energy buildings.
+- Opt: ACU has now priority on assising Hydrocarbon instead of building new energy.
+- Opt: Radar tower will be upgraded way earlier than before.
+- Opt: AI will now sourround TECH2 mass extractors with storage before TECH3 upgrade (4 base mexes)
+- Opt: Added some guards to experimental platoons.
+- Upd: Main game AI-Update V8 Included! (general AI updates for the upcomming game patch)
+
+*************************************************************************************************************************************
 v83 (28.Apr.2020)
 
 - New: Added special air builder for the Rush sub AI. Should now build way more air.

@@ -14,9 +14,8 @@ BaseBuilderTemplate {
         'N1 1 Engineer Builders',
         'N1 1 Energy Builders',
         'N1 MassBuilders', 
-
-
-},
+        'N1 Transporter',
+    },
     -- Not used by Uveso's AI. We always need intel in case the commander is dead.
     NonCheatBuilders = {
 

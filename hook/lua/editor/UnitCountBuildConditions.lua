@@ -117,6 +117,11 @@ end
 
 --{ UCBC, 'HaveUnitRatioAtLocationRadiusVersusEnemy', { 1.50, 'LocationType', 90, 'STRUCTURE DEFENSE ANTIMISSILE TECH3', '<','SILO NUKE TECH3' } },
 function HaveUnitRatioAtLocationRadiusVersusEnemy(aiBrain, ratio, locType, radius, categoryOwn, compareType, categoryEnemy)
+    -- in case we don't have omni view, return always true. We cant count units without omni
+    if not aiBrain.CheatEnabled or ScenarioInfo.Options.OmniCheat ~= "on" then
+        --LOG('* HaveUnitRatioVersusEnemy: AI is not Cheating or Omni is Off')
+        return true
+    end
     local AIName = ArmyBrains[aiBrain:GetArmyIndex()].Nickname
     local baseposition, radius
     if MAPBASEPOSTITIONS[AIName][locType] then
@@ -185,6 +190,11 @@ function ReclaimableEnergyInArea(aiBrain, locType)
 end
 
 function HaveEnemyUnitAtLocation(aiBrain, radius, locationType, unitCount, categoryEnemy, compareType)
+    -- in case we don't have omni view, return always true. We cant count units without omni
+    if not aiBrain.CheatEnabled or ScenarioInfo.Options.OmniCheat ~= "on" then
+        --LOG('* HaveUnitRatioVersusEnemy: AI is not Cheating or Omni is Off')
+        return true
+    end
     if not aiBrain.BuilderManagers[locationType] then
         WARN('*AI WARNING: HaveEnemyUnitAtLocation - Invalid location - ' .. locationType)
         return false
@@ -205,6 +215,11 @@ end
 --            { UCBC, 'UnitsLessAtEnemy', { 1 , 'MOBILE EXPERIMENTAL' } },
 --            { UCBC, 'UnitsGreaterAtEnemy', { 1 , 'MOBILE EXPERIMENTAL' } },
 function GetEnemyUnits(aiBrain, unitCount, categoryEnemy, compareType)
+    -- in case we don't have omni view, return always true. We cant count units without omni
+    if not aiBrain.CheatEnabled or ScenarioInfo.Options.OmniCheat ~= "on" then
+        --LOG('* HaveUnitRatioVersusEnemy: AI is not Cheating or Omni is Off')
+        return true
+    end
     local numEnemyUnits = aiBrain:GetNumUnitsAroundPoint(categoryEnemy, Vector(mapSizeX/2,0,mapSizeZ/2), mapSizeX+mapSizeZ , 'Enemy')
     --LOG(aiBrain:GetArmyIndex()..' CompareBody {World} '..categoryEnemy..' ['..numEnemyUnits..'] '..compareType..' ['..unitCount..'] return '..repr(CompareBody(numEnemyUnits, unitCount, compareType)))
     return CompareBody(numEnemyUnits, unitCount, compareType)

@@ -38,14 +38,15 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'N1 Land Factory',
-        PlatoonTemplate = 'EngineerBuilder',
+        BuilderName = 'NC Air Factory',
+        PlatoonTemplate = 'CommanderBuilder',
         TechRoot = 'FACTORY1',
-        Priority = 700,
+        Priority = 400,
         DelayEqualBuildPlattons = {'Factories', 3},
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND } },
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.AIR } },
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 3, categories.STRUCTURE * categories.MASSEXTRACTION } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             -- Don't build it if...
@@ -56,7 +57,7 @@ BuilderGroup {
             Construction = {
                 Location = 'LocationType',
                 BuildStructures = {
-                    'T1LandFactory',
+                    'T1AirFactory',
                 },
             }
         }
@@ -72,10 +73,10 @@ BuilderGroup {
     Builder {
         BuilderName = 'N Engineer builder',
         PlatoonTemplate = 'T1BuildEngineer',
-        Priority = 700,
+        Priority = 10,
         BuilderConditions = {
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.MOBILE * categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD } },
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD } },
             -- Do we need additional conditions to build it ?
             -- Have we the eco to build it ?
             -- Don't build it if...
@@ -94,13 +95,12 @@ BuilderGroup {
     --    TECH 1    --
     -- ============ --
     Builder {
-        BuilderName = 'UC Power low trend',
+        BuilderName = 'N Power Low Trend',
         PlatoonTemplate = 'CommanderBuilder',
-        Priority = 17900,
+        Priority = 500,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { EBC, 'LessThanEnergyTrend', { 0.0 } },
-            { EBC, 'GreaterThanEconIncome',  { 0.2, 0.0}}, -- Absolut Base income
+            { EBC, 'LessThanEnergyTrend', { 20.0 } },
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
             -- Respect UnitCap
@@ -129,7 +129,7 @@ BuilderGroup {
         BuilderName = 'N Mass',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 1000,
-        InstanceCount = 2,
+        InstanceCount = 20,
         BuilderConditions = {
             -- When do we want to build this ?
             { MABC, 'CanBuildOnMass', { 'LocationType', 1000, -500, 50, 1, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
@@ -139,6 +139,7 @@ BuilderGroup {
         },
         BuilderType = 'Any',
         BuilderData = {
+            RequireTransport = true,                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             Construction = {
                 RepeatBuild = true,
                 BuildStructures = {
@@ -146,5 +147,22 @@ BuilderGroup {
                 }
             }
         }
+    },
+}
+BuilderGroup {
+    -- Build MassExtractors / Creators 
+    BuilderGroupName = 'N1 Transporter',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuildersType = 'FactoryBuilder',
+    Builder {
+        BuilderName = 'N1 Air Transport 1st',
+        PlatoonTemplate = 'T1AirTransport',
+        Priority = 18500, 
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.TRANSPORTFOCUS - (categories.uea0203 + categories.EXPERIMENTAL) }},
+            -- Respect UnitCap
+        },
+        BuilderType = 'Air',
     },
 }

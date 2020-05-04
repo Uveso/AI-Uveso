@@ -296,14 +296,16 @@ PlatoonTemplate {
     Name = 'U4-ExperimentalInterceptor 1 1',
     Plan = 'InterceptorAIUveso',
     GlobalSquads = {
-        { categories.EXPERIMENTAL * categories.AIR * categories.MOBILE - categories.SATELLITE - categories.INSIGNIFICANTUNIT, 1, 1, 'attack', 'none' }
+        { categories.EXPERIMENTAL * categories.AIR * categories.MOBILE - categories.SATELLITE - categories.INSIGNIFICANTUNIT, 1, 1, 'attack', 'none' },
+        { categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL - categories.ANTINAVY, 1, 10, 'Guard', 'none' },
     },
 }
 PlatoonTemplate {
     Name = 'U4-ExperimentalInterceptor 3 8',
     Plan = 'InterceptorAIUveso',
     GlobalSquads = {
-        { categories.EXPERIMENTAL * categories.AIR * categories.MOBILE - categories.SATELLITE - categories.INSIGNIFICANTUNIT, 3, 8, 'attack', 'none' }
+        { categories.EXPERIMENTAL * categories.AIR * categories.MOBILE - categories.SATELLITE - categories.INSIGNIFICANTUNIT, 3, 8, 'attack', 'none' },
+        { categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL - categories.ANTINAVY, 1, 10, 'Guard', 'none' },
     },
 }
 

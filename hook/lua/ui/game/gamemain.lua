@@ -31,13 +31,19 @@ function OnFirstUpdate()
     ForkThread( 
         function()
             LOG('* AI-Uveso: Changing path calculating budget') 
-            coroutine.yield(30)
+            coroutine.yield(3)
             ConExecute("path_MaxInstantWorkUnits 500")              -- default 500  - Budget for instant pathfinds by the AI
             ConExecute("path_ArmyBudget 1000")                      -- default 1000 - Budget for each army to do pathfinding each tick
             ConExecute("path_BackgroundBudget 1000")                -- default 1000 - Maximum number of steps to run pathfinder in background
             ConExecute("path_UnreachableTimeoutSearchSteps 1000")   -- default 1000 - Maximum number of ticks to allow a single pathfind to take for an unreachable path 
             ConExecute("path_BackgroundUpdate on")                  -- Default on   - on/off
+            -- For Debug, also unremark gameresult.lua -- RestartSession()
 --            ConExecute("WLD_GameSpeed 10")                          -- increase gamespeed for testing
+--            while GetGameTimeSeconds() < 30 do                      -- wait until game second 10 before setting split screen
+--                coroutine.yield(10)
+--            end
+--            import("/lua/ui/game/borders.lua").SplitMapGroup(true)  -- split screen
+--            ConExecute("SallyShears")                               -- Omniview for all (also players)
         end
     )
     ForkThread( 
@@ -81,6 +87,7 @@ function OnFirstUpdate()
             end
 
             while true do
+
                 GTS = GetGameTimeSeconds()
                 if LastPrint + 60 < GTS then
                     SystemTime = GetSystemTimeSeconds()
