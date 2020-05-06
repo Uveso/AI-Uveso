@@ -179,5 +179,23 @@ AIOpts = {
                 key = 'all',
             },
         },
+    },
+    {
+        default = 2,
+        label = "<LOC aisettingsUveso_XXXX>DEBUG: Endless gameloop",
+        help = "<LOC aisettingsUveso_XXXX>Playing the game in an endless loop for long time testing",
+        key = 'AIEndlessGameLoop',
+        values = {
+            {
+                text = "<LOC aisettingsUveso_XXXX>On",
+                help = "<LOC aisettingsUveso_XXXX>Endless play is on",
+                key = 'on',
+            },
+            {
+                text = "<LOC aisettingsUveso_XXXX>Off",
+                help = "<LOC aisettingsUveso_XXXX>Endless play is off",
+                key = 'off',
+            },
+        },
    },
 }
