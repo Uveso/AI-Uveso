@@ -66,6 +66,12 @@ aisettingsUveso_0182="Log builder for AI Dilli"
 aisettingsUveso_0183="Log builder for AI Sorian"
 aisettingsUveso_0184="Log builder for all AI's"
 
+aisettingsUveso_0211="DEBUG: Endless game loop"
+aisettingsUveso_0212="Running the game in an endless loop for long time testing"
+aisettingsUveso_0213="On"
+aisettingsUveso_0214="Endless play off"
+aisettingsUveso_0215="Endless play on"
+
 aisettingsUveso_0187="AI Unit Cap"
 aisettingsUveso_0188="Set an AI unit cap independently from player unit cap."
 aisettingsUveso_0189="%s units per AI may be in play"

@@ -37,14 +37,15 @@ function OnFirstUpdate()
             ConExecute("path_BackgroundBudget 1000")                -- default 1000 - Maximum number of steps to run pathfinder in background
             ConExecute("path_UnreachableTimeoutSearchSteps 1000")   -- default 1000 - Maximum number of ticks to allow a single pathfind to take for an unreachable path 
             ConExecute("path_BackgroundUpdate on")                  -- Default on   - on/off
-            local AIoptions = Prefs.GetFromCurrentProfile('LobbyPresets')[1].GameOptions
-            if AIoptions.AIEndlessGameLoop == 'on' then
+            local GameOptions = Prefs.GetFromCurrentProfile('LobbyPresets')[1].GameOptions
+            SPEW('* AI-Uveso: OnFirstUpdate: GameOptions '..repr(GameOptions))
+            if GameOptions.AIEndlessGameLoop == 'on' then
                 ConExecute("WLD_GameSpeed 10")                          -- increase gamespeed
                 while GetGameTimeSeconds() < 30 do                      -- wait until game second 30 before setting split screen
                     coroutine.yield(10)
                 end
                 import("/lua/ui/game/borders.lua").SplitMapGroup(true)  -- split screen
-                if AIoptions.OmniCheat == 'on' then            -- If we have AI-omniview on, also enable it for players
+                if GameOptions.OmniCheat == 'on' then            -- If we have AI-omniview on, also enable it for players
                     ConExecute("SallyShears")                               -- Omniview for all (also players)
                 end
             end

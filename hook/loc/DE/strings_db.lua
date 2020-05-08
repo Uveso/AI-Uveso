@@ -66,6 +66,12 @@ aisettingsUveso_0182="Log Builder für KI Dilli"
 aisettingsUveso_0183="Log Builder für KI Sorian"
 aisettingsUveso_0184="Log Builder für alle KI's"
 
+aisettingsUveso_0211="DEBUG: Unendlich Spiel"
+aisettingsUveso_0212="Ausführung des Spiels in einer Endlosschleife für Langzeittests"
+aisettingsUveso_0213="An"
+aisettingsUveso_0214="Endlosschleife aus"
+aisettingsUveso_0215="Endlosschleife an"
+
 aisettingsUveso_0187="KI Einheitenlimit"
 aisettingsUveso_0188="Einheitenlimit für KI; Unabhängig vom Limit für Spieler"
 aisettingsUveso_0189="Es dürfen pro KI %d Einheiten im Spiel sein"
