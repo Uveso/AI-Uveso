@@ -1,7 +1,7 @@
 --WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] * AI-Uveso: offset aiarchetype-managerloader.lua' )
 
 local Buff = import('/lua/sim/Buff.lua')
-local HighestThread = {}
+local HighestThreat = {}
 
 -- This hook is for debug-option Platoon-Names. Hook for all AI's
 OldExecutePlanFunction = ExecutePlan
@@ -1048,9 +1048,9 @@ function BaseTargetManagerThread(aiBrain)
         end
         coroutine.yield(1)
         -- Search for High Threat Area
-        if not ClosestTarget and HighestThread[armyIndex].TargetLocation then
+        if not ClosestTarget and HighestThreat[armyIndex].TargetLocation then
             -- search for any unit in this area
-            targets = aiBrain:GetUnitsAroundPoint(categories.EXPERIMENTAL + categories.TECH3 + categories.ALLUNITS, HighestThread[armyIndex].TargetLocation, 30, 'Enemy')
+            targets = aiBrain:GetUnitsAroundPoint(categories.EXPERIMENTAL + categories.TECH3 + categories.ALLUNITS, HighestThreat[armyIndex].TargetLocation, 30, 'Enemy')
             for _, unit in targets do
                 if not unit.Dead then
                     if not IsEnemy( aiBrain:GetArmyIndex(), unit:GetAIBrain():GetArmyIndex() ) then continue end
@@ -1060,7 +1060,7 @@ function BaseTargetManagerThread(aiBrain)
                         distance = targetRange
                         ClosestTarget = unit
                         -- we only need a single unit for targeting this area
-                        --LOG('High Threat Area: '.. repr(HighestThread[armyIndex].TargetThreat)..' - '..repr(HighestThread[armyIndex].TargetLocation))
+                        --LOG('High Threat Area: '.. repr(HighestThreat[armyIndex].TargetThreat)..' - '..repr(HighestThreat[armyIndex].TargetLocation))
                         break --for _, unit in targets do
                     end
                 end
@@ -1137,8 +1137,8 @@ function MarkerGridThreatManagerThread(aiBrain)
         return
     end
     while aiBrain.Result ~= "defeat" do
-        HighestThread[armyIndex] = HighestThread[armyIndex] or {}
-        HighestThread[armyIndex].ThreadCount = 0
+        HighestThreat[armyIndex] = HighestThreat[armyIndex] or {}
+        HighestThreat[armyIndex].ThreatCount = 0
         ----LOG('* AI-Uveso: Function MarkerGridThreatManagerThread() beat. ['..aiBrain.Nickname..']')
         for Layer, LayerMarkers in PathGraphs do
             for graph, GraphMarkers in LayerMarkers do
@@ -1148,29 +1148,26 @@ function MarkerGridThreatManagerThread(aiBrain)
                         numTargetTECH123 = aiBrain:GetNumUnitsAroundPoint( (categories.DIRECTFIRE + categories.INDIRECTFIRE + categories.GROUNDATTACK + categories.BOMBER) - categories.EXPERIMENTAL, vector , 30 , 'Enemy')
                         numTargetTECH4   = aiBrain:GetNumUnitsAroundPoint( (categories.DIRECTFIRE + categories.INDIRECTFIRE + categories.GROUNDATTACK + categories.BOMBER) * categories.EXPERIMENTAL, vector , 60 , 'Enemy')
                         numTargetCOM     = aiBrain:GetNumUnitsAroundPoint(categories.COMMAND, vector , 30 , 'Enemy')
-                    end
-                    if markerInfo.layer == 'Water' then
-                        numTargetTECH123 = aiBrain:GetNumUnitsAroundPoint( (categories.NAVAL + categories.GROUNDATTACK + categories.BOMBER) - categories.EXPERIMENTAL, vector , 30 , 'Enemy')
-                        numTargetTECH4   = aiBrain:GetNumUnitsAroundPoint( (categories.NAVAL + categories.GROUNDATTACK + categories.BOMBER) * categories.EXPERIMENTAL, vector , 60 , 'Enemy')
-                        numTargetCOM     = 0
-                    end
-                    if markerInfo.layer == 'Air' then
-                        numTargetTECH123 = aiBrain:GetNumUnitsAroundPoint(categories.ANTIAIR - categories.EXPERIMENTAL, vector , 60 , 'Enemy')
-                        numTargetTECH4   = aiBrain:GetNumUnitsAroundPoint(categories.ANTIAIR * categories.EXPERIMENTAL, vector , 60 , 'Enemy')
-                        -- using numTargetCOM here for a general vision threat
-                        numTargetCOM     = aiBrain:GetNumUnitsAroundPoint(categories.MOBILE + categories.STRUCTURE, vector , 60 , 'Enemy') / 30
-                    end
-                    if markerInfo.layer == 'Amphibious' then
+                    elseif markerInfo.layer == 'Amphibious' then
                         numTargetTECH123 = aiBrain:GetNumUnitsAroundPoint( (categories.DIRECTFIRE + categories.INDIRECTFIRE + categories.GROUNDATTACK + categories.BOMBER) - categories.EXPERIMENTAL, vector , 30 , 'Enemy')
                         numTargetTECH4   = aiBrain:GetNumUnitsAroundPoint( (categories.DIRECTFIRE + categories.INDIRECTFIRE + categories.GROUNDATTACK + categories.BOMBER) * categories.EXPERIMENTAL, vector , 60 , 'Enemy')
                         numTargetCOM     = aiBrain:GetNumUnitsAroundPoint(categories.COMMAND, vector , 30 , 'Enemy')
+                    elseif markerInfo.layer == 'Water' then
+                        numTargetTECH123 = aiBrain:GetNumUnitsAroundPoint( (categories.NAVAL + categories.GROUNDATTACK + categories.BOMBER) - categories.EXPERIMENTAL, vector , 30 , 'Enemy')
+                        numTargetTECH4   = aiBrain:GetNumUnitsAroundPoint( (categories.NAVAL + categories.GROUNDATTACK + categories.BOMBER) * categories.EXPERIMENTAL, vector , 60 , 'Enemy')
+                        numTargetCOM     = 0
+                    elseif markerInfo.layer == 'Air' then
+                        numTargetTECH123 = aiBrain:GetNumUnitsAroundPoint(categories.ANTIAIR - categories.EXPERIMENTAL, vector , 60 , 'Enemy')
+                        numTargetTECH4   = aiBrain:GetNumUnitsAroundPoint(categories.ANTIAIR * categories.EXPERIMENTAL, vector , 60 , 'Enemy')
+                        -- using numTargetCOM here for a general vision threat (so air can approach without being seen from the enemy)
+                        numTargetCOM     = aiBrain:GetNumUnitsAroundPoint(categories.MOBILE + categories.STRUCTURE, vector , 60 , 'Enemy') / 30
                     end
                     local Threat = numTargetTECH123 * 15 + numTargetTECH4 * 60 + numTargetCOM * 30
                     --LOG('* MarkerGridThreatManagerThread: 1='..numTargetTECH1..'  2='..numTargetTECH2..'  3='..numTargetTECH123..'  4='..numTargetTECH4..' - Threat='..Threat..'.' )
                     Scenario.MasterChain._MASTERCHAIN_.Markers[nodename][armyIndex] = Threat
-                    if Threat > HighestThread[armyIndex].ThreadCount then
-                        HighestThread[armyIndex].ThreadCount = Threat
-                        HighestThread[armyIndex].Location = vector
+                    if Threat > HighestThreat[armyIndex].ThreatCount then
+                        HighestThreat[armyIndex].ThreatCount = Threat
+                        HighestThreat[armyIndex].Location = vector
                     end
                     Delayer = Delayer + 1
                     if Delayer > 5 then
@@ -1180,9 +1177,9 @@ function MarkerGridThreatManagerThread(aiBrain)
                 end
             end
         end
-        if HighestThread[armyIndex].ThreadCount > 1 then
-            HighestThread[armyIndex].TargetThreat = HighestThread[armyIndex].ThreadCount
-            HighestThread[armyIndex].TargetLocation = HighestThread[armyIndex].Location
+        if HighestThreat[armyIndex].ThreatCount > 1 then
+            HighestThreat[armyIndex].TargetThreat = HighestThreat[armyIndex].ThreatCount
+            HighestThreat[armyIndex].TargetLocation = HighestThreat[armyIndex].Location
         end
         coroutine.yield(1)
     end

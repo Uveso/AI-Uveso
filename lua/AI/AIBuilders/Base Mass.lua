@@ -93,7 +93,6 @@ BuilderGroup {
         BuilderName = 'U1 Mass 60',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17880,
-        DelayEqualBuildPlattons = {'MASSEXTRACTION', 0.3},
         InstanceCount = 2,
         BuilderConditions = {
             -- Have we the eco to build it ?
@@ -101,7 +100,6 @@ BuilderGroup {
             -- When do we want to build this ?
             { MABC, 'CanBuildOnMass', { 'LocationType', 60, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Don't build it if...
-            { UCBC, 'CheckBuildPlattonDelay', { 'MASSEXTRACTION' }},
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<', categories.STRUCTURE * categories.MASSEXTRACTION } },
         },
         BuilderType = 'Any',
@@ -118,10 +116,8 @@ BuilderGroup {
         BuilderName = 'U1 Mass 1000 6+',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17850,
-        DelayEqualBuildPlattons = {'MASSEXTRACTION', 0.3},
         InstanceCount = 2,
         BuilderConditions = {
-            { UCBC, 'CheckBuildPlattonDelay', { 'MASSEXTRACTION' }},
             -- Have we the eco to build it ?
             { MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
@@ -144,10 +140,8 @@ BuilderGroup {
         BuilderName = 'U1 Mass 1000 8+',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17830,
-        DelayEqualBuildPlattons = {'MASSEXTRACTION', 0.3},
         InstanceCount = 2,
         BuilderConditions = {
-            { UCBC, 'CheckBuildPlattonDelay', { 'MASSEXTRACTION' }},
             -- Have we the eco to build it ?
             { MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
@@ -170,10 +164,8 @@ BuilderGroup {
         BuilderName = 'U1 Mass 1000 10+',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17810,
-        DelayEqualBuildPlattons = {'MASSEXTRACTION', 0.3},
         InstanceCount = 2,
         BuilderConditions = {
-            { UCBC, 'CheckBuildPlattonDelay', { 'MASSEXTRACTION' }},
             -- Have we the eco to build it ?
             { MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?

@@ -28,7 +28,7 @@ BuilderManager = Class(TheOldBuilderManager) {
             end
         end
         for k,v in self.BuilderData[bType].Builders do
-            if v.Priority >= 1 and self:BuilderParamCheck(v,factory) and (not found or v.Priority == found) and v:GetBuilderStatus() then
+            if v.Priority >= 1 and (not found or v.Priority == found) and v:GetBuilderStatus() and self:BuilderParamCheck(v,factory) then
                 if not self:IsPlattonBuildDelayed(v.DelayEqualBuildPlattons) then
                     found = v.Priority
                     table.insert(possibleBuilders, k)
