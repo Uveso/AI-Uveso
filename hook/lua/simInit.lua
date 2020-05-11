@@ -394,10 +394,13 @@ function DrawPathGraph(DrawOnly,Blink)
     end
 end
 
+local treatScale = 1
 function DrawMarkerThreats()
     local FocussedArmy = GetFocusArmy()
     local MarkerPosition = {0,0,0}
     -- Render the threat on each marker
+    local highestTreat = treatScale - 0.1
+    local DistanceBetweenMarkers = ScenarioInfo.size[1] / ( 30 )
     for Layer, LayerMarkers in AIAttackUtils.GetPathGraphs() do
         for graph, GraphMarkers in LayerMarkers do
             for nodename, markerInfo in GraphMarkers do
@@ -409,15 +412,16 @@ function DrawMarkerThreats()
                     MarkerPosition[1] = markerInfo.position[1] + (Offsets[markerInfo.graphName][1])
                     MarkerPosition[2] = markerInfo.position[2] + (Offsets[markerInfo.graphName][2])
                     MarkerPosition[3] = markerInfo.position[3] + (Offsets[markerInfo.graphName][3])
-                    DrawCircle(MarkerPosition, (Scenario.MasterChain._MASTERCHAIN_.Markers[nodename][FocussedArmy] / 120) + 0.1, Offsets[markerInfo.graphName]['color'] )
-                    --DrawCircle(markerInfo.position, (Scenario.MasterChain._MASTERCHAIN_.Markers[nodename].Threat[FocussedArmy] + 1.8) / 5 , 'ff000000' )
+                    DrawCircle(MarkerPosition, (Scenario.MasterChain._MASTERCHAIN_.Markers[nodename][FocussedArmy] * treatScale) + 0.1, Offsets[markerInfo.graphName]['color'] )
+                end
+                if highestTreat < Scenario.MasterChain._MASTERCHAIN_.Markers[nodename][FocussedArmy] then
+                    highestTreat = Scenario.MasterChain._MASTERCHAIN_.Markers[nodename][FocussedArmy]
                 end
             end
         end
     end
+    treatScale = DistanceBetweenMarkers / 2 / highestTreat
 end
-
-local treatScale = 1
 function DrawIMAPThreats()
     local MCountX = 48
     local MCountY = 48

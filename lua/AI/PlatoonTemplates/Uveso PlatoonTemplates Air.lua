@@ -297,7 +297,6 @@ PlatoonTemplate {
     Plan = 'InterceptorAIUveso',
     GlobalSquads = {
         { categories.EXPERIMENTAL * categories.AIR * categories.MOBILE - categories.SATELLITE - categories.INSIGNIFICANTUNIT, 1, 1, 'attack', 'none' },
-        { categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL - categories.ANTINAVY, 1, 10, 'Guard', 'none' },
     },
 }
 PlatoonTemplate {
@@ -305,7 +304,6 @@ PlatoonTemplate {
     Plan = 'InterceptorAIUveso',
     GlobalSquads = {
         { categories.EXPERIMENTAL * categories.AIR * categories.MOBILE - categories.SATELLITE - categories.INSIGNIFICANTUNIT, 3, 8, 'attack', 'none' },
-        { categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL - categories.ANTINAVY, 1, 10, 'Guard', 'none' },
     },
 }
 

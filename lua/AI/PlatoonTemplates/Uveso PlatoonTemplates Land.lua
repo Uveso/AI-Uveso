@@ -195,7 +195,6 @@ PlatoonTemplate {
     Plan = 'InterceptorAIUveso',
     GlobalSquads = {
         { categories.EXPERIMENTAL * categories.LAND * categories.MOBILE - categories.INSIGNIFICANTUNIT, 1, 1, 'Attack', 'none' },
-        { categories.MOBILE * categories.LAND * categories.ANTIAIR - categories.EXPERIMENTAL - categories.SCOUT - categories.ENGINEER, 1, 10, 'Guard', 'None' }
     },
 }
 PlatoonTemplate {
@@ -203,7 +202,6 @@ PlatoonTemplate {
     Plan = 'LandAttackAIUveso',
     GlobalSquads = {
         { categories.EXPERIMENTAL * categories.LAND * categories.MOBILE - categories.INSIGNIFICANTUNIT, 1, 1, 'Attack', 'none' },
-        { categories.MOBILE * categories.LAND * categories.ANTIAIR - categories.EXPERIMENTAL - categories.SCOUT - categories.ENGINEER, 1, 10, 'Guard', 'None' }
     },
 }
 PlatoonTemplate {
@@ -211,7 +209,6 @@ PlatoonTemplate {
     Plan = 'LandAttackAIUveso',
     GlobalSquads = {
         { categories.EXPERIMENTAL * categories.LAND * categories.MOBILE - categories.INSIGNIFICANTUNIT, 2, 2, 'Attack', 'none' },
-        { categories.MOBILE * categories.LAND * categories.ANTIAIR - categories.EXPERIMENTAL - categories.SCOUT - categories.ENGINEER, 1, 10, 'Guard', 'None' }
     },
 }
 
@@ -220,7 +217,6 @@ PlatoonTemplate {
     Plan = 'LandAttackAIUveso',
     GlobalSquads = {
         { categories.EXPERIMENTAL * categories.LAND * categories.MOBILE - categories.INSIGNIFICANTUNIT, 3, 5, 'Attack', 'none' },
-        { categories.MOBILE * categories.LAND * categories.ANTIAIR - categories.EXPERIMENTAL - categories.SCOUT - categories.ENGINEER, 1, 10, 'Guard', 'None' }
     },
 }
 -- Assist experimentals
@@ -229,7 +225,6 @@ PlatoonTemplate {
     Plan = 'GuardUnit',
     GlobalSquads = {
         { categories.MOBILE * categories.LAND * (categories.TECH3 + categories.TECH2) * categories.ANTIAIR - categories.SCOUT - categories.ENGINEER, 1, 10, 'Attack', 'None' },
-        { categories.MOBILE * categories.LAND * categories.TECH1 * categories.ANTIAIR - categories.SCOUT - categories.ENGINEER, 1, 10, 'Guard', 'None' }
     },
 }
 -- Unit cap Trasher
