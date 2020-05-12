@@ -4,29 +4,28 @@ local Buff = import('/lua/sim/Buff.lua')
 local HighestThreat = {}
 
 -- This hook is for debug-option Platoon-Names. Hook for all AI's
-OldExecutePlanFunction = ExecutePlan
+OldExecutePlanFunctionUveso = ExecutePlan
 function ExecutePlan(aiBrain)
+    if not aiBrain.Uveso then
+        -- Debug for Platoon names
+        if aiBrain[ScenarioInfo.Options.AIPLatoonNameDebug] or ScenarioInfo.Options.AIPLatoonNameDebug == 'all' then
+            aiBrain:ForkThread(LocationRangeManagerThread, aiBrain)
+        end
+        -- execute the original function
+        OldExecutePlanFunctionUveso(aiBrain)
+        return
+    end
     aiBrain:SetConstantEvaluate(false)
     local behaviors = import('/lua/ai/AIBehaviors.lua')
     coroutine.yield(10)
     if not aiBrain.BuilderManagers.MAIN.FactoryManager:HasBuilderList() then
-        aiBrain:SetResourceSharing(true)
-
-        -- Sorian is using its own triggers
-        if aiBrain.Sorian then
-            aiBrain:SetupUnderEnergyStatTriggerSorian(0.1)
-            aiBrain:SetupUnderMassStatTriggerSorian(0.1)
-        -- Set eco triggers for all AI's except AI-Uveso.
-        elseif not aiBrain.Uveso then
-            aiBrain:SetupUnderEnergyStatTrigger(0.1)
-            aiBrain:SetupUnderMassStatTrigger(0.1)
-        end
-
+        -- we don't share resources with allies
+        aiBrain:SetResourceSharing(false)
+        --aiBrain:SetupUnderEnergyStatTrigger(0.1)
+        --aiBrain:SetupUnderMassStatTrigger(0.1)
         SetupMainBase(aiBrain)
-
         -- Get units out of pool and assign them to the managers
         local mainManagers = aiBrain.BuilderManagers.MAIN
-
         local pool = aiBrain:GetPlatoonUniquelyNamed('ArmyPool')
         for k,v in pool:GetPlatoonUnits() do
             if EntityCategoryContains(categories.ENGINEER - categories.STATIONASSISTPOD, v) then
@@ -35,28 +34,10 @@ function ExecutePlan(aiBrain)
                 mainManagers.FactoryManager:AddFactory(v)
             end
         end
-
-        -- Sorian is using a Thread for watching unitcap and Nukes
-        if aiBrain.Sorian then
-            aiBrain:ForkThread(UnitCapWatchThreadSorian, aiBrain)
-            aiBrain:ForkThread(behaviors.NukeCheck, aiBrain)
-            -- Debug for Platoon names
-            if aiBrain[ScenarioInfo.Options.AIPLatoonNameDebug] or ScenarioInfo.Options.AIPLatoonNameDebug == 'all' then
-                aiBrain:ForkThread(LocationRangeManagerThread, aiBrain)
-            end
-        -- Uveso is using a locationmanager ecomanager and BaseAlert Thread
-        elseif aiBrain.Uveso then
-            aiBrain:ForkThread(LocationRangeManagerThread, aiBrain)
-            aiBrain:ForkThread(EcoManagerThread, aiBrain)
-            aiBrain:ForkThread(BaseTargetManagerThread, aiBrain)
-            aiBrain:ForkThread(MarkerGridThreatManagerThread, aiBrain)
-        -- Debug for Platoon names
-        elseif aiBrain[ScenarioInfo.Options.AIPLatoonNameDebug] or ScenarioInfo.Options.AIPLatoonNameDebug == 'all' then
-            aiBrain:ForkThread(LocationRangeManagerThread, aiBrain)
-            aiBrain:ForkThread(UnitCapWatchThread, aiBrain)
-        else
-            aiBrain:ForkThread(UnitCapWatchThread, aiBrain)
-        end
+        aiBrain:ForkThread(LocationRangeManagerThread, aiBrain)
+        aiBrain:ForkThread(EcoManagerThread, aiBrain)
+        aiBrain:ForkThread(BaseTargetManagerThread, aiBrain)
+        aiBrain:ForkThread(MarkerGridThreatManagerThread, aiBrain)
     end
     if aiBrain.PBM then
         aiBrain:PBMSetEnabled(false)

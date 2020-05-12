@@ -122,8 +122,13 @@ AIOpts = {
             },
             {
                 text = "<LOC aisettingsUveso_0206>AI RNG names",
-                help = "<LOC aisettingsUveso_0207>Show platoon and AI plan name for AI Dilli",
+                help = "<LOC aisettingsUveso_0207>Show platoon and AI plan name for AI RNG",
                 key = 'RNG',
+            },
+            {
+                text = "<LOC aisettingsUveso_0216>AI Swarm names",
+                help = "<LOC aisettingsUveso_0217>Show platoon and AI plan name for AI Swarm",
+                key = 'Dilli',
             },
             {
                 text = "<LOC aisettingsUveso_0172>AI Dilli names",
@@ -160,8 +165,13 @@ AIOpts = {
             },
             {
                 text = "<LOC aisettingsUveso_0206>AI RNG names",
-                help = "<LOC aisettingsUveso_0208>Log builder for AI Dilli",
+                help = "<LOC aisettingsUveso_0208>Log builder for AI RNG",
                 key = 'RNG',
+            },
+            {
+                text = "<LOC aisettingsUveso_0216>AI Swarm names",
+                help = "<LOC aisettingsUveso_0218>Log builder for AI Swarm",
+                key = 'Dilli',
             },
             {
                 text = "<LOC aisettingsUveso_0172>AI Dilli names",
