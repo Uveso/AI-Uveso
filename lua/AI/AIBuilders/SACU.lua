@@ -1,4 +1,15 @@
 local categories = categories
+
+-- categories that do not exist if nomads are not running.
+if not categories.ROCKETPRESET then categories.ROCKETPRESET = categories.RAMBOPRESET end
+if not categories.ANTINAVALPRESET then categories.ANTINAVALPRESET = categories.RAMBOPRESET end
+if not categories.AMPHIBIOUSPRESET then categories.AMPHIBIOUSPRESET = categories.RAMBOPRESET end
+if not categories.GUNSLINGERPRESET then categories.GUNSLINGERPRESET = categories.RAMBOPRESET end
+if not categories.NATURALPRODUCERPRESET then categories.NATURALPRODUCERPRESET = categories.RAMBOPRESET end
+if not categories.DEFAULTPRESET then categories.DEFAULTPRESET = categories.RAMBOPRESET end
+if not categories.HEAVYTROOPERPRESET then categories.HEAVYTROOPERPRESET = categories.RAMBOPRESET end
+if not categories.FASTCOMBATPRESET then categories.FASTCOMBATPRESET = categories.RAMBOPRESET end
+
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 local EBC = '/lua/editor/EconomyBuildConditions.lua'
 
