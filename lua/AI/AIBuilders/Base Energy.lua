@@ -77,7 +77,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'UC Power MassRatio',
         PlatoonTemplate = 'CommanderBuilder',
-        Priority = 15000,
+        Priority = 17879,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { MIBC, 'HasNotParagon', {} },
@@ -98,6 +98,7 @@ BuilderGroup {
                 LocationType = 'LocationType',
                 BuildStructures = {
                     'T1EnergyProduction',
+                    'T1EnergyProduction',
                 },
             }
         }
@@ -105,18 +106,14 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Power MassRatio 5',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 17870,
+        Priority = 17881,
         InstanceCount = 3,                                                      -- Number of plattons that will be formed with this template.
-        DelayEqualBuildPlattons = {'Energy', 3},
         BuilderConditions = {
             { UCBC, 'CheckBuildPlattonDelay', { 'Energy' }},
-            -- Have we the eco to build it ?
             { MIBC, 'HasNotParagon', {} },
             { EBC, 'EnergyToMassRatioIncome', { 5.0, '<=' } },  -- True if we have less than 10 times more Energy then Mass income ( 100 <= 10 = true )
-            { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}}, -- Absolut Base income
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
-            { UCBC, 'GreaterThanGameTimeSeconds', { 180 } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
@@ -132,6 +129,8 @@ BuilderGroup {
                 LocationType = 'LocationType',
                 BuildStructures = {
                     'T1EnergyProduction',
+                    'T1EnergyProduction',
+                    'T1EnergyProduction',
                 },
             }
         }
@@ -139,7 +138,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Power MassRatio 10',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 17870,
+        Priority = 17883,
         InstanceCount = 2,                                                      -- Number of plattons that will be formed with this template.
         DelayEqualBuildPlattons = {'Energy', 3},
         BuilderConditions = {
@@ -147,10 +146,9 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { MIBC, 'HasNotParagon', {} },
             { EBC, 'EnergyToMassRatioIncome', { 10.0, '<=' } },  -- True if we have less than 10 times more Energy then Mass income ( 100 <= 10 = true )
-            { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}}, -- Absolut Base income
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
-            { UCBC, 'GreaterThanGameTimeSeconds', { 180 } },
+            { UCBC, 'GreaterThanGameTimeSeconds', { 120 } },
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.TECH1 } },
             -- Respect UnitCap
@@ -167,6 +165,7 @@ BuilderGroup {
                 LocationType = 'LocationType',
                 BuildStructures = {
                     'T1EnergyProduction',
+                    'T1EnergyProduction',
                 },
             }
         }
@@ -174,7 +173,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Power MassRatio 15',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 17870,
+        Priority = 17885,
         InstanceCount = 1,                                                      -- Number of plattons that will be formed with this template.
         DelayEqualBuildPlattons = {'Energy', 3},
         BuilderConditions = {
@@ -182,7 +181,6 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { MIBC, 'HasNotParagon', {} },
             { EBC, 'EnergyToMassRatioIncome', { 15.0, '<=' } },  -- True if we have less than 10 times more Energy then Mass income ( 100 <= 10 = true )
-            { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}}, -- Absolut Base income
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'GreaterThanGameTimeSeconds', { 180 } },
@@ -208,7 +206,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Power Hydrocarbon',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 17881,
+        Priority = 17895,
         DelayEqualBuildPlattons = {'Energy', 1},
         InstanceCount = 1,
         BuilderConditions = {

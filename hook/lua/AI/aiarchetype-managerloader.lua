@@ -1085,20 +1085,39 @@ function MarkerGridThreatManagerThread(aiBrain)
     while aiBrain.Result ~= "defeat" do
         HighestThreat[armyIndex] = HighestThreat[armyIndex] or {}
         HighestThreat[armyIndex].ThreatCount = 0
-        ----LOG('* AI-Uveso: Function MarkerGridThreatManagerThread() beat. ['..aiBrain.Nickname..']')
+        --LOG('* AI-Uveso: Function MarkerGridThreatManagerThread() beat. ['..aiBrain.Nickname..']')
         for Layer, LayerMarkers in PathGraphs do
             for graph, GraphMarkers in LayerMarkers do
                 for nodename, markerInfo in GraphMarkers do
+-- possible options for GetThreatAtPosition
+--  Overall
+--  OverallNotAssigned
+--  StructuresNotMex
+--  Structures
+--  Naval
+--  Air
+--  Land
+--  Experimental
+--  Commander
+--  Artillery
+--  AntiAir
+--  AntiSurface
+--  AntiSub
+--  Economy
+--  Unknown
                     local Threat = 0
                     vector = Vector(markerInfo.position[1],markerInfo.position[2],markerInfo.position[3])
                     if markerInfo.layer == 'Land' then
-                        Threat = aiBrain:GetThreatAtPosition(vector, 0, true, 'AntiAir')
+                        Threat = aiBrain:GetThreatAtPosition(vector, 0, true, 'AntiSurface')
                     elseif markerInfo.layer == 'Amphibious' then
                         Threat = aiBrain:GetThreatAtPosition(vector, 0, true, 'AntiSurface')
+                        Threat = Threat + aiBrain:GetThreatAtPosition(vector, 0, true, 'AntiSub')
                     elseif markerInfo.layer == 'Water' then
                         Threat = aiBrain:GetThreatAtPosition(vector, 0, true, 'AntiSurface')
+                        Threat = Threat + aiBrain:GetThreatAtPosition(vector, 0, true, 'AntiSub')
                     elseif markerInfo.layer == 'Air' then
                         Threat = aiBrain:GetThreatAtPosition(vector, 1, true, 'AntiAir')
+                        Threat = Threat + aiBrain:GetThreatAtPosition(vector, 0, true, 'Structures')
                     end
                     --LOG('* MarkerGridThreatManagerThread: 1='..numTargetTECH1..'  2='..numTargetTECH2..'  3='..numTargetTECH123..'  4='..numTargetTECH4..' - Threat='..Threat..'.' )
                     Scenario.MasterChain._MASTERCHAIN_.Markers[nodename][armyIndex] = Threat

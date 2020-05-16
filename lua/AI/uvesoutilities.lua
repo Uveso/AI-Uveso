@@ -52,40 +52,6 @@ function ExtractorPause(self, aiBrain, MassExtractorUnitList, ratio, techLevel)
         end
     end
     --LOG('* ExtractorPause: Idle= '..UpgradingBuildingNum..'   Upgrading= '..UpgradingBuildingNum..'   Paused= '..PausedUpgradingBuildingNum..'   Disabled= '..DisabledBuildingNum..'   techLevel= '..techLevel)
-    --Check for energy stall
-    --if aiBrain:GetEconomyStoredRatio('ENERGY') < 0.50 and aiBrain:GetEconomyStoredRatio('MASS') > aiBrain:GetEconomyStoredRatio('ENERGY') then
-    if aiBrain:GetEconomyStoredRatio('MASS') -0.1 > aiBrain:GetEconomyStoredRatio('ENERGY') then
-        -- Have we a building that is actual upgrading
-        if UpgradingBuilding then
-            -- Its upgrading, now check fist if we only have 1 building that is upgrading
-            if UpgradingBuildingNum <= 1 and table.getn(MassExtractorUnitList) >= 6 then
-            else
-                -- we don't have the eco to upgrade the extractor. Pause it!
-                UpgradingBuilding:SetPaused( true )
-                --UpgradingBuilding:SetCustomName('Upgrading paused')
-                --LOG('Upgrading paused')
-                return true
-            end
-        end
-        -- All buildings that are doing nothing
-        if IdleBuilding then
-            if IdleBuildingNum <= 1 then
-            else
-                IdleBuilding:SetScriptBit('RULEUTC_ProductionToggle', true)
-                --IdleBuilding:SetCustomName('Production off')
-                --LOG('Production off')
-                return true
-            end
-        end
-    -- Do we produce more mass then we need ? Disable some for more energy    
-    else
-        if DisabledBuilding then
-            DisabledBuilding:SetScriptBit('RULEUTC_ProductionToggle', false)
-            --DisabledBuilding:SetCustomName('Production on')
-            --LOG('Production on')
-            return true
-        end
-    end
     -- Check for positive Mass/Upgrade ratio
     local MassRatioCheckPositive = GlobalMassUpgradeCostVsGlobalMassIncomeRatio( self, aiBrain, ratio, techLevel, '<' )
     -- Did we found a paused unit ?
@@ -195,7 +161,9 @@ function ExtractorUpgrade(self, aiBrain, MassExtractorUnitList, ratio, techLevel
         end
     end
     -- If we have not the Eco then return false. Exept we have none extractor upgrading or 100% mass storrage
-    if not MassRatioCheckPositive and aiBrain:GetEconomyStoredRatio('MASS') < 1.00 then
+    -- mass < 95 then return false
+    -- aiBrain:GetEconomyStoredRatio('MASS') < 0.95
+    if not MassRatioCheckPositive and aiBrain:GetEconomyStoredRatio('MASS') < 0.80 or aiBrain:GetEconomyStoredRatio('ENERGY') < 0.95 then
         -- if we have at least 1 extractor upgrading or less then 4 extractors, then return false
         if UpgradingBuilding > 0 or table.getn(MassExtractorUnitList) < 4 then
             return false

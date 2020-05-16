@@ -1,5 +1,5 @@
---WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] * AI-Uveso: offset simInit.lua' )
-
+WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] * AI-Uveso: offset simInit.lua' )
+--418
 local AIAttackUtils = import('/lua/ai/aiattackutilities.lua')
 
 -- hooks for map validation on game start and debugstuff for pathfinding and base ranger.
@@ -394,33 +394,33 @@ function DrawPathGraph(DrawOnly,Blink)
     end
 end
 
-local treatScale = 1
+local treatScale = {Land=1, Amphibious=1, Water=1, Air=1}
+local highestTreat = {Land=1, Amphibious=1, Water=1, Air=1}
+
 function DrawMarkerThreats()
     local FocussedArmy = GetFocusArmy()
     local MarkerPosition = {0,0,0}
     -- Render the threat on each marker
-    local highestTreat = treatScale - 0.1
     local DistanceBetweenMarkers = ScenarioInfo.size[1] / ( 30 )
     for Layer, LayerMarkers in AIAttackUtils.GetPathGraphs() do
+        highestTreat[Layer] = 0
+        --LOG('Layer: '..repr(Layer)..' - treatScale[Layer]: '..repr(treatScale[Layer]))
         for graph, GraphMarkers in LayerMarkers do
             for nodename, markerInfo in GraphMarkers do
---                if markerInfo.graphName == 'DefaultLand' or markerInfo.graphName == 'DefaultWater' then
---                    continue
---                end
                 -- Draw Threat
                 if Scenario.MasterChain._MASTERCHAIN_.Markers[nodename][FocussedArmy] then
                     MarkerPosition[1] = markerInfo.position[1] + (Offsets[markerInfo.graphName][1])
                     MarkerPosition[2] = markerInfo.position[2] + (Offsets[markerInfo.graphName][2])
                     MarkerPosition[3] = markerInfo.position[3] + (Offsets[markerInfo.graphName][3])
-                    DrawCircle(MarkerPosition, (Scenario.MasterChain._MASTERCHAIN_.Markers[nodename][FocussedArmy] * treatScale) + 0.1, Offsets[markerInfo.graphName]['color'] )
+                    DrawCircle(MarkerPosition, (Scenario.MasterChain._MASTERCHAIN_.Markers[nodename][FocussedArmy] * treatScale[Layer]) + 0.1, Offsets[markerInfo.graphName]['color'] )
                 end
-                if highestTreat < Scenario.MasterChain._MASTERCHAIN_.Markers[nodename][FocussedArmy] then
-                    highestTreat = Scenario.MasterChain._MASTERCHAIN_.Markers[nodename][FocussedArmy]
+                if highestTreat[Layer] < Scenario.MasterChain._MASTERCHAIN_.Markers[nodename][FocussedArmy] then
+                    highestTreat[Layer] = Scenario.MasterChain._MASTERCHAIN_.Markers[nodename][FocussedArmy]
                 end
             end
         end
+        treatScale[Layer] = DistanceBetweenMarkers / 2 / highestTreat[Layer]
     end
-    treatScale = DistanceBetweenMarkers / 2 / highestTreat
 end
 function DrawIMAPThreats()
     local MCountX = 48
@@ -437,41 +437,44 @@ function DrawIMAPThreats()
     end
 
     local FocussedArmy = GetFocusArmy()
-    local highestTreat = treatScale - 0.1
     for ArmyIndex, aiBrain in ArmyBrains do
         -- only draw the pathcache from the focussed army
         if FocussedArmy ~= ArmyIndex then
             continue
         end
         local DistanceBetweenMarkers = ScenarioInfo.size[1] / ( MCountX )
+        highestTreat = {Land=1, Amphibious=1, Water=1, Air=1}
         for Y = 0, MCountY - 1 do
             for X = 0, MCountX - 1 do
                 PosX = X * DistanceBetweenMarkers + DistanceBetweenMarkers / 2
                 PosY = Y * DistanceBetweenMarkers + DistanceBetweenMarkers / 2
                 PosZ = GetTerrainHeight( PosX, PosY )
                 -- -------------------------------------------------------------------------------- --
-                enemyThreat = aiBrain:GetThreatAtPosition({PosX, PosZ, PosY}, 0, true, 'AntiSurface')
-                if highestTreat < enemyThreat then
-                    highestTreat = enemyThreat
+                enemyThreat = aiBrain:GetThreatAtPosition({PosX, PosZ, PosY}, 0, true, 'Overall')
+                if highestTreat['Land'] < enemyThreat then
+                    highestTreat['Land'] = enemyThreat
                 end
-                DrawCircle({PosX, PosZ, PosY}, (enemyThreat * treatScale) + 0.1, 'fff4a460' )
+                DrawCircle({PosX, PosZ, PosY}, (enemyThreat * treatScale['Land']) + 0.1, 'fff4a460' )
                 -- -------------------------------------------------------------------------------- --
-                enemyThreat = aiBrain:GetThreatAtPosition({PosX, PosZ, PosY}, 0, true, 'AntiAir')
-                if highestTreat < enemyThreat then
-                    highestTreat = enemyThreat
+                enemyThreat = aiBrain:GetThreatAtPosition({PosX+0.5, PosZ, PosY}, 0, true, 'AntiAir')
+                if highestTreat['Air'] < enemyThreat then
+                    highestTreat['Air'] = enemyThreat
                 end
-                DrawCircle({PosX, PosZ, PosY}, (enemyThreat * treatScale) + 0.1, 'ffffffff' )
+                DrawCircle({PosX, PosZ, PosY}, (enemyThreat * treatScale['Air']) + 0.1, 'ffffffff' )
                 -- -------------------------------------------------------------------------------- --
-                enemyThreat = aiBrain:GetThreatAtPosition({PosX, PosZ, PosY}, 0, true, 'AntiSub')
-                if highestTreat < enemyThreat then
-                    highestTreat = enemyThreat
+                enemyThreat = aiBrain:GetThreatAtPosition({PosX, PosZ, PosY+0.5}, 0, true, 'AntiSurface')
+                enemyThreat = enemyThreat + aiBrain:GetThreatAtPosition({PosX, PosZ, PosY}, 0, true, 'AntiSurface')
+                if highestTreat['Amphibious'] < enemyThreat then
+                    highestTreat['Amphibious'] = enemyThreat
                 end
-                DrawCircle({PosX, PosZ, PosY}, (enemyThreat * treatScale) + 0.1, 'ff27408b' )
+                DrawCircle({PosX, PosZ, PosY}, (enemyThreat * treatScale['Amphibious']) + 0.1, 'ff27408b' )
                 -- -------------------------------------------------------------------------------- --
             end
         end
         -- max radius for a circle is DistanceBetweenMarkers / 2
-        treatScale = DistanceBetweenMarkers / 2 / highestTreat
+        treatScale['Land'] = DistanceBetweenMarkers / 2 / highestTreat['Land']
+        treatScale['Air'] = DistanceBetweenMarkers / 2 / highestTreat['Air']
+        treatScale['Amphibious'] = DistanceBetweenMarkers / 2 / highestTreat['Amphibious']
     end
 end
 
@@ -550,7 +553,7 @@ function RenderMarkerCreatorThread()
             MarkerPosition[2] = markerInfo.position[2]
             MarkerPosition[3] = markerInfo.position[3]
             -- Draw the marker path node
-            DrawCircle(MarkerPosition, 4, Offsets[markerInfo.graph]['color'] or 'ff000000' )
+--            DrawCircle(MarkerPosition, 4, Offsets[markerInfo.graph]['color'] or 'ff000000' )
             -- Draw the connecting lines to its adjacent nodes
             if markerInfo.adjacentTo then
                 local adjancents = STR_GetTokens(markerInfo.adjacentTo or '', ' ')
@@ -574,7 +577,7 @@ function RenderMarkerCreatorThread()
                             Marker2Position[1] = otherMarker.position[1]
                             Marker2Position[2] = otherMarker.position[2]
                             Marker2Position[3] = otherMarker.position[3]
-                            DrawLinePop(MarkerPosition, Marker2Position, Color )
+--                            DrawLinePop(MarkerPosition, Marker2Position, Color )
                         end
                     end
                 end
@@ -588,17 +591,17 @@ function RenderMarkerCreatorThread()
             end
             if markerInfo['type'] == 'Expansion Area' then
                 DrawCircle(markerInfo['position'], 5, 'ffFF0000' )
-                DrawCircle(markerInfo['position'], 4.5, 'ff000000' )
+                DrawCircle(markerInfo['position'], 4.5, 'ff808080' )
                 DrawCircle(markerInfo['position'], 6, 'ffF4A460' )
             end
             if markerInfo['type'] == 'Large Expansion Area' then
                 DrawCircle(markerInfo['position'], 10, 'ffFF0000' )
-                DrawCircle(markerInfo['position'], 9.5, 'ff000000' )
+                DrawCircle(markerInfo['position'], 9.5, 'ffFFFFFF' )
                 DrawCircle(markerInfo['position'], 11, 'ffF4A460' )
             end
             if markerInfo['type'] == 'Naval Area' then
                 DrawCircle(markerInfo['position'], 8, 'ffFF0000' )
-                DrawCircle(markerInfo['position'], 7.5, 'ff000000' )
+                DrawCircle(markerInfo['position'], 7.5, 'ff808080' )
                 DrawCircle(markerInfo['position'], 9, 'ffF0F0FF' )
             end
         end
@@ -652,7 +655,7 @@ function CreateAIMarkers()
     else
         playablearea = {0, 0, ScenarioInfo.size[1], ScenarioInfo.size[2]}
     end
-    LOG('* AI-Uveso: playable area coordinates are ' .. repr(playablearea))
+    --LOG('* AI-Uveso: playable area coordinates are ' .. repr(playablearea))
     -- Create Air Marker
     CREATEDMARKERS = {}
     local DistanceBetweenMarkers = ScenarioInfo.size[1] / ( MarkerCountX/2 )
@@ -725,6 +728,8 @@ function CreateAIMarkers()
 
     --create naval Areas
     CreateNavalExpansions()
+    --create land expansions
+    CreateLandExpansions()
 
     CleanMarkersInMASTERCHAIN('Land')
     CleanMarkersInMASTERCHAIN('Water')
@@ -1649,6 +1654,46 @@ function CreateNavalExpansions()
     end
 end
 
+-- Destroy reclaimables after 10 minutes for better game performance
+function ReclaimCleaner()
+    local InitialWrecks
+    while true do
+        --local count = 0
+        for _, reclaim in GetReclaimablesInRect(Rect(1, 1, ScenarioInfo.size[1], ScenarioInfo.size[2])) or {} do
+            if reclaim.IsWreckage then
+                -- for debug. removing reclaim so we can better count entities
+                --reclaim:Kill()
+                --count = count + 1
+                if not InitialWrecks then
+                    reclaim.expirationTime = GetGameTimeSeconds() + 60*25
+                elseif not reclaim.expirationTime then
+                    reclaim.expirationTime = GetGameTimeSeconds() + 60*10
+                elseif GetGameTimeSeconds() > reclaim.expirationTime then
+                    --LOG('# RECLAIM: Wreck is older then 10 minutes ('..math.floor((GetGameTimeSeconds() - (reclaim.expirationTime - 60*10))/60)..' min.). Deleting it!')
+                    --count = count - 1
+                    reclaim:Kill()
+                end
+            elseif reclaim.TimeReclaim then
+                if not InitialWrecks then
+                    reclaim.expirationTime = GetGameTimeSeconds() + 60*25
+                elseif not reclaim.expirationTime then
+                    reclaim.expirationTime = GetGameTimeSeconds() + 60*10
+                elseif GetGameTimeSeconds() > reclaim.expirationTime then
+                    --LOG('# RECLAIM: Tree is older then 10 minutes ('..math.floor((GetGameTimeSeconds() - (reclaim.expirationTime - 60*10))/60)..' min.). Deleting it!')
+                    --count = count - 1
+                    reclaim:Kill()
+                end
+--            elseif not reclaim.Dead or reclaim.Dead == false then
+                -- normal unit
+            end
+        end
+        -- Set initial wrecks to true after the first pass
+        InitialWrecks = true
+        --LOG('reclaim count:'..count)
+        coroutine.yield(50)
+    end
+end
+
 function ValidateModFiles()
     local ModName = "* AI-Uveso"
     local ModDirectory = 'AI-Uveso'
@@ -1702,42 +1747,158 @@ function ValidateModFiles()
     end
 end
 
--- Destroy reclaimables after 10 minutes for better game performance
-function ReclaimCleaner()
-    local InitialWrecks
-    while true do
-        --local count = 0
-        for _, reclaim in GetReclaimablesInRect(Rect(1, 1, ScenarioInfo.size[1], ScenarioInfo.size[2])) or {} do
-            if reclaim.IsWreckage then
-                -- for debug. removing reclaim so we can better count entities
-                --reclaim:Kill()
-                --count = count + 1
-                if not InitialWrecks then
-                    reclaim.expirationTime = GetGameTimeSeconds() + 60*25
-                elseif not reclaim.expirationTime then
-                    reclaim.expirationTime = GetGameTimeSeconds() + 60*10
-                elseif GetGameTimeSeconds() > reclaim.expirationTime then
-                    --LOG('# RECLAIM: Wreck is older then 10 minutes ('..math.floor((GetGameTimeSeconds() - (reclaim.expirationTime - 60*10))/60)..' min.). Deleting it!')
-                    --count = count - 1
-                    reclaim:Kill()
+
+function CreateLandExpansions()
+    -- get a table with all massmarkers and positions
+    local MassMarker = {}
+    local MexInMarkerRange = {}
+    local StartPosition = {}
+    local NewExpansion = {}
+
+    -- get start positions
+    for nodename, markerInfo in Scenario.MasterChain._MASTERCHAIN_.Markers or {} do
+        if markerInfo['type'] == 'Blank Marker' then
+            table.insert(StartPosition, {Position = markerInfo.position} )
+        end
+    end
+    -- Deleting all (Large) Expansion markers from MASTERCHAIN
+    for nodename, markerInfo in Scenario.MasterChain._MASTERCHAIN_.Markers or {} do
+        if markerInfo['type'] == 'Expansion Area' or markerInfo['type'] == 'Large Expansion Area' then
+            Scenario.MasterChain._MASTERCHAIN_.Markers[nodename] = nil
+        end
+    end
+    -- get all mass spots
+    for _, v in Scenario.MasterChain._MASTERCHAIN_.Markers do
+        if v.type == 'Mass' then
+            if v.position[1] <= 8 or v.position[1] >= ScenarioInfo.size[1] - 8 or v.position[3] <= 8 or v.position[3] >= ScenarioInfo.size[2] - 8 then
+                -- mass marker is too close to border, skip it.
+                continue
+            end 
+            table.insert(MassMarker, {Position = v.position})
+        end
+    end
+    -- search for areas with mex in range
+    for Y = 0, MarkerCountY - 1 do
+        for X = 0, MarkerCountX - 1 do
+            if Scenario.MasterChain._MASTERCHAIN_.Markers['Land'..X..'-'..Y] then
+                local MarkerPosition = Scenario.MasterChain._MASTERCHAIN_.Markers['Land'..X..'-'..Y].position
+                -- check how many masspoints are located near the marker
+                for k, v in MassMarker do
+                    local dist = VDist2(MarkerPosition[1], MarkerPosition[3], v.Position[1], v.Position[3])
+                    if VDist2(MarkerPosition[1], MarkerPosition[3], v.Position[1], v.Position[3]) > 30 then
+                        continue
+                    end
+                    MexInMarkerRange['Land'..X..'-'..Y] = MexInMarkerRange['Land'..X..'-'..Y] or {}
+                    table.insert(MexInMarkerRange['Land'..X..'-'..Y], {Position = v.Position} )
+                    -- insert mexcount into table
+                    MexInMarkerRange['Land'..X..'-'..Y].mexcount = table.getn(MexInMarkerRange['Land'..X..'-'..Y])
                 end
-            elseif reclaim.TimeReclaim then
-                if not InitialWrecks then
-                    reclaim.expirationTime = GetGameTimeSeconds() + 60*25
-                elseif not reclaim.expirationTime then
-                    reclaim.expirationTime = GetGameTimeSeconds() + 60*10
-                elseif GetGameTimeSeconds() > reclaim.expirationTime then
-                    --LOG('# RECLAIM: Tree is older then 10 minutes ('..math.floor((GetGameTimeSeconds() - (reclaim.expirationTime - 60*10))/60)..' min.). Deleting it!')
-                    --count = count - 1
-                    reclaim:Kill()
-                end
---            elseif not reclaim.Dead or reclaim.Dead == false then
-                -- normal unit
+
             end
         end
-        -- Set initial wrecks to true after the first pass
-        InitialWrecks = true
-        --LOG('reclaim count:'..count)
-        coroutine.yield(50)
+    end
+
+    -- build IndexTable with number as index
+    local IndexTable = {}
+    local Index = 1
+    for _, array in MexInMarkerRange do
+        if array.mexcount > 1 then
+            IndexTable[Index] = array
+            Index = Index +1
+        end
+    end
+    -- bubblesort IndexTable
+    local count=table.getn(IndexTable)
+    local Sorting
+    repeat
+        Sorting = false
+        count = count - 1
+        for i = 1, count do
+            if IndexTable[i].mexcount < IndexTable[i + 1].mexcount then
+                IndexTable[i], IndexTable[i + 1] = IndexTable[i + 1], IndexTable[i]
+                Sorting = true
+            end
+        end
+    until Sorting == false
+
+    -- Search for the center location of all mexes inside an expansion
+    for k, v in IndexTable do
+        local posCount = 0
+        local x = 0
+        local y = 0
+        if type(v) == 'table' then
+            for k2, v2 in v do
+                if type(v2) == 'table' then
+                    posCount = posCount + 1
+                    x = x + v[k2].Position[1]
+                    y = y + v[k2].Position[3]
+                end
+            end
+            IndexTable[k].x = x / posCount
+            IndexTable[k].y = y / posCount
+        end
+    end
+    
+    -- search for possible expansion areas
+    for k, v in IndexTable do
+        --LOG(repr(v))
+        local MexInRange = table.getn(v)
+        local UseThisMarker = true
+        --LOG('IndexTable MexInRange: '..MexInRange )
+        -- Search if we are near a start position
+        --LOG('checking StartPosition')
+        for ks, vs in StartPosition do
+            if VDist2(v.x, v.y, vs.Position[1], vs.Position[3]) < 40 then
+                -- we are to close to a start position, dont use it as expansion
+                UseThisMarker = false
+            end
+        end
+        -- check if we are to close to an expansion
+        --LOG('checking NewExpansion')
+        for ks, vn in NewExpansion do
+            if VDist2(v.x, v.y, vn.x, vn.y) < 40 then
+                -- we are to close to a start position, dont use it as expansion
+                UseThisMarker = false
+            end
+        end
+        -- save the expansion position
+        --LOG('save NewExpansion')
+        if UseThisMarker then
+            table.insert(NewExpansion, {x = v.x, y = v.y, MexInRange = MexInRange} )
+        end
+    end
+    LOG('* AI-Uveso: NewExpansions = '..repr(NewExpansion) )
+    -- creating real naval Marker
+    for index, Expansion in NewExpansion do
+        -- large expansions should have more than 3 mexes
+        if Expansion.MexInRange < 4 then
+            -- add data for a normal expansion
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index] = {}
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index].color = MarkerDefaults["Land Path Node"]['color']
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index].hint = true
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index].orientation = { 0, 0, 0 }
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index].prop = "/env/common/props/markers/M_Expansion_prop.bp"
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index].type = "Expansion Area"
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index].position = {Expansion.x, GetTerrainHeight(Expansion.x, Expansion.y), Expansion.y}
+        else
+            -- add data for a large expansion
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Large Expansion Area '..index] = {}
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Large Expansion Area '..index].color = MarkerDefaults["Land Path Node"]['color']
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Large Expansion Area '..index].hint = true
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Large Expansion Area '..index].orientation = { 0, 0, 0 }
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Large Expansion Area '..index].prop = "/env/common/props/markers/M_Expansion_prop.bp"
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Large Expansion Area '..index].type = "Large Expansion Area"
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Large Expansion Area '..index].position = {Expansion.x, GetTerrainHeight(Expansion.x, Expansion.y), Expansion.y}
+        end
     end
 end
+
+
+
+
+
+
+
+
+
+
