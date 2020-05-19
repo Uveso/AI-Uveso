@@ -46,6 +46,7 @@ function BeginSession()
         local END = GetSystemTimeSecondsOnlyForProfileUse()
         LOG(string.format('* AI-Uveso: Function CreateAIMarkers() finished, runtime: %.2f seconds.', END - START  ))
     end
+    CreateMassCount()
     ValidateMapAndMarkers()
 end
 
@@ -207,10 +208,10 @@ function ValidateMapAndMarkers()
             else
                 WARN('* AI-Uveso: ValidateMapAndMarkers: adjacentTo is missing in marker ['..k..'] - MarkerType: [\''..v.type..'\']. - Pathmarker must have an adjacent marker for pathing.')
             end
-            -- Checking marker type/graph 
+            -- Checking marker type/graph
             if MarkerDefaults[v.type]['graph'] ~= v.graph then
                 WARN('* AI-Uveso: ValidateMapAndMarkers: graph missmatch in marker ['..k..'] - MarkerType: [\''..v.type..'\']. - marker.type is ('..repr(v.graph)..'), but should be ('..MarkerDefaults[v.type]['graph']..').')
-                -- save the correct graph type 
+                -- save the correct graph type
                 v.graph = MarkerDefaults[v.type]['graph']
             end
             -- Checking colors (for debug)
@@ -253,8 +254,8 @@ function GraphRenderThread()
         -- draw all paths with location radius and AI Pathfinding
         if ScenarioInfo.Options.AIPathingDebug == 'pathlocation'
         or ScenarioInfo.Options.AIPathingDebug == 'path'
-        or ScenarioInfo.Options.AIPathingDebug == 'paththreats' 
-        or ScenarioInfo.Options.AIPathingDebug == 'imapthreats' 
+        or ScenarioInfo.Options.AIPathingDebug == 'paththreats'
+        or ScenarioInfo.Options.AIPathingDebug == 'imapthreats'
         then
             -- display first all land nodes (true will let them blink)
             if GetGameTimeSeconds() < 15 then
@@ -521,10 +522,10 @@ function DrawAIPathCache(DrawOnly)
                                         DirectionOffsetX = 0.2
                                         DirectionOffsetY = 0
                                     end
-                                    DrawLinePop({LastNode.position[1] + LineCountOffset + DirectionOffsetX,     LastNode.position[2], LastNode.position[3] + LineCountOffset + DirectionOffsetY},     {PathNode.position[1] + LineCountOffset + DirectionOffsetX,     PathNode.position[2],PathNode.position[3] + LineCountOffset + DirectionOffsetY},     'ff000000' )                   
+                                    DrawLinePop({LastNode.position[1] + LineCountOffset + DirectionOffsetX,     LastNode.position[2], LastNode.position[3] + LineCountOffset + DirectionOffsetY},     {PathNode.position[1] + LineCountOffset + DirectionOffsetX,     PathNode.position[2],PathNode.position[3] + LineCountOffset + DirectionOffsetY},     'ff000000' )
 
-                                    DrawLinePop({LastNode.position[1] + LineCountOffset,                        LastNode.position[2], LastNode.position[3] + LineCountOffset},                        {PathNode.position[1] + LineCountOffset,                        PathNode.position[2],PathNode.position[3] + LineCountOffset},                        Offsets[PathNode.graphName]['color'] )                   
-                                    DrawLinePop({LastNode.position[1] + LineCountOffset + DirectionOffsetX * 2, LastNode.position[2], LastNode.position[3] + LineCountOffset + DirectionOffsetY * 2}, {PathNode.position[1] + LineCountOffset + DirectionOffsetX * 2, PathNode.position[2],PathNode.position[3] + LineCountOffset + DirectionOffsetY * 2}, Offsets[PathNode.graphName]['color'] )                             
+                                    DrawLinePop({LastNode.position[1] + LineCountOffset,                        LastNode.position[2], LastNode.position[3] + LineCountOffset},                        {PathNode.position[1] + LineCountOffset,                        PathNode.position[2],PathNode.position[3] + LineCountOffset},                        Offsets[PathNode.graphName]['color'] )
+                                    DrawLinePop({LastNode.position[1] + LineCountOffset + DirectionOffsetX * 2, LastNode.position[2], LastNode.position[3] + LineCountOffset + DirectionOffsetY * 2}, {PathNode.position[1] + LineCountOffset + DirectionOffsetX * 2, PathNode.position[2],PathNode.position[3] + LineCountOffset + DirectionOffsetY * 2}, Offsets[PathNode.graphName]['color'] )
 
                                 end
                                 LastNode = PathNode
@@ -553,7 +554,7 @@ function RenderMarkerCreatorThread()
             MarkerPosition[2] = markerInfo.position[2]
             MarkerPosition[3] = markerInfo.position[3]
             -- Draw the marker path node
---            DrawCircle(MarkerPosition, 4, Offsets[markerInfo.graph]['color'] or 'ff000000' )
+            DrawCircle(MarkerPosition, 4, Offsets[markerInfo.graph]['color'] or 'ff000000' )
             -- Draw the connecting lines to its adjacent nodes
             if markerInfo.adjacentTo then
                 local adjancents = STR_GetTokens(markerInfo.adjacentTo or '', ' ')
@@ -577,7 +578,7 @@ function RenderMarkerCreatorThread()
                             Marker2Position[1] = otherMarker.position[1]
                             Marker2Position[2] = otherMarker.position[2]
                             Marker2Position[3] = otherMarker.position[3]
---                            DrawLinePop(MarkerPosition, Marker2Position, Color )
+                            DrawLinePop(MarkerPosition, Marker2Position, Color )
                         end
                     end
                 end
@@ -605,7 +606,7 @@ function RenderMarkerCreatorThread()
                 DrawCircle(markerInfo['position'], 9, 'ffF0F0FF' )
             end
         end
-        
+
         coroutine.yield(2)
         -- only display all markers at the start of the game
         if GetGameTimeSeconds() > 10 and not DebugValidMarkerPosition then
@@ -720,7 +721,7 @@ function CreateAIMarkers()
         end
     end
     -- optimize
-    
+
     -- Copy Markers to the Scenario.MasterChain._MASTERCHAIN
     CopyMarkerToMASTERCHAIN('Land')
     CopyMarkerToMASTERCHAIN('Water')
@@ -814,7 +815,7 @@ function CopyMarkerToMASTERCHAIN(layer)
             local adjancents = STR_GetTokens(Scenario.MasterChain._MASTERCHAIN_.Markers[NewNodeName].adjacentTo or '', ' ')
             if adjancents[0] then
                 for i, node in adjancents do
-                    -- Does the node on this layer exist ? 
+                    -- Does the node on this layer exist ?
                     if CREATEDMARKERS[node] and (CREATEDMARKERS[node]['graph'] == 'Default'..layer or layer == 'Amphibious') then
                         if not NewadjacentTo then
                             NewadjacentTo = string.gsub(node, 'Marker', layer)
@@ -1372,6 +1373,271 @@ function ConnectMarker(X,Y)
     return
 end
 
+function CreateNavalExpansions()
+    local StartMarker = {}
+    local NavalMarker = {}
+    -- Deleting all NavalExpansions markers from MASTERCHAIN
+    for nodename, markerInfo in Scenario.MasterChain._MASTERCHAIN_.Markers or {} do
+        if markerInfo['type'] == 'Naval Area' then
+            Scenario.MasterChain._MASTERCHAIN_.Markers[nodename] = nil
+        end
+    end
+    -- Get a list of all startareas
+    for nodename, markerInfo in Scenario.MasterChain._MASTERCHAIN_.Markers or {} do
+        if string.find(nodename, 'ARMY_') then
+            StartMarker[nodename] = markerInfo['position']
+        end
+    end
+    -- Search for naval areas
+    for BASEnodename, BASEpostition in StartMarker or {} do
+        for NavalAreaPerBase = 1, 2 do
+            -- Search for nearest Water marker
+            local low = false
+            local bestMarker = false
+            for Y = 0, MarkerCountY - 1 do
+                for X = 0, MarkerCountX - 1 do
+                    if Scenario.MasterChain._MASTERCHAIN_.Markers['Water'..X..'-'..Y] then
+                        local Blocked
+                        local adjancentsAmp = 0
+                        markerInfo = Scenario.MasterChain._MASTERCHAIN_.Markers['Water'..X..'-'..Y]
+                        local dist = VDist2(BASEpostition[1], BASEpostition[3], markerInfo['position'][1], markerInfo['position'][3])
+                        -- Is this marker the closest ?
+                        if not low or dist < low then
+                            -- check if the marker is valid:
+                            for YD = -2, 2 do
+                                for XD = -2, 2 do
+                                    if (YD == -2 or YD == 2) or (XD == -2 or XD == 2) then
+                                        -- check if we have an amphibious but not water marker on this position (land)
+                                        if not Scenario.MasterChain._MASTERCHAIN_.Markers['Water'..(X+XD)..'-'..(Y+YD)]
+                                        and Scenario.MasterChain._MASTERCHAIN_.Markers['Amphibious'..(X+XD)..'-'..(Y+YD)] then
+                                            -- check if we have a path from this marker to our naval area markers
+                                            markerInfoAdja = Scenario.MasterChain._MASTERCHAIN_.Markers['Amphibious'..(X+XD)..'-'..(Y+YD)]
+                                            local adjancents = STR_GetTokens(markerInfoAdja.adjacentTo or '', ' ')
+                                            if adjancents[0] then
+                                                for i, node in adjancents do
+                                                    -- checking node, if it has a conection from land to water.
+                                                    for YA = -1, 1 do
+                                                        for XA = -1, 1 do
+                                                            if node == 'Amphibious'..(X+XA)..'-'..(Y+YA) then
+                                                                adjancentsAmp = adjancentsAmp + 1
+                                                            end
+                                                        end
+                                                    end
+                                                end
+                                            end
+                                        end
+                                    end
+                                end
+                            end
+                            local adjancents = STR_GetTokens(markerInfo.adjacentTo or '', ' ')
+                            -- if we have a marker with less than 8 (0-7) adjancents or it has no passable connection to land then don't use it.
+                            if not adjancents[7] or adjancentsAmp < 1 then
+                                Blocked = true
+                                continue
+                            end
+                            -- check if we have a naval marker close to this area
+                            for index, NAVALpostition in NavalMarker do
+                                local dist = VDist2( markerInfo['position'][1], markerInfo['position'][3], NAVALpostition[1], NAVALpostition[3])
+                                -- is this marker farther away than 60
+                                if dist < 60 then
+                                    Blocked = true
+                                    break
+                                end
+                            end
+                            if not Blocked then
+                                low = dist
+                                bestMarker = markerInfo['position']
+                            end
+                        end
+                    end
+                end
+            end
+            if bestMarker then
+                table.insert(NavalMarker, bestMarker)
+            end
+        end
+    end
+    -- creating real naval Marker
+    for index, NAVALpostition in NavalMarker do
+        -- add data for a real marker
+        Scenario.MasterChain._MASTERCHAIN_.Markers['Naval Area '..index] = {}
+        Scenario.MasterChain._MASTERCHAIN_.Markers['Naval Area '..index].color = MarkerDefaults["Water Path Node"]['color']
+        Scenario.MasterChain._MASTERCHAIN_.Markers['Naval Area '..index].hint = true
+        Scenario.MasterChain._MASTERCHAIN_.Markers['Naval Area '..index].orientation = { 0, 0, 0 }
+        Scenario.MasterChain._MASTERCHAIN_.Markers['Naval Area '..index].prop = "/env/common/props/markers/M_Expansion_prop.bp"
+        Scenario.MasterChain._MASTERCHAIN_.Markers['Naval Area '..index].type = "Naval Area"
+        Scenario.MasterChain._MASTERCHAIN_.Markers['Naval Area '..index].position = NAVALpostition
+    end
+end
+
+function CreateLandExpansions()
+    local MassMarker = {}
+    local MexInMarkerRange = {}
+    local StartPosition = {}
+    local NewExpansion = {}
+    -- get player start positions
+    for nodename, markerInfo in Scenario.MasterChain._MASTERCHAIN_.Markers or {} do
+        if markerInfo['type'] == 'Blank Marker' then
+            table.insert(StartPosition, {Position = markerInfo.position} )
+        end
+    end
+    -- deleting all (Large-) Expansion markers from MASTERCHAIN
+    for nodename, markerInfo in Scenario.MasterChain._MASTERCHAIN_.Markers or {} do
+        if markerInfo['type'] == 'Expansion Area' or markerInfo['type'] == 'Large Expansion Area' then
+            Scenario.MasterChain._MASTERCHAIN_.Markers[nodename] = nil
+        end
+    end
+    -- get all mass spots
+    for _, v in Scenario.MasterChain._MASTERCHAIN_.Markers do
+        if v.type == 'Mass' then
+            if v.position[1] <= 8 or v.position[1] >= ScenarioInfo.size[1] - 8 or v.position[3] <= 8 or v.position[3] >= ScenarioInfo.size[2] - 8 then
+                -- mass marker is too close to border, skip it.
+                continue
+            end
+            table.insert(MassMarker, {Position = v.position})
+        end
+    end
+    -- search for areas with mex in range
+    for Y = 0, MarkerCountY - 1 do
+        for X = 0, MarkerCountX - 1 do
+            if Scenario.MasterChain._MASTERCHAIN_.Markers['Land'..X..'-'..Y] then
+                local MarkerPosition = Scenario.MasterChain._MASTERCHAIN_.Markers['Land'..X..'-'..Y].position
+                -- check how many masspoints are located near the marker
+                for k, v in MassMarker do
+                    if VDist2(MarkerPosition[1], MarkerPosition[3], v.Position[1], v.Position[3]) > 30 then
+                        continue
+                    end
+                    MexInMarkerRange['Land'..X..'-'..Y] = MexInMarkerRange['Land'..X..'-'..Y] or {}
+                    table.insert(MexInMarkerRange['Land'..X..'-'..Y], {Position = v.Position} )
+                    -- insert mexcount into table
+                    MexInMarkerRange['Land'..X..'-'..Y].mexcount = table.getn(MexInMarkerRange['Land'..X..'-'..Y])
+                end
+
+            end
+        end
+    end
+    -- build IndexTable with number as index
+    local IndexTable = {}
+    local Index = 1
+    for _, array in MexInMarkerRange do
+        if array.mexcount > 1 then
+            IndexTable[Index] = array
+            Index = Index +1
+        end
+    end
+    -- bubblesort IndexTable
+    local count=table.getn(IndexTable)
+    local Sorting
+    repeat
+        Sorting = false
+        count = count - 1
+        for i = 1, count do
+            if IndexTable[i].mexcount < IndexTable[i + 1].mexcount then
+                IndexTable[i], IndexTable[i + 1] = IndexTable[i + 1], IndexTable[i]
+                Sorting = true
+            end
+        end
+    until Sorting == false
+    -- Search for the center location of all mexes inside an expansion
+    for k, v in IndexTable do
+        local posCount = 0
+        local x = 0
+        local y = 0
+        if type(v) == 'table' then
+            for k2, v2 in v do
+                if type(v2) == 'table' then
+                    posCount = posCount + 1
+                    x = x + v[k2].Position[1]
+                    y = y + v[k2].Position[3]
+                end
+            end
+            IndexTable[k].x = x / posCount
+            IndexTable[k].y = y / posCount
+        end
+    end
+    -- search for possible expansion areas
+    for k, v in IndexTable do
+        local MexInRange = table.getn(v)
+        local UseThisMarker = true
+        -- Search if we are near a start position
+        for ks, vs in StartPosition do
+            if VDist2(v.x, v.y, vs.Position[1], vs.Position[3]) < 60 then
+                -- we are to close to a start position, don't use it as expansion
+                UseThisMarker = false
+            end
+        end
+        -- check if we are to close to an expansion
+        for ks, vn in NewExpansion do
+            if VDist2(v.x, v.y, vn.x, vn.y) < 40 then
+                -- we are to close to another expansion, don't use it
+                UseThisMarker = false
+            end
+        end
+        -- save the expansion position
+        if UseThisMarker then
+            table.insert(NewExpansion, {x = v.x, y = v.y, MexInRange = MexInRange} )
+        end
+    end
+    -- creating real expasnion Marker
+    for index, Expansion in NewExpansion do
+        -- large expansions should have more than 3 mexes
+        if Expansion.MexInRange < 4 then
+            -- add data for a normal expansion
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index] = {}
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index].color = MarkerDefaults["Land Path Node"]['color']
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index].hint = true
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index].orientation = { 0, 0, 0 }
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index].prop = "/env/common/props/markers/M_Expansion_prop.bp"
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index].type = "Expansion Area"
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index].position = {Expansion.x, GetTerrainHeight(Expansion.x, Expansion.y), Expansion.y}
+        else
+            -- add data for a large expansion
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Large Expansion Area '..index] = {}
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Large Expansion Area '..index].color = MarkerDefaults["Land Path Node"]['color']
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Large Expansion Area '..index].hint = true
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Large Expansion Area '..index].orientation = { 0, 0, 0 }
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Large Expansion Area '..index].prop = "/env/common/props/markers/M_Expansion_prop.bp"
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Large Expansion Area '..index].type = "Large Expansion Area"
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Large Expansion Area '..index].position = {Expansion.x, GetTerrainHeight(Expansion.x, Expansion.y), Expansion.y}
+        end
+    end
+end
+
+function CreateMassCount()
+    local Expansions = {}
+    local MassMarker = {}
+    -- get player start positions
+    for nodename, markerInfo in Scenario.MasterChain._MASTERCHAIN_.Markers or {} do
+        if markerInfo['type'] == 'Blank Marker' or markerInfo['type'] == 'Expansion Area' or markerInfo['type'] == 'Large Expansion Area' then
+            table.insert(Expansions, {Name = nodename , Position = markerInfo.position} )
+        end
+    end
+    -- get all mass spots
+    for _, v in Scenario.MasterChain._MASTERCHAIN_.Markers do
+        if v.type == 'Mass' then
+            if v.position[1] <= 8 or v.position[1] >= ScenarioInfo.size[1] - 8 or v.position[3] <= 8 or v.position[3] >= ScenarioInfo.size[2] - 8 then
+                -- mass marker is too close to border, skip it.
+                continue
+            end
+            table.insert(MassMarker, {Position = v.position})
+        end
+    end
+    -- search for areas with mex in range
+    for k, v in Expansions do
+        -- check how many masspoints are located near the marker
+        local masscount = 0
+        for k2, v2 in MassMarker do
+            if VDist2(v.Position[1], v.Position[3], v2.Position[1], v2.Position[3]) > 30 then
+                continue
+            end
+            masscount = masscount + 1
+        end        
+        -- insert mexcount into marker
+        Scenario.MasterChain._MASTERCHAIN_.Markers[v.Name].MassSpotsInRange = masscount
+        SPEW('* AI-Uveso: CreateMassCount: Node: '..v.Name..' - MassSpotsInRange: '..Scenario.MasterChain._MASTERCHAIN_.Markers[v.Name].MassSpotsInRange)
+    end
+end
+
 function PrintMASTERCHAIN()
     --LOG(repr(Scenario.MasterChain._MASTERCHAIN_.Markers))
     LOG('******************************************** START ***************************************************')
@@ -1538,13 +1804,13 @@ function PrintMASTERCHAIN()
             end
 
             LOG('        },')
-            -- Validate 
+            -- Validate
             local ArrayCount = 0
             for _, _ in v do
                 ArrayCount = ArrayCount + 1
             end
             if count ~= ArrayCount then
-                WARN('Missing value in marker '..k..' -> '..repr(v)) 
+                WARN('Missing value in marker '..k..' -> '..repr(v))
             end
         end
     LOG('      },')
@@ -1555,103 +1821,6 @@ function PrintMASTERCHAIN()
     LOG('* Please Copy&Paste the markers from the game.log file from HDD not from the [F9] debug log window!! *')
     LOG('********************************************* END ****************************************************')
 
-end
-
-function CreateNavalExpansions()
-    local StartMarker = {}
-    local NavalMarker = {}
-    -- Deleting all NavalExpansions markers from MASTERCHAIN
-    for nodename, markerInfo in Scenario.MasterChain._MASTERCHAIN_.Markers or {} do
-        if markerInfo['type'] == 'Naval Area' then
-            Scenario.MasterChain._MASTERCHAIN_.Markers[nodename] = nil
-        end
-    end
-    -- Get a list of all startareas
-    for nodename, markerInfo in Scenario.MasterChain._MASTERCHAIN_.Markers or {} do
-        if string.find(nodename, 'ARMY_') then
-            StartMarker[nodename] = markerInfo['position']
-        end
-    end
-    -- Search for naval areas
-    for BASEnodename, BASEpostition in StartMarker or {} do
-        for NavalAreaPerBase = 1, 2 do
-            -- Search for nearest Water marker
-            local low = false
-            local bestMarker = false
-            for Y = 0, MarkerCountY - 1 do
-                for X = 0, MarkerCountX - 1 do
-                    if Scenario.MasterChain._MASTERCHAIN_.Markers['Water'..X..'-'..Y] then
-                        local Blocked
-                        local adjancentsAmp = 0
-                        markerInfo = Scenario.MasterChain._MASTERCHAIN_.Markers['Water'..X..'-'..Y]
-                        local dist = VDist2(BASEpostition[1], BASEpostition[3], markerInfo['position'][1], markerInfo['position'][3])
-                        -- Is this marker the closest ?
-                        if not low or dist < low then
-                            -- check if the marker is valid:
-                            for YD = -2, 2 do
-                                for XD = -2, 2 do
-                                    if (YD == -2 or YD == 2) or (XD == -2 or XD == 2) then
-                                        -- check if we have an amphibious but not water marker on this position (land)
-                                        if not Scenario.MasterChain._MASTERCHAIN_.Markers['Water'..(X+XD)..'-'..(Y+YD)]
-                                        and Scenario.MasterChain._MASTERCHAIN_.Markers['Amphibious'..(X+XD)..'-'..(Y+YD)] then
-                                            -- check if we have a path from this marker to our naval area markers
-                                            markerInfoAdja = Scenario.MasterChain._MASTERCHAIN_.Markers['Amphibious'..(X+XD)..'-'..(Y+YD)]
-                                            local adjancents = STR_GetTokens(markerInfoAdja.adjacentTo or '', ' ')
-                                            if adjancents[0] then
-                                                for i, node in adjancents do
-                                                    -- checking node, if it has a conection from land to water.
-                                                    for YA = -1, 1 do
-                                                        for XA = -1, 1 do
-                                                            if node == 'Amphibious'..(X+XA)..'-'..(Y+YA) then
-                                                                adjancentsAmp = adjancentsAmp + 1
-                                                            end
-                                                        end
-                                                    end
-                                                end
-                                            end
-                                        end
-                                    end
-                                end
-                            end
-                            local adjancents = STR_GetTokens(markerInfo.adjacentTo or '', ' ')
-                            -- if we have a marker with less than 8 (0-7) adjancents or it has no passable connection to land then don't use it.
-                            if not adjancents[7] or adjancentsAmp < 1 then
-                                Blocked = true
-                                continue
-                            end
-                            -- check if we have a naval marker close to this area
-                            for index, NAVALpostition in NavalMarker do
-                                local dist = VDist2( markerInfo['position'][1], markerInfo['position'][3], NAVALpostition[1], NAVALpostition[3])
-                                -- is this marker farther away than 60 
-                                if dist < 60 then
-                                    Blocked = true
-                                    break
-                                end 
-                            end
-                            if not Blocked then
-                                low = dist
-                                bestMarker = markerInfo['position']
-                            end
-                        end
-                    end
-                end
-            end
-            if bestMarker then
-                table.insert(NavalMarker, bestMarker)
-            end
-        end
-    end
-    -- creating real naval Marker
-    for index, NAVALpostition in NavalMarker do
-        -- add data for a real marker
-        Scenario.MasterChain._MASTERCHAIN_.Markers['Naval Area '..index] = {}
-        Scenario.MasterChain._MASTERCHAIN_.Markers['Naval Area '..index].color = MarkerDefaults["Water Path Node"]['color']
-        Scenario.MasterChain._MASTERCHAIN_.Markers['Naval Area '..index].hint = true
-        Scenario.MasterChain._MASTERCHAIN_.Markers['Naval Area '..index].orientation = { 0, 0, 0 }
-        Scenario.MasterChain._MASTERCHAIN_.Markers['Naval Area '..index].prop = "/env/common/props/markers/M_Expansion_prop.bp"
-        Scenario.MasterChain._MASTERCHAIN_.Markers['Naval Area '..index].type = "Naval Area"
-        Scenario.MasterChain._MASTERCHAIN_.Markers['Naval Area '..index].position = NAVALpostition
-    end
 end
 
 -- Destroy reclaimables after 10 minutes for better game performance
@@ -1746,159 +1915,3 @@ function ValidateModFiles()
         LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Check OK! files: '..filecount..', bytecount: '..bytecount..'.')
     end
 end
-
-
-function CreateLandExpansions()
-    -- get a table with all massmarkers and positions
-    local MassMarker = {}
-    local MexInMarkerRange = {}
-    local StartPosition = {}
-    local NewExpansion = {}
-
-    -- get start positions
-    for nodename, markerInfo in Scenario.MasterChain._MASTERCHAIN_.Markers or {} do
-        if markerInfo['type'] == 'Blank Marker' then
-            table.insert(StartPosition, {Position = markerInfo.position} )
-        end
-    end
-    -- Deleting all (Large) Expansion markers from MASTERCHAIN
-    for nodename, markerInfo in Scenario.MasterChain._MASTERCHAIN_.Markers or {} do
-        if markerInfo['type'] == 'Expansion Area' or markerInfo['type'] == 'Large Expansion Area' then
-            Scenario.MasterChain._MASTERCHAIN_.Markers[nodename] = nil
-        end
-    end
-    -- get all mass spots
-    for _, v in Scenario.MasterChain._MASTERCHAIN_.Markers do
-        if v.type == 'Mass' then
-            if v.position[1] <= 8 or v.position[1] >= ScenarioInfo.size[1] - 8 or v.position[3] <= 8 or v.position[3] >= ScenarioInfo.size[2] - 8 then
-                -- mass marker is too close to border, skip it.
-                continue
-            end 
-            table.insert(MassMarker, {Position = v.position})
-        end
-    end
-    -- search for areas with mex in range
-    for Y = 0, MarkerCountY - 1 do
-        for X = 0, MarkerCountX - 1 do
-            if Scenario.MasterChain._MASTERCHAIN_.Markers['Land'..X..'-'..Y] then
-                local MarkerPosition = Scenario.MasterChain._MASTERCHAIN_.Markers['Land'..X..'-'..Y].position
-                -- check how many masspoints are located near the marker
-                for k, v in MassMarker do
-                    local dist = VDist2(MarkerPosition[1], MarkerPosition[3], v.Position[1], v.Position[3])
-                    if VDist2(MarkerPosition[1], MarkerPosition[3], v.Position[1], v.Position[3]) > 30 then
-                        continue
-                    end
-                    MexInMarkerRange['Land'..X..'-'..Y] = MexInMarkerRange['Land'..X..'-'..Y] or {}
-                    table.insert(MexInMarkerRange['Land'..X..'-'..Y], {Position = v.Position} )
-                    -- insert mexcount into table
-                    MexInMarkerRange['Land'..X..'-'..Y].mexcount = table.getn(MexInMarkerRange['Land'..X..'-'..Y])
-                end
-
-            end
-        end
-    end
-
-    -- build IndexTable with number as index
-    local IndexTable = {}
-    local Index = 1
-    for _, array in MexInMarkerRange do
-        if array.mexcount > 1 then
-            IndexTable[Index] = array
-            Index = Index +1
-        end
-    end
-    -- bubblesort IndexTable
-    local count=table.getn(IndexTable)
-    local Sorting
-    repeat
-        Sorting = false
-        count = count - 1
-        for i = 1, count do
-            if IndexTable[i].mexcount < IndexTable[i + 1].mexcount then
-                IndexTable[i], IndexTable[i + 1] = IndexTable[i + 1], IndexTable[i]
-                Sorting = true
-            end
-        end
-    until Sorting == false
-
-    -- Search for the center location of all mexes inside an expansion
-    for k, v in IndexTable do
-        local posCount = 0
-        local x = 0
-        local y = 0
-        if type(v) == 'table' then
-            for k2, v2 in v do
-                if type(v2) == 'table' then
-                    posCount = posCount + 1
-                    x = x + v[k2].Position[1]
-                    y = y + v[k2].Position[3]
-                end
-            end
-            IndexTable[k].x = x / posCount
-            IndexTable[k].y = y / posCount
-        end
-    end
-    
-    -- search for possible expansion areas
-    for k, v in IndexTable do
-        --LOG(repr(v))
-        local MexInRange = table.getn(v)
-        local UseThisMarker = true
-        --LOG('IndexTable MexInRange: '..MexInRange )
-        -- Search if we are near a start position
-        --LOG('checking StartPosition')
-        for ks, vs in StartPosition do
-            if VDist2(v.x, v.y, vs.Position[1], vs.Position[3]) < 40 then
-                -- we are to close to a start position, dont use it as expansion
-                UseThisMarker = false
-            end
-        end
-        -- check if we are to close to an expansion
-        --LOG('checking NewExpansion')
-        for ks, vn in NewExpansion do
-            if VDist2(v.x, v.y, vn.x, vn.y) < 40 then
-                -- we are to close to a start position, dont use it as expansion
-                UseThisMarker = false
-            end
-        end
-        -- save the expansion position
-        --LOG('save NewExpansion')
-        if UseThisMarker then
-            table.insert(NewExpansion, {x = v.x, y = v.y, MexInRange = MexInRange} )
-        end
-    end
-    LOG('* AI-Uveso: NewExpansions = '..repr(NewExpansion) )
-    -- creating real naval Marker
-    for index, Expansion in NewExpansion do
-        -- large expansions should have more than 3 mexes
-        if Expansion.MexInRange < 4 then
-            -- add data for a normal expansion
-            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index] = {}
-            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index].color = MarkerDefaults["Land Path Node"]['color']
-            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index].hint = true
-            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index].orientation = { 0, 0, 0 }
-            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index].prop = "/env/common/props/markers/M_Expansion_prop.bp"
-            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index].type = "Expansion Area"
-            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index].position = {Expansion.x, GetTerrainHeight(Expansion.x, Expansion.y), Expansion.y}
-        else
-            -- add data for a large expansion
-            Scenario.MasterChain._MASTERCHAIN_.Markers['Large Expansion Area '..index] = {}
-            Scenario.MasterChain._MASTERCHAIN_.Markers['Large Expansion Area '..index].color = MarkerDefaults["Land Path Node"]['color']
-            Scenario.MasterChain._MASTERCHAIN_.Markers['Large Expansion Area '..index].hint = true
-            Scenario.MasterChain._MASTERCHAIN_.Markers['Large Expansion Area '..index].orientation = { 0, 0, 0 }
-            Scenario.MasterChain._MASTERCHAIN_.Markers['Large Expansion Area '..index].prop = "/env/common/props/markers/M_Expansion_prop.bp"
-            Scenario.MasterChain._MASTERCHAIN_.Markers['Large Expansion Area '..index].type = "Large Expansion Area"
-            Scenario.MasterChain._MASTERCHAIN_.Markers['Large Expansion Area '..index].position = {Expansion.x, GetTerrainHeight(Expansion.x, Expansion.y), Expansion.y}
-        end
-    end
-end
-
-
-
-
-
-
-
-
-
-

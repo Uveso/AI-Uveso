@@ -21,7 +21,7 @@ function CanBuildOnMass(aiBrain, locationType, distance, threatMin, threatMax, t
                 if v.position[1] <= 8 or v.position[1] >= ScenarioInfo.size[1] - 8 or v.position[3] <= 8 or v.position[3] >= ScenarioInfo.size[2] - 8 then
                     -- mass marker is too close to border, skip it.
                     continue
-                end 
+                end
                 table.insert(MassMarker, {Position = v.position, Distance = VDist2( v.position[1], v.position[3], position[1], position[3] ) })
             end
         end
