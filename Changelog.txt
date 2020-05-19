@@ -1,6 +1,21 @@
 *************************************************************************************************************************************
 v85 (19.May.2020)
 
+- New: Markergenerator is now able to create land expansions incl mass count.
+- New: Added debug option for endless games (game restarts on gameend)
+- Fix: removed guard-squads from experimental platoontmeplate (was blocking experimentals from attacking)
+- Fix: Changed order of function calls inside Buildermanager for faster condition checks
+- Fix: Added placeholder for nomads SACU categories in case the nomads mod is not activated
+- Opt: Optimized CanPathToCurrentEnemy function
+- Opt: Removed builddelay for mass extractors
+- Opt: Changed threat management from unitcount to imap threat
+- Opt: Debugview of threadrings are now scaled to fit into the threat grid
+- Opt: Added debugoption for AI-Swarm mod
+- Opt: Added engineerplatoon for better energy building
+- Opt: Reduced needed eco for factory build in case the enemy has more factories
+- Opt: Increase the need for energy for air builder to reduce powerstall
+- Opt: Changed mass extractor upgrade logic for agressive upgrades
+
 *************************************************************************************************************************************
 v84 (04.May.2020)
 

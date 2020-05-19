@@ -548,37 +548,39 @@ function RenderMarkerCreatorThread()
         coroutine.yield(10)
     end
     while true do
-        --LOG('* AI-Uveso: Function RenderMarkerCreatorThread() beat.')
-        for nodename, markerInfo in CREATEDMARKERS or {} do
-            MarkerPosition[1] = markerInfo.position[1]
-            MarkerPosition[2] = markerInfo.position[2]
-            MarkerPosition[3] = markerInfo.position[3]
-            -- Draw the marker path node
-            DrawCircle(MarkerPosition, 4, Offsets[markerInfo.graph]['color'] or 'ff000000' )
-            -- Draw the connecting lines to its adjacent nodes
-            if markerInfo.adjacentTo then
-                local adjancents = STR_GetTokens(markerInfo.adjacentTo or '', ' ')
-                if adjancents[0] then
-                    for i, node in adjancents do
-                        local otherMarker = CREATEDMARKERS[node]
-                        if otherMarker then
-                            if markerInfo.graph == 'DefaultLand' and otherMarker.graph == 'DefaultLand' then
-                                Color = Offsets['DefaultLand']['color']
-                            elseif markerInfo.graph == 'DefaultWater' and otherMarker.graph == 'DefaultWater' then
-                                Color = Offsets['DefaultWater']['color']
-                            elseif markerInfo.graph == 'DefaultAmphibious' or otherMarker.graph == 'DefaultAmphibious' then
-                                Color = Offsets['DefaultAmphibious']['color']
-                            elseif markerInfo.graph == 'DefaultLand' and otherMarker.graph == 'DefaultWater' then
-                                Color = Offsets['DefaultAmphibious']['color']
-                            elseif markerInfo.graph == 'DefaultWater' and otherMarker.graph == 'DefaultLand' then
-                                Color = Offsets['DefaultAmphibious']['color']
-                            else
-                                continue
+        if GetGameTimeSeconds() > 8 then
+            --LOG('* AI-Uveso: Function RenderMarkerCreatorThread() beat.')
+            for nodename, markerInfo in CREATEDMARKERS or {} do
+                MarkerPosition[1] = markerInfo.position[1]
+                MarkerPosition[2] = markerInfo.position[2]
+                MarkerPosition[3] = markerInfo.position[3]
+                -- Draw the marker path node
+                DrawCircle(MarkerPosition, 4, Offsets[markerInfo.graph]['color'] or 'ff000000' )
+                -- Draw the connecting lines to its adjacent nodes
+                if markerInfo.adjacentTo then
+                    local adjancents = STR_GetTokens(markerInfo.adjacentTo or '', ' ')
+                    if adjancents[0] then
+                        for i, node in adjancents do
+                            local otherMarker = CREATEDMARKERS[node]
+                            if otherMarker then
+                                if markerInfo.graph == 'DefaultLand' and otherMarker.graph == 'DefaultLand' then
+                                    Color = Offsets['DefaultLand']['color']
+                                elseif markerInfo.graph == 'DefaultWater' and otherMarker.graph == 'DefaultWater' then
+                                    Color = Offsets['DefaultWater']['color']
+                                elseif markerInfo.graph == 'DefaultAmphibious' or otherMarker.graph == 'DefaultAmphibious' then
+                                    Color = Offsets['DefaultAmphibious']['color']
+                                elseif markerInfo.graph == 'DefaultLand' and otherMarker.graph == 'DefaultWater' then
+                                    Color = Offsets['DefaultAmphibious']['color']
+                                elseif markerInfo.graph == 'DefaultWater' and otherMarker.graph == 'DefaultLand' then
+                                    Color = Offsets['DefaultAmphibious']['color']
+                                else
+                                    continue
+                                end
+                                Marker2Position[1] = otherMarker.position[1]
+                                Marker2Position[2] = otherMarker.position[2]
+                                Marker2Position[3] = otherMarker.position[3]
+                                DrawLinePop(MarkerPosition, Marker2Position, Color )
                             end
-                            Marker2Position[1] = otherMarker.position[1]
-                            Marker2Position[2] = otherMarker.position[2]
-                            Marker2Position[3] = otherMarker.position[3]
-                            DrawLinePop(MarkerPosition, Marker2Position, Color )
                         end
                     end
                 end
@@ -1475,6 +1477,7 @@ function CreateLandExpansions()
     local MexInMarkerRange = {}
     local StartPosition = {}
     local NewExpansion = {}
+    local AlreadyUsed = {}
     -- get player start positions
     for nodename, markerInfo in Scenario.MasterChain._MASTERCHAIN_.Markers or {} do
         if markerInfo['type'] == 'Blank Marker' then
@@ -1538,6 +1541,26 @@ function CreateLandExpansions()
             end
         end
     until Sorting == false
+    -- remove mexes that are already assigned to another expansion
+    for k, v in IndexTable do
+        if type(v) == 'table' then
+            for k2, v2 in v do
+                if type(v2) == 'table' then
+                    if not AlreadyUsed[v2.Position] then
+                        AlreadyUsed[v2.Position] = true
+                        continue
+                    end
+                    -- delete this marker, its already part of another expansion
+                    v[k2] = nil
+                    v.mexcount = v.mexcount - 1
+                    -- if we have only 1 mex left, then this is no longer a possible expansion
+                    if v.mexcount < 2 then
+                        IndexTable[k] = nil
+                    end
+                end
+            end
+        end
+    end
     -- Search for the center location of all mexes inside an expansion
     for k, v in IndexTable do
         local posCount = 0
@@ -1568,7 +1591,7 @@ function CreateLandExpansions()
         end
         -- check if we are to close to an expansion
         for ks, vn in NewExpansion do
-            if VDist2(v.x, v.y, vn.x, vn.y) < 40 then
+            if VDist2(v.x, v.y, vn.x, vn.y) < 50 then
                 -- we are to close to another expansion, don't use it
                 UseThisMarker = false
             end
@@ -1581,16 +1604,7 @@ function CreateLandExpansions()
     -- creating real expasnion Marker
     for index, Expansion in NewExpansion do
         -- large expansions should have more than 3 mexes
-        if Expansion.MexInRange < 4 then
-            -- add data for a normal expansion
-            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index] = {}
-            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index].color = MarkerDefaults["Land Path Node"]['color']
-            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index].hint = true
-            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index].orientation = { 0, 0, 0 }
-            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index].prop = "/env/common/props/markers/M_Expansion_prop.bp"
-            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index].type = "Expansion Area"
-            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index].position = {Expansion.x, GetTerrainHeight(Expansion.x, Expansion.y), Expansion.y}
-        else
+        if Expansion.MexInRange > 3 then
             -- add data for a large expansion
             Scenario.MasterChain._MASTERCHAIN_.Markers['Large Expansion Area '..index] = {}
             Scenario.MasterChain._MASTERCHAIN_.Markers['Large Expansion Area '..index].color = MarkerDefaults["Land Path Node"]['color']
@@ -1599,6 +1613,16 @@ function CreateLandExpansions()
             Scenario.MasterChain._MASTERCHAIN_.Markers['Large Expansion Area '..index].prop = "/env/common/props/markers/M_Expansion_prop.bp"
             Scenario.MasterChain._MASTERCHAIN_.Markers['Large Expansion Area '..index].type = "Large Expansion Area"
             Scenario.MasterChain._MASTERCHAIN_.Markers['Large Expansion Area '..index].position = {Expansion.x, GetTerrainHeight(Expansion.x, Expansion.y), Expansion.y}
+        -- normal expansions should have 2-3 mexes
+        elseif Expansion.MexInRange > 1 then
+            -- add data for a normal expansion
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index] = {}
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index].color = MarkerDefaults["Land Path Node"]['color']
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index].hint = true
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index].orientation = { 0, 0, 0 }
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index].prop = "/env/common/props/markers/M_Expansion_prop.bp"
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index].type = "Expansion Area"
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index].position = {Expansion.x, GetTerrainHeight(Expansion.x, Expansion.y), Expansion.y}
         end
     end
 end
@@ -1867,7 +1891,7 @@ function ValidateModFiles()
     local ModName = "* AI-Uveso"
     local ModDirectory = 'AI-Uveso'
     local Files = 87
-    local Bytes = 1590515
+    local Bytes = 1597002
     LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Running from: '..debug.getinfo(1).source..'.')
     LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Checking directory /mods/ for '..ModDirectory..'...')
     local FilesInFolder = DiskFindFiles('/mods/', '*.*')
