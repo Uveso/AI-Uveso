@@ -217,7 +217,7 @@ function ValidateMapAndMarkers()
             -- Checking colors (for debug)
             if MarkerDefaults[v.type]['color'] ~= v.color then
                 -- we actual don't print a debugmessage here. This message is for debuging a debug function :)
-                LOG('* AI-Uveso: ValidateMapAndMarkers: color missmatch in marker ['..k..'] - MarkerType: [\''..v.type..'\']. marker.color is ('..repr(v.color)..'), but should be ('..MarkerDefaults[v.type]['color']..').')
+                --LOG('* AI-Uveso: ValidateMapAndMarkers: color missmatch in marker ['..k..'] - MarkerType: [\''..v.type..'\']. marker.color is ('..repr(v.color)..'), but should be ('..MarkerDefaults[v.type]['color']..').')
                 v.color = MarkerDefaults[v.type]['color']
             end
         -- Check BaseLocations distances to other locations
@@ -1891,7 +1891,7 @@ function ValidateModFiles()
     local ModName = "* AI-Uveso"
     local ModDirectory = 'AI-Uveso'
     local Files = 87
-    local Bytes = 1597002
+    local Bytes = 1598572
     LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Running from: '..debug.getinfo(1).source..'.')
     LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Checking directory /mods/ for '..ModDirectory..'...')
     local FilesInFolder = DiskFindFiles('/mods/', '*.*')

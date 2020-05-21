@@ -1,4 +1,9 @@
 *************************************************************************************************************************************
+v86 (21.May.2020)
+
+- Fix: The debugoption for platoonnames was spaming a debugmesage every AI-ExecutePlan() cycle
+
+*************************************************************************************************************************************
 v85 (19.May.2020)
 
 - New: Markergenerator is now able to create land expansions incl mass count.

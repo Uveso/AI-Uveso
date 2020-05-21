@@ -8,7 +8,7 @@ OldExecutePlanFunctionUveso = ExecutePlan
 function ExecutePlan(aiBrain)
     if not aiBrain.Uveso then
         -- Debug for Platoon names
-        if aiBrain[ScenarioInfo.Options.AIPLatoonNameDebug] or ScenarioInfo.Options.AIPLatoonNameDebug == 'all' then
+        if (aiBrain[ScenarioInfo.Options.AIPLatoonNameDebug] or ScenarioInfo.Options.AIPLatoonNameDebug == 'all') and not aiBrain.BuilderManagers.MAIN.FactoryManager:HasBuilderList() then
             aiBrain:ForkThread(LocationRangeManagerThread, aiBrain)
         end
         -- execute the original function

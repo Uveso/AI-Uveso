@@ -1,3 +1,6 @@
+local version = tonumber( (string.gsub(string.gsub(GetVersion(), '1.5.', ''), '1.6.', '')) )
+if version > 3652 then -- Only use this hook for FAF game
+LOG('* AI-Uveso: [ScenarioUtilities.lua] Found FAF game version. Installing patch Hook')
 
 -- For AI Patch V8 (Patched)
 function CreateInitialArmyGroup(strArmy, createCommander)
@@ -37,4 +40,8 @@ function CommanderWarpDelay(cdrUnit, delay, ArmyBrain)
     end
     WaitSeconds(delay)
     cdrUnit:PlayCommanderWarpInEffect()
+end
+
+else
+LOG('* AI-Uveso: [ScenarioUtilities.lua] No FAF game found, canceling patch Hook')
 end
