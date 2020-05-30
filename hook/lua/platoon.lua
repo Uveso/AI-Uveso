@@ -1,5 +1,5 @@
-WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] * AI-Uveso: offset platoon.lua' )
---6544
+--WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] * AI-Uveso: offset platoon.lua' )
+--6543
 local UUtils = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua')
 
 CopyOfOldPlatoonClass = Platoon
@@ -14,9 +14,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
 
         if not aiBrain or eng.Dead or not eng.EngineerBuildQueue or table.getn(eng.EngineerBuildQueue) == 0 then
             if aiBrain:PlatoonExists(eng.PlatoonHandle) then
-                --LOG("* AI-DEBUG: ProcessBuildCommand: Disbanding Engineer Platoon in ProcessBuildCommand top " .. eng.Sync.id)
                 if not eng.AssistSet and not eng.AssistPlatoon and not eng.UnitBeingAssist then
-                    --LOG('* AI-DEBUG: ProcessBuildCommand: eng.PlatoonHandle:PlatoonDisband() 1')
                     eng.PlatoonHandle:PlatoonDisband()
                 end
             end
@@ -26,34 +24,51 @@ Platoon = Class(CopyOfOldPlatoonClass) {
 
         -- it wasn't a failed build, so we just finished something
         if removeLastBuild then
-            --LOG('* AI-DEBUG: ProcessBuildCommand: table.remove(eng.EngineerBuildQueue, 1) removeLastBuild')
             table.remove(eng.EngineerBuildQueue, 1)
         end
 
         eng.ProcessBuildDone = false
         IssueClearCommands({eng})
         local commandDone = false
+        local PlatoonPos
         while not eng.Dead and not commandDone and table.getn(eng.EngineerBuildQueue) > 0  do
             local whatToBuild = eng.EngineerBuildQueue[1][1]
             local buildLocation = {eng.EngineerBuildQueue[1][2][1], 0, eng.EngineerBuildQueue[1][2][2]}
+            if GetTerrainHeight(buildLocation[1], buildLocation[2]) > GetSurfaceHeight(buildLocation[1], buildLocation[2]) then
+                --land
+                buildLocation[2] = GetTerrainHeight(buildLocation[1], buildLocation[2])
+            else
+                --water
+                buildLocation[2] = GetSurfaceHeight(buildLocation[1], buildLocation[2])
+            end
             local buildRelative = eng.EngineerBuildQueue[1][3]
-            --LOG('* AI-DEBUG: ProcessBuildCommand: whatToBuild = '..repr(whatToBuild))
 
             if not eng.NotBuildingThread then
                 eng.NotBuildingThread = eng:ForkThread(eng.PlatoonHandle.WatchForNotBuilding)
             end
             -- see if we can move there first
             if AIUtils.EngineerMoveWithSafePath(aiBrain, eng, buildLocation) then
+                -- issue buildcommand to block other engineers from caping mex/hydros or to reserve the buildplace
+                aiBrain:BuildStructure(eng, whatToBuild, {buildLocation[1], buildLocation[3], 0}, buildRelative)
+                -- wait until we are close to the buildplace so we have intel
+                while not eng.Dead do
+                    PlatoonPos = eng:GetPosition()
+                    if VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, buildLocation[1] or 0, buildLocation[3] or 0) < 12 then
+                        break
+                    end
+                    coroutine.yield(1)
+                end
                 if not eng or eng.Dead or not eng.PlatoonHandle or not aiBrain:PlatoonExists(eng.PlatoonHandle) then
                     if eng then eng.ProcessBuild = nil end
                     return
                 end
-
+                -- cancel all commands, also the buildcommand for blocking mex to check for reclaim or capture
+                eng.PlatoonHandle:Stop()
                 -- check to see if we need to reclaim or capture...
                 AIUtils.EngineerTryReclaimCaptureArea(aiBrain, eng, buildLocation)
-                    -- check to see if we can repair
+                -- check to see if we can repair
                 AIUtils.EngineerTryRepair(aiBrain, eng, whatToBuild, buildLocation)
-                        -- otherwise, go ahead and build the next structure there
+                -- otherwise, go ahead and build the next structure there
                 aiBrain:BuildStructure(eng, whatToBuild, {buildLocation[1], buildLocation[3], 0}, buildRelative)
                 if not eng.NotBuildingThread then
                     eng.NotBuildingThread = eng:ForkThread(eng.PlatoonHandle.WatchForNotBuilding)
@@ -68,7 +83,6 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         -- final check for if we should disband
         if not eng or eng.Dead or table.getn(eng.EngineerBuildQueue) <= 0 then
             if eng.PlatoonHandle and aiBrain:PlatoonExists(eng.PlatoonHandle) and not eng.PlatoonHandle.UsingTransport then
-                --LOG('* AI-DEBUG: ProcessBuildCommand: eng.PlatoonHandle:PlatoonDisband() 2')
                 eng.PlatoonHandle:PlatoonDisband()
             end
         end

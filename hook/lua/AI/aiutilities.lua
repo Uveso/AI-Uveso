@@ -256,7 +256,7 @@ function EngineerMoveWithSafePath(aiBrain, unit, destination)
     end
     local pos = unit:GetPosition()
     -- don't check a path if we are in build range
-    if VDist2(pos[1], pos[3], destination[1], destination[3]) < 14 then
+    if VDist2(pos[1], pos[3], destination[1], destination[3]) <= 12 then
         return true
     end
 
@@ -290,7 +290,6 @@ function EngineerMoveWithSafePath(aiBrain, unit, destination)
         if VDist2Sq(pos[1], pos[3], destination[1], destination[3]) > 200 * 200 then
             needTransports = true
         end
-        --LOG('* AI-Uveso: EngineerMoveWithSafePath():  needTransports = ('..repr(needTransports)..')')
 
         bUsedTransports = AIAttackUtils.SendPlatoonWithTransportsNoCheck(aiBrain, unit.PlatoonHandle, destination, needTransports, true, false)
 
@@ -311,13 +310,12 @@ function EngineerMoveWithSafePath(aiBrain, unit, destination)
             local pathSize = table.getn(path)
             -- Move to way points (but not to destination... leave that for the final command)
             for widx, waypointPath in path do
-                if pathSize ~= widx then
-                    IssueMove({unit}, waypointPath)
-                end
+                IssueMove({unit}, waypointPath)
             end
+            IssueMove({unit}, destination)
+        else
+            IssueMove({unit}, destination)
         end
-        -- If there wasn't a *safe* path (but dest was pathable), then the last move would have been to go there directly
-        -- so don't bother... the build/capture/reclaim command will take care of that after we return
         return true
     end
     return false

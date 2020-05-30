@@ -1,4 +1,4 @@
-WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] * AI-Uveso: offset simInit.lua' )
+--WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] * AI-Uveso: offset simInit.lua' )
 --418
 local AIAttackUtils = import('/lua/ai/aiattackutilities.lua')
 
@@ -21,10 +21,10 @@ local TraceSouth = false
 local TraceSouthEast = false
 local TraceSouthWest = false
 
-local OldBeginSessionFunction = BeginSession
+local OldBeginSessionUveso = BeginSession
 function BeginSession()
-    OldBeginSessionFunction()
-    ValidateModFiles()
+    OldBeginSessionUveso()
+    ValidateModFilesUveso()
     if ScenarioInfo.Options.AIPathingDebug ~= 'off' then
         ForkThread(GraphRenderThread)
     end
@@ -50,9 +50,9 @@ function BeginSession()
     ValidateMapAndMarkers()
 end
 
-local OldOnCreateArmyBrainFunction = OnCreateArmyBrain
+local OldOnCreateArmyBrainUveso = OnCreateArmyBrain
 function OnCreateArmyBrain(index, brain, name, nickname)
-    OldOnCreateArmyBrainFunction(index, brain, name, nickname)
+    OldOnCreateArmyBrainUveso(index, brain, name, nickname)
     -- check if we have an Ai brain that is not a civilian army
     if brain.BrainType == 'AI' and nickname ~= 'civilian' then
         -- check if we need to set a new unitcap for the AI. (0 = we are using the player unit cap)
@@ -1887,8 +1887,8 @@ function ReclaimCleaner()
     end
 end
 
-function ValidateModFiles()
-    local ModName = "* AI-Uveso"
+function ValidateModFilesUveso()
+    local ModName = '* '..'AI-Uveso'
     local ModDirectory = 'AI-Uveso'
     local Files = 87
     local Bytes = 1598572

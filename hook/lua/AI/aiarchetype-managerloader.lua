@@ -456,16 +456,26 @@ function EcoManagerThread(aiBrain)
                 end
             -- We have negative eco. Check if we can switch something off
             elseif aiBrain:GetEconomyStoredRatio('ENERGY') < 0.01 then
-                if unit:IsPaused() then continue end
                 if not EntityCategoryContains( categories.ENERGYPRODUCTION + ((categories.MASSEXTRACTION + categories.FACTORY + categories.ENERGYSTORAGE) * categories.TECH1) , unit.UnitBeingBuilt) then
+                    if unit:IsPaused() then continue end
                     unit:SetPaused( true )
+                    bussy = true
+                    break -- for _, unit in Engineers do
+                else
+                    if not unit:IsPaused() then continue end
+                    unit:SetPaused( false )
                     bussy = true
                     break -- for _, unit in Engineers do
                 end
             elseif aiBrain:GetEconomyStoredRatio('MASS') < 0.01 then
-                if unit:IsPaused() then continue end
                 if not EntityCategoryContains( categories.MASSEXTRACTION + ((categories.ENERGYPRODUCTION + categories.FACTORY + categories.MASSSTORAGE) * categories.TECH1) , unit.UnitBeingBuilt) then
+                    if unit:IsPaused() then continue end
                     unit:SetPaused( true )
+                    bussy = true
+                    break -- for _, unit in Engineers do
+                else
+                    if not unit:IsPaused() then continue end
+                    unit:SetPaused( false )
                     bussy = true
                     break -- for _, unit in Engineers do
                 end
