@@ -1,5 +1,5 @@
 --WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] * AI-Uveso: offset platoon.lua' )
---6543
+--6558
 local UUtils = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua')
 
 CopyOfOldPlatoonClass = Platoon
@@ -47,6 +47,9 @@ Platoon = Class(CopyOfOldPlatoonClass) {
             end
             -- see if we can move there first
             if AIUtils.EngineerMoveWithSafePath(aiBrain, eng, buildLocation) then
+                if not eng or eng.Dead or not eng.PlatoonHandle or not aiBrain:PlatoonExists(eng.PlatoonHandle) then
+                    return
+                end
                 -- issue buildcommand to block other engineers from caping mex/hydros or to reserve the buildplace
                 aiBrain:BuildStructure(eng, whatToBuild, {buildLocation[1], buildLocation[3], 0}, buildRelative)
                 -- wait until we are close to the buildplace so we have intel

@@ -755,7 +755,7 @@ BuilderGroup {
 -- ==                                        T2 T3 T4 Artillery                                              == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'U4 Artillery Builders',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U234 Artillery Builders',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'U2 Artillery',

@@ -49,7 +49,7 @@ BuilderGroup {
 
     -- Terror builder, don't activate !!!
     Builder {
-        BuilderName = 'U1R Terror Arty',
+        BuilderName = 'U1R Terror mobile Arty',
         PlatoonTemplate = 'T1LandArtillery',
         Priority = 0,
         BuilderConditions = {
@@ -93,7 +93,7 @@ BuilderGroup {
         BuilderType = 'Land',
     },
     Builder {
-        BuilderName = 'U1R Artillery',
+        BuilderName = 'U1R Mobile Artillery',
         PlatoonTemplate = 'T1LandArtillery',
         Priority = 150,
         BuilderConditions = {
@@ -108,7 +108,7 @@ BuilderGroup {
         BuilderType = 'Land',
     },
     Builder {
-        BuilderName = 'U1R AA',
+        BuilderName = 'U1R Mobile AA',
         PlatoonTemplate = 'T1LandAA',
         Priority = 150,
         BuilderConditions = {
@@ -156,7 +156,7 @@ BuilderGroup {
         BuilderType = 'Land',
     },
     Builder {
-        BuilderName = 'U2R Artillery',
+        BuilderName = 'U2R Mobile Artillery',
         PlatoonTemplate = 'T2LandArtillery',
         Priority = 250,
         BuilderConditions = {
@@ -269,7 +269,7 @@ BuilderGroup {
         BuilderType = 'Land',
     },
     Builder {
-        BuilderName = 'U3R MobileShields',
+        BuilderName = 'U3R Mobile Shields',
         PlatoonTemplate = 'T3MobileShields',
         Priority = 350,
         BuilderConditions = {
@@ -298,7 +298,7 @@ BuilderGroup {
 
     -- Terror builder, don't activate !!!
     Builder {
-        BuilderName = 'U1A Terror Arty',
+        BuilderName = 'U1A Terror Mobile Arty',
         PlatoonTemplate = 'T1LandArtillery',
         Priority = 0,
         BuilderConditions = {
@@ -346,7 +346,7 @@ BuilderGroup {
         BuilderType = 'Land',
     },
     Builder {
-        BuilderName = 'U1A Artillery',
+        BuilderName = 'U1A Mobile Artillery',
         PlatoonTemplate = 'T1LandArtillery',
         Priority = 150,
         BuilderConditions = {
@@ -413,7 +413,7 @@ BuilderGroup {
         BuilderType = 'Land',
     },
     Builder {
-        BuilderName = 'U2A Artillery',
+        BuilderName = 'U2A Mobile Artillery',
         PlatoonTemplate = 'T2LandArtillery',
         Priority = 250,
         BuilderConditions = {
@@ -529,7 +529,7 @@ BuilderGroup {
         BuilderType = 'Land',
     },
     Builder {
-        BuilderName = 'U3A MobileShields',
+        BuilderName = 'U3A Mobile Shields',
         PlatoonTemplate = 'T3MobileShields',
         Priority = 350,
         BuilderConditions = {
@@ -556,7 +556,7 @@ BuilderGroup {
     BuilderGroupName = 'U123 Land Builders Panic',                         -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'FactoryBuilder',
     Builder {
-        BuilderName = 'U1 PanicZone Arty',
+        BuilderName = 'U1 PanicZone Mobile Arty',
         PlatoonTemplate = 'T1LandArtillery',
         Priority = 18600,
         BuilderConditions = {
@@ -570,7 +570,7 @@ BuilderGroup {
         BuilderType = 'Land',
     },
     Builder {
-        BuilderName = 'U1 PanicZone/2 AA',
+        BuilderName = 'U1 PanicZone/2 Mobile AA',
         PlatoonTemplate = 'T1LandAA',
         Priority = 18600,
         BuilderConditions = {
@@ -591,7 +591,7 @@ BuilderGroup {
     BuilderGroupName = 'LandAttackBuildersPanicEXP Uveso',                         -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'FactoryBuilder',
     Builder {
-        BuilderName = 'U1E PanicExpansion Arty',
+        BuilderName = 'U1E PanicExpansion Mobile Arty',
         PlatoonTemplate = 'T1LandArtillery',
         Priority = 160,
         BuilderConditions = {
@@ -606,7 +606,7 @@ BuilderGroup {
         BuilderType = 'Land',
     },
     Builder {
-        BuilderName = 'U1E PanicPanicExpansion AA',
+        BuilderName = 'U1E PanicPanicExpansion Mobile AA',
         PlatoonTemplate = 'T1LandAA',
         Priority = 160,
         BuilderConditions = {

@@ -330,7 +330,7 @@ BuilderGroup {
             Assist = {
                 AssistLocation = 'LocationType',
                 AssisteeType = 'Structure',
-                AssistRange = 150,
+                AssistRange = 120,
                 BeingBuiltCategories = {'EXPERIMENTAL ECONOMIC'},               -- Unitcategories must be type string
                 AssistUntilFinished = true,
                 Time = 0,
@@ -354,7 +354,7 @@ BuilderGroup {
             Assist = {
                 AssistLocation = 'LocationType',
                 AssisteeType = 'Structure',
-                AssistRange = 150,
+                AssistRange = 120,
                 BeingBuiltCategories = {'EXPERIMENTAL ECONOMIC'},               -- Unitcategories must be type string
                 AssistUntilFinished = true,
                 Time = 0,
@@ -378,7 +378,7 @@ BuilderGroup {
             Assist = {
                 AssistLocation = 'LocationType',
                 AssisteeType = 'Structure',
-                AssistRange = 150,
+                AssistRange = 120,
                 BeingBuiltCategories = {'EXPERIMENTAL ECONOMIC'},               -- Unitcategories must be type string
                 AssistUntilFinished = true,
                 Time = 0,
@@ -493,6 +493,76 @@ BuilderGroup {
             },
         }
     },
+    -- =================== --
+    --    General Assist   --
+    -- =================== --
+    Builder {
+        BuilderName = 'U1 Engineer Assist Engineer',
+        PlatoonTemplate = 'EngineerAssist',
+        Priority = 1,
+        InstanceCount = 50,
+        BuilderConditions = {
+            { UCBC, 'LocationEngineersBuildingAssistanceGreater', { 'LocationType', 0, categories.ALLUNITS } },
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.80}}, -- Ratio from 0 to 1. (1=100%)
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Assist = {
+                AssistLocation = 'LocationType',
+                BeingBuiltCategories = {'ALLUNITS'},                    -- Unitcategories must be type string
+                PermanentAssist = false,
+                AssisteeType = 'Engineer',
+                AssistClosestUnit = true,                                       -- Assist the closest unit instead unit with the least number of assisters
+                Time = 30,
+            },
+        }
+    },
+    Builder {
+        BuilderName = 'U2 Engineer Assist Engineer',
+        PlatoonTemplate = 'T2EngineerAssist',
+        Priority = 1,
+        InstanceCount = 50,
+        BuilderConditions = {
+            { UCBC, 'LocationEngineersBuildingAssistanceGreater', { 'LocationType', 0, categories.TECH2 + categories.TECH3 + categories.EXPERIMENTAL } },
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.80}}, -- Ratio from 0 to 1. (1=100%)
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Assist = {
+                AssistLocation = 'LocationType',
+                BeingBuiltCategories = {'TECH2', 'TECH3', 'EXPERIMENTAL'},               -- Unitcategories must be type string
+                PermanentAssist = false,
+                AssisteeType = 'Engineer',
+                AssistClosestUnit = true,                                       -- Assist the closest unit instead unit with the least number of assisters
+                Time = 30,
+            },
+        }
+    },
+    Builder {
+        BuilderName = 'U3 Engineer Assist Engineer',
+        PlatoonTemplate = 'T3EngineerAssistNoSUB',
+        Priority = 1,
+        InstanceCount = 50,
+        BuilderConditions = {
+            { UCBC, 'LocationEngineersBuildingAssistanceGreater', { 'LocationType', 0, categories.TECH3 + categories.EXPERIMENTAL } },
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.80}}, -- Ratio from 0 to 1. (1=100%)
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Assist = {
+                BeingBuiltCategories = {'TECH3', 'EXPERIMENTAL'},               -- Unitcategories must be type string
+                AssistLocation = 'LocationType',
+                PermanentAssist = false,
+                AssisteeType = 'Engineer',
+                AssistClosestUnit = true,                                       -- Assist the closest unit instead unit with the least number of assisters
+                Time = 30,
+            },
+        }
+    },
+
     -- =============== --
     --    Finisher     --
     -- =============== --

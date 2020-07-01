@@ -151,7 +151,7 @@ BaseBuilderTemplate {
         'U4 Strategic Missile Launcher NukeAI',
         'U4 Strategic Missile Defense Builders',
         'U4 Strategic Missile Defense Anti-NukeAI',
---        'U4 Artillery Builders',
+--        'U234 Artillery Builders',
         'U4 Artillery Formers', -- also needed for UEF SATELLITE
         -- Build Anti Air near AirFactories
         'U123 Defense Anti Air Builders',
