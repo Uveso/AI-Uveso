@@ -195,6 +195,10 @@ EngineerManager = Class(UvesoEngineerManager) {
         self.AssigningTask = false
         self:DelayAssign(unit, 50)
     end,
+-- For AI Patch V8 (Patched) remove ManagerLoopBody
+    ManagerLoopBody = function(self,builder,bType)
+        BuilderManager.ManagerLoopBody(self,builder,bType)
+    end,
 
     -- Hook For AI-Uveso. Don't need this, we have our own ecomanagement
     LowMass = function(self)

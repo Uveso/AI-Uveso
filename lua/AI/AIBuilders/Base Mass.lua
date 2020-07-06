@@ -23,13 +23,19 @@ BuilderGroup {
         BuilderName = 'UC Mass 12 initial',
         PlatoonTemplate = 'CommanderBuilder',
         Priority = 19400,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NeedMass then
+                return 19400
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             -- When do we want to build this ?
             { MABC, 'CanBuildOnMass', { 'LocationType', 12, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.MASSEXTRACTION }},
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<', categories.STRUCTURE * categories.MASSEXTRACTION } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -45,13 +51,19 @@ BuilderGroup {
         BuilderName = 'UC Mass 12',
         PlatoonTemplate = 'CommanderBuilder',
         Priority = 19100,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NeedMass then
+                return 19100
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             -- When do we want to build this ?
             { MABC, 'CanBuildOnMass', { 'LocationType', 12, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.STRUCTURE * categories.MASSEXTRACTION }},
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<', categories.STRUCTURE * categories.MASSEXTRACTION } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -71,13 +83,19 @@ BuilderGroup {
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17900,
         InstanceCount = 2,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NeedMass then
+                return 17900
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { MIBC, 'HasNotParagon', {} },
+            --{ MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
             { MABC, 'CanBuildOnMass', { 'LocationType', 30, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<', categories.STRUCTURE * categories.MASSEXTRACTION } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -94,13 +112,19 @@ BuilderGroup {
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17880,
         InstanceCount = 2,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NeedMass then
+                return 17880
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { MIBC, 'HasNotParagon', {} },
+            --{ MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
             { MABC, 'CanBuildOnMass', { 'LocationType', 60, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<', categories.STRUCTURE * categories.MASSEXTRACTION } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -117,13 +141,18 @@ BuilderGroup {
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17850,
         InstanceCount = 2,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NeedMass then
+                return 17850
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { MIBC, 'HasNotParagon', {} },
+            --{ MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
-            { MABC, 'CanBuildOnMass', { 'LocationType', 1000, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<', categories.STRUCTURE * categories.MASSEXTRACTION } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -141,13 +170,18 @@ BuilderGroup {
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17830,
         InstanceCount = 2,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NeedMass then
+                return 17830
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { MIBC, 'HasNotParagon', {} },
+            --{ MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
-            { MABC, 'CanBuildOnMass', { 'LocationType', 1000, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<', categories.STRUCTURE * categories.MASSEXTRACTION } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -165,13 +199,18 @@ BuilderGroup {
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17810,
         InstanceCount = 2,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NeedMass then
+                return 17810
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { MIBC, 'HasNotParagon', {} },
+            --{ MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
-            { MABC, 'CanBuildOnMass', { 'LocationType', 1000, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Don't build it if...
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<', categories.STRUCTURE * categories.MASSEXTRACTION } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -188,6 +227,13 @@ BuilderGroup {
         BuilderName = 'UC Resource RECOVER',
         PlatoonTemplate = 'CommanderBuilder',
         Priority = 19100,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NeedMass then
+                return 19100
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
@@ -209,6 +255,13 @@ BuilderGroup {
         BuilderName = 'U1 Resource RECOVER',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 19100,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NeedMass then
+                return 19100
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
@@ -233,9 +286,16 @@ BuilderGroup {
         BuilderName = 'U3 Mass Fab',
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 16200,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 0
+            else
+                return 16200
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { MIBC, 'HasNotParagon', {} },
+            --{ MIBC, 'HasNotParagon', {} },
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.40, 1.00}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
@@ -270,7 +330,7 @@ BuilderGroup {
         Priority = 790,
         InstanceCount = 2,
         BuilderConditions = {
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 20, categories.STRUCTURE * categories.MASSEXTRACTION }},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.MASSFABRICATION * categories.TECH3 }},
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.MASSFABRICATION * (categories.TECH1 + categories.TECH2) }},
         },
         BuilderData = {
@@ -293,6 +353,13 @@ BuilderGroup {
         Priority = 18400,
         InstanceCount = 1,
         FormRadius = 10000,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 0
+            else
+                return 18400
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 4.0, -0.0}}, -- Absolut Base income
@@ -311,6 +378,13 @@ BuilderGroup {
         Priority = 18400,
         InstanceCount = 1,
         FormRadius = 10000,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 0
+            else
+                return 18400
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             -- When do we want to build this ?
@@ -328,6 +402,13 @@ BuilderGroup {
         Priority = 18400,
         InstanceCount = 1,
         FormRadius = 10000,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 0
+            else
+                return 18400
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             -- When do we want to build this ?
@@ -345,6 +426,13 @@ BuilderGroup {
         Priority = 18400,
         InstanceCount = 1,
         FormRadius = 10000,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 0
+            else
+                return 18400
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             -- When do we want to build this ?
@@ -387,6 +475,13 @@ BuilderGroup {
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 18000,
         DelayEqualBuildPlattons = {'MASSSTORAGE', 3},
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 0
+            else
+                return 18000
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             -- When do we want to build this ?
@@ -413,6 +508,13 @@ BuilderGroup {
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17450,
         DelayEqualBuildPlattons = {'MASSSTORAGE', 3},
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 0
+            else
+                return 17450
+            end
+        end,
         BuilderConditions = {
             { UCBC, 'CheckBuildPlattonDelay', { 'MASSSTORAGE' }},
             -- Have we the eco to build it ?
@@ -439,10 +541,17 @@ BuilderGroup {
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17879,
         DelayEqualBuildPlattons = {'MASSSTORAGE', 5},
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 0
+            else
+                return 17879
+            end
+        end,
         BuilderConditions = {
             { UCBC, 'CheckBuildPlattonDelay', { 'MASSSTORAGE' }},
             -- Have we the eco to build it ?
-            { MIBC, 'HasNotParagon', {} },
+            --{ MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1,  categories.STRUCTURE * categories.MASSSTORAGE }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 16, categories.STRUCTURE * categories.MASSSTORAGE }},
@@ -467,10 +576,17 @@ BuilderGroup {
         PlatoonTemplate = 'T2EngineerBuilder',
         Priority = 17878,
         DelayEqualBuildPlattons = {'MASSSTORAGE', 5},
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 0
+            else
+                return 17878
+            end
+        end,
         BuilderConditions = {
             { UCBC, 'CheckBuildPlattonDelay', { 'MASSSTORAGE' }},
             -- Have we the eco to build it ?
-            { MIBC, 'HasNotParagon', {} },
+            --{ MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1,  categories.STRUCTURE * categories.MASSSTORAGE }},
             { UCBC, 'AdjacencyCheck', { 'LocationType', categories.MASSEXTRACTION * categories.TECH3, 100, 'ueb1106' } },
@@ -496,9 +612,16 @@ BuilderGroup {
         PlatoonAIPlan = 'ReclaimStructuresAI',
         Priority = 790,
         InstanceCount = 2,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 790
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { MIBC, 'HasParagon', {} },
+            --{ MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD }},
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 2, categories.STRUCTURE * categories.MASSSTORAGE }},
@@ -508,121 +631,5 @@ BuilderGroup {
             Reclaim = {categories.STRUCTURE * categories.MASSSTORAGE},
         },
         BuilderType = 'Any'
-    },
-}
--- Sadly not working
-BuilderGroup {
-    BuilderGroupName = 'U1 Mass Capture',                                       -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
-    BuildersType = 'PlatoonFormBuilder',                                        -- BuilderTypes are: EngineerBuilder, FactoryBuilder, PlatoonFormBuilder.
-    Builder {
-        BuilderName = 'U1 BuildOnMass 1',
-        PlatoonTemplate = 'U1MassDummy',
-        Priority = 0,
-        FormRadius = 150,
-        InstanceCount = 2,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { MABC, 'CanBuildOnMass', { 'LocationType', 1000, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
-            -- Do we need additional conditions to build it ?
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-        },
-        BuilderType = 'Any',
-    },
-    Builder {
-        BuilderName = 'U1 BuildOnMass 2',
-        PlatoonTemplate = 'U1MassDummy',
-        Priority = 0,
-        FormRadius = 150,
-        InstanceCount = 1,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { MABC, 'CanBuildOnMass', { 'LocationType', 1000, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 4, categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD }},
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-        },
-        BuilderType = 'Any',
-    },
-    Builder {
-        BuilderName = 'U1 BuildOnMass 3',
-        PlatoonTemplate = 'U1MassDummy',
-        Priority = 0,
-        FormRadius = 150,
-        InstanceCount = 1,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { MABC, 'CanBuildOnMass', { 'LocationType', 1000, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD }},
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-        },
-        BuilderType = 'Any',
-    },
-    Builder {
-        BuilderName = 'U1 BuildOnMass 4',
-        PlatoonTemplate = 'U1MassDummy',
-        Priority = 0,
-        FormRadius = 150,
-        InstanceCount = 1,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { MABC, 'CanBuildOnMass', { 'LocationType', 1000, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 6, categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD }},
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-        },
-        BuilderType = 'Any',
-    },
-    Builder {
-        BuilderName = 'U1 BuildOnMass 5',
-        PlatoonTemplate = 'U1MassDummy',
-        Priority = 0,
-        FormRadius = 150,
-        InstanceCount = 2,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { MABC, 'CanBuildOnMass', { 'LocationType', 1000, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 8, categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD }},
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-        },
-        BuilderType = 'Any',
-    },
-    Builder {
-        BuilderName = 'U1 BuildOnMass 6',
-        PlatoonTemplate = 'U1MassDummy',
-        Priority = 0,
-        FormRadius = 150,
-        InstanceCount = 1,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { MABC, 'CanBuildOnMass', { 'LocationType', 1000, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 9, categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD }},
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-        },
-        BuilderType = 'Any',
-    },
-    Builder {
-        BuilderName = 'U1 BuildOnMass 8',
-        PlatoonTemplate = 'U1MassDummy',
-        Priority = 0,
-        FormRadius = 150,
-        InstanceCount = 1,
-        BuilderConditions = {
-            -- When do we want to build this ?
-            { MABC, 'CanBuildOnMass', { 'LocationType', 1000, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 12, categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD }},
-            -- Have we the eco to build it ?
-            -- Don't build it if...
-        },
-        BuilderType = 'Any',
     },
 }

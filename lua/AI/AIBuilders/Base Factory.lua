@@ -1427,9 +1427,16 @@ BuilderGroup {
         BuilderName = 'U-T3 Gate Para',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 15400,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 15400
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { MIBC, 'HasParagon', {} },
+            --{ MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH3 - categories.STATIONASSISTPOD }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 6, categories.STRUCTURE * categories.GATE } },

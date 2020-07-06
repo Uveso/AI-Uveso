@@ -276,7 +276,7 @@ function ReclaimAIThread(platoon,self,aiBrain)
         MassStorageRatio = aiBrain:GetEconomyStoredRatio('MASS')
         EnergyStorageRatio = aiBrain:GetEconomyStoredRatio('ENERGY')
         -- 1==1 is always true, i use this to clean up the base from wreckages even if we have full eco.
-        if (MassStorageRatio < 1.00 or EnergyStorageRatio < 1.00) and not aiBrain.HasParagon then
+        if (MassStorageRatio < 1.00 or EnergyStorageRatio < 1.00) and not aiBrain.PriorityManager.HasParagon then
             --LOG('Searching for reclaimables')
             local x1 = SelfPos[1]-scanrange
             local y1 = SelfPos[3]-scanrange

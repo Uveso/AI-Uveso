@@ -14,11 +14,18 @@ BuilderGroup {
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 2000,
         DelayEqualBuildPlattons = {'Paragon', 60},
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 0
+            else
+                return 2000
+            end
+        end,
         BuilderConditions = {
             { UCBC, 'CheckBuildPlattonDelay', { 'Paragon' }},
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
-            { MIBC, 'HasNotParagon', {} },
+            --{ MIBC, 'HasNotParagon', {} },
             { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.90}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'CanBuildCategory', { categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC } },
@@ -48,11 +55,18 @@ BuilderGroup {
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 2000,
         DelayEqualBuildPlattons = {'Paragon', 60},
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 0
+            else
+                return 2000
+            end
+        end,
         BuilderConditions = {
             { UCBC, 'CheckBuildPlattonDelay', { 'Paragon' }},
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
-            { MIBC, 'HasNotParagon', {} },
+            --{ MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
             { UCBC, 'CanBuildCategory', { categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC }},
@@ -80,11 +94,18 @@ BuilderGroup {
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 2000,
         DelayEqualBuildPlattons = {'Paragon', 60},
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 0
+            else
+                return 2000
+            end
+        end,
         BuilderConditions = {
             { UCBC, 'CheckBuildPlattonDelay', { 'Paragon' }},
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
-            { MIBC, 'HasNotParagon', {} },
+            --{ MIBC, 'HasNotParagon', {} },
             { EBC, 'GreaterThanEconTrend', { 18.0, 270.0 } },                      -- relative income
             -- When do we want to build this ?
             { UCBC, 'CanBuildCategory', { categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC } },
@@ -112,10 +133,17 @@ BuilderGroup {
         BuilderName = 'U4 Paragon 2nd',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 2000,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 2000
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
-            { MIBC, 'HasParagon', {} },
+            --{ MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC}},
             { UCBC, 'CanBuildCategory', { categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC } },
@@ -143,9 +171,16 @@ BuilderGroup {
         BuilderName = 'U4 Paragon 3nd',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 2000,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 2000
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { MIBC, 'HasParagon', {} },
+            --{ MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
             { UCBC, 'CanBuildCategory', { categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC}},

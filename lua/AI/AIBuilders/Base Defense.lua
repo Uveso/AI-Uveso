@@ -86,9 +86,16 @@ BuilderGroup {
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 15000,
         InstanceCount = 2,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 15000
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { MIBC, 'HasParagon', {} },
+            --{ MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
             { UCBC, 'AdjacencyCheck', { 'LocationType', categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC  * categories.ENERGYPRODUCTION  * categories.MASSPRODUCTION, 100, 'ueb2304' } },
             -- Respect UnitCap
@@ -560,9 +567,16 @@ BuilderGroup {
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 2500,
         InstanceCount = 3,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 2500
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { MIBC, 'HasParagon', {} },
+            --{ MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
             { MIBC, 'IsBrainPersonality', { 'uvesooverwhelm', false} }, -- Don't let the Overwhelm AI buid this. Would be a fast nuklear game end :)
             { MIBC, 'IsBrainPersonality', { 'uvesooverwhelmcheat', false} }, -- Don't let the OverwhelmCheat AI buid this. Would be a fast nuklear game end :)
@@ -996,9 +1010,16 @@ BuilderGroup {
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 875,
         InstanceCount = 6,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 875
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { MIBC, 'HasParagon', {} },
+            --{ MIBC, 'HasParagon', {} },
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- When do we want to build this ?
             { UCBC, 'CanBuildCategory', { categories.STRUCTURE * categories.LAND * categories.DEFENSE * categories.DIRECTFIRE * categories.TECH3 } },
@@ -1224,9 +1245,16 @@ BuilderGroup {
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 1500,
         InstanceCount = 5,                                      -- Number of plattons that will be formed.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 1500
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { MIBC, 'HasParagon', {} },
+            --{ MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
             { UCBC, 'AdjacencyCheck', { 'LocationType', categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC  * categories.ENERGYPRODUCTION  * categories.MASSPRODUCTION, 100, 'ueb2304' } },
             -- Respect UnitCap

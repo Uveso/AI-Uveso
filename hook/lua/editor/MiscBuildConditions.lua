@@ -78,7 +78,7 @@ end
 
 --            { UCBC, 'HasParagon', {} },
 function HasParagon(aiBrain)
-    if aiBrain.HasParagon then
+    if aiBrain.PriorityManager.HasParagon then
         return true
     end
     return false
@@ -86,7 +86,7 @@ end
 
 --            { UCBC, 'HasNotParagon', {} },
 function HasNotParagon(aiBrain)
-    if not aiBrain.HasParagon then
+    if not aiBrain.PriorityManager.HasParagon then
         return true
     end
     return false

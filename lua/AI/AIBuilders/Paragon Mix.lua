@@ -18,9 +18,16 @@ BuilderGroup {
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 1100,
         InstanceCount = 5,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 1100
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { MIBC, 'HasParagon', {} },
+            --{ MIBC, 'HasParagon', {} },
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'CanBuildCategory', { categories.MOBILE * categories.AIR * categories.EXPERIMENTAL - categories.SATELLITE } },
@@ -48,9 +55,16 @@ BuilderGroup {
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 1100,
         InstanceCount = 3,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 1100
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { MIBC, 'HasParagon', {} },
+            --{ MIBC, 'HasParagon', {} },
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'CanBuildCategory', { categories.MOBILE * categories.NAVAL * categories.EXPERIMENTAL } },
@@ -79,9 +93,16 @@ BuilderGroup {
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 1100,
         InstanceCount = 5,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 1100
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { MIBC, 'HasParagon', {} },
+            --{ MIBC, 'HasParagon', {} },
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.ENGINEER * categories.TECH3 - categories.STATIONASSISTPOD }},
@@ -107,9 +128,16 @@ BuilderGroup {
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 1100,
         InstanceCount = 10,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 1100
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { MIBC, 'HasParagon', {} },
+            --{ MIBC, 'HasParagon', {} },
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.ENGINEER * categories.TECH3 - categories.STATIONASSISTPOD }},
@@ -137,9 +165,16 @@ BuilderGroup {
         BuilderName = 'Paragon Turbo U2 TML',
         PlatoonTemplate = 'T2EngineerBuilder',
         Priority = 1000,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 1000
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { MIBC, 'HasParagon', {} },
+            --{ MIBC, 'HasParagon', {} },
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 30, categories.STRUCTURE * categories.TACTICALMISSILEPLATFORM }},
@@ -170,9 +205,16 @@ BuilderGroup {
         Priority = 1100,
         InstanceCount = 2,
         DelayEqualBuildPlattons = {'Artillery', 20},
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 1100
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { MIBC, 'HasParagon', {} },
+            --{ MIBC, 'HasParagon', {} },
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 20, categories.STRUCTURE * categories.LAND * categories.ARTILLERY * categories.TECH3 }},
@@ -198,9 +240,16 @@ BuilderGroup {
         Priority = 1100,
         InstanceCount = 2,
         DelayEqualBuildPlattons = {'Artillery', 20},
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 1100
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { MIBC, 'HasParagon', {} },
+            --{ MIBC, 'HasParagon', {} },
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 10, categories.STRUCTURE * categories.LAND * categories.ARTILLERY * categories.EXPERIMENTAL }},
@@ -226,9 +275,16 @@ BuilderGroup {
         Priority = 1100,
         InstanceCount = 2,
         DelayEqualBuildPlattons = {'Artillery', 20},
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 1100
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { MIBC, 'HasParagon', {} },
+            --{ MIBC, 'HasParagon', {} },
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 10, categories.STRUCTURE * categories.LAND * categories.ARTILLERY * categories.EXPERIMENTAL }},
@@ -253,9 +309,16 @@ BuilderGroup {
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 1100,
         InstanceCount = 2,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 1100
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             { MIBC, 'FactionIndex', { 1 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
-            { MIBC, 'HasParagon', {} },
+            --{ MIBC, 'HasParagon', {} },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
@@ -288,9 +351,16 @@ BuilderGroup {
         BuilderName = 'U1p L UP HQ 1->2',
         PlatoonTemplate = 'T1LandFactoryUpgrade',
         Priority = 15400,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 350
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { MIBC, 'HasParagon', {} },
+            --{ MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.FACTORY * categories.LAND  * categories.TECH1} },
         },
@@ -300,9 +370,16 @@ BuilderGroup {
         BuilderName = 'U2p L UP HQ 2->3',
         PlatoonTemplate = 'T2LandFactoryUpgrade',
         Priority = 15400,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 15400
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { MIBC, 'HasParagon', {} },
+            --{ MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.FACTORY * categories.LAND  * categories.TECH2} },
         },
@@ -313,9 +390,16 @@ BuilderGroup {
         BuilderName = 'U1p A UP HQ 1->2',
         PlatoonTemplate = 'T1AirFactoryUpgrade',
         Priority = 15400,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 350
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { MIBC, 'HasParagon', {} },
+            --{ MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.FACTORY * categories.AIR  * categories.TECH1} },
         },
@@ -325,9 +409,16 @@ BuilderGroup {
         BuilderName = 'U2p A UP HQ 2->3',
         PlatoonTemplate = 'T2AirFactoryUpgrade',
         Priority = 15400,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 15400
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { MIBC, 'HasParagon', {} },
+            --{ MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.FACTORY * categories.AIR  * categories.TECH1} },
         },
@@ -338,9 +429,16 @@ BuilderGroup {
         BuilderName = 'U1p N UP HQ 1->2',
         PlatoonTemplate = 'T1SeaFactoryUpgrade',
         Priority = 15400,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 350
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { MIBC, 'HasParagon', {} },
+            --{ MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.FACTORY * categories.NAVAL  * categories.TECH1} },
         },
@@ -350,8 +448,15 @@ BuilderGroup {
         BuilderName = 'U2p N UP HQ 2->3',
         PlatoonTemplate = 'T2SeaFactoryUpgrade',
         Priority = 15400,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 15400
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
-            { MIBC, 'HasParagon', {} },
+            --{ MIBC, 'HasParagon', {} },
             -- Don't build it if...
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.FACTORY * categories.NAVAL  * categories.TECH1} },
@@ -369,9 +474,16 @@ BuilderGroup {
         BuilderName = 'U3p Air Scouts',
         PlatoonTemplate = 'T3AirScout',
         Priority = 1000,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 1000
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { MIBC, 'HasParagon', {} },
+            --{ MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 8, categories.INTELLIGENCE * categories.AIR * categories.TECH3 }},
             { UCBC, 'UnitCapCheckLess', { 0.98 } },
@@ -382,9 +494,16 @@ BuilderGroup {
         BuilderName = 'U3p Air Fighter < Gunship',
         PlatoonTemplate = 'T3AirFighter',
         Priority = 350,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 350
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { MIBC, 'HasParagon', {} },
+            --{ MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
 --            { UCBC, 'HaveUnitRatioUveso', { 3.00, categories.MOBILE * categories.AIR * categories.HIGHALTAIR * categories.ANTIAIR * categories.TECH3 - categories.GROUNDATTACK, '<=',categories.MOBILE * categories.AIR * categories.GROUNDATTACK * categories.TECH3 - categories.HIGHALTAIR } },
             -- Respect UnitCap
@@ -397,9 +516,16 @@ BuilderGroup {
         BuilderName = 'U3p Air Gunship < Fighter',
         PlatoonTemplate = 'T3AirGunship',
         Priority = 350,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 350
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { MIBC, 'HasParagon', {} },
+            --{ MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
 --            { UCBC, 'HaveUnitRatioUveso', { 3.00, categories.MOBILE * categories.AIR * categories.GROUNDATTACK * categories.TECH3 - categories.HIGHALTAIR, '<=',categories.MOBILE * categories.AIR * categories.HIGHALTAIR * categories.ANTIAIR - categories.GROUNDATTACK } },
             -- Respect UnitCap
@@ -412,9 +538,16 @@ BuilderGroup {
         BuilderName = 'U3p Air Bomber < 20',
         PlatoonTemplate = 'T3AirBomber',
         Priority = 350,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 350
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { MIBC, 'HasParagon', {} },
+            --{ MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
 --            { UCBC, 'HaveLessThanUnitsWithCategory', { 20, categories.MOBILE * categories.AIR * categories.BOMBER }},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.MOBILE * categories.AIR  * categories.BOMBER }},
@@ -434,11 +567,18 @@ BuilderGroup {
         BuilderName = 'U3P Siege Assault Bot',
         PlatoonTemplate = 'T3LandBot',
         Priority = 350,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 350
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             { MIBC, 'FactionIndex', { 1, 3, 4, 5 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             -- Have we the eco to build it ?
-            { MIBC, 'HasParagon', {} },
+            --{ MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
             -- Respect UnitCap
             { UCBC, 'UnitCapCheckLess', { 0.98 } },
@@ -449,10 +589,17 @@ BuilderGroup {
         BuilderName = 'U3P SniperBots',
         PlatoonTemplate = 'T3SniperBots',
         Priority = 350,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 350
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
-            { MIBC, 'HasParagon', {} },
+            --{ MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
             -- Respect UnitCap
             { UCBC, 'UnitCapCheckLess', { 0.98 } },
@@ -463,10 +610,17 @@ BuilderGroup {
         BuilderName = 'U3P ArmoredAssault',
         PlatoonTemplate = 'T3ArmoredAssault',
         Priority = 350,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 350
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
-            { MIBC, 'HasParagon', {} },
+            --{ MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
             -- Respect UnitCap
             { UCBC, 'UnitCapCheckLess', { 0.98 } },
@@ -477,10 +631,17 @@ BuilderGroup {
         BuilderName = 'U3P Mobile Artillery',
         PlatoonTemplate = 'T3LandArtillery',
         Priority = 350,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 350
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
-            { MIBC, 'HasParagon', {} },
+            --{ MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioUveso', { 0.1, categories.MOBILE * categories.LAND * categories.INDIRECTFIRE * categories.TECH3, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE } },
             -- Respect UnitCap
@@ -492,10 +653,17 @@ BuilderGroup {
         BuilderName = 'U3P Mobile AA',
         PlatoonTemplate = 'T3LandAA',
         Priority = 350,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 350
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
-            { MIBC, 'HasParagon', {} },
+            --{ MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioUveso', { 0.05, categories.MOBILE * categories.LAND * categories.ANTIAIR * categories.TECH3, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE } },
             -- Respect UnitCap
@@ -507,10 +675,17 @@ BuilderGroup {
         BuilderName = 'U3P MobileShields',
         PlatoonTemplate = 'T3MobileShields',
         Priority = 350,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 350
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
-            { MIBC, 'HasParagon', {} },
+            --{ MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioUveso', { 0.1, categories.MOBILE * categories.LAND * categories.SHIELD, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE * categories.TECH3 } },
             { UCBC, 'HaveUnitRatioUveso', { 0.1, categories.MOBILE * categories.LAND * categories.STEALTHFIELD, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE * categories.TECH3 } },

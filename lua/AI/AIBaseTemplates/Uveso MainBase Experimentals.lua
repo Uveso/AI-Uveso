@@ -36,7 +36,6 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- Build MassExtractors / Creators
         'U1 MassBuilders',                           -- Priority = 1100
-        'U1 Mass Capture',
         -- Upgrade MassExtractors from Tech 1 to 2 AND from Tech 2 to 3
         'U123 ExtractorUpgrades',                      -- Priority = 1100
         -- Build Mass Storage (Adjacency)

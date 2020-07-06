@@ -1,4 +1,3 @@
-
 -- For Platoon debugging. Unremarking the debugline will print all platoons with priority inside game.log
 TheOldPlatoonBuilder = PlatoonBuilder
 PlatoonBuilder = Class(TheOldPlatoonBuilder) {
@@ -21,6 +20,21 @@ PlatoonBuilder = Class(TheOldPlatoonBuilder) {
         return true
     end,
 
+    CalculatePriority = function(self, builderManager)
+        self.PriorityAltered = false
+        if Builders[self.BuilderName].PriorityFunction then
+            --LOG('Calculate new Priority '..self.BuilderName..' - '..self.Priority)
+            local newPri = Builders[self.BuilderName]:PriorityFunction(self.Brain)
+            if newPri != self.Priority then
+                LOG('* AI-Uveso: PlatoonBuilder New Priority:  [[  '..self.Priority..' -> '..newPri..'  ]]  -  '..self.BuilderName..'.')
+                self.Priority = newPri
+                self.PriorityAltered = true
+            end
+            --LOG('TheOldPlatoonBuilder New Priority '..self.BuilderName..' - '..self.Priority)
+        end
+        return self.PriorityAltered
+    end,
+
 }
 
 -- For Platoon debugging. Unremarking the debugline will print all platoons with priority inside game.log
@@ -37,6 +51,21 @@ FactoryBuilder = Class(TheOldFactoryBuilder) {
         return true
     end,
 
+    CalculatePriority = function(self, builderManager)
+        self.PriorityAltered = false
+        if Builders[self.BuilderName].PriorityFunction then
+            --LOG('Calculate new Priority '..self.BuilderName..' - '..self.Priority)
+            local newPri = Builders[self.BuilderName]:PriorityFunction(self.Brain)
+            if newPri != self.Priority then
+                LOG('* AI-Uveso: FactoryBuilder New Priority:  [[  '..self.Priority..' -> '..newPri..'  ]]  -  '..self.BuilderName..'.')
+                self.Priority = newPri
+                self.PriorityAltered = true
+            end
+            --LOG('TheOldFactoryBuilder New Priority '..self.BuilderName..' - '..self.Priority)
+        end
+        return self.PriorityAltered
+    end,
+
 }
 
 -- For Platoon debugging. Unremarking the debugline will print all platoons with priority inside game.log
@@ -50,6 +79,21 @@ EngineerBuilder = Class(TheOldEngineerBuilder) {
         self.EconomyCost = { Mass = 0, Energy = 0 }
 
         return true
+    end,
+
+    CalculatePriority = function(self, builderManager)
+        self.PriorityAltered = false
+        if Builders[self.BuilderName].PriorityFunction then
+            --LOG('Calculate new Priority '..self.BuilderName..' - '..self.Priority)
+            local newPri = Builders[self.BuilderName]:PriorityFunction(self.Brain)
+            if newPri != self.Priority then
+                LOG('* AI-Uveso: EngineerBuilder New Priority:  [[  '..self.Priority..' -> '..newPri..'  ]]  -  '..self.BuilderName..'.')
+                self.Priority = newPri
+                self.PriorityAltered = true
+            end
+            --LOG('TheOldEngineerBuilder New Priority '..self.BuilderName..' - '..self.Priority)
+        end
+        return self.PriorityAltered
     end,
 
 }

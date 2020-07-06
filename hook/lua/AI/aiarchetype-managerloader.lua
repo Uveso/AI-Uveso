@@ -38,6 +38,7 @@ function ExecutePlan(aiBrain)
         aiBrain:ForkThread(EcoManagerThread, aiBrain)
         aiBrain:ForkThread(BaseTargetManagerThread, aiBrain)
         aiBrain:ForkThread(MarkerGridThreatManagerThread, aiBrain)
+        aiBrain:ForkThread(PriorityManagerThread, aiBrain)
     end
     if aiBrain.PBM then
         aiBrain:PBMSetEnabled(false)
@@ -91,10 +92,8 @@ function EcoManagerThread(aiBrain)
     end
     LOG('* AI-Uveso: Function EcoManagerThread() started! CheatFactor:('..repr(CheatMultOption)..') - BuildFactor:('..repr(BuildMultOption)..') ['..aiBrain.Nickname..']')
     local Engineers = {}
-    local paragons = {}
     local Factories = {}
     local lastCall = 0
-    local ParaComplete
     local allyScore
     local enemyScore
     local MyArmyRatio
@@ -104,20 +103,8 @@ function EcoManagerThread(aiBrain)
         coroutine.yield(5)
         Engineers = aiBrain:GetListOfUnits(categories.ENGINEER - categories.STATIONASSISTPOD - categories.COMMAND - categories.SUBCOMMANDER, false, false) -- also gets unbuilded units (planed to build)
         StationPods = aiBrain:GetListOfUnits(categories.STATIONASSISTPOD, false, false) -- also gets unbuilded units (planed to build)
-        paragons = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC * categories.ENERGYPRODUCTION * categories.MASSPRODUCTION, false, false)
         Factories = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.FACTORY, false, false)
-        ParaComplete = 0
         bussy = false
-        for unitNum, unit in paragons do
-            if unit:GetFractionComplete() >= 1 then
-                ParaComplete = ParaComplete + 1
-            end
-        end
-        if ParaComplete >= 1 then
-            aiBrain.HasParagon = true
-        else
-            aiBrain.HasParagon = false
-        end
         -- Cheatbuffs
         if personality == 'uvesooverwhelm' then
             -- Check every 30 seconds for new armyStats to change ECO
@@ -238,7 +225,7 @@ function EcoManagerThread(aiBrain)
             -- if the unit is dead, continue with the next unit
             if unit.Dead then continue end
             -- Do we have a Paragon like structure ?
-            if aiBrain.HasParagon then
+            if aiBrain.PriorityManager.HasParagon then
                 if unit:IsPaused() then
                     unit:SetPaused( false )
                     bussy = true
@@ -280,7 +267,7 @@ function EcoManagerThread(aiBrain)
             if not unit.UnitBeingAssist then continue end
 
             -- Do we have a Paragon like structure ?
-            if aiBrain.HasParagon then
+            if aiBrain.PriorityManager.HasParagon then
                 if unit:IsPaused() then
                     unit:SetPaused( false )
                     bussy = true
@@ -448,7 +435,7 @@ function EcoManagerThread(aiBrain)
             if unit.PlatoonHandle.PlatoonData.Assist.AssisteeType then continue end
             -- Only Check units that are assisting
             if not unit.UnitBeingBuilt then continue end
-            if aiBrain.HasParagon or unit.noPause then
+            if aiBrain.PriorityManager.HasParagon or unit.noPause then
                 if unit:IsPaused() then
                     unit:SetPaused( false )
                     bussy = true
@@ -509,7 +496,7 @@ function EcoManagerThread(aiBrain)
         for _, unit in Factories do
             -- if the unit is dead, continue with the next unit
             if unit.Dead then continue end
-            if aiBrain.HasParagon then
+            if aiBrain.PriorityManager.HasParagon then
                 if unit:IsPaused() then
                     unit:SetPaused( false )
                     bussy = true
@@ -536,7 +523,7 @@ function EcoManagerThread(aiBrain)
         end
 
 -- ECO for STRUCTURES
-        if aiBrain:GetEconomyTrend('ENERGY') < 0.0 and not aiBrain.HasParagon then
+        if aiBrain:GetEconomyTrend('ENERGY') < 0.0 and not aiBrain.PriorityManager.HasParagon then
             -- Emergency Low Energy
             if aiBrain:GetEconomyStoredRatio('ENERGY') < 0.75 then
                 -- Disable Nuke
@@ -562,7 +549,7 @@ function EcoManagerThread(aiBrain)
             continue -- while true do
         end
 
-        if aiBrain:GetEconomyTrend('MASS') < 0.0 and not aiBrain.HasParagon then
+        if aiBrain:GetEconomyTrend('MASS') < 0.0 and not aiBrain.PriorityManager.HasParagon then
             -- Emergency Low Mass
             if aiBrain:GetEconomyStoredRatio('MASS') < 0.01 then
                 -- Disable AntiNuke
@@ -574,7 +561,7 @@ function EcoManagerThread(aiBrain)
                 end
             end
         elseif aiBrain:GetEconomyStoredRatio('ENERGY') > 0.95 then
-            if aiBrain:GetEconomyStoredRatio('MASS') > 0.50 or aiBrain.HasParagon then
+            if aiBrain:GetEconomyStoredRatio('MASS') > 0.50 or aiBrain.PriorityManager.HasParagon then
                 -- Enable NormalShields
                 if EnableUnits(aiBrain, categories.STRUCTURE * categories.SHIELD - categories.EXPERIMENTAL, 'NormalShields') then bussy = true
                 -- Enable ExperimentalShields
@@ -588,7 +575,7 @@ function EcoManagerThread(aiBrain)
                 -- Enable Nuke
                 elseif EnableUnits(aiBrain, categories.STRUCTURE * categories.NUKE * (categories.TECH3 + categories.EXPERIMENTAL), 'Nuke') then bussy = true
                 end
-            elseif aiBrain:GetEconomyStoredRatio('MASS') > 0.25 or aiBrain.HasParagon then
+            elseif aiBrain:GetEconomyStoredRatio('MASS') > 0.25 or aiBrain.PriorityManager.HasParagon then
                 -- Enable NormalShields
                 if EnableUnits(aiBrain, categories.STRUCTURE * categories.SHIELD - categories.EXPERIMENTAL, 'NormalShields') then bussy = true
                 -- Enable ExperimentalShields
@@ -1147,3 +1134,156 @@ function MarkerGridThreatManagerThread(aiBrain)
     end
 end
 
+function PriorityManagerThread(aiBrain)
+    local UCBC = import('/lua/editor/UnitCountBuildConditions.lua')
+    local MABC = import('/lua/editor/MarkerBuildConditions.lua')
+    local MIBC = import('/lua/editor/MiscBuildConditions.lua')
+    aiBrain.PriorityManager = {}
+    aiBrain.PriorityManager.NeedEnergyTech1num = true
+    aiBrain.PriorityManager.NeedEnergyTech2num = true
+    aiBrain.PriorityManager.NeedEnergyTech3num = true
+    aiBrain.PriorityManager.NeedEnergyTech4num = true
+    aiBrain.PriorityManager.NeedMass = true
+    aiBrain.PriorityManager.NeedMobileLand = true
+    aiBrain.PriorityManager.NeedMobileHover = true
+    aiBrain.PriorityManager.NeedMobileAmphibious = true
+    aiBrain.PriorityManager.NeedMobileAir = true
+    aiBrain.PriorityManager.NeedMobileNaval = true
+    while GetGameTimeSeconds() < 10 + aiBrain:GetArmyIndex() do
+        coroutine.yield(10)
+    end
+    LOG('* AI-Uveso: Function PriorityManagerThread() started. ['..aiBrain.Nickname..']')
+    local paragons = {}
+    local ParaComplete
+    local EnergyTech1num
+    local EnergyTech2num
+    local EnergyTech3num
+    local EnergyTech4num
+    local LANDSTRUCTURE
+    local LANDMOBILE
+    local AIRSTRUCTURE
+    local AIRMOBILE
+    local NAVALSTRUCTURE
+    local NAVALMOBILE
+    while aiBrain.Result ~= "defeat" do
+        coroutine.yield(50)
+        -- Check for NoRush
+
+        -- Check for Paragon
+        ParaComplete = 0
+        paragons = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC * categories.ENERGYPRODUCTION * categories.MASSPRODUCTION, false, false)
+        for unitNum, unit in paragons do
+            if unit:GetFractionComplete() >= 1 then
+                ParaComplete = ParaComplete + 1
+            end
+        end
+        if ParaComplete >= 1 then
+            aiBrain.PriorityManager.HasParagon = true
+        else
+            aiBrain.PriorityManager.HasParagon = false
+        end
+
+        -- Check for energy need. (EngineerBuilder)
+        EnergyTech1num = aiBrain:GetCurrentUnits(categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH1)
+        EnergyTech2num = aiBrain:GetCurrentUnits(categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH2)
+        EnergyTech3num = aiBrain:GetCurrentUnits(categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3)
+        EnergyTech4num = ParaComplete
+        if EnergyTech2num < 1 and EnergyTech3num < 1 and EnergyTech4num < 1 then
+            aiBrain.PriorityManager.NeedEnergyTech1 = true
+        else
+            aiBrain.PriorityManager.NeedEnergyTech1 = false
+        end
+        if EnergyTech3num < 1 and EnergyTech4num < 1 then
+            aiBrain.PriorityManager.NeedEnergyTech2 = true
+        else
+            aiBrain.PriorityManager.NeedEnergyTech2 = false
+        end
+        if EnergyTech4num < 1 then
+            aiBrain.PriorityManager.NeedEnergyTech3 = true
+        else
+            aiBrain.PriorityManager.NeedEnergyTech3 = false
+        end
+        if EnergyTech4num < 3 then
+            aiBrain.PriorityManager.NeedEnergyTech4 = true
+        else
+            aiBrain.PriorityManager.NeedEnergyTech4 = false
+        end
+
+        -- Check for mass need. (EngineerBuilder)
+        -- Are less then 10% of all structures are extractors ? - Then we need more
+        if UCBC.HaveUnitRatioVersusCap(aiBrain, 0.10, '<', categories.STRUCTURE * categories.MASSEXTRACTION)
+        -- Do we have a free mass spot ? - Then we can more
+        and MABC.CanBuildOnMass(aiBrain, 'MAIN', 1000, -500, 1, 0, 'AntiSurface', 1) then
+            aiBrain.PriorityManager.NeedMass = true
+        else
+            aiBrain.PriorityManager.NeedMass = false
+        end
+
+        -- check for layer with least units
+        LANDFACTORY = aiBrain:GetCurrentUnits(categories.LAND * categories.FACTORY)
+        LANDMOBILE = aiBrain:GetCurrentUnits(categories.LAND * categories.MOBILE - categories.SCOUT - categories.ENGINEER)
+        AIRFACTORY = aiBrain:GetCurrentUnits(categories.AIR * categories.FACTORY)
+        AIRMOBILE = aiBrain:GetCurrentUnits(categories.AIR * categories.MOBILE - categories.SCOUT - categories.TRANSPORTFOCUS)
+        NAVALFACTORY = aiBrain:GetCurrentUnits(categories.NAVAL * categories.FACTORY)
+        NAVALMOBILE = aiBrain:GetCurrentUnits(categories.NAVAL * categories.MOBILE)
+LOG(' '..LANDFACTORY..'/'..AIRFACTORY..'/'..NAVALFACTORY..' - LANDMOBILE: '..LANDMOBILE..' - AIRMOBILE: '..AIRMOBILE..' - NAVALMOBILE: '..NAVALMOBILE..'.')
+        -- can we build more units ?
+        if UCBC.HaveUnitRatioVersusCap(aiBrain, 0.45, '<', categories.MOBILE) then
+            LOG('1')
+            if (LANDMOBILE >= AIRMOBILE) and (LANDMOBILE >= NAVALMOBILE) then
+            LOG('2')
+                aiBrain.PriorityManager.NeedMobileLand = false
+                aiBrain.PriorityManager.NeedMobileHover = false
+                aiBrain.PriorityManager.NeedMobileAmphibious = false
+                if AIRFACTORY > 0 then
+                    aiBrain.PriorityManager.NeedMobileAir = true
+                end
+                if NAVALFACTORY > 0 then
+                    aiBrain.PriorityManager.NeedMobileNaval = true
+                end
+            elseif (AIRMOBILE >= LANDMOBILE) and (AIRMOBILE >= NAVALMOBILE) then
+            LOG('3')
+                if LANDFACTORY > 0 then
+                    if MIBC.CanPathToCurrentEnemy(aiBrain,true) then
+                        aiBrain.PriorityManager.NeedMobileLand = true
+                    else
+                        aiBrain.PriorityManager.NeedMobileLand = false
+                    end
+                    aiBrain.PriorityManager.NeedMobileHover = true
+                    aiBrain.PriorityManager.NeedMobileAmphibious = true
+                end
+                aiBrain.PriorityManager.NeedMobileAir = false
+                if NAVALFACTORY > 0 then
+                    aiBrain.PriorityManager.NeedMobileNaval = true
+                end
+            elseif (NAVALMOBILE >= LANDMOBILE) and (NAVALMOBILE >= AIRMOBILE) then
+            LOG('4')
+                if LANDFACTORY > 0 then
+                    if MIBC.CanPathToCurrentEnemy(aiBrain,true) then
+                        aiBrain.PriorityManager.NeedMobileLand = true
+                    else
+                        aiBrain.PriorityManager.NeedMobileLand = false
+                    end
+                    aiBrain.PriorityManager.NeedMobileHover = true
+                    aiBrain.PriorityManager.NeedMobileAmphibious = true
+                end
+                if AIRFACTORY > 0 then
+                    aiBrain.PriorityManager.NeedMobileAir = true
+                end
+                aiBrain.PriorityManager.NeedMobileNaval = false
+            else
+            LOG('5')
+
+            end
+        -- we can't build more units because of unitcap
+        else
+            LOG('6')
+            aiBrain.PriorityManager.NeedMobileLand = false
+            aiBrain.PriorityManager.NeedMobileHover = false
+            aiBrain.PriorityManager.NeedMobileAmphibious = false
+            aiBrain.PriorityManager.NeedMobileAir = false
+            aiBrain.PriorityManager.NeedMobileNaval = false
+        end
+
+    end
+end

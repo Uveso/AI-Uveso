@@ -1468,7 +1468,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         local drainEnergy = (BuildRate / enhancement.BuildTime) * enhancement.BuildCostEnergy
         --LOG('* AI-Uveso: drain: m'..drainMass..'  e'..drainEnergy..'')
         --LOG('* AI-Uveso: Pump: m'..math.floor(aiBrain:GetEconomyTrend('MASS')*10)..'  e'..math.floor(aiBrain:GetEconomyTrend('ENERGY')*10)..'')
-        if aiBrain.HasParagon then
+        if aiBrain.PriorityManager.HasParagon then
             return true
         elseif aiBrain:GetEconomyTrend('MASS')*10 >= drainMass and aiBrain:GetEconomyTrend('ENERGY')*10 >= drainEnergy
         and aiBrain:GetEconomyStoredRatio('MASS') > 0.05 and aiBrain:GetEconomyStoredRatio('ENERGY') > 0.95 then
@@ -1967,7 +1967,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
         while aiBrain:PlatoonExists(self) do
             local ratio = 0.3
-            if aiBrain.HasParagon then
+            if aiBrain.PriorityManager.HasParagon then
                 -- if we have a paragon, upgrade mex as fast as possible. Mabye we lose the paragon and need mex again.
                 ratio = 1.0
             elseif aiBrain:GetEconomyIncome('MASS') * 10 > 600 then
@@ -2932,7 +2932,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                     for k, Assister in platoonUnits do
                         if not Assister.Dead and Assister ~= unit then
                             -- only assist if we have the energy for it
-                            if aiBrain:GetEconomyTrend('ENERGY')*10 > 5000 or aiBrain.HasParagon then
+                            if aiBrain:GetEconomyTrend('ENERGY')*10 > 5000 or aiBrain.PriorityManager.HasParagon then
                                 --LOG('* AI-Uveso: * SACUTeleportAI: IssueGuard({Assister}, unit) ')
                                 IssueGuard({Assister}, unit)
                             end

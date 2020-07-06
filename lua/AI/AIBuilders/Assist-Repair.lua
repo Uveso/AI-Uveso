@@ -676,8 +676,15 @@ BuilderGroup {
         PlatoonTemplate = 'U1Reclaim',
         Priority = 19600,
         InstanceCount = 1,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 0
+            else
+                return 19600
+            end
+        end,
         BuilderConditions = {
-            { MIBC, 'HasNotParagon', {} },
+            --{ MIBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.COMMAND }},
@@ -693,8 +700,15 @@ BuilderGroup {
         PlatoonTemplate = 'U1Reclaim',
         Priority = 19500,
         InstanceCount = 1,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 0
+            else
+                return 19500
+            end
+        end,
         BuilderConditions = {
-            { MIBC, 'HasNotParagon', {} },
+            --{ MIBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.COMMAND }},
@@ -710,8 +724,15 @@ BuilderGroup {
         PlatoonTemplate = 'U1Reclaim',
         Priority = 18000,
         InstanceCount = 1,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 0
+            else
+                return 18000
+            end
+        end,
         BuilderConditions = {
-            { MIBC, 'HasNotParagon', {} },
+            --{ MIBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 8, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD}},
@@ -726,9 +747,16 @@ BuilderGroup {
         PlatoonTemplate = 'U1Reclaim',
         Priority = 17400,
         InstanceCount = 1,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 0
+            else
+                return 17400
+            end
+        end,
         BuilderConditions = {
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
-            { MIBC, 'HasNotParagon', {} },
+            --{ MIBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
             { EBC, 'LessThanEconStorageRatio', { 0.80, 2.00}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
@@ -744,9 +772,16 @@ BuilderGroup {
         PlatoonTemplate = 'U1Reclaim',
         Priority = 17400,
         InstanceCount = 2,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 0
+            else
+                return 17400
+            end
+        end,
         BuilderConditions = {
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
-            { MIBC, 'HasNotParagon', {} },
+            --{ MIBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
             { EBC, 'LessThanEconStorageRatio', { 0.80, 2.00}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
@@ -763,9 +798,16 @@ BuilderGroup {
         PlatoonTemplate = 'U1Reclaim',
         Priority = 17400,
         InstanceCount = 6,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 0
+            else
+                return 17400
+            end
+        end,
         BuilderConditions = {
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
-            { MIBC, 'HasNotParagon', {} },
+            --{ MIBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
             { EBC, 'LessThanEconStorageRatio', { 0.80, 2.00}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
