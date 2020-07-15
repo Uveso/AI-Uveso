@@ -52,9 +52,9 @@ AI = {
             key = 'uvesooverwhelmcheat',
             name = "<LOC Uveso_0017>AIx: Uveso Overwhelm",
         },
-        {
-            key = 'uvesonullcheat',
-            name = "AIx: Uveso Null",
-        },
+--        {
+--            key = 'uvesonullcheat',
+--            name = "AIx: Uveso Null",
+--        },
     },
 }

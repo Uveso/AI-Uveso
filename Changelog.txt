@@ -1,13 +1,15 @@
 *************************************************************************************************************************************
-v87 (01.Jul.2020)
+v87 (15.Jul.2020)
 
+- New: AI works now with No-Rush game mode.
+- New: A new Priority manager is now changing priorities on build platoons
 - Fix: Last move location inside EngineerMoveWithSafePath is no longer ignored.
 - Fix: ProcessBuildCommand is now blocking the buildplace for massestractors while the engineer is on its way.
 - Fix: Buildconditions no longer return true if omni sensor is not present.
 - Opt: ProcessBuildCommand is now respecting SurfaceHeight/TerrainHeight (Water build place).
 - Opt: Free engineers are now assisting other engineers
 - Opt: Ecomanager reacts a bit faster now on enabling buildings on high energy ECO.
-
+- Opt: Naval structures are now buildable from mainbase without any naval area marker
 
 *************************************************************************************************************************************
 v86 (21.May.2020)

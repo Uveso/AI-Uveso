@@ -1420,22 +1420,3 @@ function PriorityManagerThread(aiBrain)
 
     end
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

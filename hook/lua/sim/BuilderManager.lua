@@ -10,6 +10,10 @@ BuilderManager = Class(TheOldBuilderManager) {
 
     -- Hook for not deleting priority 0 platoons
     SortBuilderList = function(self, bType)
+       -- Only use this with AI-Uveso
+        if not self.Brain.Uveso then
+            return TheOldBuilderManager.SortBuilderList(self, bType)
+        end
         -- Make sure there is a type
         if not self.BuilderData[bType] then
             error('*BUILDMANAGER ERROR: Trying to sort platoons of invalid builder type - ' .. bType)
@@ -34,6 +38,10 @@ BuilderManager = Class(TheOldBuilderManager) {
 
     -- Hook for Uveso AI debug
     GetHighestBuilder = function(self,bType,factory)
+       -- Only use this with AI-Uveso
+        if not self.Brain.Uveso then
+            return TheOldBuilderManager.GetHighestBuilder(self,bType,factory)
+        end
         if not self.BuilderData[bType] then
             error('*BUILDERMANAGER ERROR: Invalid builder type - ' .. bType)
         end
