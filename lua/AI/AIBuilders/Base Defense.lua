@@ -577,7 +577,7 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 4, categories.ENERGYPRODUCTION * categories.TECH3 } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.NUKE * categories.STRUCTURE}},
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.NUKE } },
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 8, categories.STRUCTURE * categories.NUKE * (categories.TECH3 + categories.EXPERIMENTAL) }},
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 20, categories.STRUCTURE * categories.NUKE * (categories.TECH3 + categories.EXPERIMENTAL) }},
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<', categories.STRUCTURE * categories.DEFENSE } },
         },
@@ -857,7 +857,7 @@ BuilderGroup {
             { UCBC, 'CheckBuildPlattonDelay', { 'Artillery' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 2.0, 300.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.38, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.EXPERIMENTAL}},
             -- Do we need additional conditions to build it ?
@@ -892,10 +892,9 @@ BuilderGroup {
             { UCBC, 'CheckBuildPlattonDelay', { 'Artillery' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 2.0, 300.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ARTILLERY } },
-            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 3, categories.STRUCTURE * categories.ARTILLERY * categories.EXPERIMENTAL }},
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.EXPERIMENTAL}},
             -- Respect UnitCap
         },
@@ -927,10 +926,9 @@ BuilderGroup {
             { UCBC, 'CheckBuildPlattonDelay', { 'Artillery' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 2.0, 300.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ARTILLERY } },
-            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 3, categories.STRUCTURE * categories.ARTILLERY * categories.EXPERIMENTAL }},
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.EXPERIMENTAL}},
         },
         BuilderType = 'Any',

@@ -1378,89 +1378,77 @@ end
 function CreateNavalExpansions()
     local StartMarker = {}
     local NavalMarker = {}
+    local Blocked
+    local markerInfo
     -- Deleting all NavalExpansions markers from MASTERCHAIN
     for nodename, markerInfo in Scenario.MasterChain._MASTERCHAIN_.Markers or {} do
         if markerInfo['type'] == 'Naval Area' then
             Scenario.MasterChain._MASTERCHAIN_.Markers[nodename] = nil
         end
     end
-    -- Get a list of all startareas
-    for nodename, markerInfo in Scenario.MasterChain._MASTERCHAIN_.Markers or {} do
-        if string.find(nodename, 'ARMY_') then
-            StartMarker[nodename] = markerInfo['position']
-        end
-    end
     -- Search for naval areas
-    for BASEnodename, BASEpostition in StartMarker or {} do
-        for NavalAreaPerBase = 1, 3 do
-            -- Search for nearest Water marker
-            local low = false
-            local bestMarker = false
-            for Y = 0, MarkerCountY - 1 do
-                for X = 0, MarkerCountX - 1 do
-                    if Scenario.MasterChain._MASTERCHAIN_.Markers['Water'..X..'-'..Y] then
-                        local Blocked
-                        local adjancentsAmp = 0
-                        markerInfo = Scenario.MasterChain._MASTERCHAIN_.Markers['Water'..X..'-'..Y]
-                        local dist = VDist2(BASEpostition[1], BASEpostition[3], markerInfo['position'][1], markerInfo['position'][3])
-                        -- Is this marker the closest ?
-                        -- (We are not looking for the closest spot at the moment.)
-                        --if not low or dist < low then
-                        if 1 == 1 then
-                            -- check if the marker is valid:
-                            for YD = -2, 2 do
-                                for XD = -2, 2 do
-                                    if (YD == -2 or YD == 2) or (XD == -2 or XD == 2) then
-                                        -- check if we have an amphibious but not water marker on this position (land)
-                                        if not Scenario.MasterChain._MASTERCHAIN_.Markers['Water'..(X+XD)..'-'..(Y+YD)]
-                                        and Scenario.MasterChain._MASTERCHAIN_.Markers['Amphibious'..(X+XD)..'-'..(Y+YD)] then
-                                            -- check if we have a path from this marker to our naval area markers
-                                            markerInfoAdja = Scenario.MasterChain._MASTERCHAIN_.Markers['Amphibious'..(X+XD)..'-'..(Y+YD)]
-                                            local adjancents = STR_GetTokens(markerInfoAdja.adjacentTo or '', ' ')
-                                            if adjancents[0] then
-                                                for i, node in adjancents do
-                                                    -- checking node, if it has a conection from land to water.
-                                                    for YA = -1, 1 do
-                                                        for XA = -1, 1 do
-                                                            if node == 'Amphibious'..(X+XA)..'-'..(Y+YA) then
-                                                                adjancentsAmp = adjancentsAmp + 1
-                                                            end
-                                                        end
-                                                    end
-                                                end
+    for Y = 0, MarkerCountY - 1 do
+        for X = 0, MarkerCountX - 1 do
+            markerInfo = Scenario.MasterChain._MASTERCHAIN_.Markers['Water'..X..'-'..Y]
+            if not markerInfo then
+                continue
+            end
+            Blocked = false
+            -- check if we are in the middle of water nodes 3x3 grid
+            for YW = -1, 1 do
+                for XW = -1, 1 do
+                    if not Scenario.MasterChain._MASTERCHAIN_.Markers['Water'..X+XW..'-'..Y+YW] then
+                        Blocked = true
+                        break
+                    end
+                end
+            end
+            if Blocked then
+                continue
+            end
+            Blocked = true
+            -- check if we are sourrounded with land nodes (transition water/land) 5x5 grid
+            for YD = -2, 2 do
+                for XD = -2, 2 do
+                    if (YD == -2 or YD == 2) or (XD == -2 or XD == 2) then
+                        if Scenario.MasterChain._MASTERCHAIN_.Markers['Land'..(X+XD)..'-'..(Y+YD)] then
+                            -- check if we have an amphibious way from his land node to water
+                            local adjancents = STR_GetTokens(Scenario.MasterChain._MASTERCHAIN_.Markers['Amphibious'..(X+XD)..'-'..(Y+YD)].adjacentTo or '', ' ')
+                            if adjancents[0] then
+                                for i, node in adjancents do
+                                    -- checking node, if it has a conection to our naval marker
+                                    for YA = -1, 1 do
+                                        for XA = -1, 1 do
+                                            if node == 'Amphibious'..(X+XA)..'-'..(Y+YA) then
+                                                Blocked = false
+                                                break
                                             end
                                         end
                                     end
                                 end
                             end
-                            local adjancents = STR_GetTokens(markerInfo.adjacentTo or '', ' ')
-                            -- if we have a marker with less than 8 (0-7) adjancents or it has no passable connection to land then don't use it.
-                            if not adjancents[7] or adjancentsAmp < 1 then
-                                Blocked = true
-                                continue
-                            end
-                            -- check if we have a naval marker close to this area
-                            for index, NAVALpostition in NavalMarker do
-                                local dist = VDist2( markerInfo['position'][1], markerInfo['position'][3], NAVALpostition[1], NAVALpostition[3])
-                                -- is this marker farther away than 60
-                                if dist < 60 then
-                                    Blocked = true
-                                    break
-                                end
-                            end
-                            if not Blocked then
-                                low = dist
-                                bestMarker = markerInfo['position']
-                            end
                         end
                     end
                 end
             end
-            if bestMarker then
-                table.insert(NavalMarker, bestMarker)
+            if Blocked then
+                continue
+            end
+            -- check if we have a naval marker close to this area
+            for index, NAVALpostition in NavalMarker do
+                local dist = VDist2( markerInfo['position'][1], markerInfo['position'][3], NAVALpostition[1], NAVALpostition[3])
+                -- is this marker farther away than 60
+                if dist < 60 then
+                    Blocked = true
+                    break
+                end
+            end
+            if not Blocked then
+                table.insert(NavalMarker, markerInfo['position'])
             end
         end
     end
+
     -- creating real naval Marker
     for index, NAVALpostition in NavalMarker do
         -- add data for a real marker
@@ -1893,7 +1881,7 @@ function ValidateModFilesUveso()
     local ModName = '* '..'AI-Uveso'
     local ModDirectory = 'AI-Uveso'
     local Files = 87
-    local Bytes = 1598572
+    local Bytes = 1682693
     LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Running from: '..debug.getinfo(1).source..'.')
     LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Checking directory /mods/ for '..ModDirectory..'...')
     local FilesInFolder = DiskFindFiles('/mods/', '*.*')
