@@ -330,12 +330,20 @@ end
 
 --            { UCBC, 'NavalBaseWithLeastUnits', {  60, 'LocationType', categories.STRUCTURE * categories.FACTORY * categories.NAVAL }}, -- radius, LocationType, categoryUnits
 function NavalBaseWithLeastUnits(aiBrain, radius, locationType, unitCategory)
-    local navalMarkers = AIUtils.AIGetMarkerLocations(aiBrain, 'Naval Area')
+    local startmarker = AIUtils.AIGetMarkerLocations(aiBrain, 'Start Location')
+    local navalmarker = AIUtils.AIGetMarkerLocations(aiBrain, 'Naval Area')
+    local marker = table.merged( navalmarker , startmarker )
     local lowloc
     local lownum
+    local baseManagerName
     for baseLocation, managers in aiBrain.BuilderManagers do
-        for index, marker in navalMarkers do
-            if marker.Name == baseLocation then
+        for index, marker in marker do
+            if marker.Name == 'ARMY_'..aiBrain:GetArmyIndex() then
+                baseManagerName = 'MAIN'
+            else
+                baseManagerName = marker.Name
+            end
+            if baseManagerName == baseLocation then
                 local pos = aiBrain.BuilderManagers[baseLocation].EngineerManager.Location
                 local numUnits = aiBrain:GetNumUnitsAroundPoint(unitCategory, pos, radius , 'Ally')
                 local numFactory = aiBrain:GetNumUnitsAroundPoint(categories.STRUCTURE * categories.FACTORY * categories.NAVAL, pos, radius , 'Ally')

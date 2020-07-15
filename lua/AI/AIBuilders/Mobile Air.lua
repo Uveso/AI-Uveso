@@ -19,6 +19,13 @@ BuilderGroup {
         BuilderName = 'U1A Interceptors Minimum',
         PlatoonTemplate = 'T1AirFighter',
         Priority = 150,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech1 then
+                return 150
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { MIBC, 'HasNotParagon', {} },
@@ -28,7 +35,6 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.ANTIAIR }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.TECH3 - categories.ENGINEER }},
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -36,6 +42,13 @@ BuilderGroup {
         BuilderName = 'U1A Bomber Minimum',
         PlatoonTemplate = 'T1AirBomber',
         Priority = 150,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech1 then
+                return 150
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { MIBC, 'HasNotParagon', {} },
@@ -45,7 +58,6 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.TECH3 - categories.ENGINEER }},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 2, categories.MOBILE * categories.AIR  * categories.BOMBER }},
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -53,6 +65,13 @@ BuilderGroup {
         BuilderName = 'U1A Interceptors',
         PlatoonTemplate = 'T1AirFighter',
         Priority = 150,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech1 then
+                return 150
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
@@ -62,7 +81,6 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD } },
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.BOMBER, '<=', categories.MOBILE * categories.AIR } },
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
         BuilderType = 'Air',
     },
@@ -70,6 +88,13 @@ BuilderGroup {
         BuilderName = 'U1A Gunship',
         PlatoonTemplate = 'T1Gunship',
         Priority = 150,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech1 then
+                return 150
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
@@ -77,7 +102,6 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioUveso', { 0.5, categories.MOBILE * categories.AIR * categories.GROUNDATTACK, '<',categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.BOMBER - categories.GROUNDATTACK } },
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
         BuilderType = 'Air',
     },
@@ -85,6 +109,13 @@ BuilderGroup {
         BuilderName = 'U1A Bomber',
         PlatoonTemplate = 'T1AirBomber',
         Priority = 150,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech1 then
+                return 150
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
@@ -92,7 +123,6 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioUveso', { 0.3, categories.MOBILE * categories.AIR * categories.BOMBER, '<',categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK } },
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
         BuilderType = 'Air',
     },
@@ -103,6 +133,13 @@ BuilderGroup {
         BuilderName = 'U2A Air Fighter',
         PlatoonTemplate = 'T2FighterBomber',
         Priority = 250,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech2 then
+                return 250
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
@@ -112,22 +149,28 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.BOMBER, '<=', categories.MOBILE * categories.AIR } },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD } },
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
         BuilderType = 'Air',
     },
     Builder {
         BuilderName = 'U2A Air Gunship',
         PlatoonTemplate = 'T2AirGunship',
-        Priority = 250,
+        Priority = 360,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech2 or aiBrain.PriorityManager.BuildMobileAirTech3 then
+                return 360
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.11, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.GROUNDATTACK * categories.TECH3 }},
             { UCBC, 'HaveUnitRatioUveso', { 0.5, categories.MOBILE * categories.AIR * categories.GROUNDATTACK, '<',categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.BOMBER - categories.GROUNDATTACK } },
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
         BuilderType = 'Air',
     },
@@ -135,16 +178,22 @@ BuilderGroup {
         BuilderName = 'U2A TorpedoBomber',
         PlatoonTemplate = 'T2AirTorpedoBomber',
         Priority = 250,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech2 then
+                return 250
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 11, categories.MOBILE * categories.AIR * categories.ANTINAVY }},
-            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.NAVAL * categories.FACTORY } },
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.NAVAL } },
             { UCBC, 'HaveUnitRatioUveso', { 0.5, categories.MOBILE * categories.AIR * categories.ANTINAVY, '<',categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.BOMBER } },
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -152,6 +201,13 @@ BuilderGroup {
         BuilderName = 'U2A TorpedoBomber WaterMap',
         PlatoonTemplate = 'T2AirTorpedoBomber',
         Priority = 250,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech2 then
+                return 250
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             { MIBC, 'CanPathToCurrentEnemy', { false } },
             -- Have we the eco to build it ?
@@ -159,10 +215,9 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.11, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 80, categories.MOBILE * categories.AIR * categories.ANTINAVY }},
-            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.NAVAL * categories.FACTORY } },
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.NAVAL } },
             { UCBC, 'HaveUnitRatioUveso', { 0.5, categories.MOBILE * categories.AIR * categories.ANTINAVY, '<',categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.BOMBER } },
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -173,6 +228,13 @@ BuilderGroup {
         BuilderName = 'U3A Air Fighter min',
         PlatoonTemplate = 'T3AirFighter',
         Priority = 360,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech3 then
+                return 360
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
@@ -180,7 +242,6 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.HIGHALTAIR * categories.ANTIAIR * categories.TECH3 - categories.GROUNDATTACK }},
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -188,6 +249,13 @@ BuilderGroup {
         BuilderName = 'U3A Air Gunship min',
         PlatoonTemplate = 'T3AirGunship',
         Priority = 360,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech3 then
+                return 360
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
@@ -195,7 +263,6 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.GROUNDATTACK * categories.TECH3 - categories.HIGHALTAIR }},
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -203,6 +270,13 @@ BuilderGroup {
         BuilderName = 'U3A Air Fighter',
         PlatoonTemplate = 'T3AirFighter',
         Priority = 350,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech3 then
+                return 350
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
@@ -210,7 +284,6 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.BOMBER, '<=', categories.MOBILE * categories.AIR } },
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -218,6 +291,13 @@ BuilderGroup {
         BuilderName = 'U3A Air Gunship',
         PlatoonTemplate = 'T3AirGunship',
         Priority = 340,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech3 then
+                return 340
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
@@ -225,7 +305,6 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioUveso', { 0.5, categories.MOBILE * categories.AIR * categories.GROUNDATTACK, '<',categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.BOMBER - categories.GROUNDATTACK } },
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -233,6 +312,13 @@ BuilderGroup {
         BuilderName = 'U3A Air Bomber',
         PlatoonTemplate = 'T3AirBomber',
         Priority = 350,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech3 then
+                return 350
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
@@ -240,7 +326,6 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioUveso', { 0.1, categories.MOBILE * categories.AIR * categories.BOMBER, '<',categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.BOMBER } },
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -248,6 +333,13 @@ BuilderGroup {
         BuilderName = 'U3A TorpedoBomber',
         PlatoonTemplate = 'T3TorpedoBomber',
         Priority = 350,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech3 then
+                return 350
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
@@ -255,7 +347,6 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioUveso', { 0.3, categories.MOBILE * categories.AIR * categories.ANTINAVY, '<',categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.BOMBER } },
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -263,6 +354,13 @@ BuilderGroup {
         BuilderName = 'U3A TorpedoBomber WaterMap',
         PlatoonTemplate = 'T3TorpedoBomber',
         Priority = 350,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech3 then
+                return 350
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             { MIBC, 'CanPathToCurrentEnemy', { false } },
             -- Have we the eco to build it ?
@@ -271,7 +369,6 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioUveso', { 0.5, categories.MOBILE * categories.AIR * categories.ANTINAVY, '<',categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.BOMBER } },
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -289,6 +386,13 @@ BuilderGroup {
         BuilderName = 'U1S Interceptors Minimum',
         PlatoonTemplate = 'T1AirFighter',
         Priority = 150,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech1 then
+                return 150
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { MIBC, 'HasNotParagon', {} },
@@ -298,7 +402,6 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.ANTIAIR }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.TECH3 - categories.ENGINEER }},
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -306,6 +409,13 @@ BuilderGroup {
         BuilderName = 'U1S Bomber Minimum',
         PlatoonTemplate = 'T1AirBomber',
         Priority = 150,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech1 then
+                return 150
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { MIBC, 'HasNotParagon', {} },
@@ -315,7 +425,6 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.TECH3 - categories.ENGINEER }},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 2, categories.MOBILE * categories.AIR  * categories.BOMBER }},
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -323,6 +432,13 @@ BuilderGroup {
         BuilderName = 'U1S Interceptors',
         PlatoonTemplate = 'T1AirFighter',
         Priority = 150,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech1 then
+                return 150
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
@@ -332,7 +448,6 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD } },
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.BOMBER, '<=', categories.MOBILE * categories.AIR } },
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
         BuilderType = 'Air',
     },
@@ -340,6 +455,13 @@ BuilderGroup {
         BuilderName = 'U1S Gunship',
         PlatoonTemplate = 'T1Gunship',
         Priority = 150,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech1 then
+                return 150
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
@@ -347,7 +469,6 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioUveso', { 0.5, categories.MOBILE * categories.AIR * categories.GROUNDATTACK, '<',categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.BOMBER - categories.GROUNDATTACK } },
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
         BuilderType = 'Air',
     },
@@ -355,6 +476,13 @@ BuilderGroup {
         BuilderName = 'U1S Bomber',
         PlatoonTemplate = 'T1AirBomber',
         Priority = 150,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech1 then
+                return 150
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
@@ -362,7 +490,6 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioUveso', { 0.3, categories.MOBILE * categories.AIR * categories.BOMBER, '<',categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK } },
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
         BuilderType = 'Air',
     },
@@ -373,8 +500,14 @@ BuilderGroup {
         BuilderName = 'U2S Air Fighter',
         PlatoonTemplate = 'T2FighterBomber',
         Priority = 250,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech2 then
+                return 250
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.02, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
@@ -382,22 +515,28 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.BOMBER, '<=', categories.MOBILE * categories.AIR } },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD } },
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
         BuilderType = 'Air',
     },
     Builder {
         BuilderName = 'U2S Air Gunship',
         PlatoonTemplate = 'T2AirGunship',
-        Priority = 250,
+        Priority = 360,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech2 or aiBrain.PriorityManager.BuildMobileAirTech3 then
+                return 360
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.02, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.GROUNDATTACK * categories.TECH3 }},
             { UCBC, 'HaveUnitRatioUveso', { 0.5, categories.MOBILE * categories.AIR * categories.GROUNDATTACK, '<',categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.BOMBER - categories.GROUNDATTACK } },
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
         BuilderType = 'Air',
     },
@@ -405,16 +544,22 @@ BuilderGroup {
         BuilderName = 'U2S TorpedoBomber',
         PlatoonTemplate = 'T2AirTorpedoBomber',
         Priority = 250,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech2 then
+                return 250
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.02, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 11, categories.MOBILE * categories.AIR * categories.ANTINAVY }},
-            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.NAVAL * categories.FACTORY } },
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.NAVAL } },
             { UCBC, 'HaveUnitRatioUveso', { 0.5, categories.MOBILE * categories.AIR * categories.ANTINAVY, '<',categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.BOMBER } },
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -422,6 +567,13 @@ BuilderGroup {
         BuilderName = 'U2S TorpedoBomber WaterMap',
         PlatoonTemplate = 'T2AirTorpedoBomber',
         Priority = 250,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech2 then
+                return 250
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             { MIBC, 'CanPathToCurrentEnemy', { false } },
             -- Have we the eco to build it ?
@@ -429,10 +581,9 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.02, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 80, categories.MOBILE * categories.AIR * categories.ANTINAVY }},
-            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.NAVAL * categories.FACTORY } },
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.NAVAL } },
             { UCBC, 'HaveUnitRatioUveso', { 0.5, categories.MOBILE * categories.AIR * categories.ANTINAVY, '<',categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.BOMBER } },
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -443,6 +594,13 @@ BuilderGroup {
         BuilderName = 'U3S Air Fighter min',
         PlatoonTemplate = 'T3AirFighter',
         Priority = 360,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech3 then
+                return 360
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
@@ -450,7 +608,6 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.HIGHALTAIR * categories.ANTIAIR * categories.TECH3 - categories.GROUNDATTACK }},
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -458,6 +615,13 @@ BuilderGroup {
         BuilderName = 'U3S Air Gunship min',
         PlatoonTemplate = 'T3AirGunship',
         Priority = 360,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech3 then
+                return 360
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
@@ -465,7 +629,6 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.GROUNDATTACK * categories.TECH3 - categories.HIGHALTAIR }},
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -473,6 +636,13 @@ BuilderGroup {
         BuilderName = 'U3S Air Fighter',
         PlatoonTemplate = 'T3AirFighter',
         Priority = 350,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech3 then
+                return 350
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
@@ -480,7 +650,6 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.BOMBER, '<=', categories.MOBILE * categories.AIR } },
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -488,6 +657,13 @@ BuilderGroup {
         BuilderName = 'U3S Air Gunship',
         PlatoonTemplate = 'T3AirGunship',
         Priority = 340,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech3 then
+                return 340
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
@@ -495,7 +671,6 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioUveso', { 0.5, categories.MOBILE * categories.AIR * categories.GROUNDATTACK, '<',categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.BOMBER - categories.GROUNDATTACK } },
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -503,6 +678,13 @@ BuilderGroup {
         BuilderName = 'U3S Air Bomber',
         PlatoonTemplate = 'T3AirBomber',
         Priority = 350,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech3 then
+                return 350
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
@@ -510,7 +692,6 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioUveso', { 0.1, categories.MOBILE * categories.AIR * categories.BOMBER, '<',categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.BOMBER } },
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -518,6 +699,13 @@ BuilderGroup {
         BuilderName = 'U3S TorpedoBomber',
         PlatoonTemplate = 'T3TorpedoBomber',
         Priority = 350,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech3 then
+                return 350
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
@@ -525,7 +713,6 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioUveso', { 0.3, categories.MOBILE * categories.AIR * categories.ANTINAVY, '<',categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.BOMBER } },
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -533,6 +720,13 @@ BuilderGroup {
         BuilderName = 'U3S TorpedoBomber WaterMap',
         PlatoonTemplate = 'T3TorpedoBomber',
         Priority = 350,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech3 then
+                return 350
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             { MIBC, 'CanPathToCurrentEnemy', { false } },
             -- Have we the eco to build it ?
@@ -541,7 +735,6 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioUveso', { 0.5, categories.MOBILE * categories.AIR * categories.ANTINAVY, '<',categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.BOMBER } },
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -559,6 +752,13 @@ BuilderGroup {
         BuilderName = 'U1 MilitaryZone Fighter',
         PlatoonTemplate = 'T1AirFighter',
         Priority = 18500,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech1 then
+                return 18500
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { MIBC, 'HasNotParagon', {} },
@@ -569,7 +769,6 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.ANTIAIR * categories.TECH3 }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.TECH3 - categories.ENGINEER }},
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -577,6 +776,13 @@ BuilderGroup {
         BuilderName = 'U1 MilitaryZone Bomber',
         PlatoonTemplate = 'T1AirBomber',
         Priority = 18500,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech1 then
+                return 18500
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { MIBC, 'HasNotParagon', {} },
@@ -585,7 +791,6 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.BOMBER }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.TECH3 - categories.ENGINEER }},
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -596,6 +801,13 @@ BuilderGroup {
         BuilderName = 'U1 Interceptors Minimum',
         PlatoonTemplate = 'T1AirFighter',
         Priority = 150,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech1 then
+                return 150
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { MIBC, 'HasNotParagon', {} },
@@ -605,7 +817,6 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.ANTIAIR }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.TECH3 - categories.ENGINEER }},
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -613,6 +824,13 @@ BuilderGroup {
         BuilderName = 'U1 Bomber Minimum',
         PlatoonTemplate = 'T1AirBomber',
         Priority = 150,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech1 then
+                return 150
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { MIBC, 'HasNotParagon', {} },
@@ -622,7 +840,6 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 6, categories.MOBILE * categories.AIR  * categories.BOMBER }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.TECH3 - categories.ENGINEER }},
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -631,6 +848,13 @@ BuilderGroup {
         BuilderName = 'U1 Interceptors',
         PlatoonTemplate = 'T1AirFighter',
         Priority = 150,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech1 then
+                return 150
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { MIBC, 'HasNotParagon', {} },
@@ -641,7 +865,6 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.LAND * categories.FACTORY * categories.TECH1 }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.TECH3 - categories.ENGINEER }},
              -- Respect UnitCap
-           { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -649,6 +872,13 @@ BuilderGroup {
         BuilderName = 'U1 Gunship',
         PlatoonTemplate = 'T1Gunship',
         Priority = 150,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech1 then
+                return 150
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { MIBC, 'HasNotParagon', {} },
@@ -659,7 +889,6 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.LAND * categories.FACTORY * categories.TECH1 }},
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 6, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD}},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 2, categories.MOBILE * categories.AIR  * categories.GROUNDATTACK }},
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioUveso', { 1.0, categories.MOBILE * categories.AIR * categories.GROUNDATTACK, '<',categories.MOBILE * categories.AIR * categories.HIGHALTAIR * categories.ANTIAIR } },
         },
@@ -669,6 +898,13 @@ BuilderGroup {
         BuilderName = 'U1 Bomber',
         PlatoonTemplate = 'T1AirBomber',
         Priority = 150,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech1 then
+                return 150
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { MIBC, 'HasNotParagon', {} },
@@ -681,7 +917,6 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 2, categories.MOBILE * categories.AIR  * categories.BOMBER }},
             { UCBC, 'HaveUnitRatioUveso', { 1.0, categories.MOBILE * categories.AIR * categories.BOMBER, '<',categories.MOBILE * categories.AIR * categories.HIGHALTAIR * categories.ANTIAIR } },
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -692,6 +927,13 @@ BuilderGroup {
         BuilderName = 'U2 Air Fighter',
         PlatoonTemplate = 'T2FighterBomber',
         Priority = 250,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech2 then
+                return 250
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
@@ -700,7 +942,6 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 10, categories.MOBILE * categories.AIR * categories.HIGHALTAIR * categories.ANTIAIR * categories.TECH3 }},
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.ENERGYPRODUCTION * categories.TECH3 }},
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -708,6 +949,13 @@ BuilderGroup {
         BuilderName = 'U2 Air Gunship',
         PlatoonTemplate = 'T2AirGunship',
         Priority = 360,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech2 or aiBrain.PriorityManager.BuildMobileAirTech3 then
+                return 360
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
@@ -716,7 +964,6 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.GROUNDATTACK * categories.TECH3 }},
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.ENERGYPRODUCTION * categories.TECH3 }},
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -724,17 +971,23 @@ BuilderGroup {
         BuilderName = 'U2 TorpedoBomber < 20',
         PlatoonTemplate = 'T2AirTorpedoBomber',
         Priority = 250,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech2 then
+                return 250
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.12, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.ENERGYPRODUCTION * categories.TECH3 }},
-            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.NAVAL * categories.FACTORY } },
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.NAVAL } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 20, categories.MOBILE * categories.AIR * categories.ANTINAVY }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.ANTINAVY * categories.TECH3 }},
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -742,6 +995,13 @@ BuilderGroup {
         BuilderName = 'U2 TorpedoBomber WaterMap',
         PlatoonTemplate = 'T2AirTorpedoBomber',
         Priority = 360,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech2 then
+                return 360
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             { MIBC, 'CanPathToCurrentEnemy', { false } },
             -- Have we the eco to build it ?
@@ -752,7 +1012,6 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsWithCategory', { 80, categories.MOBILE * categories.AIR * categories.ANTINAVY }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.ANTINAVY * categories.TECH3 }},
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE - categories.ENGINEER } },
         },
         BuilderType = 'Air',
     },
@@ -763,6 +1022,13 @@ BuilderGroup {
         BuilderName = 'U3 Air Fighter min',
         PlatoonTemplate = 'T3AirFighter',
         Priority = 370,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech3 then
+                return 370
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
@@ -770,7 +1036,6 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.HIGHALTAIR * categories.ANTIAIR * categories.TECH3 - categories.GROUNDATTACK }},
             -- Respect UnitCap
-            { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
         BuilderType = 'Air',
     },
@@ -778,6 +1043,13 @@ BuilderGroup {
         BuilderName = 'U3 Air Gunship min',
         PlatoonTemplate = 'T3AirGunship',
         Priority = 370,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech3 then
+                return 370
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
@@ -785,7 +1057,6 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.GROUNDATTACK * categories.TECH3 - categories.HIGHALTAIR }},
             -- Respect UnitCap
-            { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
         BuilderType = 'Air',
     },
@@ -793,6 +1064,13 @@ BuilderGroup {
         BuilderName = 'U3 Air Fighter < Gunship',
         PlatoonTemplate = 'T3AirFighter',
         Priority = 350,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech3 then
+                return 350
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
@@ -800,7 +1078,6 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioUveso', { 2.50, categories.MOBILE * categories.AIR * categories.HIGHALTAIR * categories.ANTIAIR - categories.GROUNDATTACK, '<=',categories.MOBILE * categories.AIR * categories.GROUNDATTACK - categories.HIGHALTAIR } },
             -- Respect UnitCap
-            { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
         BuilderType = 'Air',
     },
@@ -808,6 +1085,13 @@ BuilderGroup {
         BuilderName = 'U3 Air Gunship < Fighter',
         PlatoonTemplate = 'T3AirGunship',
         Priority = 350,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech3 then
+                return 350
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
@@ -815,7 +1099,6 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioUveso', { 2.50, categories.MOBILE * categories.AIR * categories.HIGHALTAIR * categories.ANTIAIR - categories.GROUNDATTACK, '>=',categories.MOBILE * categories.AIR * categories.GROUNDATTACK - categories.HIGHALTAIR } },
             -- Respect UnitCap
-            { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
         BuilderType = 'Air',
     },
@@ -823,6 +1106,13 @@ BuilderGroup {
         BuilderName = 'U3 Air Bomber < 20',
         PlatoonTemplate = 'T3AirBomber',
         Priority = 350,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech3 then
+                return 350
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
@@ -832,7 +1122,6 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.MOBILE * categories.EXPERIMENTAL }},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.MOBILE * categories.AIR  * categories.BOMBER }},
             -- Respect UnitCap
-            { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
         BuilderType = 'Air',
     },
@@ -840,17 +1129,23 @@ BuilderGroup {
         BuilderName = 'U3 TorpedoBomber < 20',
         PlatoonTemplate = 'T3TorpedoBomber',
         Priority = 350,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech3 then
+                return 350
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 20, categories.MOBILE * categories.AIR * categories.ANTINAVY }},
-            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.NAVAL * categories.FACTORY } },
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.NAVAL } },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.MOBILE * categories.EXPERIMENTAL }},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.MOBILE * categories.AIR  * categories.ANTINAVY }},
             -- Respect UnitCap
-            { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
         BuilderType = 'Air',
     },
@@ -858,6 +1153,13 @@ BuilderGroup {
         BuilderName = 'U3 TorpedoBomber WaterMap',
         PlatoonTemplate = 'T3TorpedoBomber',
         Priority = 350,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech3 then
+                return 350
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             { MIBC, 'CanPathToCurrentEnemy', { false } },
             -- Have we the eco to build it ?
@@ -865,7 +1167,6 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             -- Respect UnitCap
-            { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
         BuilderType = 'Air',
     },
@@ -944,6 +1245,13 @@ BuilderGroup {
         BuilderName = 'U1 Air Transport 1st',
         PlatoonTemplate = 'T1AirTransport',
         Priority = 18500, 
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 18500
+            end
+        end,
         BuilderConditions = {
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
@@ -960,6 +1268,13 @@ BuilderGroup {
         BuilderName = 'U1 Air Transport pool',
         PlatoonTemplate = 'T1AirTransport',
         Priority = 400, 
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 400
+            end
+        end,
         BuilderConditions = {
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
@@ -977,6 +1292,13 @@ BuilderGroup {
         BuilderName = 'U1 Air Transport requested',
         PlatoonTemplate = 'T1AirTransport',
         Priority = 400, 
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 400
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
@@ -992,6 +1314,13 @@ BuilderGroup {
         BuilderName = 'U2 Air Transport',
         PlatoonTemplate = 'T2AirTransport',
         Priority = 500,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 500
+            end
+        end,
         BuilderConditions = {
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
@@ -1008,6 +1337,13 @@ BuilderGroup {
         BuilderName = 'U3 Air Transport',
         PlatoonTemplate = 'T3AirTransport',
         Priority = 600,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 600
+            end
+        end,
         BuilderConditions = {
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
@@ -1033,6 +1369,13 @@ BuilderGroup {
         PlatoonTemplate = 'T1AirScout',
         Priority = 1000,
         DelayEqualBuildPlattons = {'Scouts', 10},
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 1000
+            end
+        end,
         BuilderConditions = {
             { UCBC, 'CheckBuildPlattonDelay', { 'Scouts' }},
             -- Have we the eco to build it ?
@@ -1049,6 +1392,13 @@ BuilderGroup {
         PlatoonTemplate = 'T3AirScout',
         Priority = 1000,
         DelayEqualBuildPlattons = {'Scouts', 10},
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 1000
+            end
+        end,
         BuilderConditions = {
             { UCBC, 'CheckBuildPlattonDelay', { 'Scouts' }},
             -- Have we the eco to build it ?
@@ -1071,6 +1421,13 @@ BuilderGroup {
         PlatoonTemplate = 'T1AirScoutForm',
         Priority = 5000,
         InstanceCount = 3,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 5000
+            end
+        end,
         BuilderConditions = {
             -- When do we want to form this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.AIR * categories.SCOUT } },
@@ -1083,6 +1440,13 @@ BuilderGroup {
         PlatoonAddBehaviors = { 'AirUnitRefit' },
         Priority = 5000,
         InstanceCount = 5,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 5000
+            end
+        end,
         BuilderConditions = {
             -- When do we want to form this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.AIR * categories.INTELLIGENCE } },
@@ -1107,6 +1471,13 @@ BuilderGroup {
         PlatoonTemplate = 'U123-TorpedoBomber 1 100',
         Priority = 90,                                                          -- Priority. 1000 is normal.
         InstanceCount = 5,                                                      -- Number of plattons that will be formed.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 90
+            end
+        end,
         BuilderData = {
             SearchRadius = BasePanicZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
@@ -1133,6 +1504,13 @@ BuilderGroup {
         PlatoonTemplate = 'U123-TorpedoBomber 1 100',
         Priority = 80,                                                          -- Priority. 1000 is normal.
         InstanceCount = 6,                                                      -- Number of plattons that will be formed.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 80
+            end
+        end,
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                                    -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
@@ -1164,6 +1542,13 @@ BuilderGroup {
         PlatoonTemplate = 'U123-TorpedoBomber 1 100',
         Priority = 70,
         InstanceCount = 2,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 70
+            end
+        end,
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
@@ -1197,6 +1582,13 @@ BuilderGroup {
         PlatoonTemplate = 'U123-TorpedoBomber 1 100',
         Priority = 60,
         InstanceCount = 3,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 60
+            end
+        end,
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
@@ -1226,6 +1618,13 @@ BuilderGroup {
         PlatoonTemplate = 'U123-Torpedo-Intercept 3 5',
         Priority = 50,                                                          -- Priority. 1000 is normal.
         InstanceCount = 4,                                                      -- Number of plattons that will be formed.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 50
+            end
+        end,
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
@@ -1266,6 +1665,13 @@ BuilderGroup {
         PlatoonAddBehaviors = { 'AirUnitRefit' },                               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
         Priority = 90,                                                          -- Priority. 1000 is normal.
         InstanceCount = 2,                                                      -- Number of plattons that will be formed.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 90
+            end
+        end,
         BuilderData = {
             SearchRadius = BasePanicZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
@@ -1296,6 +1702,13 @@ BuilderGroup {
         PlatoonAddBehaviors = { 'AirUnitRefit' },                               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
         Priority = 90,                                                          -- Priority. 1000 is normal.
         InstanceCount = 2,                                                      -- Number of plattons that will be formed.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 90
+            end
+        end,
         BuilderData = {
             SearchRadius = BasePanicZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
@@ -1332,6 +1745,13 @@ BuilderGroup {
         PlatoonAddBehaviors = { 'AirUnitRefit' },                               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
         Priority = 80,                                                          -- Priority. 1000 is normal.
         InstanceCount = 4,                                                      -- Number of plattons that will be formed.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 80
+            end
+        end,
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                                    -- Searchradius from main base for new target. (A 5x5 Map is 256 high)
             GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
@@ -1360,6 +1780,13 @@ BuilderGroup {
         PlatoonAddBehaviors = { 'AirUnitRefit' },                               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
         Priority = 81,                                                          -- Priority. 1000 is normal.
         InstanceCount = 2,                                                      -- Number of plattons that will be formed.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 81
+            end
+        end,
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                                    -- Searchradius from main base for new target. (A 5x5 Map is 256 high)
             GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
@@ -1388,6 +1815,13 @@ BuilderGroup {
         PlatoonAddBehaviors = { 'AirUnitRefit' },                               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
         Priority = 82,                                                          -- Priority. 1000 is normal.
         InstanceCount = 1,                                                      -- Number of plattons that will be formed.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 82
+            end
+        end,
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                                    -- Searchradius from main base for new target. (A 5x5 Map is 256 high)
             GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
@@ -1416,6 +1850,13 @@ BuilderGroup {
         PlatoonAddBehaviors = { 'AirUnitRefit' },                               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
         Priority = 85,                                                          -- Priority. 1000 is normal.
         InstanceCount = 2,                                                      -- Number of plattons that will be formed.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 85
+            end
+        end,
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                                    -- Searchradius for new target.
             GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
@@ -1443,6 +1884,13 @@ BuilderGroup {
         PlatoonAddBehaviors = { 'AirUnitRefit' },                               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
         Priority = 85,                                                          -- Priority. 1000 is normal.
         InstanceCount = 2,                                                      -- Number of plattons that will be formed.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 85
+            end
+        end,
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                                    -- Searchradius for new target.
             GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
@@ -1470,6 +1918,13 @@ BuilderGroup {
         PlatoonAddBehaviors = { 'AirUnitRefit' },                               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
         Priority = 92,                                                          -- Priority. 1000 is normal.
         InstanceCount = 1,                                                      -- Number of plattons that will be formed.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 92
+            end
+        end,
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                                    -- Searchradius for new target.
             GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
@@ -1514,6 +1969,13 @@ BuilderGroup {
         PlatoonAddBehaviors = { 'AirUnitRefit' },                               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
         Priority = 80,                                                          -- Priority. 1000 is normal.
         InstanceCount = 1,                                                      -- Number of plattons that will be formed.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 80
+            end
+        end,
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                                    -- Searchradius for new target.
             GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
@@ -1558,6 +2020,13 @@ BuilderGroup {
         PlatoonTemplate = 'U12-Gunship-Intercept 3 5',                          -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesAir.lua"
         Priority = 67,                                                          -- Priority. 1000 is normal.
         InstanceCount = 4,                                                      -- Number of plattons that will be formed.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 67
+            end
+        end,
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
@@ -1590,6 +2059,13 @@ BuilderGroup {
         PlatoonTemplate = 'U12-Bomber-Intercept 3 5',                          -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesAir.lua"
         Priority = 67,                                                          -- Priority. 1000 is normal.
         InstanceCount = 3,                                                      -- Number of plattons that will be formed.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 67
+            end
+        end,
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                               -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
@@ -1621,6 +2097,13 @@ BuilderGroup {
         PlatoonTemplate = 'U12-Gunship-Intercept 3 5',                          -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesAir.lua"
         Priority = 68,                                                          -- Priority. 1000 is normal.
         InstanceCount = 3,                                                      -- Number of plattons that will be formed.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 68
+            end
+        end,
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
@@ -1669,6 +2152,13 @@ BuilderGroup {
         PlatoonTemplate = 'U12-Bomber-Intercept 1 3',                           -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesAir.lua"
         Priority = 68,                                                          -- Priority. 1000 is normal.
         InstanceCount = 2,                                                      -- Number of plattons that will be formed.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 68
+            end
+        end,
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
@@ -1718,6 +2208,13 @@ BuilderGroup {
         PlatoonAddBehaviors = { 'AirUnitRefit' },                               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
         Priority = 66,                                                          -- Priority. 1000 is normal.
         InstanceCount = 1,                                                      -- Number of plattons that will be formed.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 66
+            end
+        end,
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius from main base for new target. (A 5x5 Map is 256 high)
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
@@ -1746,6 +2243,13 @@ BuilderGroup {
         PlatoonAddBehaviors = { 'AirUnitRefit' },                               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
         Priority = 64,                                                          -- Priority. 1000 is normal.
         InstanceCount = 2,                                                      -- Number of plattons that will be formed.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 64
+            end
+        end,
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius from main base for new target. (A 5x5 Map is 256 high)
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
@@ -1777,6 +2281,13 @@ BuilderGroup {
         PlatoonAddBehaviors = { 'AirUnitRefit' },                               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
         Priority = 62,                                                          -- Priority. 1000 is normal.
         InstanceCount = 1,                                                      -- Number of plattons that will be formed.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 62
+            end
+        end,
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
@@ -1822,6 +2333,13 @@ BuilderGroup {
         PlatoonAddBehaviors = { 'AirUnitRefit' },                               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
         Priority = 60,                                                          -- Priority. 1000 is normal.
         InstanceCount = 1,                                                      -- Number of plattons that will be formed.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 60
+            end
+        end,
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
@@ -1875,6 +2393,13 @@ BuilderGroup {
         PlatoonTemplate = 'U123-Gunship+Bomber-Intercept 1 50',
         Priority = 50,                                                        -- Priority. 1000 is normal.
         InstanceCount = 5,                                                      -- Number of plattons that will be formed.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 50
+            end
+        end,
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
@@ -1921,6 +2446,13 @@ BuilderGroup {
         PlatoonTemplate = 'U12-AntiAirCap 1 500',
         Priority = 50,                                                          -- Priority. 1000 is normal.
         InstanceCount = 3,                                                      -- Number of plattons that will be formed.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 50
+            end
+        end,
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
@@ -1945,6 +2477,13 @@ BuilderGroup {
         PlatoonTemplate = 'U12-AntiGroundCap 1 500',
         Priority = 50,                                                        -- Priority. 1000 is normal.
         InstanceCount = 3,                                                      -- Number of plattons that will be formed.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 50
+            end
+        end,
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
@@ -1991,6 +2530,13 @@ BuilderGroup {
         PlatoonTemplate = 'U123-Fighter-Intercept 1 30',
         Priority = 50,                                                        -- Priority. 1000 is normal.
         InstanceCount = 1,                                                      -- Number of plattons that will be formed.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 50
+            end
+        end,
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
@@ -2016,6 +2562,13 @@ BuilderGroup {
         PlatoonTemplate = 'U123-Fighter-Intercept 1 50',
         Priority = 50,                                                        -- Priority. 1000 is normal.
         InstanceCount = 1,                                                      -- Number of plattons that will be formed.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 50
+            end
+        end,
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
@@ -2040,6 +2593,13 @@ BuilderGroup {
         PlatoonTemplate = 'U123-Gunship+Bomber-Intercept 1 50',
         Priority = 50,                                                        -- Priority. 1000 is normal.
         InstanceCount = 3,                                                      -- Number of plattons that will be formed.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 50
+            end
+        end,
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
@@ -2086,6 +2646,13 @@ BuilderGroup {
         PlatoonTemplate = 'U1234-AirSuicide 1 1',                             -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates"
         Priority = 30,                                                          -- Priority. 1000 is normal.
         InstanceCount = 1,                                                      -- Number of plattons that will be formed.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 30
+            end
+        end,
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)

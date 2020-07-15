@@ -3,7 +3,7 @@ local EBC = '/lua/editor/EconomyBuildConditions.lua'
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 local MIBC = '/lua/editor/MiscBuildConditions.lua'
 local MABC = '/lua/editor/MarkerBuildConditions.lua'
-
+local NoRushRadius = ScenarioInfo.norushradius or 30
 local BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua').GetDangerZoneRadii()
 
 local MaxCapMass = 0.10 -- 10% of all units can be mass extractors (STRUCTURE * MASSEXTRACTION)
@@ -72,6 +72,64 @@ BuilderGroup {
                 BuildStructures = {
                     'T1Resource',
                 },
+            }
+        }
+    },
+    Builder {
+        BuilderName = 'UC Mass 12 NoRush',
+        PlatoonTemplate = 'CommanderBuilder',
+        Priority = 19100,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 19100
+            else
+                return 0
+            end
+        end,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            -- When do we want to build this ?
+            { MABC, 'CanBuildOnMass', { 'LocationType', 12, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.STRUCTURE * categories.MASSEXTRACTION }},
+            -- Don't build it if...
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            DesiresAssist = false,
+            Construction = {
+                BuildStructures = {
+                    'T1Resource',
+                },
+            }
+        }
+    },
+    Builder {
+        BuilderName = 'U1 Mass x NoRush',
+        PlatoonTemplate = 'EngineerBuilder',
+        Priority = 17900,
+        DelayEqualBuildPlattons = {'Mass', 05},
+        InstanceCount = 2,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 17900
+            else
+                return 0
+            end
+        end,
+        BuilderConditions = {
+            { UCBC, 'CheckBuildPlattonDelay', { 'Mass' }},
+            -- Have we the eco to build it ?
+            --{ MIBC, 'HasNotParagon', {} },
+            -- When do we want to build this ?
+            { MABC, 'CanBuildOnMass', { 'LocationType', NoRushRadius, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
+            -- Don't build it if...
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Construction = {
+                BuildStructures = {
+                    'T1Resource',
+                }
             }
         }
     },
@@ -463,6 +521,30 @@ BuilderGroup {
         },
         BuilderType = 'Any',
     },
+    Builder {
+        BuilderName = 'Extractors NoRush1stPhaseActive',
+        PlatoonTemplate = 'AddToMassExtractorUpgradePlatoon',
+        Priority = 18400,
+        InstanceCount = 1,
+        FormRadius = 10000,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 18400
+            else
+                return 0
+            end
+        end,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 0, categories.MASSEXTRACTION} },
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 3, categories.MASSEXTRACTION} },
+        },
+        BuilderData = {
+            AIPlan = 'ExtractorUpgradeAI',
+        },
+        BuilderType = 'Any',
+    },
 }
 -- ===================================================-======================================================== --
 -- ==                                     Build MassStorage/Adjacency                                        == --
@@ -556,13 +638,13 @@ BuilderGroup {
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1,  categories.STRUCTURE * categories.MASSSTORAGE }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 16, categories.STRUCTURE * categories.MASSSTORAGE }},
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<', categories.STRUCTURE * (categories.MASSEXTRACTION + categories.MASSFABRICATION + categories.MASSSTORAGE) } },
-            { UCBC, 'AdjacencyCheck', { 'LocationType', categories.STRUCTURE * categories.MASSEXTRACTION * (categories.TECH2 + categories.TECH3), 100, 'ueb1106' } },
+            { UCBC, 'AdjacencyCheck', { 'LocationType', categories.STRUCTURE * categories.MASSEXTRACTION * (categories.TECH2 + categories.TECH3), 60, 'ueb1106' } },
             -- Respect UnitCap
         },
         BuilderData = {
             Construction = {
                 AdjacencyCategory = categories.STRUCTURE * categories.MASSEXTRACTION * (categories.TECH2 + categories.TECH3),
-                AdjacencyDistance = 100,
+                AdjacencyDistance = 60,
                 BuildClose = false,
                 BuildStructures = {
                     'MassStorage',
@@ -589,15 +671,15 @@ BuilderGroup {
             --{ MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1,  categories.STRUCTURE * categories.MASSSTORAGE }},
-            { UCBC, 'AdjacencyCheck', { 'LocationType', categories.MASSEXTRACTION * categories.TECH3, 100, 'ueb1106' } },
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 16, categories.STRUCTURE * categories.MASSSTORAGE }},
+            { UCBC, 'AdjacencyCheck', { 'LocationType', categories.MASSEXTRACTION * categories.TECH3, 60, 'ueb1106' } },
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 32, categories.STRUCTURE * categories.MASSSTORAGE }},
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapMass , '<', categories.STRUCTURE * (categories.MASSEXTRACTION + categories.MASSFABRICATION + categories.MASSSTORAGE) } },
         },
         BuilderData = {
             Construction = {
                 AdjacencyCategory = 'MASSEXTRACTION TECH3',
-                AdjacencyDistance = 100,
+                AdjacencyDistance = 60,
                 BuildClose = false,
                 BuildStructures = {
                     'MassStorage',

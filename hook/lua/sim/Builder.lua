@@ -3,6 +3,10 @@ TheOldPlatoonBuilder = PlatoonBuilder
 PlatoonBuilder = Class(TheOldPlatoonBuilder) {
 
     Create = function(self,brain,data,locationType)
+       -- Only use this with AI-Uveso
+        if not brain.Uveso then
+            return TheOldPlatoonBuilder.Create(self,brain,data,locationType)
+        end
         Builder.Create(self,brain,data,locationType)
         --LOG(repr(data.BuilderType)..' - '..repr(data.Priority)..' - '..repr(data.BuilderName)..' - '..repr(data.PlatoonTemplate))
         local verifyDictionary = { 'PlatoonTemplate', }
@@ -21,12 +25,16 @@ PlatoonBuilder = Class(TheOldPlatoonBuilder) {
     end,
 
     CalculatePriority = function(self, builderManager)
+       -- Only use this with AI-Uveso
+        if not self.Brain.Uveso then
+            return TheOldPlatoonBuilder.CalculatePriority(self, builderManager)
+        end
         self.PriorityAltered = false
         if Builders[self.BuilderName].PriorityFunction then
             --LOG('Calculate new Priority '..self.BuilderName..' - '..self.Priority)
             local newPri = Builders[self.BuilderName]:PriorityFunction(self.Brain)
             if newPri != self.Priority then
-                LOG('* AI-Uveso: PlatoonBuilder New Priority:  [[  '..self.Priority..' -> '..newPri..'  ]]  -  '..self.BuilderName..'.')
+                --LOG('* AI-Uveso: PlatoonBuilder New Priority:  [[  '..self.Priority..' -> '..newPri..'  ]]  -  '..self.BuilderName..'.')
                 self.Priority = newPri
                 self.PriorityAltered = true
             end
@@ -42,6 +50,10 @@ TheOldFactoryBuilder = FactoryBuilder
 FactoryBuilder = Class(TheOldFactoryBuilder) {
 
     Create = function(self,brain,data,locationType)
+       -- Only use this with AI-Uveso
+        if not brain.Uveso then
+            return TheOldFactoryBuilder.Create(self,brain,data,locationType)
+        end
         Builder.Create(self,brain,data,locationType)
         --LOG(repr(data.BuilderType)..' - '..repr(data.Priority)..' - '..repr(data.BuilderName)..' - '..repr(data.PlatoonTemplate))
         local verifyDictionary = { 'PlatoonTemplate', }
@@ -52,12 +64,16 @@ FactoryBuilder = Class(TheOldFactoryBuilder) {
     end,
 
     CalculatePriority = function(self, builderManager)
+       -- Only use this with AI-Uveso
+        if not self.Brain.Uveso then
+            return TheOldFactoryBuilder.CalculatePriority(self, builderManager)
+        end
         self.PriorityAltered = false
         if Builders[self.BuilderName].PriorityFunction then
             --LOG('Calculate new Priority '..self.BuilderName..' - '..self.Priority)
             local newPri = Builders[self.BuilderName]:PriorityFunction(self.Brain)
             if newPri != self.Priority then
-                LOG('* AI-Uveso: FactoryBuilder New Priority:  [[  '..self.Priority..' -> '..newPri..'  ]]  -  '..self.BuilderName..'.')
+                --LOG('* AI-Uveso: FactoryBuilder New Priority:  [[  '..self.Priority..' -> '..newPri..'  ]]  -  '..self.BuilderName..'.')
                 self.Priority = newPri
                 self.PriorityAltered = true
             end
@@ -73,6 +89,10 @@ TheOldEngineerBuilder = EngineerBuilder
 EngineerBuilder = Class(TheOldEngineerBuilder) {
 
     Create = function(self,brain,data, locationType)
+       -- Only use this with AI-Uveso
+        if not brain.Uveso then
+            return TheOldEngineerBuilder.Create(self,brain,data, locationType)
+        end
         PlatoonBuilder.Create(self,brain,data, locationType)
         --LOG(repr(data.BuilderType)..' - '..repr(data.Priority)..' - '..repr(data.BuilderName)..' - '..repr(data.PlatoonTemplate))
 
@@ -82,12 +102,16 @@ EngineerBuilder = Class(TheOldEngineerBuilder) {
     end,
 
     CalculatePriority = function(self, builderManager)
+       -- Only use this with AI-Uveso
+        if not self.Brain.Uveso then
+            return TheOldEngineerBuilder.CalculatePriority(self, builderManager)
+        end
         self.PriorityAltered = false
         if Builders[self.BuilderName].PriorityFunction then
             --LOG('Calculate new Priority '..self.BuilderName..' - '..self.Priority)
             local newPri = Builders[self.BuilderName]:PriorityFunction(self.Brain)
             if newPri != self.Priority then
-                LOG('* AI-Uveso: EngineerBuilder New Priority:  [[  '..self.Priority..' -> '..newPri..'  ]]  -  '..self.BuilderName..'.')
+                --LOG('* AI-Uveso: EngineerBuilder New Priority:  [[  '..self.Priority..' -> '..newPri..'  ]]  -  '..self.BuilderName..'.')
                 self.Priority = newPri
                 self.PriorityAltered = true
             end

@@ -89,6 +89,13 @@ BuilderGroup {
         Priority = 90,                                                          -- Priority. 1000 is normal.
         InstanceCount = 5,                                                      -- Number of plattons that will be formed.
         FormRadius = 10000,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 90
+            end
+        end,
         BuilderData = {
             SearchRadius = BasePanicZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
@@ -120,6 +127,13 @@ BuilderGroup {
         Priority = 80,                                                          -- Priority. 1000 is normal.
         InstanceCount = 3,                                                      -- Number of plattons that will be formed.
         FormRadius = 10000,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 80
+            end
+        end,
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                                    -- Searchradius for new target.
             GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
@@ -151,6 +165,13 @@ BuilderGroup {
         Priority = 70,                                                          -- Priority. 1000 is normal.
         InstanceCount = 3,                                                      -- Number of plattons that will be formed.
         FormRadius = 10000,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 70
+            end
+        end,
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
@@ -188,6 +209,13 @@ BuilderGroup {
         Priority = 60,                                                          -- Priority. 1000 is normal.
         InstanceCount = 5,                                                      -- Number of plattons that will be formed.
         FormRadius = 10000,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 60
+            end
+        end,
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)

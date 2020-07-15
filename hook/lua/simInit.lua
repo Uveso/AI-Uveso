@@ -1392,7 +1392,7 @@ function CreateNavalExpansions()
     end
     -- Search for naval areas
     for BASEnodename, BASEpostition in StartMarker or {} do
-        for NavalAreaPerBase = 1, 2 do
+        for NavalAreaPerBase = 1, 3 do
             -- Search for nearest Water marker
             local low = false
             local bestMarker = false
@@ -1404,7 +1404,9 @@ function CreateNavalExpansions()
                         markerInfo = Scenario.MasterChain._MASTERCHAIN_.Markers['Water'..X..'-'..Y]
                         local dist = VDist2(BASEpostition[1], BASEpostition[3], markerInfo['position'][1], markerInfo['position'][3])
                         -- Is this marker the closest ?
-                        if not low or dist < low then
+                        -- (We are not looking for the closest spot at the moment.)
+                        --if not low or dist < low then
+                        if 1 == 1 then
                             -- check if the marker is valid:
                             for YD = -2, 2 do
                                 for XD = -2, 2 do

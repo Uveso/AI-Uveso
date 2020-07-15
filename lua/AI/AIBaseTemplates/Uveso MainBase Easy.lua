@@ -61,6 +61,10 @@ BaseBuilderTemplate {
         'U123 Factory Upgrader Rush',
         -- Build Air Staging Platform to refill and repair air units.
         'U2 Air Staging Platform Builders',
+        -- Build Naval Factories
+        'U1 Factory Builders Naval',
+        -- Upgrade Naval Factories TECH1->TECH2 and TECH2->TECH3
+        'U123 Factory Upgrader Naval',
 
         -----------------------------------------------------------------------------
         -- ==== Land Units BUILDER ==== --
@@ -114,6 +118,20 @@ BaseBuilderTemplate {
 --        'U123 Air Formers EnemyZone',
 --        'U123 Air Formers Trasher',
 --        'U123 TorpedoBomber Formers',
+
+        -----------------------------------------------------------------------------
+        -- ==== Sea Units BUILDER ==== --
+        -----------------------------------------------------------------------------
+        -- Build Naval Units
+        'U123 Naval Builders',
+
+        -----------------------------------------------------------------------------
+        -- ==== Sea Units FORMER ==== --
+        -----------------------------------------------------------------------------
+        'U123 Naval Formers PanicZone',
+        'U123 Naval Formers MilitaryZone',
+--        'U123 Naval Formers EnemyZone',
+--        'U123 Naval Formers Trasher',
 
         -----------------------------------------------------------------------------
         -- ==== EXPERIMENTALS BUILDER ==== --

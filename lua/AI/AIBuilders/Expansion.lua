@@ -2,6 +2,7 @@ local categories = categories
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 local EBC = '/lua/editor/EconomyBuildConditions.lua'
 local MIBC = '/lua/editor/MiscBuildConditions.lua'
+local NoRushRadius = ScenarioInfo.norushradius or 30
 
 local MaxCapFactory = 0.024                                                     -- 2.4% of all units can be factories (STRUCTURE * FACTORY)
 local MaxCapStructure = 0.12                                                    -- 12% of all units can be structures (STRUCTURE -MASSEXTRACTION -DEFENSE -FACTORY)
@@ -14,6 +15,13 @@ BuilderGroup {
         PlatoonTemplate = 'EngineerBuilder',                                    -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
         Priority = 15400,                                                        -- Priority. Higher priotity will be build more often then lower priotity.
         InstanceCount = 4,                                                      -- Number of plattons that will be formed with this template.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 15400
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}},
@@ -27,7 +35,6 @@ BuilderGroup {
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapFactory , '<', categories.STRUCTURE * categories.FACTORY * categories.LAND } }, -- Maximal 3 factories at 125 unitcap, 12 factories at 500 unitcap...
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
         },
-        BuilderType = 'Any',
         BuilderData = {
             RequireTransport = false,
             Construction = {
@@ -49,13 +56,21 @@ BuilderGroup {
 --                    'T1GroundDefense',
                 }
             },
-        }
+        },
+        BuilderType = 'Any',
     },
     Builder {
         BuilderName = 'U1 Vacant Start Location trans',                               -- Random Builder Name.
         PlatoonTemplate = 'EngineerBuilder',                                    -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
         Priority = 15400,                                                        -- Priority. Higher priotity will be build more often then lower priotity.
         InstanceCount = 1,                                                      -- Number of plattons that will be formed with this template.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 15400
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}},
@@ -97,6 +112,13 @@ BuilderGroup {
         PlatoonTemplate = 'EngineerBuilder',                                    -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
         Priority = 15300,                                                        -- Priority. Higher priotity will be build more often then lower priotity.
         InstanceCount = 4,                                                      -- Number of plattons that will be formed with this template.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 15300
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}},
@@ -138,6 +160,13 @@ BuilderGroup {
         PlatoonTemplate = 'EngineerBuilder',                                    -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
         Priority = 15300,                                                        -- Priority. Higher priotity will be build more often then lower priotity.
         InstanceCount = 1,                                                      -- Number of plattons that will be formed with this template.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 15300
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}},
@@ -175,21 +204,28 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'U1 Naval Builder 250',                                       -- Random Builder Name.
+        BuilderName = 'U1 Naval Builder 150',                                       -- Random Builder Name.
         PlatoonTemplate = 'EngineerBuilder',                                    -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
         Priority = 17880,                                                        -- Priority. Higher priotity will be build more often then lower priotity.
         InstanceCount = 2,                                                      -- Number of plattons that will be formed with this template.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 17880
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}},
             -- When do we want to build this ?
             { UCBC, 'NavalBaseCheck', { } }, -- related to ScenarioInfo.Options.NavalExpansionsAllowed
-            { UCBC, 'NavalAreaNeedsEngineer', { 'LocationType', 250, -1000, 100, 1, 'AntiSurface' } },
+            { UCBC, 'NavalAreaNeedsEngineer', { 'LocationType', 150, -1000, 100, 1, 'AntiSurface' } },
             -- Respect UnitCap
         },
         BuilderType = 'Any',
         BuilderData = {
-            RequireTransport = false,
+            RequireTransport = true,
             Construction = {
                 BuildClose = false,
                 BaseTemplate = 'ExpansionBaseTemplates',
@@ -203,9 +239,52 @@ BuilderGroup {
                 ThreatType = 'AntiSurface',
                 ExpansionRadius = 120,
                 BuildStructures = {
-                    'T1AADefense',
                     'T1SeaFactory',
                     'T1NavalDefense',
+                    'T1AADefense',
+                }
+            }
+        }
+    },
+    Builder {
+        BuilderName = 'U1 Naval Builder 250',                                       -- Random Builder Name.
+        PlatoonTemplate = 'EngineerBuilder',                                    -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
+        Priority = 17880,                                                        -- Priority. Higher priotity will be build more often then lower priotity.
+        InstanceCount = 2,                                                      -- Number of plattons that will be formed with this template.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 17880
+            end
+        end,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}},
+            -- When do we want to build this ?
+            { UCBC, 'NavalBaseCheck', { } }, -- related to ScenarioInfo.Options.NavalExpansionsAllowed
+            { UCBC, 'NavalAreaNeedsEngineer', { 'LocationType', 250, -1000, 100, 1, 'AntiSurface' } },
+            -- Respect UnitCap
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            RequireTransport = true,
+            Construction = {
+                BuildClose = false,
+                BaseTemplate = 'ExpansionBaseTemplates',
+                ExpansionBase = true,
+                NearMarkerType = 'Naval Area',
+                LocationRadius = 250,
+                LocationType = 'LocationType',
+                ThreatMin = -1000,
+                ThreatMax = 100,
+                ThreatRings = 1,
+                ThreatType = 'AntiSurface',
+                ExpansionRadius = 120,
+                BuildStructures = {
+                    'T1SeaFactory',
+                    'T1NavalDefense',
+                    'T1AADefense',
                 }
             }
         }
@@ -215,6 +294,13 @@ BuilderGroup {
         PlatoonTemplate = 'EngineerBuilder',                                    -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
         Priority = 17860,                                                        -- Priority. Higher priotity will be build more often then lower priotity.
         InstanceCount = 2,                                                      -- Number of plattons that will be formed with this template.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 17860
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}},
@@ -225,7 +311,7 @@ BuilderGroup {
         },
         BuilderType = 'Any',
         BuilderData = {
-            RequireTransport = false,
+            RequireTransport = true,
             Construction = {
                 BuildClose = false,
                 BaseTemplate = 'ExpansionBaseTemplates',
@@ -239,9 +325,9 @@ BuilderGroup {
                 ThreatType = 'AntiSurface',
                 ExpansionRadius = 120,
                 BuildStructures = {
-                    'T1AADefense',
                     'T1SeaFactory',
                     'T1NavalDefense',
+                    'T1AADefense',
                 }
             }
         }
@@ -250,7 +336,14 @@ BuilderGroup {
         BuilderName = 'U1 Naval Builder trans',                                       -- Random Builder Name.
         PlatoonTemplate = 'EngineerBuilder',                                    -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
         Priority = 17840,                                                        -- Priority. Higher priotity will be build more often then lower priotity.
-        InstanceCount = 2,                                                      -- Number of plattons that will be formed with this template.
+        InstanceCount = 3,                                                      -- Number of plattons that will be formed with this template.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 17840
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}},
@@ -277,9 +370,9 @@ BuilderGroup {
                 ThreatType = 'AntiSurface',
                 ExpansionRadius = 120,
                 BuildStructures = {
-                    'T1AADefense',
                     'T1SeaFactory',
                     'T1NavalDefense',
+                    'T1AADefense',
                 }
             }
         }
@@ -289,6 +382,13 @@ BuilderGroup {
         PlatoonTemplate = 'EngineerBuilder',                                    -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
         Priority = 17880,                                                        -- Priority. Higher priotity will be build more often then lower priotity.
         InstanceCount = 6,                                                      -- Number of plattons that will be formed with this template.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 17880
+            end
+        end,
         BuilderConditions = {
             { MIBC, 'CanPathToCurrentEnemy', { false } },
             -- Have we the eco to build it ?
@@ -314,9 +414,53 @@ BuilderGroup {
                 ThreatType = 'AntiSurface',
                 ExpansionRadius = 120,
                 BuildStructures = {
-                    'T1AADefense',
                     'T1SeaFactory',
                     'T1NavalDefense',
+                    'T1AADefense',
+                }
+            }
+        }
+    },
+    Builder {
+        BuilderName = 'U1 Naval Builder noRush',                                       -- Random Builder Name.
+        PlatoonTemplate = 'EngineerBuilder',                                    -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
+        Priority = 17880,                                                        -- Priority. Higher priotity will be build more often then lower priotity.
+        InstanceCount = 6,                                                      -- Number of plattons that will be formed with this template.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 17880
+            else
+                return 0
+            end
+        end,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.01}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconIncome',  { 0.8, 0.1}}, -- Absolut Base income
+            -- When do we want to build this ?
+            { UCBC, 'NavalBaseCheck', { } }, -- related to ScenarioInfo.Options.NavalExpansionsAllowed
+            { UCBC, 'NavalAreaNeedsEngineer', { 'LocationType', NoRushRadius, -1000, 100, 1, 'AntiSurface' } },
+            -- Respect UnitCap
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            RequireTransport = false,
+            Construction = {
+                BuildClose = false,
+                BaseTemplate = 'ExpansionBaseTemplates',
+                ExpansionBase = true,
+                NearMarkerType = 'Naval Area',
+                LocationRadius = 1000,
+                LocationType = 'LocationType',
+                ThreatMin = -1000,
+                ThreatMax = 100,
+                ThreatRings = 1,
+                ThreatType = 'AntiSurface',
+                ExpansionRadius = 120,
+                BuildStructures = {
+                    'T1SeaFactory',
+                    'T1NavalDefense',
+                    'T1AADefense',
                 }
             }
         }

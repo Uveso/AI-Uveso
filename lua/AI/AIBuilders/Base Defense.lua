@@ -18,6 +18,13 @@ BuilderGroup {
         PlatoonTemplate = 'T2EngineerBuilder',
         Priority = 15000,
         InstanceCount = 2,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush2ndPhaseActive then
+                return 0
+            else
+                return 15000
+            end
+        end,
         BuilderConditions = {
             { MIBC, 'FactionIndex', { 1, 3, 4 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             -- Have we the eco to build it ?
@@ -52,6 +59,13 @@ BuilderGroup {
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 15000,
         InstanceCount = 2,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush2ndPhaseActive then
+                return 0
+            else
+                return 15000
+            end
+        end,
         BuilderConditions = {
             { MIBC, 'FactionIndex', { 2, 5 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             -- Have we the eco to build it ?
@@ -304,6 +318,13 @@ BuilderGroup {
         BuilderName = 'U2 TML Maximum',
         PlatoonTemplate = 'T2EngineerBuilder',
         Priority = 1000,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 1000
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
@@ -505,6 +526,13 @@ BuilderGroup {
         BuilderName = 'U3 SML 2nd',
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 1000,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 1000
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 4.0, 1000.0}}, -- Absolut Base income 60 1800
@@ -534,6 +562,13 @@ BuilderGroup {
         BuilderName = 'U3 SML Ratio',
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 1000,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 1000
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 8.0, 500.0 } }, -- relative income
@@ -776,6 +811,13 @@ BuilderGroup {
         PlatoonTemplate = 'T2EngineerBuilder',
         Priority = 1000,
         BuilderType = 'Any',
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 1000
+            end
+        end,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
@@ -804,6 +846,13 @@ BuilderGroup {
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 1000,
         DelayEqualBuildPlattons = {'Artillery', 20},
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 1000
+            end
+        end,
         BuilderConditions = {
             { UCBC, 'CheckBuildPlattonDelay', { 'Artillery' }},
             -- Have we the eco to build it ?
@@ -831,6 +880,13 @@ BuilderGroup {
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 1000,
         DelayEqualBuildPlattons = {'Artillery', 20},
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 1000
+            end
+        end,
         BuilderConditions = {
             { MIBC, 'FactionIndex', { 2 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             { UCBC, 'CheckBuildPlattonDelay', { 'Artillery' }},
@@ -859,6 +915,13 @@ BuilderGroup {
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 1000,
         DelayEqualBuildPlattons = {'Artillery', 20},
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 1000
+            end
+        end,
         BuilderConditions = {
             { MIBC, 'FactionIndex', { 1 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             { UCBC, 'CheckBuildPlattonDelay', { 'Artillery' }},

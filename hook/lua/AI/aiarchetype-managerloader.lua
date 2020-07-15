@@ -1139,16 +1139,27 @@ function PriorityManagerThread(aiBrain)
     local MABC = import('/lua/editor/MarkerBuildConditions.lua')
     local MIBC = import('/lua/editor/MiscBuildConditions.lua')
     aiBrain.PriorityManager = {}
-    aiBrain.PriorityManager.NeedEnergyTech1num = true
-    aiBrain.PriorityManager.NeedEnergyTech2num = true
-    aiBrain.PriorityManager.NeedEnergyTech3num = true
-    aiBrain.PriorityManager.NeedEnergyTech4num = true
+    aiBrain.PriorityManager.NeedEnergyTech1 = true
+    aiBrain.PriorityManager.NeedEnergyTech2 = true
+    aiBrain.PriorityManager.NeedEnergyTech3 = true
+    aiBrain.PriorityManager.NeedEnergyTech4 = true
     aiBrain.PriorityManager.NeedMass = true
     aiBrain.PriorityManager.NeedMobileLand = true
     aiBrain.PriorityManager.NeedMobileHover = true
     aiBrain.PriorityManager.NeedMobileAmphibious = true
     aiBrain.PriorityManager.NeedMobileAir = true
     aiBrain.PriorityManager.NeedMobileNaval = true
+    aiBrain.PriorityManager.BuildMobileLandTech1 = true
+    aiBrain.PriorityManager.BuildMobileLandTech2 = true
+    aiBrain.PriorityManager.BuildMobileLandTech3 = true
+    aiBrain.PriorityManager.BuildMobileAirTech1 = true
+    aiBrain.PriorityManager.BuildMobileAirTech2 = true
+    aiBrain.PriorityManager.BuildMobileAirTech3 = true
+    aiBrain.PriorityManager.BuildMobileNavalTech1 = true
+    aiBrain.PriorityManager.BuildMobileNavalTech2 = true
+    aiBrain.PriorityManager.BuildMobileNavalTech3 = true
+    aiBrain.PriorityManager.NoRush1stPhaseActive = false
+    aiBrain.PriorityManager.NoRush2ndPhaseActive = false
     while GetGameTimeSeconds() < 10 + aiBrain:GetArmyIndex() do
         coroutine.yield(10)
     end
@@ -1165,9 +1176,17 @@ function PriorityManagerThread(aiBrain)
     local AIRMOBILE
     local NAVALSTRUCTURE
     local NAVALMOBILE
+    local LandFactoryTech1
+    local LandFactoryTech2
+    local LandFactoryTech3
+    local AirFactoryTech1
+    local AirFactoryTech2
+    local AirFactoryTech3
+    local NavalFactoryTech1
+    local NavalFactoryTech2
+    local NavalFactoryTech3
     while aiBrain.Result ~= "defeat" do
         coroutine.yield(50)
-        -- Check for NoRush
 
         -- Check for Paragon
         ParaComplete = 0
@@ -1209,6 +1228,54 @@ function PriorityManagerThread(aiBrain)
             aiBrain.PriorityManager.NeedEnergyTech4 = false
         end
 
+
+        -- Check for NoRush
+        if ScenarioInfo.Options.NoRushOption and ScenarioInfo.Options.NoRushOption ~= 'Off' then
+            local norush = tonumber(ScenarioInfo.Options.NoRushOption) * 60
+            -- No rush Phase 1 from 0 to x-5 minutes
+            if norush - 60 * 5 > GetGameTimeSeconds() then
+                local time = norush - GetGameTimeSeconds()
+                --LOG('* AI-Uveso: no rush Phase 1:'.. time)
+                aiBrain.PriorityManager.BuildMobileLandTech1 = false
+                aiBrain.PriorityManager.BuildMobileLandTech2 = false
+                aiBrain.PriorityManager.BuildMobileLandTech3 = false
+                aiBrain.PriorityManager.BuildMobileAirTech1 = false
+                aiBrain.PriorityManager.BuildMobileAirTech2 = false
+                aiBrain.PriorityManager.BuildMobileAirTech3 = false
+                aiBrain.PriorityManager.BuildMobileNavalTech1 = false
+                aiBrain.PriorityManager.BuildMobileNavalTech2 = false
+                aiBrain.PriorityManager.BuildMobileNavalTech3 = false
+                aiBrain.PriorityManager.NeedMass = false
+                aiBrain.PriorityManager.NoRush1stPhaseActive = true
+                aiBrain.PriorityManager.NoRush2ndPhaseActive = true
+                continue
+            -- No rush Phase 2 from x-3 to x minutes
+            elseif norush > GetGameTimeSeconds() then
+                local time = norush - GetGameTimeSeconds()
+                --LOG('* AI-Uveso: no rush Phase 2:'.. time)
+                aiBrain.PriorityManager.BuildMobileLandTech1 = true
+                aiBrain.PriorityManager.BuildMobileLandTech2 = true
+                aiBrain.PriorityManager.BuildMobileLandTech3 = true
+                aiBrain.PriorityManager.BuildMobileAirTech1 = true
+                aiBrain.PriorityManager.BuildMobileAirTech2 = true
+                aiBrain.PriorityManager.BuildMobileAirTech3 = true
+                aiBrain.PriorityManager.BuildMobileNavalTech1 = true
+                aiBrain.PriorityManager.BuildMobileNavalTech2 = true
+                aiBrain.PriorityManager.BuildMobileNavalTech3 = true
+                aiBrain.PriorityManager.NeedMass = false
+                aiBrain.PriorityManager.NoRush1stPhaseActive = true
+                aiBrain.PriorityManager.NoRush2ndPhaseActive = false
+                continue
+            else
+            -- No rush Phase 3 - No rush ended
+                local time = norush - GetGameTimeSeconds()
+                --LOG('* AI-Uveso: no rush Phase 3:'.. time)
+                aiBrain.PriorityManager.NoRush1stPhaseActive = false
+                aiBrain.PriorityManager.NoRush2ndPhaseActive = false
+            end
+        end
+
+
         -- Check for mass need. (EngineerBuilder)
         -- Are less then 10% of all structures are extractors ? - Then we need more
         if UCBC.HaveUnitRatioVersusCap(aiBrain, 0.10, '<', categories.STRUCTURE * categories.MASSEXTRACTION)
@@ -1218,7 +1285,6 @@ function PriorityManagerThread(aiBrain)
         else
             aiBrain.PriorityManager.NeedMass = false
         end
-
         -- check for layer with least units
         LANDFACTORY = aiBrain:GetCurrentUnits(categories.LAND * categories.FACTORY)
         LANDMOBILE = aiBrain:GetCurrentUnits(categories.LAND * categories.MOBILE - categories.SCOUT - categories.ENGINEER)
@@ -1226,12 +1292,10 @@ function PriorityManagerThread(aiBrain)
         AIRMOBILE = aiBrain:GetCurrentUnits(categories.AIR * categories.MOBILE - categories.SCOUT - categories.TRANSPORTFOCUS)
         NAVALFACTORY = aiBrain:GetCurrentUnits(categories.NAVAL * categories.FACTORY)
         NAVALMOBILE = aiBrain:GetCurrentUnits(categories.NAVAL * categories.MOBILE)
-LOG(' '..LANDFACTORY..'/'..AIRFACTORY..'/'..NAVALFACTORY..' - LANDMOBILE: '..LANDMOBILE..' - AIRMOBILE: '..AIRMOBILE..' - NAVALMOBILE: '..NAVALMOBILE..'.')
+        --LOG(' '..LANDFACTORY..'/'..AIRFACTORY..'/'..NAVALFACTORY..' - LANDMOBILE: '..LANDMOBILE..' - AIRMOBILE: '..AIRMOBILE..' - NAVALMOBILE: '..NAVALMOBILE..'.')
         -- can we build more units ?
         if UCBC.HaveUnitRatioVersusCap(aiBrain, 0.45, '<', categories.MOBILE) then
-            LOG('1')
             if (LANDMOBILE >= AIRMOBILE) and (LANDMOBILE >= NAVALMOBILE) then
-            LOG('2')
                 aiBrain.PriorityManager.NeedMobileLand = false
                 aiBrain.PriorityManager.NeedMobileHover = false
                 aiBrain.PriorityManager.NeedMobileAmphibious = false
@@ -1242,7 +1306,6 @@ LOG(' '..LANDFACTORY..'/'..AIRFACTORY..'/'..NAVALFACTORY..' - LANDMOBILE: '..LAN
                     aiBrain.PriorityManager.NeedMobileNaval = true
                 end
             elseif (AIRMOBILE >= LANDMOBILE) and (AIRMOBILE >= NAVALMOBILE) then
-            LOG('3')
                 if LANDFACTORY > 0 then
                     if MIBC.CanPathToCurrentEnemy(aiBrain,true) then
                         aiBrain.PriorityManager.NeedMobileLand = true
@@ -1257,7 +1320,6 @@ LOG(' '..LANDFACTORY..'/'..AIRFACTORY..'/'..NAVALFACTORY..' - LANDMOBILE: '..LAN
                     aiBrain.PriorityManager.NeedMobileNaval = true
                 end
             elseif (NAVALMOBILE >= LANDMOBILE) and (NAVALMOBILE >= AIRMOBILE) then
-            LOG('4')
                 if LANDFACTORY > 0 then
                     if MIBC.CanPathToCurrentEnemy(aiBrain,true) then
                         aiBrain.PriorityManager.NeedMobileLand = true
@@ -1272,12 +1334,9 @@ LOG(' '..LANDFACTORY..'/'..AIRFACTORY..'/'..NAVALFACTORY..' - LANDMOBILE: '..LAN
                 end
                 aiBrain.PriorityManager.NeedMobileNaval = false
             else
-            LOG('5')
-
             end
         -- we can't build more units because of unitcap
         else
-            LOG('6')
             aiBrain.PriorityManager.NeedMobileLand = false
             aiBrain.PriorityManager.NeedMobileHover = false
             aiBrain.PriorityManager.NeedMobileAmphibious = false
@@ -1285,5 +1344,98 @@ LOG(' '..LANDFACTORY..'/'..AIRFACTORY..'/'..NAVALFACTORY..' - LANDMOBILE: '..LAN
             aiBrain.PriorityManager.NeedMobileNaval = false
         end
 
+        -- check if we have factories to build units
+        LandFactoryTech1 = aiBrain:GetCurrentUnits(categories.LAND * categories.FACTORY * categories.TECH1 )
+        LandFactoryTech2 = aiBrain:GetCurrentUnits(categories.LAND * categories.FACTORY * categories.TECH2 )
+        LandFactoryTech3 = aiBrain:GetCurrentUnits(categories.LAND * categories.FACTORY * categories.TECH3 )
+
+        AirFactoryTech1 = aiBrain:GetCurrentUnits(categories.AIR * categories.FACTORY * categories.TECH1 )
+        AirFactoryTech2 = aiBrain:GetCurrentUnits(categories.AIR * categories.FACTORY * categories.TECH2 )
+        AirFactoryTech3 = aiBrain:GetCurrentUnits(categories.AIR * categories.FACTORY * categories.TECH3 )
+
+        NavalFactoryTech1 = aiBrain:GetCurrentUnits(categories.NAVAL * categories.FACTORY * categories.TECH1 )
+        NavalFactoryTech2 = aiBrain:GetCurrentUnits(categories.NAVAL * categories.FACTORY * categories.TECH2 )
+        NavalFactoryTech3 = aiBrain:GetCurrentUnits(categories.NAVAL * categories.FACTORY * categories.TECH3 )
+
+        if UCBC.HaveUnitRatioVersusCap(aiBrain, 0.45, '<', categories.MOBILE) then
+            -- Land
+            if LandFactoryTech1 > 0 then
+                aiBrain.PriorityManager.BuildMobileLandTech1 = true
+            else
+                aiBrain.PriorityManager.BuildMobileLandTech1 = false
+            end
+            if LandFactoryTech2 > 0 then
+                aiBrain.PriorityManager.BuildMobileLandTech2 = true
+            else
+                aiBrain.PriorityManager.BuildMobileLandTech2 = false
+            end
+            if LandFactoryTech3 > 0 then
+                aiBrain.PriorityManager.BuildMobileLandTech3 = true
+            else
+                aiBrain.PriorityManager.BuildMobileLandTech3 = false
+            end
+            -- Air
+            if AirFactoryTech1 > 0 then
+                aiBrain.PriorityManager.BuildMobileAirTech1 = true
+            else
+                aiBrain.PriorityManager.BuildMobileAirTech1 = false
+            end
+            if AirFactoryTech2 > 0 then
+                aiBrain.PriorityManager.BuildMobileAirTech2 = true
+            else
+                aiBrain.PriorityManager.BuildMobileAirTech2 = false
+            end
+            if AirFactoryTech3 > 0 then
+                aiBrain.PriorityManager.BuildMobileAirTech3 = true
+            else
+                aiBrain.PriorityManager.BuildMobileAirTech3 = false
+            end
+            -- Naval
+            if NavalFactoryTech1 > 0 then
+                aiBrain.PriorityManager.BuildMobileNavalTech1 = true
+            else
+                aiBrain.PriorityManager.BuildMobileNavalTech1 = false
+            end
+            if NavalFactoryTech2 > 0 then
+                aiBrain.PriorityManager.BuildMobileNavalTech2 = true
+            else
+                aiBrain.PriorityManager.BuildMobileNavalTech2 = false
+            end
+            if NavalFactoryTech3 > 0 then
+                aiBrain.PriorityManager.BuildMobileNavalTech3 = true
+            else
+                aiBrain.PriorityManager.BuildMobileNavalTech3 = false
+            end
+        else
+            aiBrain.PriorityManager.BuildMobileLandTech1 = false
+            aiBrain.PriorityManager.BuildMobileLandTech2 = false
+            aiBrain.PriorityManager.BuildMobileLandTech3 = false
+            aiBrain.PriorityManager.BuildMobileAirTech1 = false
+            aiBrain.PriorityManager.BuildMobileAirTech2 = false
+            aiBrain.PriorityManager.BuildMobileAirTech3 = false
+            aiBrain.PriorityManager.BuildMobileNavalTech1 = false
+            aiBrain.PriorityManager.BuildMobileNavalTech2 = false
+            aiBrain.PriorityManager.BuildMobileNavalTech3 = false
+        end
+
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

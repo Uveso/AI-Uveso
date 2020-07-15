@@ -19,6 +19,13 @@ BuilderGroup {
         BuilderName = 'U1 Amphibious',
         PlatoonTemplate = 'U1 LandSquads Amphibious',
         Priority = 150,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileLandTech1 then
+                return 150
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             { MIBC, 'CanPathToCurrentEnemy', { false } },
             -- Have we the eco to build it ?
@@ -29,7 +36,6 @@ BuilderGroup {
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, categories.MOBILE * categories.INDIRECTFIRE } },
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.LAND - categories.ENGINEER, '<=', (categories.MOBILE * categories.LAND) + (categories.STRUCTURE * categories.DEFENSE) } },
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
         BuilderType = 'Land',
     },
@@ -39,7 +45,14 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 Amphibious',
         PlatoonTemplate = 'U2 LandSquads Amphibious',
-        Priority = 260,
+        Priority = 250,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileLandTech2 then
+                return 250
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             { MIBC, 'CanPathToCurrentEnemy', { false } },
             -- Have we the eco to build it ?
@@ -49,7 +62,6 @@ BuilderGroup {
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.ENERGYPRODUCTION * categories.TECH3 }},
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.LAND - categories.ENGINEER, '<=', (categories.MOBILE * categories.LAND) + (categories.STRUCTURE * categories.DEFENSE) } },
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
         BuilderType = 'Land',
     },
@@ -60,6 +72,13 @@ BuilderGroup {
         BuilderName = 'U3 Amphibious',
         PlatoonTemplate = 'U3 LandSquads Amphibious',
         Priority = 350,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileLandTech3 then
+                return 350
+            else
+                return 0
+            end
+        end,
         BuilderConditions = {
             { MIBC, 'CanPathToCurrentEnemy', { false } },
             -- Have we the eco to build it ?
@@ -67,7 +86,6 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
         BuilderType = 'Land',
     },
@@ -87,6 +105,13 @@ BuilderGroup {
         PlatoonTemplate = 'U123 Amphibious 1 10',                               -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
         Priority = 100,                                                       -- Priority. Higher priotity will be build more often then lower priotity.
         InstanceCount = 12,                                                      -- Number of plattons that will be formed with this template.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 100
+            end
+        end,
         BuilderData = {
             SearchRadius = BasePanicZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
@@ -118,6 +143,13 @@ BuilderGroup {
         PlatoonTemplate = 'U123 Amphibious 1 10',                               -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
         Priority = 90,                                                          -- Priority. 1000 is normal.
         InstanceCount = 2,                                                      -- Number of plattons that will be formed.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 90
+            end
+        end,
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                                    -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
@@ -154,6 +186,13 @@ BuilderGroup {
         PlatoonTemplate = 'U123 Amphibious 1 10',                               -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
         Priority = 80,                                                        -- Priority. 1000 is normal.
         InstanceCount = 2,                                                      -- Number of plattons that will be formed.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 80
+            end
+        end,
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
@@ -196,6 +235,13 @@ BuilderGroup {
         PlatoonTemplate = 'U123 Amphibious 1 10',                               -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesLand.lua"
         Priority = 70,                                                          -- Priority. 1000 is normal.
         InstanceCount = 2,                                                      -- Number of plattons that will be formed.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 70
+            end
+        end,
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                               -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
