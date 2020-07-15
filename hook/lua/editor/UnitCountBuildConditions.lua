@@ -363,6 +363,10 @@ end
 function CanPathNavalBaseToNavalTargets(aiBrain, locationType, unitCategory)
     local AIAttackUtils = import('/lua/AI/aiattackutilities.lua')
     baseposition = aiBrain.BuilderManagers[locationType].FactoryManager.Location
+    local Factories = aiBrain.BuilderManagers[locationType].FactoryManager:GetFactories(categories.NAVAL)
+    if Factories[1] then
+        baseposition = Factories[1]:GetPosition()
+    end
     --LOG('Searching water path from base ['..locationType..'] position '..repr(baseposition))
     local EnemyNavalUnits = aiBrain:GetUnitsAroundPoint(unitCategory, Vector(mapSizeX/2,0,mapSizeZ/2), mapSizeX+mapSizeZ, 'Enemy')
     local path, reason

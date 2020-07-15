@@ -34,7 +34,7 @@ BuilderGroup {
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'LessThanEnergyTrend', { 0.0 } },
-            { EBC, 'GreaterThanEconIncome',  { 0.5, 0.0}}, -- Absolut Base income
+            { EBC, 'GreaterThanEconIncome',  { 0.3, 0.0}}, -- Absolut Base income
             -- When do we want to build this ?
             { UCBC, 'GreaterThanGameTimeSeconds', { 60*2 } },
             -- Respect UnitCap
