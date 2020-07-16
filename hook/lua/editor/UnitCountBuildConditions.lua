@@ -343,11 +343,15 @@ function NavalBaseWithLeastUnits(aiBrain, radius, locationType, unitCategory)
             else
                 baseManagerName = marker.Name
             end
+            --LOG('Checking location Manger '..baseManagerName)
             if baseManagerName == baseLocation then
-                local pos = aiBrain.BuilderManagers[baseLocation].EngineerManager.Location
-                local numUnits = aiBrain:GetNumUnitsAroundPoint(unitCategory, pos, radius , 'Ally')
+                local pos = aiBrain.BuilderManagers[baseLocation].FactoryManager.Location
+                --LOG('Found location Manger '..baseManagerName..' - '..repr(pos))
                 local numFactory = aiBrain:GetNumUnitsAroundPoint(categories.STRUCTURE * categories.FACTORY * categories.NAVAL, pos, radius , 'Ally')
+                --LOG('numFactory: '..numFactory)
                 if numFactory < 1 then continue end
+                local numUnits = aiBrain:GetNumUnitsAroundPoint(unitCategory, pos, radius , 'Ally')
+                --LOG('numUnits: '..numUnits)
                 if not lownum or lownum > numUnits then
                     lowloc = baseLocation
                     lownum = numUnits
@@ -355,7 +359,7 @@ function NavalBaseWithLeastUnits(aiBrain, radius, locationType, unitCategory)
             end
         end
     end
-    --LOG('Checking location: '..repr(locationType)..' - Location with lowest units: '..repr(lowloc))
+    --LOG('Checking location: '..repr(locationType)..' - Location with lowest units: '..repr(lowloc)..' - AI:'..ArmyBrains[aiBrain:GetArmyIndex()].Nickname)
     return locationType == lowloc
 end
 

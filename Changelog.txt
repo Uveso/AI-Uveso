@@ -10,6 +10,7 @@ v87 (15.Jul.2020)
 - Opt: Free engineers are now assisting other engineers
 - Opt: Ecomanager reacts a bit faster now on enabling buildings on high energy ECO.
 - Opt: Naval structures are now buildable from mainbase without any naval area marker
+- Opt: Reworked naval factory and unit builder. Should now build way more naval units.
 
 *************************************************************************************************************************************
 v86 (21.May.2020)
