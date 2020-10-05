@@ -347,7 +347,18 @@ function NavalBaseWithLeastUnits(aiBrain, radius, locationType, unitCategory)
             if baseManagerName == baseLocation then
                 local pos = aiBrain.BuilderManagers[baseLocation].FactoryManager.Location
                 --LOG('Found location Manger '..baseManagerName..' - '..repr(pos))
-                local numFactory = aiBrain:GetNumUnitsAroundPoint(categories.STRUCTURE * categories.FACTORY * categories.NAVAL, pos, radius , 'Ally')
+                --search for idle factories
+                local numFactory = 0
+                local Factories = GetOwnUnitsAroundLocation(aiBrain, categories.STRUCTURE * categories.FACTORY * categories.NAVAL, pos, radius)
+                for _, Factory in Factories do
+                    if not Factory.Dead then
+                        if Factory:IsIdleState() then
+                            numFactory = numFactory + 1
+                            -- we found a factory that can potentially build units on this location
+                            break
+                        end
+                    end
+                end
                 --LOG('numFactory: '..numFactory)
                 if numFactory < 1 then continue end
                 local numUnits = aiBrain:GetNumUnitsAroundPoint(unitCategory, pos, radius , 'Ally')

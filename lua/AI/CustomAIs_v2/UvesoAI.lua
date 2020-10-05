@@ -25,10 +25,6 @@ AI = {
             key = 'uvesoexp',
             name = "<LOC Uveso_0009>AI: Uveso Experimentals",
         },
---        {
---            key = 'uvesonull',
---            name = "AI: Uveso Null",
---        },
     },
     -- key names must have the word "cheat" included, or we won't get omniview
     CheatAIList = {

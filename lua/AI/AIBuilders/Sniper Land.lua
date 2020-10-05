@@ -38,7 +38,7 @@ BuilderGroup {
                 categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
                 categories.STRUCTURE * categories.EXPERIMENTAL,
                 categories.FACTORY * categories.TECH3,
-                categories.ALLUNITS,
+                categories.ALLUNITS - categories.AIR,
             },
         },
         BuilderConditions = {
@@ -71,7 +71,7 @@ BuilderGroup {
                 categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
                 categories.STRUCTURE * categories.EXPERIMENTAL,
                 categories.FACTORY * categories.TECH3,
-                categories.ALLUNITS,
+                categories.ALLUNITS - categories.AIR,
             },
         },
         BuilderConditions = {
@@ -104,7 +104,7 @@ BuilderGroup {
                 categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
                 categories.STRUCTURE * categories.EXPERIMENTAL,
                 categories.FACTORY * categories.TECH3,
-                categories.ALLUNITS,
+                categories.ALLUNITS - categories.AIR,
             },
         },
         BuilderConditions = {
@@ -137,7 +137,7 @@ BuilderGroup {
                 categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
                 categories.STRUCTURE * categories.EXPERIMENTAL,
                 categories.FACTORY * categories.TECH3,
-                categories.ALLUNITS,
+                categories.ALLUNITS - categories.AIR,
             },
         },
         BuilderConditions = {
@@ -170,7 +170,7 @@ BuilderGroup {
                 categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
                 categories.STRUCTURE * categories.EXPERIMENTAL,
                 categories.FACTORY * categories.TECH3,
-                categories.ALLUNITS,
+                categories.ALLUNITS - categories.AIR,
             },
         },
         BuilderConditions = {

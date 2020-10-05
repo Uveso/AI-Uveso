@@ -11,7 +11,166 @@ local MaxCapStructure = 0.12                                                    
 -- ==                                       Build Power TECH 1,2,3                                           == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    -- Build Power TECH 1,2,3
+    BuilderGroupName = 'U123 Energy Builders RUSH',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuildersType = 'EngineerBuilder',
+    -- ============ --
+    --    TECH 1    --
+    -- ============ --
+    Builder {
+        BuilderName = 'U1R Power low trend',
+        PlatoonTemplate = 'EngineerBuilder',
+        TechRoot = 'ENERGY1',
+        Priority = 17899,
+        InstanceCount = 2,                                                      -- Number of plattons that will be formed with this template.
+        DelayEqualBuildPlattons = {'Energy', 3},
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NeedEnergyTech1 then
+                return 17899
+            else
+                return 0
+            end
+        end,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            { EBC, 'LessThanEnergyTrend', { 0.0 } },
+            { EBC, 'GreaterThanEconIncome',  { 0.3, 0.0}}, -- Absolut Base income
+            -- When do we want to build this ?
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60*2 } },
+            -- Respect UnitCap
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            NumAssistees = 1,
+            Construction = {
+                AdjacencyCategory = categories.FACTORY * categories.STRUCTURE * (categories.AIR + categories.LAND),
+                AdjacencyDistance = 50,
+                BuildClose = true,
+                LocationType = 'LocationType',
+                BuildStructures = {
+                    'T1EnergyProduction',
+                },
+            }
+        }
+    },
+    Builder {
+        BuilderName = 'UCR Power low trend',
+        PlatoonTemplate = 'CommanderBuilder',
+        Priority = 17900,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NeedEnergyTech1 then
+                return 17900
+            else
+                return 0
+            end
+        end,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            { EBC, 'LessThanEnergyTrend', { 0.0 } },
+            { EBC, 'GreaterThanEconIncome',  { 0.2, 0.0}}, -- Absolut Base income
+            -- When do we want to build this ?
+            -- Respect UnitCap
+        },
+        InstanceCount = 1,
+        BuilderType = 'Any',
+        BuilderData = {
+            Construction = {
+                AdjacencyCategory = categories.STRUCTURE * categories.FACTORY * (categories.LAND + categories.AIR),
+                AdjacencyDistance = 50,
+                BuildClose = true,
+                LocationType = 'LocationType',
+                BuildStructures = {
+                    'T1EnergyProduction',
+                },
+            }
+        }
+    },
+    -- ============ --
+    --    TECH 2    --
+    -- ============ --
+    Builder {
+        BuilderName = 'U2R  Power low trend',
+        PlatoonTemplate = 'T2EngineerBuilder',
+        Priority = 17000,
+        DelayEqualBuildPlattons = {'Energy', 20},
+        InstanceCount = 2,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NeedEnergyTech2 then
+                return 17000
+            else
+                return 0
+            end
+        end,
+        BuilderConditions = {
+            { UCBC, 'CheckBuildPlattonDelay', { 'Energy' }},
+            -- Have we the eco to build it ?
+            { EBC, 'LessThanEnergyTrend', { 0.0 } },
+            { EBC, 'GreaterThanEconIncome',  { 0.2, 0.0}}, -- Absolut Base income
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION * ( categories.TECH2 + categories.TECH3 ) }},
+            -- Respect UnitCap
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Construction = {
+                DesiresAssist = true,
+                NumAssistees = 10,
+                BuildClose = false,
+                AdjacencyCategory = (categories.STRUCTURE * categories.SHIELD) + (categories.FACTORY * (categories.TECH3 + categories.TECH2 + categories.TECH1)),
+                AvoidCategory = categories.ENERGYPRODUCTION * categories.TECH2,
+                maxUnits = 1,
+                maxRadius = 10,
+                LocationType = 'LocationType',
+                BuildStructures = {
+                    'T2EnergyProduction',
+                },
+            }
+        }
+    },
+    -- ============ --
+    --    TECH 3    --
+    -- ============ --
+    Builder {
+        BuilderName = 'U3R  Power low trend',
+        PlatoonTemplate = 'T3EngineerBuilderNoSUB',
+        Priority = 17300,
+        DelayEqualBuildPlattons = {'Energy', 5},
+        InstanceCount = 2,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NeedEnergyTech3 then
+                return 17300
+            else
+                return 0
+            end
+        end,
+        BuilderConditions = {
+            { UCBC, 'CheckBuildPlattonDelay', { 'Energy' }},
+            -- Have we the eco to build it ?
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3 }},
+            -- Respect UnitCap
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Construction = {
+                DesiresAssist = true,
+                NumAssistees = 10,
+                BuildClose = false,
+                AdjacencyCategory = (categories.STRUCTURE * categories.SHIELD) + (categories.FACTORY * (categories.TECH3 + categories.TECH2 + categories.TECH1)),
+                AvoidCategory = categories.ENERGYPRODUCTION * categories.TECH3,
+                maxUnits = 1,
+                maxRadius = 15,
+                LocationType = 'LocationType',
+                BuildStructures = {
+                    'T3EnergyProduction',
+                    'T3ShieldDefense',
+                },
+            }
+        }
+    },
+
+}
+
+BuilderGroup {
     BuilderGroupName = 'U123 Energy Builders',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     -- ============ --
@@ -378,6 +537,7 @@ BuilderGroup {
         BuilderConditions = {
             { UCBC, 'CheckBuildPlattonDelay', { 'Energy' }},
             -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconStorageRatio', { 0.10, -0.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION * ( categories.TECH2 + categories.TECH3 ) }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.ENERGYPRODUCTION * ( categories.TECH2 + categories.TECH3 + categories.EXPERIMENTAL ) } },            -- Respect UnitCap
@@ -480,6 +640,7 @@ BuilderGroup {
                 LocationType = 'LocationType',
                 BuildStructures = {
                     'T3EnergyProduction',
+                    'T3ShieldDefense',
                 },
             }
         }
@@ -518,6 +679,7 @@ BuilderGroup {
                 LocationType = 'LocationType',
                 BuildStructures = {
                     'T3EnergyProduction',
+                    'T3ShieldDefense',
                 },
             }
         }
@@ -560,6 +722,7 @@ BuilderGroup {
                 LocationType = 'LocationType',
                 BuildStructures = {
                     'T3EnergyProduction',
+                    'T3ShieldDefense',
                 },
             }
         }
@@ -602,13 +765,18 @@ BuilderGroup {
                 LocationType = 'LocationType',
                 BuildStructures = {
                     'T3EnergyProduction',
+                    'T3ShieldDefense',
                 },
             }
         }
     },
-    -- =================== --
-    --    EnergyStorage    --
-    -- =================== --
+}
+-- ===================================================-======================================================== --
+-- ==                                        Build EnergyStorage                                             == --
+-- ===================================================-======================================================== --
+BuilderGroup {
+    BuilderGroupName = 'U123 EnergyStorage Builders',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'U1 Energy Storage RECOVER no ACU',
         PlatoonTemplate = 'EngineerBuilder',
@@ -758,9 +926,13 @@ BuilderGroup {
             }
         }
     },
-    -- ======================= --
-    --    Reclaim Buildings    --
-    -- ======================= --
+}
+-- ===================================================-======================================================== --
+-- ==                                      Reclaim Energy Buildings                                          == --
+-- ===================================================-======================================================== --
+BuilderGroup {
+    BuilderGroupName = 'U123 Reclaim Energy Buildings',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'U1 Reclaim T1 Pgens',
         PlatoonTemplate = 'EngineerBuilder',

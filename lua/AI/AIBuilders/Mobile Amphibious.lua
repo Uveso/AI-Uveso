@@ -119,15 +119,15 @@ BuilderGroup {
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100000000,                                    -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.MOBILE - categories.SCOUT,        -- Only find targets matching these categories.
+            TargetSearchCategory = categories.MOBILE - categories.AIR - categories.SCOUT,        -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                categories.EXPERIMENTAL,
-                categories.MOBILE,
+                categories.EXPERIMENTAL - categories.AIR,
+                categories.MOBILE - categories.AIR,
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to form this ?
-            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.MOBILE - categories.SCOUT }}, -- radius, LocationType, unitCount, categoryEnemy
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.MOBILE - categories.AIR - categories.SCOUT }}, -- radius, LocationType, unitCount, categoryEnemy
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
@@ -156,21 +156,21 @@ BuilderGroup {
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 300,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            TargetSearchCategory = categories.STRUCTURE + categories.MOBILE,    -- Only find targets matching these categories.
+            TargetSearchCategory = categories.STRUCTURE + (categories.MOBILE - categories.AIR),    -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.MOBILE * categories.NAVAL * categories.EXPERIMENTAL,
                 categories.MOBILE * categories.NAVAL * categories.ANTIAIR,
                 categories.MOBILE * categories.LAND * categories.EXPERIMENTAL,
                 categories.MOBILE * categories.LAND * categories.ANTIAIR,
-                categories.ANTIAIR,
-                categories.MOBILE,
-                categories.ALLUNITS,
+                categories.ANTIAIR - categories.AIR,
+                categories.MOBILE - categories.AIR,
+                categories.ALLUNITS - categories.AIR,
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to form this ?
             { MIBC, 'CanPathToCurrentEnemy', { false } },
-            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 0, categories.STRUCTURE + categories.MOBILE }}, -- radius, LocationType, unitCount, categoryEnemy
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 0, categories.STRUCTURE + (categories.MOBILE - categories.AIR) }}, -- radius, LocationType, unitCount, categoryEnemy
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
@@ -199,7 +199,7 @@ BuilderGroup {
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 500,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            TargetSearchCategory = categories.STRUCTURE + categories.MOBILE,    -- Only find targets matching these categories.
+            TargetSearchCategory = categories.STRUCTURE + (categories.MOBILE - categories.AIR),    -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.MOBILE * categories.NAVAL * categories.EXPERIMENTAL,
                 categories.MOBILE * categories.NAVAL * categories.ANTIAIR,
@@ -207,15 +207,15 @@ BuilderGroup {
                 categories.MOBILE * categories.NAVAL * categories.DEFENSE,
                 categories.MOBILE * categories.LAND * categories.EXPERIMENTAL,
                 categories.MOBILE * categories.LAND * categories.ANTIAIR,
-                categories.ANTIAIR,
-                categories.MOBILE,
-                categories.ALLUNITS,
+                categories.ANTIAIR - categories.AIR,
+                categories.MOBILE - categories.AIR,
+                categories.ALLUNITS - categories.AIR,
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to form this ?
             { MIBC, 'CanPathToCurrentEnemy', { false } },
-            { UCBC, 'UnitsGreaterAtEnemy', { 1 , categories.STRUCTURE + categories.MOBILE } },
+            { UCBC, 'UnitsGreaterAtEnemy', { 1 , categories.STRUCTURE + (categories.MOBILE - categories.AIR) } },
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
@@ -248,11 +248,11 @@ BuilderGroup {
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100000000,                                    -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            TargetSearchCategory = categories.ALLUNITS,                         -- Only find targets matching these categories.
+            TargetSearchCategory = categories.ALLUNITS - categories.AIR,                         -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                categories.EXPERIMENTAL,
-                categories.TECH3,
-                categories.ALLUNITS,
+                categories.EXPERIMENTAL - categories.AIR,
+                categories.TECH3 - categories.AIR,
+                categories.ALLUNITS - categories.AIR,
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true

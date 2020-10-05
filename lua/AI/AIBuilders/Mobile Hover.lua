@@ -25,7 +25,7 @@ BuilderGroup {
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100000000,                                    -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.MOBILE,                           -- Only find targets matching these categories.
+            TargetSearchCategory = categories.LAND + categories.NAVAL,          -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.EXPERIMENTAL,
                 categories.ALLUNITS,
@@ -33,7 +33,7 @@ BuilderGroup {
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to form this ?
-            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.MOBILE }}, -- radius, LocationType, unitCount, categoryEnemy
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.LAND + categories.NAVAL }}, -- radius, LocationType, unitCount, categoryEnemy
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
@@ -64,13 +64,13 @@ BuilderGroup {
             AttackEnemyStrength = 200,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.LAND + categories.NAVAL,          -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                categories.EXPERIMENTAL,
+                categories.EXPERIMENTAL - categories.AIR,
                 categories.MOBILE * categories.LAND * categories.INDIRECTFIRE,
                 categories.MOBILE * categories.LAND * categories.DIRECTFIRE,
                 categories.MOBILE * categories.LAND * categories.ANTIAIR,
                 categories.STRUCTURE * categories.DEFENSE,
                 categories.STRUCTURE * categories.ANTIAIR,
-                categories.ALLUNITS,
+                categories.ALLUNITS - categories.AIR,
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
@@ -106,8 +106,8 @@ BuilderGroup {
             AttackEnemyStrength = 200,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.LAND + categories.NAVAL,          -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                categories.EXPERIMENTAL,
-                categories.ALLUNITS,
+                categories.EXPERIMENTAL - categories.AIR,
+                categories.ALLUNITS - categories.AIR,
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
@@ -145,10 +145,10 @@ BuilderGroup {
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100000000,                                    -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            TargetSearchCategory = categories.ALLUNITS,                         -- Only find targets matching these categories.
+            TargetSearchCategory = categories.ALLUNITS - categories.AIR,                         -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                categories.EXPERIMENTAL,
-                categories.ALLUNITS,
+                categories.EXPERIMENTAL - categories.AIR,
+                categories.ALLUNITS - categories.AIR,
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true

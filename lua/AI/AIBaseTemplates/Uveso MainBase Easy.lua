@@ -49,6 +49,8 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- Build Power Tech 1,2,3
         'U123 Energy Builders',                       -- Priority = 1100
+        'U123 EnergyStorage Builders',
+        'U123 Reclaim Energy Buildings',
 
         -----------------------------------------------------------------------------
         -- ==== Factory ==== --

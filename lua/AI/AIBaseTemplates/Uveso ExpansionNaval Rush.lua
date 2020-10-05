@@ -8,7 +8,7 @@
 #****************************************************************************
 
 BaseBuilderTemplate {
-    BaseTemplateName = 'UvesoExpansionNaval',
+    BaseTemplateName = 'UvesoExpansionNavalRush',
     Builders = {
         -----------------------------------------------------------------------------
         -- ==== Engineer ==== --
@@ -30,7 +30,7 @@ BaseBuilderTemplate {
         -- ==== Sea Units BUILDER ==== --
         -----------------------------------------------------------------------------
         -- Build Naval Units
-        'U123 Naval Builders',
+        'U123 Naval Builders RUSH',
 
         -----------------------------------------------------------------------------
         -- ==== Sea Units FORMER ==== --
@@ -98,8 +98,8 @@ BaseBuilderTemplate {
             return -1
         end
         local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
-        if personality == ('uvesoeasy' or 'uvesoeasycheat' or 'uvesoadaptive' or 'uvesoadaptivecheat' or 'uvesoexp' or 'uvesoexpcheat' or 'uvesooverwhelmcheat') then
-            return 1000, 'UvesoExpansionNaval'
+        if personality == ('uvesorush' or 'uvesorushcheat') then
+            return 1000, 'UvesoExpansionNavalRush'
         end
         return -1
     end,

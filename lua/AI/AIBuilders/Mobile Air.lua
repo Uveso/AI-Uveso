@@ -383,7 +383,7 @@ BuilderGroup {
     --    TECH 1    --
     -- ============ --
     Builder {
-        BuilderName = 'U1S Interceptors Minimum',
+        BuilderName = 'U1R Interceptors Minimum',
         PlatoonTemplate = 'T1AirFighter',
         Priority = 150,
         PriorityFunction = function(self, aiBrain)
@@ -396,8 +396,7 @@ BuilderGroup {
         BuilderConditions = {
             -- Have we the eco to build it ?
             { MIBC, 'HasNotParagon', {} },
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.ANTIAIR }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.TECH3 - categories.ENGINEER }},
@@ -406,7 +405,7 @@ BuilderGroup {
         BuilderType = 'Air',
     },
     Builder {
-        BuilderName = 'U1S Bomber Minimum',
+        BuilderName = 'U1R Bomber Minimum',
         PlatoonTemplate = 'T1AirBomber',
         Priority = 150,
         PriorityFunction = function(self, aiBrain)
@@ -419,8 +418,7 @@ BuilderGroup {
         BuilderConditions = {
             -- Have we the eco to build it ?
             { MIBC, 'HasNotParagon', {} },
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.TECH3 - categories.ENGINEER }},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 2, categories.MOBILE * categories.AIR  * categories.BOMBER }},
@@ -429,7 +427,7 @@ BuilderGroup {
         BuilderType = 'Air',
     },
     Builder {
-        BuilderName = 'U1S Interceptors',
+        BuilderName = 'U1R Interceptors',
         PlatoonTemplate = 'T1AirFighter',
         Priority = 150,
         PriorityFunction = function(self, aiBrain)
@@ -442,8 +440,7 @@ BuilderGroup {
         BuilderConditions = {
             { MIBC, 'CanPathToCurrentEnemy', { true } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.02, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD } },
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.BOMBER, '<=', categories.MOBILE * categories.AIR } },
@@ -452,7 +449,7 @@ BuilderGroup {
         BuilderType = 'Air',
     },
     Builder {
-        BuilderName = 'U1S Gunship',
+        BuilderName = 'U1R Gunship',
         PlatoonTemplate = 'T1Gunship',
         Priority = 150,
         PriorityFunction = function(self, aiBrain)
@@ -464,8 +461,7 @@ BuilderGroup {
         end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.02, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioUveso', { 0.5, categories.MOBILE * categories.AIR * categories.GROUNDATTACK, '<',categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.BOMBER - categories.GROUNDATTACK } },
             -- Respect UnitCap
@@ -473,7 +469,7 @@ BuilderGroup {
         BuilderType = 'Air',
     },
     Builder {
-        BuilderName = 'U1S Bomber',
+        BuilderName = 'U1R Bomber',
         PlatoonTemplate = 'T1AirBomber',
         Priority = 150,
         PriorityFunction = function(self, aiBrain)
@@ -485,8 +481,7 @@ BuilderGroup {
         end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.02, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioUveso', { 0.3, categories.MOBILE * categories.AIR * categories.BOMBER, '<',categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK } },
             -- Respect UnitCap
@@ -497,7 +492,7 @@ BuilderGroup {
     --    TECH 2    --
     -- ============ --
     Builder {
-        BuilderName = 'U2S Air Fighter',
+        BuilderName = 'U2R Air Fighter',
         PlatoonTemplate = 'T2FighterBomber',
         Priority = 250,
         PriorityFunction = function(self, aiBrain)
@@ -510,7 +505,7 @@ BuilderGroup {
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.02, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.BOMBER, '<=', categories.MOBILE * categories.AIR } },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD } },
@@ -519,7 +514,7 @@ BuilderGroup {
         BuilderType = 'Air',
     },
     Builder {
-        BuilderName = 'U2S Air Gunship',
+        BuilderName = 'U2R Air Gunship',
         PlatoonTemplate = 'T2AirGunship',
         Priority = 360,
         PriorityFunction = function(self, aiBrain)
@@ -531,8 +526,8 @@ BuilderGroup {
         end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.02, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.GROUNDATTACK * categories.TECH3 }},
             { UCBC, 'HaveUnitRatioUveso', { 0.5, categories.MOBILE * categories.AIR * categories.GROUNDATTACK, '<',categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.BOMBER - categories.GROUNDATTACK } },
@@ -541,7 +536,7 @@ BuilderGroup {
         BuilderType = 'Air',
     },
     Builder {
-        BuilderName = 'U2S TorpedoBomber',
+        BuilderName = 'U2R TorpedoBomber',
         PlatoonTemplate = 'T2AirTorpedoBomber',
         Priority = 250,
         PriorityFunction = function(self, aiBrain)
@@ -554,7 +549,7 @@ BuilderGroup {
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.02, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 11, categories.MOBILE * categories.AIR * categories.ANTINAVY }},
             { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.NAVAL } },
@@ -564,7 +559,7 @@ BuilderGroup {
         BuilderType = 'Air',
     },
     Builder {
-        BuilderName = 'U2S TorpedoBomber WaterMap',
+        BuilderName = 'U2R TorpedoBomber WaterMap',
         PlatoonTemplate = 'T2AirTorpedoBomber',
         Priority = 250,
         PriorityFunction = function(self, aiBrain)
@@ -578,7 +573,7 @@ BuilderGroup {
             { MIBC, 'CanPathToCurrentEnemy', { false } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.02, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 80, categories.MOBILE * categories.AIR * categories.ANTINAVY }},
             { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.NAVAL } },
@@ -591,7 +586,7 @@ BuilderGroup {
     --    TECH 3    --
     -- ============ --
     Builder {
-        BuilderName = 'U3S Air Fighter min',
+        BuilderName = 'U3R Air Fighter min',
         PlatoonTemplate = 'T3AirFighter',
         Priority = 360,
         PriorityFunction = function(self, aiBrain)
@@ -603,8 +598,8 @@ BuilderGroup {
         end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.02, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.HIGHALTAIR * categories.ANTIAIR * categories.TECH3 - categories.GROUNDATTACK }},
             -- Respect UnitCap
@@ -612,7 +607,7 @@ BuilderGroup {
         BuilderType = 'Air',
     },
     Builder {
-        BuilderName = 'U3S Air Gunship min',
+        BuilderName = 'U3R Air Gunship min',
         PlatoonTemplate = 'T3AirGunship',
         Priority = 360,
         PriorityFunction = function(self, aiBrain)
@@ -624,8 +619,8 @@ BuilderGroup {
         end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.02, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.GROUNDATTACK * categories.TECH3 - categories.HIGHALTAIR }},
             -- Respect UnitCap
@@ -633,7 +628,7 @@ BuilderGroup {
         BuilderType = 'Air',
     },
     Builder {
-        BuilderName = 'U3S Air Fighter',
+        BuilderName = 'U3R Air Fighter',
         PlatoonTemplate = 'T3AirFighter',
         Priority = 350,
         PriorityFunction = function(self, aiBrain)
@@ -645,8 +640,8 @@ BuilderGroup {
         end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.02, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.BOMBER, '<=', categories.MOBILE * categories.AIR } },
             -- Respect UnitCap
@@ -654,7 +649,7 @@ BuilderGroup {
         BuilderType = 'Air',
     },
     Builder {
-        BuilderName = 'U3S Air Gunship',
+        BuilderName = 'U3R Air Gunship',
         PlatoonTemplate = 'T3AirGunship',
         Priority = 340,
         PriorityFunction = function(self, aiBrain)
@@ -666,8 +661,8 @@ BuilderGroup {
         end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.02, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioUveso', { 0.5, categories.MOBILE * categories.AIR * categories.GROUNDATTACK, '<',categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.BOMBER - categories.GROUNDATTACK } },
             -- Respect UnitCap
@@ -675,7 +670,7 @@ BuilderGroup {
         BuilderType = 'Air',
     },
     Builder {
-        BuilderName = 'U3S Air Bomber',
+        BuilderName = 'U3R Air Bomber',
         PlatoonTemplate = 'T3AirBomber',
         Priority = 350,
         PriorityFunction = function(self, aiBrain)
@@ -687,8 +682,8 @@ BuilderGroup {
         end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.02, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioUveso', { 0.1, categories.MOBILE * categories.AIR * categories.BOMBER, '<',categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.BOMBER } },
             -- Respect UnitCap
@@ -696,7 +691,7 @@ BuilderGroup {
         BuilderType = 'Air',
     },
     Builder {
-        BuilderName = 'U3S TorpedoBomber',
+        BuilderName = 'U3R TorpedoBomber',
         PlatoonTemplate = 'T3TorpedoBomber',
         Priority = 350,
         PriorityFunction = function(self, aiBrain)
@@ -708,8 +703,8 @@ BuilderGroup {
         end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.02, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioUveso', { 0.3, categories.MOBILE * categories.AIR * categories.ANTINAVY, '<',categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.BOMBER } },
             -- Respect UnitCap
@@ -717,7 +712,7 @@ BuilderGroup {
         BuilderType = 'Air',
     },
     Builder {
-        BuilderName = 'U3S TorpedoBomber WaterMap',
+        BuilderName = 'U3R TorpedoBomber WaterMap',
         PlatoonTemplate = 'T3TorpedoBomber',
         Priority = 350,
         PriorityFunction = function(self, aiBrain)
@@ -730,8 +725,8 @@ BuilderGroup {
         BuilderConditions = {
             { MIBC, 'CanPathToCurrentEnemy', { false } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.02, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioUveso', { 0.5, categories.MOBILE * categories.AIR * categories.ANTINAVY, '<',categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.BOMBER } },
             -- Respect UnitCap
@@ -1484,7 +1479,7 @@ BuilderGroup {
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100000000,                                    -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.STRUCTURE + categories.MOBILE,    -- Only find targets matching these categories.
+            TargetSearchCategory = categories.NAVAL,                            -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.MOBILE * categories.NAVAL * categories.EXPERIMENTAL,
                 categories.ALLUNITS,
@@ -1492,7 +1487,7 @@ BuilderGroup {
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to form this ?
-            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.MOBILE }}, -- radius, LocationType, unitCount, categoryEnemy
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.NAVAL }}, -- radius, LocationType, unitCount, categoryEnemy
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
@@ -1517,7 +1512,7 @@ BuilderGroup {
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 150,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.STRUCTURE + categories.MOBILE,    -- Only find targets matching these categories.
+            TargetSearchCategory = categories.NAVAL,                            -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.MOBILE * categories.NAVAL * categories.EXPERIMENTAL,
                 categories.MOBILE * categories.NAVAL * categories.ANTIAIR,
@@ -1530,7 +1525,7 @@ BuilderGroup {
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to form this ?
-            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 0, categories.STRUCTURE + categories.MOBILE }}, -- radius, LocationType, unitCount, categoryEnemy
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 0, categories.NAVAL }}, -- radius, LocationType, unitCount, categoryEnemy
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
@@ -1555,7 +1550,7 @@ BuilderGroup {
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 150,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.STRUCTURE + categories.MOBILE,    -- Only find targets matching these categories.
+            TargetSearchCategory = categories.NAVAL,                            -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.MOBILE * categories.NAVAL * categories.EXPERIMENTAL,
                 categories.MOBILE * categories.NAVAL * categories.ANTIAIR,
@@ -1595,7 +1590,7 @@ BuilderGroup {
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 300,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.STRUCTURE + categories.MOBILE,    -- Only find targets matching these categories.
+            TargetSearchCategory = categories.NAVAL,                            -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.MOBILE * categories.NAVAL * categories.EXPERIMENTAL,
                 categories.STRUCTURE * categories.NAVAL * categories.FACTORY,
@@ -1631,7 +1626,7 @@ BuilderGroup {
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100000000,                                    -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.STRUCTURE + categories.MOBILE,    -- Only find targets matching these categories.
+            TargetSearchCategory = categories.NAVAL,                            -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.MOBILE * categories.NAVAL * categories.EXPERIMENTAL,
                 categories.STRUCTURE * categories.NAVAL * categories.FACTORY,
@@ -1692,7 +1687,7 @@ BuilderGroup {
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to form this ?
-            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.MOBILE }}, -- radius, LocationType, unitCount, categoryEnemy
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.MOBILE - categories.SCOUT }}, -- radius, LocationType, unitCount, categoryEnemy
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
@@ -1728,7 +1723,7 @@ BuilderGroup {
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to form this ?
-            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.MOBILE }}, -- radius, LocationType, unitCount, categoryEnemy
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.MOBILE - categories.SCOUT }}, -- radius, LocationType, unitCount, categoryEnemy
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
@@ -1737,6 +1732,7 @@ BuilderGroup {
 --    MilitaryZone    --
 -- ================== --
 BuilderGroup {
+-- AntiAir
     BuilderGroupName = 'U123 Air Formers MilitaryZone',                         -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',                                        -- BuilderTypes are: EngineerBuilder, FactoryBuilder, PlatoonFormBuilder.
     Builder {
@@ -1863,7 +1859,7 @@ BuilderGroup {
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 300,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.MOBILE * categories.AIR  * categories.TRANSPORTFOCUS,          -- Only find targets matching these categories.
+            TargetSearchCategory = categories.MOBILE * categories.AIR - categories.SCOUT, -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.MOBILE * categories.AIR * categories.TRANSPORTFOCUS,
                 categories.MOBILE * categories.AIR * categories.BOMBER,
@@ -1897,7 +1893,7 @@ BuilderGroup {
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 300,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.MOBILE * categories.AIR * categories.BOMBER, -- Only find targets matching these categories.
+            TargetSearchCategory = categories.MOBILE * categories.AIR - categories.SCOUT, -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.MOBILE * categories.AIR * categories.BOMBER,
                 categories.MOBILE * categories.AIR * categories.TRANSPORTFOCUS,
@@ -1912,9 +1908,11 @@ BuilderGroup {
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
+
+-- AntiLand
     Builder {
         BuilderName = 'U123 Military AntiArty 1 2',                             -- Random Builder Name.
-        PlatoonTemplate = 'U123-Gunship+Bomber-Intercept 1 2',                  -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesAir.lua"
+        PlatoonTemplate = 'U123-Bomber-Intercept 1 2',                          -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesAir.lua"
         PlatoonAddBehaviors = { 'AirUnitRefit' },                               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
         Priority = 92,                                                          -- Priority. 1000 is normal.
         InstanceCount = 1,                                                      -- Number of plattons that will be formed.
@@ -1931,7 +1929,7 @@ BuilderGroup {
             AggressiveMove = false,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 500,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = false,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.MOBILE * categories.LAND * categories.INDIRECTFIRE, -- Only find targets matching these categories.
+            TargetSearchCategory = categories.ALLUNITS - categories.AIR - categories.SCOUT,      -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.INDIRECTFIRE,
                 categories.DIRECTFIRE,
@@ -1965,7 +1963,7 @@ BuilderGroup {
     },
     Builder {
         BuilderName = 'U123 Military AntiGround',                               -- Random Builder Name.
-        PlatoonTemplate = 'U123-Gunship+Bomber-Intercept 3 5',                  -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesAir.lua"
+        PlatoonTemplate = 'U123-Gunship-Intercept 3 5',                  -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesAir.lua"
         PlatoonAddBehaviors = { 'AirUnitRefit' },                               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
         Priority = 80,                                                          -- Priority. 1000 is normal.
         InstanceCount = 1,                                                      -- Number of plattons that will be formed.
@@ -1982,19 +1980,19 @@ BuilderGroup {
             AggressiveMove = false,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 200,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = false,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.MOBILE - categories.AIR,          -- Only find targets matching these categories.
+            TargetSearchCategory = categories.ALLUNITS - categories.SCOUT,      -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                categories.MOBILE * categories.EXPERIMENTAL,
-                categories.MOBILE * categories.ANTIAIR,
-                categories.MOBILE * categories.INDIRECTFIRE,
-                categories.MOBILE * categories.DIRECTFIRE,
+                categories.MOBILE * categories.LAND * categories.EXPERIMENTAL,
+                categories.MOBILE * categories.LAND * categories.ANTIAIR,
+                categories.MOBILE * categories.LAND * categories.INDIRECTFIRE,
+                categories.MOBILE * categories.LAND * categories.DIRECTFIRE,
                 categories.ALLUNITS,
             },
             WeaponTargetCategories = {                                          -- Override weapon target priorities
                 categories.COMMAND,
                 categories.EXPERIMENTAL,
                 categories.ANTIAIR,
-               categories.INDIRECTFIRE,
+                categories.INDIRECTFIRE,
                 categories.DIRECTFIRE,
                 categories.ENERGYPRODUCTION,
                 categories.MASSEXTRACTION,
@@ -2004,7 +2002,7 @@ BuilderGroup {
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to form this ?
-            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 0, categories.MOBILE - categories.AIR }}, -- radius, LocationType, unitCount, categoryEnemy
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 0, categories.MOBILE - categories.AIR - categories.SCOUT }}, -- radius, LocationType, unitCount, categoryEnemy
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
@@ -2015,193 +2013,7 @@ BuilderGroup {
 BuilderGroup {
     BuilderGroupName = 'U123 Air Formers EnemyZone',                            -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
-    Builder {
-        BuilderName = 'U12 Enemy AntiMass Gunship',                                   -- Random Builder Name.
-        PlatoonTemplate = 'U12-Gunship-Intercept 3 5',                          -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesAir.lua"
-        Priority = 67,                                                          -- Priority. 1000 is normal.
-        InstanceCount = 4,                                                      -- Number of plattons that will be formed.
-        PriorityFunction = function(self, aiBrain)
-            if aiBrain.PriorityManager.NoRush1stPhaseActive then
-                return 0
-            else
-                return 67
-            end
-        end,
-        BuilderData = {
-            SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
-            GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
-            AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
-            AttackEnemyStrength = 33,                                    -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            IgnorePathing = false,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.ALLUNITS,                         -- Only find targets matching these categories.
-            MoveToCategories = {                                                -- Move to targets
-                categories.MASSEXTRACTION,
-                categories.STRUCTURE * categories.ENERGYPRODUCTION,
-                categories.ALLUNITS,
-            },
-            WeaponTargetCategories = {                                          -- Override weapon target priorities
-                categories.MASSEXTRACTION,
-                categories.COMMAND,
-                categories.STRUCTURE * categories.ENERGYPRODUCTION,
-                categories.SHIELD,
-                categories.ANTIAIR,
-                categories.ALLUNITS,
-            },
-        },
-        BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
-            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 1, categories.MOBILE * categories.EXPERIMENTAL }}, -- radius, LocationType, unitCount, categoryEnemy
-            -- When do we want to form this ?
-        },
-        BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
-    },
-    Builder {
-        BuilderName = 'U12 Enemy AntiMass Bomber 3 5',                                   -- Random Builder Name.
-        PlatoonTemplate = 'U12-Bomber-Intercept 3 5',                          -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesAir.lua"
-        Priority = 67,                                                          -- Priority. 1000 is normal.
-        InstanceCount = 3,                                                      -- Number of plattons that will be formed.
-        PriorityFunction = function(self, aiBrain)
-            if aiBrain.PriorityManager.NoRush1stPhaseActive then
-                return 0
-            else
-                return 67
-            end
-        end,
-        BuilderData = {
-            SearchRadius = BaseEnemyZone,                                               -- Searchradius for new target.
-            GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
-            AggressiveMove = false,                                              -- If true, the unit will attack everything while moving to the target.
-            AttackEnemyStrength = 33,                                           -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            IgnorePathing = false,                                              -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.MASSEXTRACTION,                   -- Only find targets matching these categories.
-            MoveToCategories = {                                                -- Move to targets
-                categories.MASSEXTRACTION,
-            },
-            WeaponTargetCategories = {                                          -- Override weapon target priorities
-                categories.MASSEXTRACTION,
-                categories.SHIELD,
-                categories.ANTIAIR,
-                categories.COMMAND,
-                categories.INDIRECTFIRE,
-                categories.DIRECTFIRE,
-                categories.ALLUNITS,
-            },
-        },
-        BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
-            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 1, categories.MOBILE * categories.EXPERIMENTAL }}, -- radius, LocationType, unitCount, categoryEnemy
-            -- When do we want to form this ?
-        },
-        BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
-    },
-    Builder {
-        BuilderName = 'U12 Enemy Unprotected Gunship 3 5',                            -- Random Builder Name.
-        PlatoonTemplate = 'U12-Gunship-Intercept 3 5',                          -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesAir.lua"
-        Priority = 68,                                                          -- Priority. 1000 is normal.
-        InstanceCount = 3,                                                      -- Number of plattons that will be formed.
-        PriorityFunction = function(self, aiBrain)
-            if aiBrain.PriorityManager.NoRush1stPhaseActive then
-                return 0
-            else
-                return 68
-            end
-        end,
-        BuilderData = {
-            SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
-            GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
-            AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
-            AttackEnemyStrength = 0,                                            -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            IgnorePathing = false,                                              -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.STRUCTURE + categories.ENGINEER - categories.STATIONASSISTPOD,                        -- Only find targets matching these categories.
-            MoveToCategories = {                                                -- Move to targets
-                categories.MASSEXTRACTION,
-                categories.ENGINEER - categories.STATIONASSISTPOD,
-                categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
-                categories.STRUCTURE * categories.ARTILLERY,
-                categories.STRUCTURE * categories.NUKE,
-                categories.STRUCTURE * categories.ENERGYPRODUCTION,
-                categories.STRUCTURE * categories.EXPERIMENTAL,
-                categories.STRUCTURE * categories.ANTIMISSILE * categories.TECH3,
-                categories.STRUCTURE * categories.DEFENSE * categories.TECH3,
-                categories.FACTORY * categories.TECH3,
-                categories.ALLUNITS,
-            },
-            WeaponTargetCategories = {                                          -- Override weapon target priorities
-                categories.MASSEXTRACTION,
-                categories.COMMAND,
-                categories.ENGINEER - categories.STATIONASSISTPOD,
-                categories.SHIELD,
-                categories.ANTIAIR,
-                categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
-                categories.STRUCTURE * categories.ARTILLERY,
-                categories.STRUCTURE * categories.NUKE,
-                categories.STRUCTURE * categories.ENERGYPRODUCTION,
-                categories.STRUCTURE * categories.EXPERIMENTAL,
-                categories.STRUCTURE * categories.ANTIMISSILE * categories.TECH3,
-                categories.STRUCTURE * categories.DEFENSE * categories.TECH3,
-                categories.FACTORY * categories.TECH3,
-                categories.ALLUNITS,
-            },
-        },
-        BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
-            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 1, categories.MOBILE * categories.EXPERIMENTAL }}, -- radius, LocationType, unitCount, categoryEnemy
-            -- When do we want to form this ?
-        },
-        BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
-    },
-    Builder {
-        BuilderName = 'U12 Enemy Unprotected Bomber 1 3',                             -- Random Builder Name.
-        PlatoonTemplate = 'U12-Bomber-Intercept 1 3',                           -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesAir.lua"
-        Priority = 68,                                                          -- Priority. 1000 is normal.
-        InstanceCount = 2,                                                      -- Number of plattons that will be formed.
-        PriorityFunction = function(self, aiBrain)
-            if aiBrain.PriorityManager.NoRush1stPhaseActive then
-                return 0
-            else
-                return 68
-            end
-        end,
-        BuilderData = {
-            SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
-            GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
-            AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
-            AttackEnemyStrength = 0,                                            -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            IgnorePathing = false,                                              -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.STRUCTURE + categories.ENGINEER - categories.STATIONASSISTPOD,                        -- Only find targets matching these categories.
-            MoveToCategories = {                                                -- Move to targets
-                categories.MASSEXTRACTION,
-                categories.ENGINEER - categories.STATIONASSISTPOD,
-                categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
-                categories.STRUCTURE * categories.ARTILLERY,
-                categories.STRUCTURE * categories.NUKE,
-                categories.STRUCTURE * categories.ENERGYPRODUCTION,
-                categories.STRUCTURE * categories.EXPERIMENTAL,
-                categories.STRUCTURE * categories.ANTIMISSILE * categories.TECH3,
-                categories.STRUCTURE * categories.DEFENSE * categories.TECH3,
-                categories.FACTORY * categories.TECH3,
-                categories.ALLUNITS,
-            },
-            WeaponTargetCategories = {                                          -- Override weapon target priorities
-                categories.MASSEXTRACTION,
-                categories.COMMAND,
-                categories.ENGINEER - categories.STATIONASSISTPOD,
-                categories.SHIELD,
-                categories.ANTIAIR,
-                categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
-                categories.STRUCTURE * categories.ARTILLERY,
-                categories.STRUCTURE * categories.NUKE,
-                categories.STRUCTURE * categories.ENERGYPRODUCTION,
-                categories.STRUCTURE * categories.EXPERIMENTAL,
-                categories.STRUCTURE * categories.ANTIMISSILE * categories.TECH3,
-                categories.STRUCTURE * categories.DEFENSE * categories.TECH3,
-                categories.FACTORY * categories.TECH3,
-                categories.ALLUNITS,
-            },
-        },
-        BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
-            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 1, categories.MOBILE * categories.EXPERIMENTAL }}, -- radius, LocationType, unitCount, categoryEnemy
-            -- When do we want to form this ?
-        },
-        BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
-    },
+-- AntiAir
     Builder {
         BuilderName = 'U123 Enemy ScoutHunter EnemyZone 1 2',                         -- Random Builder Name.
         PlatoonTemplate = 'U123-Fighter-Intercept 1 2',                         -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesAir.lua"
@@ -2256,7 +2068,7 @@ BuilderGroup {
             AttackEnemyStrength = 80,                                           -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             IgnorePathing = false,                                              -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.MOBILE * categories.AIR - categories.SCOUT , -- Only find targets matching these categories.
+            TargetSearchCategory = categories.AIR - categories.SCOUT,      -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.MOBILE * categories.EXPERIMENTAL * categories.AIR,
                 categories.MOBILE * categories.AIR * categories.ANTIAIR * categories.HIGHALTAIR,
@@ -2272,6 +2084,200 @@ BuilderGroup {
             -- When do we want to form this ?
             { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 1, categories.MOBILE * categories.AIR * categories.EXPERIMENTAL }}, -- radius, LocationType, unitCount, categoryEnemy
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 60, categories.MOBILE * categories.AIR * categories.ANTIAIR * categories.HIGHALTAIR - categories.EXPERIMENTAL - categories.SCOUT }},
+        },
+        BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
+    },
+-- AntiLand
+    Builder {
+        BuilderName = 'U12 Enemy AntiMass Gunship',                                   -- Random Builder Name.
+        PlatoonTemplate = 'U12-Gunship-Intercept 3 5',                          -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesAir.lua"
+        Priority = 67,                                                          -- Priority. 1000 is normal.
+        InstanceCount = 4,                                                      -- Number of plattons that will be formed.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 67
+            end
+        end,
+        BuilderData = {
+            SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
+            GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
+            AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
+            AttackEnemyStrength = 33,                                    -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            IgnorePathing = false,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
+            TargetSearchCategory = categories.ALLUNITS - categories.SCOUT,      -- Only find targets matching these categories.
+            MoveToCategories = {                                                -- Move to targets
+                categories.MASSEXTRACTION,
+                categories.OPTICS,
+                categories.STRUCTURE * categories.ENERGYPRODUCTION,
+                categories.ALLUNITS,
+            },
+            WeaponTargetCategories = {                                          -- Override weapon target priorities
+                categories.MASSEXTRACTION,
+                categories.COMMAND,
+                categories.STRUCTURE * categories.ENERGYPRODUCTION,
+                categories.SHIELD,
+                categories.ANTIAIR,
+                categories.ALLUNITS,
+            },
+        },
+        BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
+            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 1, categories.MOBILE * categories.EXPERIMENTAL }}, -- radius, LocationType, unitCount, categoryEnemy
+            -- When do we want to form this ?
+        },
+        BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
+    },
+    Builder {
+        BuilderName = 'U12 Enemy AntiMass Bomber 3 5',                                   -- Random Builder Name.
+        PlatoonTemplate = 'U12-Bomber-Intercept 3 5',                          -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesAir.lua"
+        Priority = 67,                                                          -- Priority. 1000 is normal.
+        InstanceCount = 3,                                                      -- Number of plattons that will be formed.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 67
+            end
+        end,
+        BuilderData = {
+            SearchRadius = BaseEnemyZone,                                               -- Searchradius for new target.
+            GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
+            AggressiveMove = false,                                              -- If true, the unit will attack everything while moving to the target.
+            AttackEnemyStrength = 33,                                           -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            IgnorePathing = false,                                              -- If true, the platoon will not use AI pathmarkers and move directly to the target
+            TargetSearchCategory = categories.ALLUNITS - categories.AIR - categories.SCOUT,      -- Only find targets matching these categories.
+            MoveToCategories = {                                                -- Move to targets
+                categories.MASSEXTRACTION,
+                categories.OPTICS,
+            },
+            WeaponTargetCategories = {                                          -- Override weapon target priorities
+                categories.MASSEXTRACTION,
+                categories.SHIELD,
+                categories.ANTIAIR,
+                categories.COMMAND,
+                categories.INDIRECTFIRE,
+                categories.DIRECTFIRE,
+                categories.ALLUNITS,
+            },
+        },
+        BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
+            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 1, categories.MOBILE * categories.EXPERIMENTAL }}, -- radius, LocationType, unitCount, categoryEnemy
+            -- When do we want to form this ?
+        },
+        BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
+    },
+    Builder {
+        BuilderName = 'U12 Enemy Unprotected Gunship 3 5',                            -- Random Builder Name.
+        PlatoonTemplate = 'U12-Gunship-Intercept 3 5',                          -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesAir.lua"
+        Priority = 68,                                                          -- Priority. 1000 is normal.
+        InstanceCount = 3,                                                      -- Number of plattons that will be formed.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 68
+            end
+        end,
+        BuilderData = {
+            SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
+            GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
+            AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
+            AttackEnemyStrength = 0,                                            -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            IgnorePathing = false,                                              -- If true, the platoon will not use AI pathmarkers and move directly to the target
+            TargetSearchCategory = categories.ALLUNITS - categories.SCOUT,      -- Only find targets matching these categories.
+            MoveToCategories = {                                                -- Move to targets
+                categories.MASSEXTRACTION,
+                categories.OPTICS,
+                categories.ENGINEER - categories.STATIONASSISTPOD,
+                categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
+                categories.STRUCTURE * categories.ARTILLERY,
+                categories.STRUCTURE * categories.NUKE,
+                categories.STRUCTURE * categories.ENERGYPRODUCTION,
+                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.STRUCTURE * categories.ANTIMISSILE * categories.TECH3,
+                categories.STRUCTURE * categories.DEFENSE * categories.TECH3,
+                categories.FACTORY * categories.TECH3,
+                categories.ALLUNITS,
+            },
+            WeaponTargetCategories = {                                          -- Override weapon target priorities
+                categories.MASSEXTRACTION,
+                categories.COMMAND,
+                categories.ENGINEER - categories.STATIONASSISTPOD,
+                categories.SHIELD,
+                categories.ANTIAIR,
+                categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
+                categories.STRUCTURE * categories.ARTILLERY,
+                categories.STRUCTURE * categories.NUKE,
+                categories.STRUCTURE * categories.ENERGYPRODUCTION,
+                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.STRUCTURE * categories.ANTIMISSILE * categories.TECH3,
+                categories.STRUCTURE * categories.DEFENSE * categories.TECH3,
+                categories.FACTORY * categories.TECH3,
+                categories.ALLUNITS,
+            },
+        },
+        BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
+            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 1, categories.MOBILE * categories.EXPERIMENTAL }}, -- radius, LocationType, unitCount, categoryEnemy
+            -- When do we want to form this ?
+        },
+        BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
+    },
+    Builder {
+        BuilderName = 'U12 Enemy Unprotected Bomber 1 3',                             -- Random Builder Name.
+        PlatoonTemplate = 'U12-Bomber-Intercept 1 3',                           -- Template Name. These units will be formed. See: "UvesoPlatoonTemplatesAir.lua"
+        Priority = 68,                                                          -- Priority. 1000 is normal.
+        InstanceCount = 2,                                                      -- Number of plattons that will be formed.
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 68
+            end
+        end,
+        BuilderData = {
+            SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
+            GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
+            AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
+            AttackEnemyStrength = 0,                                            -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            IgnorePathing = false,                                              -- If true, the platoon will not use AI pathmarkers and move directly to the target
+            TargetSearchCategory = categories.ALLUNITS - categories.AIR - categories.SCOUT,      -- Only find targets matching these categories.
+            MoveToCategories = {                                                -- Move to targets
+                categories.MASSEXTRACTION,
+                categories.OPTICS,
+                categories.ENGINEER - categories.STATIONASSISTPOD,
+                categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
+                categories.STRUCTURE * categories.ARTILLERY,
+                categories.STRUCTURE * categories.NUKE,
+                categories.STRUCTURE * categories.ENERGYPRODUCTION,
+                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.STRUCTURE * categories.ANTIMISSILE * categories.TECH3,
+                categories.STRUCTURE * categories.DEFENSE * categories.TECH3,
+                categories.FACTORY * categories.TECH3,
+                categories.ALLUNITS,
+            },
+            WeaponTargetCategories = {                                          -- Override weapon target priorities
+                categories.COMMAND,
+                categories.ANTIAIR,
+                categories.OPTICS,
+                categories.MASSEXTRACTION,
+                categories.ENGINEER - categories.STATIONASSISTPOD,
+                categories.SHIELD,
+                categories.ANTIAIR,
+                categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
+                categories.STRUCTURE * categories.ARTILLERY,
+                categories.STRUCTURE * categories.NUKE,
+                categories.STRUCTURE * categories.ENERGYPRODUCTION,
+                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.STRUCTURE * categories.ANTIMISSILE * categories.TECH3,
+                categories.STRUCTURE * categories.DEFENSE * categories.TECH3,
+                categories.FACTORY * categories.TECH3,
+                categories.ALLUNITS,
+            },
+        },
+        BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
+            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 1, categories.MOBILE * categories.EXPERIMENTAL }}, -- radius, LocationType, unitCount, categoryEnemy
+            -- When do we want to form this ?
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
@@ -2294,9 +2300,10 @@ BuilderGroup {
             AggressiveMove = false,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = false,                                              -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.EXPERIMENTAL + categories.STRUCTURE,                   -- Only find targets matching these categories.
+            TargetSearchCategory = categories.ALLUNITS - categories.AIR - categories.SCOUT,      -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
+                categories.OPTICS,
                 categories.STRUCTURE * categories.ARTILLERY,
                 categories.STRUCTURE * categories.NUKE,
                 categories.STRUCTURE * categories.ENERGYPRODUCTION,
@@ -2309,6 +2316,7 @@ BuilderGroup {
             WeaponTargetCategories = {                                          -- Override weapon target priorities
                 categories.COMMAND,
                 categories.ANTIAIR,
+                categories.OPTICS,
                 categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
                 categories.STRUCTURE * categories.ARTILLERY,
                 categories.STRUCTURE * categories.NUKE,
@@ -2346,11 +2354,12 @@ BuilderGroup {
             AggressiveMove = false,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = false,                                              -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.EXPERIMENTAL + categories.STRUCTURE,                   -- Only find targets matching these categories.
+            TargetSearchCategory = categories.ALLUNITS - categories.SCOUT,      -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.STRUCTURE * categories.MASSEXTRACTION * categories.TECH3,
                 categories.STRUCTURE * categories.MASSEXTRACTION * categories.TECH2,
                 categories.STRUCTURE * categories.EXPERIMENTAL * categories.SHIELD,
+                categories.OPTICS,
                 categories.STRUCTURE * categories.ARTILLERY,
                 categories.STRUCTURE * categories.NUKE,
                 categories.STRUCTURE * categories.ENERGYPRODUCTION,
@@ -2363,6 +2372,7 @@ BuilderGroup {
             WeaponTargetCategories = {                                          -- Override weapon target priorities
                 categories.COMMAND,
                 categories.ANTIAIR,
+                categories.OPTICS,
                 categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
                 categories.STRUCTURE * categories.ARTILLERY,
                 categories.STRUCTURE * categories.NUKE,
@@ -2389,8 +2399,8 @@ BuilderGroup {
     BuilderGroupName = 'U123 Air Formers Trasher',                              -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     Builder {
-        BuilderName = 'U1234 Gunship+Bomber > 50',
-        PlatoonTemplate = 'U123-Gunship+Bomber-Intercept 1 50',
+        BuilderName = 'U1234 Bomber > 50',
+        PlatoonTemplate = 'U123-Bomber-Intercept 1 50',
         Priority = 50,                                                        -- Priority. 1000 is normal.
         InstanceCount = 5,                                                      -- Number of plattons that will be formed.
         PriorityFunction = function(self, aiBrain)
@@ -2406,9 +2416,10 @@ BuilderGroup {
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100000000,                                    -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = false,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.ALLUNITS,                         -- Only find targets matching these categories.
+            TargetSearchCategory = categories.ALLUNITS - categories.AIR - categories.SCOUT,      -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.MASSEXTRACTION,
+                categories.OPTICS,
                 categories.ENGINEER - categories.STATIONASSISTPOD,
                 categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
                 categories.STRUCTURE * categories.ARTILLERY,
@@ -2423,6 +2434,7 @@ BuilderGroup {
             WeaponTargetCategories = {                                          -- Override weapon target priorities
                 categories.COMMAND,
                 categories.ANTIAIR,
+                categories.OPTICS,
                 categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
                 categories.STRUCTURE * categories.ENERGYPRODUCTION,
                 categories.STRUCTURE * categories.MASSEXTRACTION,
@@ -2459,7 +2471,7 @@ BuilderGroup {
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100000000,                                    -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = false,                                              -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.AIR,                              -- Only find targets matching these categories.
+            TargetSearchCategory = categories.AIR - categories.SCOUT,      -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.ANTIAIR,
                 categories.EXPERIMENTAL,
@@ -2490,8 +2502,9 @@ BuilderGroup {
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100000000,                                    -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = false,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.ALLUNITS,                         -- Only find targets matching these categories.
+            TargetSearchCategory = categories.ALLUNITS - categories.AIR - categories.SCOUT,      -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
+                categories.OPTICS,
                 categories.MASSEXTRACTION,
                 categories.ENGINEER - categories.STATIONASSISTPOD,
                 categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
@@ -2507,6 +2520,7 @@ BuilderGroup {
             WeaponTargetCategories = {                                          -- Override weapon target priorities
                 categories.COMMAND,
                 categories.ANTIAIR,
+                categories.OPTICS,
                 categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
                 categories.STRUCTURE * categories.ENERGYPRODUCTION,
                 categories.STRUCTURE * categories.MASSEXTRACTION,
@@ -2542,12 +2556,12 @@ BuilderGroup {
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100000000,                                    -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            IgnorePathing = false,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.ALLUNITS,                         -- Only find targets matching these categories.
+            IgnorePathing = false,                                              -- If true, the platoon will not use AI pathmarkers and move directly to the target
+            TargetSearchCategory = categories.AIR,                              -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.EXPERIMENTAL * categories.AIR,
-                categories.ANTIAIR,
-                categories.ALLUNITS,
+                categories.ANTIAIR * categories.AIR,
+                categories.AIR,
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
@@ -2575,11 +2589,11 @@ BuilderGroup {
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100000000,                                    -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = false,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.ALLUNITS,                         -- Only find targets matching these categories.
+            TargetSearchCategory = categories.AIR,                              -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.EXPERIMENTAL * categories.AIR,
-                categories.ANTIAIR,
-                categories.ALLUNITS,
+                categories.ANTIAIR * categories.AIR,
+                categories.AIR,
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
@@ -2589,8 +2603,8 @@ BuilderGroup {
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
     Builder {
-        BuilderName = 'U123 Cap Gunship+Bomber',
-        PlatoonTemplate = 'U123-Gunship+Bomber-Intercept 1 50',
+        BuilderName = 'U123 Cap Gunship',
+        PlatoonTemplate = 'U123-Gunship-Intercept 1 50',
         Priority = 50,                                                        -- Priority. 1000 is normal.
         InstanceCount = 3,                                                      -- Number of plattons that will be formed.
         PriorityFunction = function(self, aiBrain)
@@ -2606,9 +2620,10 @@ BuilderGroup {
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100000000,                                    -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = false,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.ALLUNITS,                         -- Only find targets matching these categories.
+            TargetSearchCategory = categories.ALLUNITS - categories.SCOUT,      -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.MASSEXTRACTION,
+                categories.OPTICS,
                 categories.ENGINEER - categories.STATIONASSISTPOD,
                 categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
                 categories.STRUCTURE * categories.ARTILLERY,
@@ -2623,6 +2638,7 @@ BuilderGroup {
             WeaponTargetCategories = {                                          -- Override weapon target priorities
                 categories.COMMAND,
                 categories.ANTIAIR,
+                categories.OPTICS,
                 categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
                 categories.STRUCTURE * categories.ENERGYPRODUCTION,
                 categories.STRUCTURE * categories.MASSEXTRACTION,
@@ -2642,8 +2658,8 @@ BuilderGroup {
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
     Builder {
-        BuilderName = 'U1234 AirSuicide 1 1',                                  -- Random Builder Name.
-        PlatoonTemplate = 'U1234-AirSuicide 1 1',                             -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates"
+        BuilderName = 'U123 AirSuicide 5 10',                                  -- Random Builder Name.
+        PlatoonTemplate = 'U123-AirSuicide 5 10',                             -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates"
         Priority = 30,                                                          -- Priority. 1000 is normal.
         InstanceCount = 1,                                                      -- Number of plattons that will be formed.
         PriorityFunction = function(self, aiBrain)
@@ -2663,6 +2679,7 @@ BuilderGroup {
             MoveToCategories = {                                                -- Move to targets
                 categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.EXPERIMENTAL,
                 categories.STRUCTURE * categories.EXPERIMENTAL * categories.SHIELD,
+                categories.OPTICS,
                 categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
                 categories.STRUCTURE * categories.ARTILLERY - categories.TECH1 - categories.TECH2,
                 categories.STRUCTURE * categories.MASSEXTRACTION * categories.TECH3,
@@ -2674,6 +2691,7 @@ BuilderGroup {
             WeaponTargetCategories = {                                          -- Override weapon target priorities
                 categories.COMMAND,
                 categories.ANTIAIR,
+                categories.OPTICS,
                 categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
                 categories.STRUCTURE * categories.ENERGYPRODUCTION,
                 categories.STRUCTURE * categories.MASSEXTRACTION,

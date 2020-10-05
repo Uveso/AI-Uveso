@@ -9,6 +9,366 @@ local MaxAttackForce = 0.45                                                     
 -- ===================================================-======================================================== --
 -- ==                                        Build T1 T2 T3 SEA                                              == --
 -- ===================================================-======================================================== --
+-- ============= --
+--    AI-RUSH    --
+-- ============= --
+BuilderGroup {
+    BuilderGroupName = 'U123 Naval Builders RUSH',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuildersType = 'FactoryBuilder',
+    -- ======================== --
+    --    TECH 1   PanicZone    --
+    -- ======================== --
+    Builder {
+        BuilderName = 'U1R Sub PANIC',
+        PlatoonTemplate = 'T1SeaSub',
+        Priority = 18600,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            -- When do we want to build this ?
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  80, 'LocationType', 0, categories.MOBILE * categories.NAVAL }}, -- radius, LocationType, unitCount, categoryEnemy
+            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 30,  categories.MOBILE * categories.NAVAL } },
+        },
+        BuilderType = 'Sea',
+    },
+    Builder {
+        BuilderName = 'U1R Sea AntiAir PANIC',
+        PlatoonTemplate = 'T1SeaAntiAir',
+        Priority = 18600,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            -- When do we want to build this ?
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  80, 'LocationType', 0, categories.MOBILE * categories.AIR * ( categories.BOMBER + categories.GROUNDATTACK + categories.ANTINAVY ) }}, -- radius, LocationType, unitCount, categoryEnemy
+            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 30,  categories.MOBILE * categories.NAVAL } },
+        },
+        BuilderType = 'Sea',
+    },
+    -- =========================== --
+    --    TECH 1   MilitaryZone    --
+    -- =========================== --
+    Builder {
+        BuilderName = 'U1R Sub Military',
+        PlatoonTemplate = 'T1SeaSub',
+        Priority = 151,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileNavalTech1 then
+                return 151
+            else
+                return 0
+            end
+        end,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 10,  categories.MOBILE * categories.NAVAL } },
+        },
+        BuilderType = 'Sea',
+    },
+    Builder {
+        BuilderName = 'U1R Sea Military',
+        PlatoonTemplate = 'T1SeaAntiAir',
+        Priority = 151,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileNavalTech1 then
+                return 151
+            else
+                return 0
+            end
+        end,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 10,  categories.MOBILE * categories.NAVAL } },
+        },
+        BuilderType = 'Sea',
+    },
+    -- ======================== --
+    --    TECH 1   EnemyZone    --
+    -- ======================== --
+    Builder {
+        BuilderName = 'U1R Sub',
+        PlatoonTemplate = 'T1SeaSub',
+        Priority = 151,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileNavalTech1 then
+                return 151
+            else
+                return 0
+            end
+        end,
+        BuilderConditions = {
+            { UCBC, 'CanPathNavalBaseToNavalTargets', {  'LocationType', categories.NAVAL }}, -- LocationType, categoryUnits
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.NAVAL } },
+            --{ UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.NAVAL, '<=', categories.MOBILE * categories.NAVAL } },
+            { UCBC, 'NavalBaseWithLeastUnits', {  100, 'LocationType', categories.MOBILE * categories.NAVAL }}, -- radius, LocationType, categoryUnits
+            -- Respect UnitCap
+        },
+        BuilderType = 'Sea',
+    },
+    Builder {
+        BuilderName = 'U1R Sea Frigate',
+        PlatoonTemplate = 'T1SeaFrigate',
+        Priority = 151,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileNavalTech1 then
+                return 151
+            else
+                return 0
+            end
+        end,
+        BuilderConditions = {
+            { UCBC, 'CanPathNavalBaseToNavalTargets', {  'LocationType', categories.NAVAL }}, -- LocationType, categoryUnits
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.NAVAL } },
+            --{ UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.NAVAL, '<=', categories.MOBILE * categories.NAVAL } },
+           { UCBC, 'NavalBaseWithLeastUnits', {  100, 'LocationType', categories.MOBILE * categories.NAVAL }}, -- radius, LocationType, categoryUnits
+            -- Respect UnitCap
+        },
+        BuilderType = 'Sea',
+    },
+    -- ============ --
+    --    TECH 2    --
+    -- ============ --
+    Builder {
+        BuilderName = 'U2R Sea Destroyer',
+        PlatoonTemplate = 'T2SeaDestroyer',
+        Priority = 251,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileNavalTech2 then
+                return 251
+            else
+                return 0
+            end
+        end,
+        BuilderConditions = {
+            { UCBC, 'CanPathNavalBaseToNavalTargets', {  'LocationType', categories.NAVAL }}, -- LocationType, categoryUnits
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.NAVAL } },
+            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.NAVAL, '<=', categories.MOBILE * categories.NAVAL } },
+            -- Respect UnitCap
+        },
+        BuilderType = 'Sea',
+    },
+    Builder {
+        BuilderName = 'U2R Sea Cruiser',
+        PlatoonTemplate = 'T2SeaCruiser',
+        Priority = 251,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileNavalTech2 then
+                return 251
+            else
+                return 0
+            end
+        end,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.NAVAL } },
+            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.NAVAL, '<=', categories.MOBILE * categories.NAVAL } },
+            -- Respect UnitCap
+        },
+        BuilderType = 'Sea',
+    },
+    Builder {
+        BuilderName = 'U2R Sea SubKiller',
+        PlatoonTemplate = 'T2SubKiller',
+        Priority = 251,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileNavalTech2 then
+                return 251
+            else
+                return 0
+            end
+        end,
+        BuilderConditions = {
+            { UCBC, 'CanPathNavalBaseToNavalTargets', {  'LocationType', categories.NAVAL }}, -- LocationType, categoryUnits
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.NAVAL } },
+            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.NAVAL, '<=', categories.MOBILE * categories.NAVAL } },
+            -- Respect UnitCap
+        },
+        BuilderType = 'Sea',
+    },
+    Builder {
+        BuilderName = 'U2R Sea ShieldBoat',
+        PlatoonTemplate = 'T2ShieldBoat',
+        Priority = 251,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileNavalTech2 then
+                return 251
+            else
+                return 0
+            end
+        end,
+        BuilderConditions = {
+            { UCBC, 'CanPathNavalBaseToNavalTargets', {  'LocationType', categories.NAVAL }}, -- LocationType, categoryUnits
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.NAVAL } },
+            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.NAVAL, '<=', categories.MOBILE * categories.NAVAL } },
+            -- Respect UnitCap
+        },
+        BuilderType = 'Sea',
+    },
+    Builder {
+        BuilderName = 'U2R Sea CounterIntelBoat',
+        PlatoonTemplate = 'T2CounterIntelBoat',
+        Priority = 251,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileNavalTech2 then
+                return 251
+            else
+                return 0
+            end
+        end,
+        BuilderConditions = {
+            { UCBC, 'CanPathNavalBaseToNavalTargets', {  'LocationType', categories.NAVAL }}, -- LocationType, categoryUnits
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.NAVAL } },
+            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.NAVAL, '<=', categories.MOBILE * categories.NAVAL } },
+            -- Respect UnitCap
+        },
+        BuilderType = 'Sea',
+    },
+    -- ============ --
+    --    TECH 3    --
+    -- ============ --
+    Builder {
+        BuilderName = 'U3R Sea Battleship',
+        PlatoonTemplate = 'T3SeaBattleship',
+        Priority = 351,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileNavalTech3 then
+                return 351
+            else
+                return 0
+            end
+        end,
+        BuilderConditions = {
+            { UCBC, 'CanPathNavalBaseToNavalTargets', {  'LocationType', categories.NAVAL }}, -- LocationType, categoryUnits
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.NAVAL } },
+            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.NAVAL, '<=', categories.MOBILE * categories.NAVAL } },
+            -- Respect UnitCap
+        },
+        BuilderType = 'Sea',
+    },
+    Builder {
+        BuilderName = 'U3R Sea NukeSub',
+        PlatoonTemplate = 'T3SeaNukeSub',
+        Priority = 351,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileNavalTech3 then
+                return 351
+            else
+                return 0
+            end
+        end,
+        BuilderConditions = {
+            { UCBC, 'CanPathNavalBaseToNavalTargets', {  'LocationType', categories.NAVAL }}, -- LocationType, categoryUnits
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.NAVAL } },
+            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.NAVAL, '<=', categories.MOBILE * categories.NAVAL } },
+            -- Respect UnitCap
+        },
+        BuilderType = 'Sea',
+    },
+    Builder {
+        BuilderName = 'U3R Sea MissileBoat',
+        PlatoonTemplate = 'T3MissileBoat',
+        Priority = 351,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileNavalTech3 then
+                return 351
+            else
+                return 0
+            end
+        end,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.NAVAL } },
+            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.NAVAL, '<=', categories.MOBILE * categories.NAVAL } },
+            -- Respect UnitCap
+        },
+        BuilderType = 'Sea',
+    },
+    Builder {
+        BuilderName = 'U3R Sea SubKiller',
+        PlatoonTemplate = 'T3SubKiller',
+        Priority = 351,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileNavalTech3 then
+                return 351
+            else
+                return 0
+            end
+        end,
+        BuilderConditions = {
+            { UCBC, 'CanPathNavalBaseToNavalTargets', {  'LocationType', categories.NAVAL }}, -- LocationType, categoryUnits
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.NAVAL } },
+            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.NAVAL, '<=', categories.MOBILE * categories.NAVAL } },
+            -- Respect UnitCap
+        },
+        BuilderType = 'Sea',
+    },
+    Builder {
+        BuilderName = 'U3R Sea Battlecruiser',
+        PlatoonTemplate = 'T3Battlecruiser',
+        Priority = 351,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileNavalTech3 then
+                return 351
+            else
+                return 0
+            end
+        end,
+        BuilderConditions = {
+            { UCBC, 'CanPathNavalBaseToNavalTargets', {  'LocationType', categories.NAVAL }}, -- LocationType, categoryUnits
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.NAVAL } },
+            { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.NAVAL, '<=', categories.MOBILE * categories.NAVAL } },
+            -- Respect UnitCap
+        },
+        BuilderType = 'Sea',
+    },
+}-- ================= --
+--    AI-ADAPTIVE    --
+-- ================= --
 BuilderGroup {
     BuilderGroupName = 'U123 Naval Builders',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'FactoryBuilder',
@@ -417,7 +777,7 @@ BuilderGroup {
             SearchRadius = BasePanicZone,                                       -- Searchradius for new target.
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100000000,                                    -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            TargetSearchCategory = categories.MOBILE - categories.SCOUT,        -- Only find targets matching these categories.
+            TargetSearchCategory = categories.MOBILE - categories.AIR,        -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.EXPERIMENTAL,
                 categories.MOBILE,
@@ -425,7 +785,7 @@ BuilderGroup {
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to form this ?
-            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.MOBILE }}, -- radius, LocationType, unitCount, categoryEnemy
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.MOBILE - categories.AIR }}, -- radius, LocationType, unitCount, categoryEnemy
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
@@ -452,7 +812,7 @@ BuilderGroup {
             SearchRadius = BaseMilitaryZone,                                    -- Searchradius for new target.
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 150,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            TargetSearchCategory = categories.MOBILE,                           -- Only find targets matching these categories.
+            TargetSearchCategory = categories.MOBILE - categories.AIR,          -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.NAVAL * categories.DEFENSE,
                 categories.MOBILE * categories.NAVAL,
@@ -461,7 +821,7 @@ BuilderGroup {
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to form this ?
-            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 0, categories.MOBILE }}, -- radius, LocationType, unitCount, categoryEnemy
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 0, categories.MOBILE - categories.AIR }}, -- radius, LocationType, unitCount, categoryEnemy
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 6, categories.MOBILE * categories.NAVAL } },
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
@@ -489,7 +849,7 @@ BuilderGroup {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 200,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            TargetSearchCategory = categories.MOBILE + categories.STRUCTURE,    -- Only find targets matching these categories.
+            TargetSearchCategory = (categories.NAVAL + categories.STRUCTURE) - categories.AIR,    -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.STRUCTURE,
                 categories.MOBILE,
@@ -610,7 +970,7 @@ BuilderGroup {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 10000,                                        -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            TargetSearchCategory = categories.ALLUNITS,                         -- Only find targets matching these categories.
+            TargetSearchCategoryTargetSearchCategory = categories.ALLUNITS - categories.AIR,                         -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.ALLUNITS,
             },

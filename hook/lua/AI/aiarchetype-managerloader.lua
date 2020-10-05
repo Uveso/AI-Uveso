@@ -443,7 +443,7 @@ function EcoManagerThread(aiBrain)
                 end
             -- We have negative eco. Check if we can switch something off
             elseif aiBrain:GetEconomyStoredRatio('ENERGY') < 0.01 then
-                if not EntityCategoryContains( categories.ENERGYPRODUCTION + ((categories.MASSEXTRACTION + categories.FACTORY + categories.ENERGYSTORAGE) * categories.TECH1) , unit.UnitBeingBuilt) then
+                if not EntityCategoryContains( categories.ENERGYPRODUCTION + ((categories.MASSEXTRACTION + categories.FACTORY + categories.ENERGYSTORAGE)) , unit.UnitBeingBuilt) then
                     if unit:IsPaused() then continue end
                     unit:SetPaused( true )
                     bussy = true
@@ -455,7 +455,7 @@ function EcoManagerThread(aiBrain)
                     break -- for _, unit in Engineers do
                 end
             elseif aiBrain:GetEconomyStoredRatio('MASS') < 0.01 then
-                if not EntityCategoryContains( categories.MASSEXTRACTION + ((categories.ENERGYPRODUCTION + categories.FACTORY + categories.MASSSTORAGE) * categories.TECH1) , unit.UnitBeingBuilt) then
+                if not EntityCategoryContains( categories.MASSEXTRACTION + ((categories.ENERGYPRODUCTION + categories.FACTORY + categories.MASSSTORAGE)) , unit.UnitBeingBuilt) then
                     if unit:IsPaused() then continue end
                     unit:SetPaused( true )
                     bussy = true
@@ -762,7 +762,7 @@ function LocationRangeManagerThread(aiBrain)
                         end
                         IssueClearCommands({unit})
                         IssueStop({unit})
-                        IssueMove({unit}, nearestbase.Pos)
+                        IssueMove({unit}, { nearestbase.Pos[1] + (Random(-10, 10)), nearestbase.Pos[2], nearestbase.Pos[3] + (Random(-10, 10)) })
                     end
                 end
             end

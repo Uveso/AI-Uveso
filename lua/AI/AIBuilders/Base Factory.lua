@@ -293,22 +293,22 @@ BuilderGroup {
     BuilderGroupName = 'U1 Factory Builders RUSH',                             -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
-        BuilderName = 'UC Land Factory Mass > 15%',
+        BuilderName = 'UCR Land Factory Mass > 10%',
         PlatoonTemplate = 'CommanderBuilder',
-        Priority = 17750,
+        Priority = 17885,
         DelayEqualBuildPlattons = {'Factories', 3},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush2ndPhaseActive then
                 return 0
             else
-                return 17750
+                return 17885
             end
         end,
         BuilderConditions = {
             { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 2, categories.STRUCTURE * categories.FACTORY * categories.TECH1 }},
             -- Respect UnitCap
@@ -326,22 +326,22 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'UC Land Factory Mass > 25%',
+        BuilderName = 'UCR Land Factory Mass > 15%',
         PlatoonTemplate = 'CommanderBuilder',
-        Priority = 17800,
+        Priority = 17886,
         DelayEqualBuildPlattons = {'Factories', 3},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush2ndPhaseActive then
                 return 0
             else
-                return 17800
+                return 17886
             end
         end,
         BuilderConditions = {
             { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 3, categories.STRUCTURE * categories.FACTORY * categories.TECH1 }},
             -- Respect UnitCap
@@ -359,23 +359,23 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'U1 Land Factory Mass > 15%',
+        BuilderName = 'U1R Land Factory Mass > 10%',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 17750,
+        Priority = 17887,
         InstanceCount = 1,                                                      -- Number of plattons that will be formed with this template.
         DelayEqualBuildPlattons = {'Factories', 3},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush2ndPhaseActive then
                 return 0
             else
-                return 17750
+                return 17887
             end
         end,
         BuilderConditions = {
             { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD }},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 2, categories.STRUCTURE * categories.FACTORY * categories.TECH1 }},
@@ -394,23 +394,58 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'U1 Land Factory Mass > 25% Emergency',
+        BuilderName = 'U1R Land Factory Mass > 15%',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 17800,
+        Priority = 17887,
         InstanceCount = 2,                                                      -- Number of plattons that will be formed with this template.
         DelayEqualBuildPlattons = {'Factories', 3},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush2ndPhaseActive then
                 return 0
             else
-                return 17800
+                return 17887
             end
         end,
         BuilderConditions = {
             { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD }},
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 2, categories.STRUCTURE * categories.FACTORY * categories.TECH1 }},
+            -- Respect UnitCap
+            { UCBC, 'HaveUnitRatioVersusCap', { MaxCapFactory , '<', categories.STRUCTURE * categories.FACTORY * categories.LAND } }, -- Maximal 3 factories at 125 unitcap, 12 factories at 500 unitcap...
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Construction = {
+                Location = 'LocationType',
+                BuildClose = false,
+                BuildStructures = {
+                    'T1LandFactory',
+                },
+            }
+        }
+    },
+    Builder {
+        BuilderName = 'U1R Land Factory Mass > 20% Emergency',
+        PlatoonTemplate = 'EngineerBuilder',
+        Priority = 17887,
+        InstanceCount = 3,                                                      -- Number of plattons that will be formed with this template.
+        DelayEqualBuildPlattons = {'Factories', 3},
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush2ndPhaseActive then
+                return 0
+            else
+                return 17887
+            end
+        end,
+        BuilderConditions = {
+            { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapFactory , '<', categories.STRUCTURE * categories.FACTORY * categories.LAND } }, -- Maximal 3 factories at 125 unitcap, 12 factories at 500 unitcap...
@@ -427,23 +462,23 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'U2 Land Factory Mass > 25%',
+        BuilderName = 'U2R Land Factory Mass > 20%',
         PlatoonTemplate = 'T2EngineerBuilder',
-        Priority = 16510,
+        Priority = 17887,
         InstanceCount = 1,                                                      -- Number of plattons that will be formed with this template.
         DelayEqualBuildPlattons = {'Factories', 3},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush2ndPhaseActive then
                 return 0
             else
-                return 16510
+                return 17887
             end
         end,
         BuilderConditions = {
             { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, -0.00 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD }},
             -- Respect UnitCap
@@ -461,22 +496,22 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'UC Air Factory Ratio Rush',
+        BuilderName = 'UCR Air Factory Ratio Rush 10',
         PlatoonTemplate = 'CommanderBuilder',
-        Priority = 17900,
+        Priority = 17887,
         DelayEqualBuildPlattons = {'Factories', 3},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush2ndPhaseActive then
                 return 0
             else
-                return 17900
+                return 17887
             end
         end,
         BuilderConditions = {
             { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.10, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 3, categories.STRUCTURE * categories.FACTORY * categories.LAND } },
             { UCBC, 'HaveUnitRatioUveso', { 0.50, categories.STRUCTURE * categories.FACTORY * categories.AIR, '<',categories.STRUCTURE * categories.FACTORY * categories.LAND } },
@@ -495,22 +530,22 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'U1 Air Factory Ratio Rush 25',
+        BuilderName = 'U1R Air Factory Ratio Rush 15',
         PlatoonTemplate = 'EngineerBuilder',
-        Priority = 17900,
+        Priority = 17887,
         DelayEqualBuildPlattons = {'Factories', 3},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush2ndPhaseActive then
                 return 0
             else
-                return 17900
+                return 17887
             end
         end,
         BuilderConditions = {
             { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.10, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 3, categories.STRUCTURE * categories.FACTORY * categories.LAND } },
             { UCBC, 'HaveUnitRatioUveso', { 0.50, categories.STRUCTURE * categories.FACTORY * categories.AIR, '<',categories.STRUCTURE * categories.FACTORY * categories.LAND } },
@@ -1143,7 +1178,7 @@ BuilderGroup {
         BuilderType = 'Any',
     },
     Builder {
-        BuilderName = 'U1 L UP HQ 1->2 1st E>20',
+        BuilderName = 'U1 L UP HQ 1->2 1st E>25',
         PlatoonTemplate = 'T1LandFactoryUpgrade',
         Priority = 15400,
         DelayEqualBuildPlattons = {'FactoryUpgrade', 3},
@@ -1155,13 +1190,13 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.10 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND * (categories.TECH2 + categories.TECH3) - categories.SUPPORTFACTORY } },
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 20, categories.STRUCTURE * categories.ENERGYPRODUCTION } },
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 25, categories.STRUCTURE * categories.ENERGYPRODUCTION } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingUpgrade', { 1, categories.STRUCTURE * categories.FACTORY * categories.TECH1 }},
         },
         BuilderType = 'Any',
     },
     Builder {
-        BuilderName = 'U1 L UP HQ 1->2 1st E>1000',
+        BuilderName = 'U1 L UP HQ 1->2 1st E>1200',
         PlatoonTemplate = 'T1LandFactoryUpgrade',
         Priority = 15400,
         DelayEqualBuildPlattons = {'FactoryUpgrade', 3},
@@ -1170,7 +1205,7 @@ BuilderGroup {
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconIncome',  { 0.1, 1000.0 }},
+            { EBC, 'GreaterThanEconIncome',  { 0.1, 120.0 }},
             { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.10 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY } },
@@ -1180,7 +1215,7 @@ BuilderGroup {
         BuilderType = 'Any',
     },
     Builder {
-        BuilderName = 'U1 L UP HQ 1->2 1st M2>3',
+        BuilderName = 'U1 L UP HQ 1->2 1st M2>4',
         PlatoonTemplate = 'T1LandFactoryUpgrade',
         Priority = 15400,
         DelayEqualBuildPlattons = {'FactoryUpgrade', 3},
@@ -1189,9 +1224,9 @@ BuilderGroup {
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconIncome',  { 4.5, 20.0 }},
             { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.10 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 4, categories.STRUCTURE * categories.MASSEXTRACTION } },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND * (categories.TECH2 + categories.TECH3) - categories.SUPPORTFACTORY } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingUpgrade', { 1, categories.STRUCTURE * categories.FACTORY * categories.TECH1 }},

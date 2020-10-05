@@ -11,11 +11,20 @@ BaseBuilderTemplate {
     BaseTemplateName = 'uvesonull',
     Builders = {
         'N1 1 Factory Builders',
+        'U123 Factory Upgrader Rush',
+
         'N1 1 Engineer Builders',
         'N1 1 Energy Builders',
         'N1 MassBuilders', 
         'N1 Transporter',
         'U1 Land Scout Builders',
+        
+        --'N1 Land Builders',
+        'N2 Land Builders',
+        'N3 Land Builders',
+        'U123 Land Builders Panic',
+
+        'N123 Land Formers',
     },
     -- Not used by Uveso's AI. We always need intel in case the commander is dead.
     NonCheatBuilders = {

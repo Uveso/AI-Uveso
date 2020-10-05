@@ -56,13 +56,6 @@ PlatoonTemplate {
     },
 }
 PlatoonTemplate {
-    Name = 'U1MassDummy',
-    Plan = 'BuildOnMassAI',
-    GlobalSquads = {
-        { categories.MOBILE * categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD, 1, 1, 'support', 'none' },
-    },
-}
-PlatoonTemplate {
     Name = 'U2TML',
     Plan = 'TMLAIUveso',
     GlobalSquads = {

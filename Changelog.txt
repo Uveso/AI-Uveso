@@ -1,4 +1,18 @@
 *************************************************************************************************************************************
+v88 (06.Aug.2020)
+
+- New: AI is now able to micro-move units inside a platoon. 
+- Fix: Unit Count buildconditions for factories at naval areas now only count idle factories.
+- Fix: Added missing platoon builder for Tech 2 mobile shields and stealth units
+- Opt: Ecomanager no longer pauses Tech2 or Tech3 energy buildings when the energy is low.
+- Opt: AI will no longer shoot nukes before game minute 35, even with absurd eco settings or start with paragon.
+- Opt: Unitratio for shield structures increased by 50%
+- Opt: Sub AI Rush will now spam more units
+- Opt: Sub AI Rush has now seperate economy builders.
+- Opt: Sub AI Rush has now its own naval expansion base template
+- Opt: Build chance of T3 artillery slightly increased.
+
+*************************************************************************************************************************************
 v87 (15.Jul.2020)
 
 - New: AI works now with No-Rush game mode.
@@ -15,7 +29,7 @@ v87 (15.Jul.2020)
 *************************************************************************************************************************************
 v86 (21.May.2020)
 
-- Fix: The debugoption for platoonnames was spaming a debugmesage every AI-ExecutePlan() cycle
+- Fix: The debugoption for platoonnames was spaming a debugmessage every AI-ExecutePlan() cycle
 
 *************************************************************************************************************************************
 v85 (19.May.2020)

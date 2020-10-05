@@ -633,7 +633,7 @@ BuilderGroup {
         BuilderConditions = {
             { UCBC, 'CheckBuildPlattonDelay', { 'MASSSTORAGE' }},
             -- Have we the eco to build it ?
-            --{ MIBC, 'HasNotParagon', {} },
+            { EBC, 'GreaterThanEconStorageRatio', { 0.1, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1,  categories.STRUCTURE * categories.MASSSTORAGE }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 16, categories.STRUCTURE * categories.MASSSTORAGE }},
@@ -668,7 +668,7 @@ BuilderGroup {
         BuilderConditions = {
             { UCBC, 'CheckBuildPlattonDelay', { 'MASSSTORAGE' }},
             -- Have we the eco to build it ?
-            --{ MIBC, 'HasNotParagon', {} },
+            { EBC, 'GreaterThanEconStorageRatio', { 0.1, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1,  categories.STRUCTURE * categories.MASSSTORAGE }},
             { UCBC, 'AdjacencyCheck', { 'LocationType', categories.MASSEXTRACTION * categories.TECH3, 60, 'ueb1106' } },

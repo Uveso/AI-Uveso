@@ -77,6 +77,13 @@ PlatoonTemplate {
         { categories.MOBILE * categories.AIR * categories.GROUNDATTACK - categories.HIGHALTAIR - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL - categories.ANTINAVY , 3, 5, 'Attack', 'none' }
     }
 }
+PlatoonTemplate {
+    Name = 'U123-Gunship-Intercept 1 50',
+    Plan = 'InterceptorAIUveso',
+    GlobalSquads = {
+        { categories.MOBILE * categories.AIR * categories.GROUNDATTACK - categories.HIGHALTAIR - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL - categories.ANTINAVY , 1, 50, 'Attack', 'none' }
+    }
+}
 -- Bomber
 PlatoonTemplate {
     Name = 'U123-Bomber-Intercept 1 2', 
@@ -118,6 +125,13 @@ PlatoonTemplate {
     Plan = 'InterceptorAIUveso',
     GlobalSquads = {
         { categories.MOBILE * categories.AIR * categories.BOMBER - categories.EXPERIMENTAL - categories.ANTINAVY, 15, 20, 'Attack', 'none' },
+    }
+}
+PlatoonTemplate {
+    Name = 'U123-Bomber-Intercept 1 50', 
+    Plan = 'InterceptorAIUveso',
+    GlobalSquads = {
+        { categories.MOBILE * categories.AIR * categories.BOMBER - categories.EXPERIMENTAL - categories.ANTINAVY, 1, 50, 'Attack', 'none' },
     }
 }
 -- Torpedo Bomber
@@ -308,9 +322,17 @@ PlatoonTemplate {
 }
 
 PlatoonTemplate {
-    Name = 'U1234-AirSuicide 1 1',
+    Name = 'U123-AirSuicide 5 10',
     Plan = 'AirSuicideAI',
     GlobalSquads = {
-        { categories.MOBILE * categories.AIR * ( categories.GROUNDATTACK + categories.BOMBER ) - categories.SATELLITE - categories.INSIGNIFICANTUNIT, 1, 1, 'attack', 'none' }
+        { categories.MOBILE * categories.AIR * ( categories.GROUNDATTACK + categories.BOMBER ) - categories.EXPERIMENTAL - categories.SATELLITE - categories.INSIGNIFICANTUNIT, 5, 10, 'attack', 'none' }
+    },
+}
+
+PlatoonTemplate {
+    Name = 'U4-AirSuicide 1 3',
+    Plan = 'AirSuicideAI',
+    GlobalSquads = {
+        { categories.MOBILE * categories.AIR * categories.EXPERIMENTAL * ( categories.GROUNDATTACK + categories.BOMBER ) - categories.SATELLITE - categories.INSIGNIFICANTUNIT, 1, 2, 'attack', 'none' }
     },
 }

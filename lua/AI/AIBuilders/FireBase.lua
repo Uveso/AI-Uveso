@@ -8,7 +8,7 @@ BuilderGroup {
     BuilderGroupName = 'U1 FirebaseBuilders',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
-        BuilderName = 'T1 Firebase Expansion Area',
+        BuilderName = 'U1 Firebase Expansion Area',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 0,
         InstanceCount = 1,
@@ -43,7 +43,7 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'T1 Firebase Defensive Point',
+        BuilderName = 'U1 Firebase Defensive Point',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 0,
         InstanceCount = 1,
@@ -78,7 +78,7 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'T1 Firebase Combat Zone',
+        BuilderName = 'U1 Firebase Combat Zone',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 0,
         InstanceCount = 1,
@@ -113,7 +113,7 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'T1 Firebase Naval Defensive Point',
+        BuilderName = 'U1 Firebase Naval Defensive Point',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 0,
         InstanceCount = 1,
