@@ -11,6 +11,7 @@ v88 (06.Aug.2020)
 - Opt: Sub AI Rush has now seperate economy builders.
 - Opt: Sub AI Rush has now its own naval expansion base template
 - Opt: Build chance of T3 artillery slightly increased.
+- Opt: Removed all game pre-patches that are already pathched to the FAF deploy game version.
 
 *************************************************************************************************************************************
 v87 (15.Jul.2020)

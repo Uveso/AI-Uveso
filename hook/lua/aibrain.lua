@@ -2,7 +2,6 @@
 UvesoAIBrainClass = AIBrain
 AIBrain = Class(UvesoAIBrainClass) {
 
-    -- For AI Patch V8 (Patched) add BaseType for function GetManagerCount
     -- Hook AI-Uveso. Removing the StrategyManager
     AddBuilderManagers = function(self, position, radius, baseName, useCenter)
        -- Only use this with AI-Uveso
@@ -32,33 +31,7 @@ AIBrain = Class(UvesoAIBrainClass) {
         self.NumBases = self.NumBases + 1
     end,
 
-    -- For AI Patch V8. (Patched) patch for faster location search, needs AddBuilderManagers
-    GetManagerCount = function(self, type)
-        local count = 0
-        for k, v in self.BuilderManagers do
-            if not v.BaseType then
-                continue
-            end
-            if type then
-                if type == 'Start Location' and v.BaseType ~= 'MAIN' and v.BaseType ~= 'Blank Marker' then
-                    continue
-                elseif type == 'Naval Area' and v.BaseType ~= 'Naval Area' then
-                    continue
-                elseif type == 'Expansion Area' and v.BaseType ~= 'Expansion Area' and v.BaseType ~= 'Large Expansion Area' then
-                    continue
-                end
-            end
-
-            if v.EngineerManager:GetNumCategoryUnits('Engineers', categories.ALLUNITS) <= 0 and v.FactoryManager:GetNumCategoryFactories(categories.ALLUNITS) <= 0 then
-                continue
-            end
-
-            count = count + 1
-        end
-        return count
-    end,
-
-    -- For AI Patch V8. (Patched)Fix error on game end (*AI WARNING: Invalid consumptionType - Units)
+    -- For AI Patch V9. remove AI tables and functions on defeat
     OnDefeat = function(self)
         self:SetResult("defeat")
 
