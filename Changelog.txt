@@ -2,6 +2,7 @@
 v88 (06.Aug.2020)
 
 - New: AI is now able to micro-move units inside a platoon. 
+- Fix: Scorescreen was not showing data after game update.
 - Fix: Unit Count buildconditions for factories at naval areas now only count idle factories.
 - Fix: Added missing platoon builder for Tech 2 mobile shields and stealth units
 - Opt: Ecomanager no longer pauses Tech2 or Tech3 energy buildings when the energy is low.
