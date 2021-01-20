@@ -21,7 +21,7 @@ BuilderGroup {
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AttackEnemyStrength = 2000,                                         -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.ALLUNITS - (categories.ENGINEER * categories.TECH1 * categories.TECH2) - categories.AIR - categories.SCOUT , -- Only find targets matching these categories.
+            TargetSearchCategory = categories.ALLUNITS - categories.AIR - categories.SCOUT , -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Attack these targets.
                 categories.COMMAND,
                 categories.EXPERIMENTAL,
@@ -34,7 +34,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'GreaterThanGameTimeSeconds', { 60*3 } },
             -- Do we need additional conditions to build it ?
-            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  60, 'LocationType', 0, categories.ALLUNITS - (categories.ENGINEER * categories.TECH1 * categories.TECH2) - categories.AIR - categories.SCOUT }}, -- radius, LocationType, unitCount, categoryEnemy
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  60, 'LocationType', 0, categories.ALLUNITS - categories.AIR - categories.SCOUT }}, -- radius, LocationType, unitCount, categoryEnemy
             -- Don't build it if...
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.FACTORY * categories.LAND - categories.SUPPORTFACTORY } },
         },
@@ -52,7 +52,7 @@ BuilderGroup {
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AttackEnemyStrength = 2000,                                         -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.ALLUNITS - (categories.ENGINEER * categories.TECH1 * categories.TECH2) - categories.AIR - categories.SCOUT , -- Only find targets matching these categories.
+            TargetSearchCategory = categories.ALLUNITS - categories.AIR - categories.SCOUT , -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Attack these targets.
                 categories.COMMAND,
                 categories.EXPERIMENTAL,
@@ -65,7 +65,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'GreaterThanGameTimeSeconds', { 60*6 } },
             -- Do we need additional conditions to build it ?
-            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  256, 'LocationType', 0, categories.ALLUNITS - (categories.ENGINEER * categories.TECH1 * categories.TECH2) - categories.AIR - categories.SCOUT }}, -- radius, LocationType, unitCount, categoryEnemy
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  256, 'LocationType', 0, categories.ALLUNITS - categories.AIR - categories.SCOUT }}, -- radius, LocationType, unitCount, categoryEnemy
             -- Don't build it if...
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.FACTORY * categories.LAND - categories.SUPPORTFACTORY } },
         },

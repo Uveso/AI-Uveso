@@ -318,10 +318,10 @@ BuilderGroup {
         BuilderName = 'U1 Assist PARA',
         PlatoonTemplate = 'EngineerAssist',
         Priority = 500,
-        InstanceCount = 50,
+        InstanceCount = 5,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.99}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconIncome', { 20.0, 100.0 }},                    -- Base income
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuilt', { 0, categories.STRUCTURE * categories.ECONOMIC * categories.EXPERIMENTAL }},
         },
@@ -341,12 +341,11 @@ BuilderGroup {
         BuilderName = 'U2 Assist PARA',
         PlatoonTemplate = 'T2EngineerAssist',
         Priority = 500,
-        InstanceCount = 50,
+        InstanceCount = 5,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.99}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconIncome', { 30.0, 100.0 }},                    -- Base income
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.STRUCTURE * categories.ECONOMIC * categories.EXPERIMENTAL }},
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuilt', { 0, categories.STRUCTURE * categories.ECONOMIC * categories.EXPERIMENTAL }},
         },
         BuilderType = 'Any',
@@ -365,13 +364,78 @@ BuilderGroup {
         BuilderName = 'U3 Assist PARA',
         PlatoonTemplate = 'T3EngineerAssistNoSUB',
         Priority = 500,
-        InstanceCount = 30,
+        InstanceCount = 5,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.99}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconIncome', { 40.0, 100.0 }},                    -- Base income
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuilt', { 0, categories.STRUCTURE * categories.ECONOMIC * categories.EXPERIMENTAL }},
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ECONOMIC * categories.EXPERIMENTAL }},
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Assist = {
+                AssistLocation = 'LocationType',
+                AssisteeType = 'Structure',
+                AssistRange = 120,
+                BeingBuiltCategories = {'EXPERIMENTAL ECONOMIC'},               -- Unitcategories must be type string
+                AssistUntilFinished = true,
+                Time = 0,
+            },
+        }
+    },
+    Builder {
+        BuilderName = 'U1 Assist PARA+',
+        PlatoonTemplate = 'EngineerAssist',
+        Priority = 500,
+        InstanceCount = 10,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.ECONOMIC * categories.EXPERIMENTAL}},
+            { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuilt', { 0, categories.STRUCTURE * categories.ECONOMIC * categories.EXPERIMENTAL }},
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Assist = {
+                AssistLocation = 'LocationType',
+                AssisteeType = 'Structure',
+                AssistRange = 120,
+                BeingBuiltCategories = {'EXPERIMENTAL ECONOMIC'},               -- Unitcategories must be type string
+                AssistUntilFinished = true,
+                Time = 0,
+            },
+        }
+    },
+    Builder {
+        BuilderName = 'U2 Assist PARA+',
+        PlatoonTemplate = 'T2EngineerAssist',
+        Priority = 500,
+        InstanceCount = 10,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.ECONOMIC * categories.EXPERIMENTAL}},
+            { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuilt', { 0, categories.STRUCTURE * categories.ECONOMIC * categories.EXPERIMENTAL }},
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Assist = {
+                AssistLocation = 'LocationType',
+                AssisteeType = 'Structure',
+                AssistRange = 120,
+                BeingBuiltCategories = {'EXPERIMENTAL ECONOMIC'},               -- Unitcategories must be type string
+                AssistUntilFinished = true,
+                Time = 0,
+            },
+        }
+    },
+    Builder {
+        BuilderName = 'U3 Assist PARA+',
+        PlatoonTemplate = 'T3EngineerAssist',
+        Priority = 500,
+        InstanceCount = 10,
+        BuilderConditions = {
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.ECONOMIC * categories.EXPERIMENTAL}},
+            { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuilt', { 0, categories.STRUCTURE * categories.ECONOMIC * categories.EXPERIMENTAL }},
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -458,6 +522,36 @@ BuilderGroup {
                 AssistRange = 100,
                 AssistClosestUnit = true,                                       -- Assist the closest unit instead unit with the least number of assisters
                 BeingBuiltCategories = {'EXPERIMENTAL ECONOMIC, EXPERIMENTAL SHIELD, EXPERIMENTAL MOBILE'},-- Unitcategories must be type string
+                AssistUntilFinished = true,
+                Time = 0,
+            },
+        }
+    },
+
+    -- ================ --
+    --    Artillery     --
+    -- ================ --
+    Builder {
+        BuilderName = 'U1 Assist Arty',
+        PlatoonTemplate = 'EngineerAssist',
+        Priority = 200,
+        InstanceCount = 10,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.80}}, -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD } },
+            { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.ARTILLERY }},
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Assist = {
+                AssistLocation = 'LocationType',
+                BeingBuiltCategories = {'STRUCTURE ARTILLERY'},                    -- Unitcategories must be type string
+                AssisteeType = 'Structure',
+                AssistRange = 100,
+                AssistClosestUnit = true,                                       -- Assist the closest unit instead unit with the least number of assisters
                 AssistUntilFinished = true,
                 Time = 0,
             },

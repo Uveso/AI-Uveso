@@ -16,7 +16,7 @@ function ReturnFalse(aiBrain)
 end
 
 --{ UCBC, 'CanBuildCategory', { categories.RADAR * categories.TECH1 } },
-local FactionIndexToCategory = {[1] = categories.UEF, [2] = categories.AEON, [3] = categories.CYBRAN, [4] = categories.SERAPHIM, [5] = categories.NOMADS }
+local FactionIndexToCategory = {[1] = categories.UEF, [2] = categories.AEON, [3] = categories.CYBRAN, [4] = categories.SERAPHIM, [5] = categories.NOMADS, [6] = categories.ARM, [7] = categories.CORE }
 function CanBuildCategory(aiBrain,category)
     -- convert text categories like 'MOBILE AIR' to 'categories.MOBILE * categories.AIR'
     local FactionCat = FactionIndexToCategory[aiBrain:GetFactionIndex()] or categories.ALLUNITS
@@ -110,6 +110,7 @@ function HaveUnitRatioAtLocation(aiBrain, locType, ratio, categoryNeed, compareT
     return CompareBody(numNeedUnits / numHaveUnits, ratio, compareType)
 end
 
+-- 0.8 = 4:5
 --{ UCBC, 'HaveUnitRatioAtLocationRadiusVersusEnemy', { 1.50, 'LocationType', 90, 'STRUCTURE DEFENSE ANTIMISSILE TECH3', '<','SILO NUKE TECH3' } },
 function HaveUnitRatioAtLocationRadiusVersusEnemy(aiBrain, ratio, locType, radius, categoryOwn, compareType, categoryEnemy)
     local AIName = ArmyBrains[aiBrain:GetArmyIndex()].Nickname

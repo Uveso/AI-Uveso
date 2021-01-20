@@ -32,13 +32,25 @@ BuilderGroup {
             AttackEnemyStrength = 50000,                                        -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = categories.STRUCTURE - categories.NAVAL,     -- Only find targets matching these categories.
+            TargetHug = true,                                                   -- Tries to get as close to the target as possible
             MoveToCategories = {                                                -- Move to targets
                 categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
                 categories.STRUCTURE * categories.EXPERIMENTAL * categories.SHIELD,
                 categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
-                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.OPTICS,
+                categories.STRUCTURE * categories.MASSEXTRACTION * categories.TECH3,
                 categories.FACTORY * categories.TECH3,
+                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.STRUCTURE * categories.NUKE,
                 categories.ALLUNITS - categories.AIR,
+            },
+            WeaponTargetCategories = {                                          -- Override weapon target priorities
+                categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
+                categories.STRUCTURE * categories.EXPERIMENTAL * categories.SHIELD,
+                categories.COMMAND,
+                categories.DEFENSE - categories.ANTIAIR,
+                categories.EXPERIMENTAL,
+                categories.ALLUNITS - categories.SCOUT,
             },
         },
         BuilderConditions = {
@@ -65,13 +77,24 @@ BuilderGroup {
             AttackEnemyStrength = 50000,                                        -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = categories.STRUCTURE - categories.NAVAL,     -- Only find targets matching these categories.
+            TargetHug = true,                                                   -- Tries to get as close to the target as possible
             MoveToCategories = {                                                -- Move to targets
                 categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
                 categories.STRUCTURE * categories.EXPERIMENTAL * categories.SHIELD,
                 categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
-                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.STRUCTURE * categories.MASSEXTRACTION * categories.TECH3,
                 categories.FACTORY * categories.TECH3,
+                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.STRUCTURE * categories.NUKE,
                 categories.ALLUNITS - categories.AIR,
+            },
+            WeaponTargetCategories = {                                          -- Override weapon target priorities
+                categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
+                categories.STRUCTURE * categories.EXPERIMENTAL * categories.SHIELD,
+                categories.COMMAND,
+                categories.DEFENSE - categories.ANTIAIR,
+                categories.EXPERIMENTAL,
+                categories.ALLUNITS - categories.SCOUT,
             },
         },
         BuilderConditions = {
@@ -98,13 +121,24 @@ BuilderGroup {
             AttackEnemyStrength = 50000,                                        -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = categories.STRUCTURE - categories.NAVAL,     -- Only find targets matching these categories.
+            TargetHug = true,                                                   -- Tries to get as close to the target as possible
             MoveToCategories = {                                                -- Move to targets
                 categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
                 categories.STRUCTURE * categories.EXPERIMENTAL * categories.SHIELD,
                 categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
-                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.STRUCTURE * categories.MASSEXTRACTION * categories.TECH3,
                 categories.FACTORY * categories.TECH3,
+                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.STRUCTURE * categories.NUKE,
                 categories.ALLUNITS - categories.AIR,
+            },
+            WeaponTargetCategories = {                                          -- Override weapon target priorities
+                categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
+                categories.STRUCTURE * categories.EXPERIMENTAL * categories.SHIELD,
+                categories.COMMAND,
+                categories.DEFENSE - categories.ANTIAIR,
+                categories.EXPERIMENTAL,
+                categories.ALLUNITS - categories.SCOUT,
             },
         },
         BuilderConditions = {
@@ -131,13 +165,24 @@ BuilderGroup {
             AttackEnemyStrength = 50000,                                        -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = categories.STRUCTURE - categories.NAVAL,     -- Only find targets matching these categories.
+            TargetHug = true,                                                   -- Tries to get as close to the target as possible
             MoveToCategories = {                                                -- Move to targets
                 categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
                 categories.STRUCTURE * categories.EXPERIMENTAL * categories.SHIELD,
                 categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
-                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.STRUCTURE * categories.MASSEXTRACTION * categories.TECH3,
                 categories.FACTORY * categories.TECH3,
+                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.STRUCTURE * categories.NUKE,
                 categories.ALLUNITS - categories.AIR,
+            },
+            WeaponTargetCategories = {                                          -- Override weapon target priorities
+                categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
+                categories.STRUCTURE * categories.EXPERIMENTAL * categories.SHIELD,
+                categories.COMMAND,
+                categories.DEFENSE - categories.ANTIAIR,
+                categories.EXPERIMENTAL,
+                categories.ALLUNITS - categories.SCOUT,
             },
         },
         BuilderConditions = {
@@ -164,13 +209,24 @@ BuilderGroup {
             AttackEnemyStrength = 50000,                                        -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = false,                                              -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = categories.STRUCTURE - categories.NAVAL,     -- Only find targets matching these categories.
+            TargetHug = true,                                                   -- Tries to get as close to the target as possible
             MoveToCategories = {                                                -- Move to targets
                 categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
                 categories.STRUCTURE * categories.EXPERIMENTAL * categories.SHIELD,
                 categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
-                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.STRUCTURE * categories.MASSEXTRACTION * categories.TECH3,
                 categories.FACTORY * categories.TECH3,
+                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.STRUCTURE * categories.NUKE,
                 categories.ALLUNITS - categories.AIR,
+            },
+            WeaponTargetCategories = {                                          -- Override weapon target priorities
+                categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
+                categories.STRUCTURE * categories.EXPERIMENTAL * categories.SHIELD,
+                categories.COMMAND,
+                categories.DEFENSE - categories.ANTIAIR,
+                categories.EXPERIMENTAL,
+                categories.ALLUNITS - categories.SCOUT,
             },
         },
         BuilderConditions = {

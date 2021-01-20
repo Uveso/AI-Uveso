@@ -78,7 +78,7 @@ BuilderGroup {
         DelayEqualBuildPlattons = {'MobileExperimental', 10},
         InstanceCount = 6,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             { UCBC, 'CheckBuildPlattonDelay', { 'MobileExperimental' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome', { 7.0, 600.0 }},                    -- Base income
@@ -110,7 +110,7 @@ BuilderGroup {
         InstanceCount = 1,
         BuilderConditions = {
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             { UCBC, 'CheckBuildPlattonDelay', { 'MobileExperimental' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome', { 7.0, 600.0 }},                    -- Base income
@@ -275,15 +275,14 @@ BuilderGroup {
             TargetSearchCategory = categories.ALLUNITS - categories.AIR,        -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
-                categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
-                categories.STRUCTURE * categories.ENERGYPRODUCTION,
-                categories.STRUCTURE * categories.ARTILLERY,
-                categories.STRUCTURE * categories.NUKE,
+                categories.STRUCTURE * categories.EXPERIMENTAL * categories.SHIELD,
+                categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
+                categories.OPTICS,
+                categories.STRUCTURE * categories.MASSEXTRACTION * categories.TECH3,
+                categories.FACTORY * categories.TECH3,
                 categories.STRUCTURE * categories.EXPERIMENTAL,
-                categories.STRUCTURE * categories.ANTIMISSILE * categories.TECH3,
-                categories.STRUCTURE * categories.DEFENSE * categories.TECH3,
-                categories.STRUCTURE * categories.FACTORY * categories.TECH3,
-                categories.ALLUNITS,
+                categories.STRUCTURE * categories.NUKE,
+                categories.ALLUNITS - categories.AIR,
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
@@ -308,21 +307,21 @@ BuilderGroup {
         end,
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
+            DirectMoveEnemyBase = true, 
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = false,                                              -- If true, the unit will attack everything while moving to the target.
-            AttackEnemyStrength = 100000,                                       -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            AttackEnemyStrength = 100000000,                                       -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.ALLUNITS - categories.AIR,        -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
-                categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
-                categories.STRUCTURE * categories.ARTILLERY,
-                categories.STRUCTURE * categories.NUKE,
-                categories.STRUCTURE * categories.ENERGYPRODUCTION,
+                categories.STRUCTURE * categories.EXPERIMENTAL * categories.SHIELD,
+                categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
+                categories.OPTICS,
+                categories.STRUCTURE * categories.MASSEXTRACTION * categories.TECH3,
+                categories.FACTORY * categories.TECH3,
                 categories.STRUCTURE * categories.EXPERIMENTAL,
-                categories.STRUCTURE * categories.ANTIMISSILE * categories.TECH3,
-                categories.STRUCTURE * categories.DEFENSE * categories.TECH3,
-                categories.STRUCTURE * categories.FACTORY * categories.TECH3,
-                categories.ALLUNITS,
+                categories.STRUCTURE * categories.NUKE,
+                categories.ALLUNITS - categories.AIR,
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
@@ -348,21 +347,21 @@ BuilderGroup {
         end,
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
+            DirectMoveEnemyBase = true, 
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = false,                                              -- If true, the unit will attack everything while moving to the target.
-            AttackEnemyStrength = 100000,                                       -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            AttackEnemyStrength = 100000000,                                       -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.ALLUNITS - categories.AIR,        -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
-                categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
-                categories.STRUCTURE * categories.ARTILLERY,
-                categories.STRUCTURE * categories.NUKE,
-                categories.STRUCTURE * categories.ENERGYPRODUCTION,
+                categories.STRUCTURE * categories.EXPERIMENTAL * categories.SHIELD,
+                categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
+                categories.OPTICS,
+                categories.STRUCTURE * categories.MASSEXTRACTION * categories.TECH3,
+                categories.FACTORY * categories.TECH3,
                 categories.STRUCTURE * categories.EXPERIMENTAL,
-                categories.STRUCTURE * categories.ANTIMISSILE * categories.TECH3,
-                categories.STRUCTURE * categories.DEFENSE * categories.TECH3,
-                categories.STRUCTURE * categories.FACTORY * categories.TECH3,
-                categories.ALLUNITS,
+                categories.STRUCTURE * categories.NUKE,
+                categories.ALLUNITS - categories.AIR,
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
@@ -399,19 +398,22 @@ BuilderGroup {
         end,
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
+            DirectMoveEnemyBase = true, 
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
-            AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
-            AttackEnemyStrength = 100000,                                       -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            AggressiveMove = false,                                              -- If true, the unit will attack everything while moving to the target.
+            AttackEnemyStrength = 100000000,                                       -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.STRUCTURE + categories.MOBILE - categories.AIR,                         -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
-                categories.STRUCTURE * categories.ANTIAIR * categories.TECH3,
-                categories.STRUCTURE * categories.FACTORY * categories.TECH3,
-                categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * categories.TECH3,
-                categories.STRUCTURE * categories.ARTILLERY,
-                categories.STRUCTURE * categories.NUKE,
+                categories.STRUCTURE * categories.EXPERIMENTAL * categories.SHIELD,
                 categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
-                categories.ALLUNITS,
+                categories.OPTICS,
+                categories.STRUCTURE * categories.MASSEXTRACTION * categories.TECH3,
+                categories.FACTORY * categories.TECH3,
+                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.STRUCTURE * categories.NUKE,
+                categories.STRUCTURE,
+                categories.ALLUNITS - categories.AIR,
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true

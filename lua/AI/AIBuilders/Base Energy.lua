@@ -17,12 +17,74 @@ BuilderGroup {
     --    TECH 1    --
     -- ============ --
     Builder {
+        BuilderName = 'U1R Power <90%',
+        PlatoonTemplate = 'EngineerBuilder',
+        Priority = 17900,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NeedEnergyTech1 then
+                return 17900
+            else
+                return 0
+            end
+        end,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            { EBC, 'LessThanEconStorageRatio', { 1.00, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconIncome',  { 0.2, 0.0}}, -- Absolut Base income
+            -- When do we want to build this ?
+            -- Respect UnitCap
+        },
+        InstanceCount = 1,
+        BuilderType = 'Any',
+        BuilderData = {
+            Construction = {
+                AdjacencyCategory = categories.STRUCTURE * categories.FACTORY * (categories.LAND + categories.AIR),
+                AdjacencyDistance = 50,
+                BuildClose = true,
+                LocationType = 'LocationType',
+                BuildStructures = {
+                    'T1EnergyProduction',
+                },
+            }
+        }
+    },
+    Builder {
+        BuilderName = 'UCR Power <90%',
+        PlatoonTemplate = 'CommanderBuilder',
+        Priority = 17900,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NeedEnergyTech1 then
+                return 17900
+            else
+                return 0
+            end
+        end,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            { EBC, 'LessThanEconStorageRatio', { 1.00, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconIncome',  { 0.2, 0.0}}, -- Absolut Base income
+            -- When do we want to build this ?
+            -- Respect UnitCap
+        },
+        InstanceCount = 1,
+        BuilderType = 'Any',
+        BuilderData = {
+            Construction = {
+                AdjacencyCategory = categories.STRUCTURE * categories.FACTORY * (categories.LAND + categories.AIR),
+                AdjacencyDistance = 50,
+                BuildClose = true,
+                LocationType = 'LocationType',
+                BuildStructures = {
+                    'T1EnergyProduction',
+                },
+            }
+        }
+    },
+    Builder {
         BuilderName = 'U1R Power low trend',
         PlatoonTemplate = 'EngineerBuilder',
-        TechRoot = 'ENERGY1',
         Priority = 17899,
         InstanceCount = 2,                                                      -- Number of plattons that will be formed with this template.
-        DelayEqualBuildPlattons = {'Energy', 3},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NeedEnergyTech1 then
                 return 17899
@@ -130,6 +192,45 @@ BuilderGroup {
     --    TECH 3    --
     -- ============ --
     Builder {
+        BuilderName = 'U3R Power Emergency',
+        PlatoonTemplate = 'T3EngineerBuilderNoSUB',
+        Priority = 17200,
+        DelayEqualBuildPlattons = {'Energy', 5},
+        InstanceCount = 3,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NeedEnergyTech3 then
+                return 17200
+            else
+                return 0
+            end
+        end,
+        BuilderConditions = {
+            { UCBC, 'CheckBuildPlattonDelay', { 'Energy' }},
+            -- Have we the eco to build it ?
+            { EBC, 'LessThanEconStorageRatio', { 2.00, 0.90}}, -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3 }},
+            -- Don't build it if...
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Construction = {
+                DesiresAssist = true,
+                NumAssistees = 10,
+                BuildClose = false,
+                AdjacencyCategory = (categories.STRUCTURE * categories.SHIELD) + (categories.FACTORY * (categories.TECH3 + categories.TECH2 + categories.TECH1)),
+                AvoidCategory = categories.ENERGYPRODUCTION * categories.TECH3,
+                maxUnits = 1,
+                maxRadius = 15,
+                LocationType = 'LocationType',
+                BuildStructures = {
+                    'T3EnergyProduction',
+                    'T3ShieldDefense',
+                },
+            }
+        }
+    },
+    Builder {
         BuilderName = 'U3R  Power low trend',
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 17300,
@@ -177,9 +278,72 @@ BuilderGroup {
     --    TECH 1    --
     -- ============ --
     Builder {
+        BuilderName = 'U1 Power <90%',
+        PlatoonTemplate = 'EngineerBuilder',
+        Priority = 17900,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NeedEnergyTech1 then
+                return 17900
+            else
+                return 0
+            end
+        end,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            { EBC, 'LessThanEconStorageRatio', { 1.00, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconIncome',  { 0.2, 0.0}}, -- Absolut Base income
+            -- When do we want to build this ?
+            -- Respect UnitCap
+        },
+        InstanceCount = 1,
+        BuilderType = 'Any',
+        BuilderData = {
+            Construction = {
+                AdjacencyCategory = categories.STRUCTURE * categories.FACTORY * (categories.LAND + categories.AIR),
+                AdjacencyDistance = 50,
+                BuildClose = true,
+                LocationType = 'LocationType',
+                BuildStructures = {
+                    'T1EnergyProduction',
+                },
+            }
+        }
+    },
+    Builder {
+        BuilderName = 'UC Power <90%',
+        PlatoonTemplate = 'CommanderBuilder',
+        Priority = 17900,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NeedEnergyTech1 then
+                return 17900
+            else
+                return 0
+            end
+        end,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            { EBC, 'LessThanEconStorageRatio', { 1.00, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconIncome',  { 0.2, 0.0}}, -- Absolut Base income
+            -- When do we want to build this ?
+            -- Respect UnitCap
+        },
+        InstanceCount = 1,
+        BuilderType = 'Any',
+        BuilderData = {
+            Construction = {
+                AdjacencyCategory = categories.STRUCTURE * categories.FACTORY * (categories.LAND + categories.AIR),
+                AdjacencyDistance = 50,
+                BuildClose = true,
+                LocationType = 'LocationType',
+                BuildStructures = {
+                    'T1EnergyProduction',
+                },
+            }
+        }
+    },
+    Builder {
         BuilderName = 'U1 Power low trend',
         PlatoonTemplate = 'EngineerBuilder',
-        TechRoot = 'ENERGY1',
         Priority = 17899,
         InstanceCount = 2,                                                      -- Number of plattons that will be formed with this template.
         DelayEqualBuildPlattons = {'Energy', 3},
@@ -661,7 +825,7 @@ BuilderGroup {
         BuilderConditions = {
             { UCBC, 'CheckBuildPlattonDelay', { 'Energy' }},
             -- Have we the eco to build it ?
-            { EBC, 'LessThanEconStorageRatio', { 2.00, 0.80}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'LessThanEconStorageRatio', { 2.00, 0.90}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3 }},
             -- Don't build it if...
@@ -947,6 +1111,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
+            { EBC, 'GreaterThanEconStorageRatio', { 0.00, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.TECH1 * categories.ENERGYPRODUCTION - categories.HYDROCARBON }},
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 2, categories.ENERGYPRODUCTION * ( categories.TECH2 + categories.TECH3 )}},
         },
@@ -970,6 +1135,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
+            { EBC, 'GreaterThanEconStorageRatio', { 0.00, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.TECH1 * categories.ENERGYPRODUCTION - categories.HYDROCARBON }},
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 2, categories.ENERGYPRODUCTION * ( categories.TECH2 + categories.TECH3 )}},
         },
@@ -995,7 +1161,7 @@ BuilderGroup {
         BuilderConditions = {
             -- Have we the eco to build it ?
             { UCBC, 'UnitCapCheckGreater', { 0.95 } },
-            { EBC, 'GreaterThanEconTrend', { 0.0, 1.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.00, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.TECH1 * categories.ENERGYPRODUCTION - categories.HYDROCARBON }},
         },
@@ -1019,6 +1185,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
+            { EBC, 'GreaterThanEconStorageRatio', { 0.00, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.TECH2 * categories.ENERGYPRODUCTION - categories.HYDROCARBON }},
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.ENERGYPRODUCTION * ( categories.TECH3 + categories.EXPERIMENTAL )}},
         },
@@ -1044,7 +1211,7 @@ BuilderGroup {
         BuilderConditions = {
             -- Have we the eco to build it ?
             { UCBC, 'UnitCapCheckGreater', { 0.95 } },
-            { EBC, 'GreaterThanEconTrend', { 0.0, 50.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.00, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'UnitsGreaterAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.TECH2 * categories.ENERGYPRODUCTION - categories.HYDROCARBON }},
         },

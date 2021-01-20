@@ -1,18 +1,32 @@
 
 -- Uveso AI. Function to see if we are on a water map and/or can't send Land units to the enemy
 local CanPathToEnemy = {}
-function CanPathToCurrentEnemy(aiBrain, bool)
+local debugoutput = false
+function CanPathToCurrentEnemy(aiBrain, bool, LocationType)
+    -- in case the old CanPathToCurrentEnemy is used
+    if not LocationType then
+        LocationType = 'MAIN'
+        debugoutput = true
+    end
     -- Get the armyindex from the enemy
     local EnemyIndex = ArmyBrains[aiBrain:GetCurrentEnemy():GetArmyIndex()].Nickname
-    local OwnIndex = ArmyBrains[aiBrain:GetArmyIndex()].Nickname
+    local Nickname = ArmyBrains[aiBrain:GetArmyIndex()].Nickname
 
     -- create a table for the enemy index in case it's nil
-    CanPathToEnemy[OwnIndex] = CanPathToEnemy[OwnIndex] or {} 
+    CanPathToEnemy[Nickname] = CanPathToEnemy[Nickname] or {} 
+    CanPathToEnemy[Nickname][LocationType] = CanPathToEnemy[Nickname][LocationType] or {} 
     -- Check if we have already done a path search to the current enemy
-    if CanPathToEnemy[OwnIndex][EnemyIndex] == 'LAND' then
+    if CanPathToEnemy[Nickname][LocationType][EnemyIndex] == 'LAND' then
         return true == bool
-    elseif CanPathToEnemy[OwnIndex][EnemyIndex] == 'WATER' then
+    elseif CanPathToEnemy[Nickname][LocationType][EnemyIndex] == 'WATER' then
         return false == bool
+    end
+
+    -- message to AI developers 
+    if debugoutput then
+        WARN('###########################################################################################')
+        WARN('Condition "CanPathToCurrentEnemy" has wrong args, use "   { MIBC, \'CanPathToCurrentEnemy\', { true/false, \'LocationType\' } },   " instead!')
+        WARN('###########################################################################################')
     end
 
     -- We have no cached path. Searching now for a path.
@@ -34,15 +48,15 @@ function CanPathToCurrentEnemy(aiBrain, bool)
     local path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, 'Land', {startX,0,startZ}, {enemyX,0,enemyZ}, 1000)
     -- if we have a path generated with AI path markers then....
     if path then
-        LOG('* AI-Uveso: CanPathToCurrentEnemy: Land path to the enemy found! LAND map! - '..OwnIndex..' vs '..EnemyIndex..'')
-        CanPathToEnemy[OwnIndex][EnemyIndex] = 'LAND'
+        LOG('* AI-Uveso: CanPathToCurrentEnemy: Land path from '..LocationType..' to the enemy found! LAND map! - '..Nickname..' vs '..EnemyIndex..'')
+        CanPathToEnemy[Nickname][LocationType][EnemyIndex] = 'LAND'
         return true == bool
     -- if we not have a path
     else
         -- "NoPath" means we have AI markers but can't find a path to the enemy - There is no path!
         if reason == 'NoPath' then
-            LOG('* AI-Uveso: CanPathToCurrentEnemy: No land path to the enemy found! WATER map! - '..OwnIndex..' vs '..EnemyIndex..'')
-            CanPathToEnemy[OwnIndex][EnemyIndex] = 'WATER'
+            LOG('* AI-Uveso: CanPathToCurrentEnemy: No land path from '..LocationType..' to the enemy found! WATER map! - '..Nickname..' vs '..EnemyIndex..'')
+            CanPathToEnemy[Nickname][LocationType][EnemyIndex] = 'WATER'
             return false == bool
         -- "NoGraph" means we have no AI markers and cant graph to the enemy. We can't search for a path - No markers
         elseif reason == 'NoGraph' then
@@ -50,13 +64,13 @@ function CanPathToCurrentEnemy(aiBrain, bool)
             -- Check if we have less then 50% water on the map
             if aiBrain:GetMapWaterRatio() < 0.50 then
                 --lets asume we can move on land to the enemy
-                LOG(string.format('* AI-Uveso: CanPathToCurrentEnemy: Water on map: %0.2f%%. Assuming LAND map! - '..OwnIndex..' vs '..EnemyIndex..'',aiBrain:GetMapWaterRatio()*100 ))
-                CanPathToEnemy[OwnIndex][EnemyIndex] = 'LAND'
+                LOG(string.format('* AI-Uveso: CanPathToCurrentEnemy: Water on map: %0.2f%%. Assuming LAND map! - '..Nickname..' vs '..EnemyIndex..'',aiBrain:GetMapWaterRatio()*100 ))
+                CanPathToEnemy[Nickname][LocationType][EnemyIndex] = 'LAND'
                 return true == bool
             else
                 -- we have more then 50% water on this map. Ity maybe a water map..
-                LOG(string.format('* AI-Uveso: CanPathToCurrentEnemy: Water on map: %0.2f%%. Assuming WATER map! - '..OwnIndex..' vs '..EnemyIndex..'',aiBrain:GetMapWaterRatio()*100 ))
-                CanPathToEnemy[OwnIndex][EnemyIndex] = 'WATER'
+                LOG(string.format('* AI-Uveso: CanPathToCurrentEnemy: Water on map: %0.2f%%. Assuming WATER map! - '..Nickname..' vs '..EnemyIndex..'',aiBrain:GetMapWaterRatio()*100 ))
+                CanPathToEnemy[Nickname][LocationType][EnemyIndex] = 'WATER'
                 return false == bool
             end
         end
@@ -76,7 +90,7 @@ function IsBrainPersonality(aiBrain, neededPersonality, bool)
     return false
 end
 
---            { UCBC, 'HasParagon', {} },
+--            { MIBC, 'HasParagon', {} },
 function HasParagon(aiBrain)
     if aiBrain.PriorityManager.HasParagon then
         return true
@@ -84,10 +98,16 @@ function HasParagon(aiBrain)
     return false
 end
 
---            { UCBC, 'HasNotParagon', {} },
+--            { MIBC, 'HasNotParagon', {} },
 function HasNotParagon(aiBrain)
     if not aiBrain.PriorityManager.HasParagon then
         return true
     end
     return false
+end
+
+--            { MIBC, 'IsNavalExpansionsAllowed', {} },
+function IsNavalExpansionsAllowed(aiBrain)
+    local checkNum = tonumber(ScenarioInfo.Options.NavalExpansionsAllowed) or 2
+    return checkNum > 0
 end

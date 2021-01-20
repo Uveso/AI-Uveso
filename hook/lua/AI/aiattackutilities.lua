@@ -40,7 +40,10 @@ function PlatoonGenerateSafePathTo(aiBrain, platoonLayer, startPos, endPos, optT
         end
         table.insert(finalPath, node.position)
     end
-
+    -- in case we have a path with only 2 waypoints and skipped both:
+    if not finalPath[1] then
+        table.insert(finalPath, table.copy(endPos))
+    end
     -- return the path
     return finalPath, 'PathOK'
 end

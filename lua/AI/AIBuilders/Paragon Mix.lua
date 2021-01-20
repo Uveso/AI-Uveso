@@ -486,7 +486,6 @@ BuilderGroup {
             --{ MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 8, categories.INTELLIGENCE * categories.AIR * categories.TECH3 }},
-            { UCBC, 'UnitCapCheckLess', { 0.98 } },
         },
         BuilderType = 'Air',
     },
@@ -575,7 +574,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             { MIBC, 'FactionIndex', { 1, 3, 4, 5 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             -- Have we the eco to build it ?
             --{ MIBC, 'HasParagon', {} },
@@ -597,7 +596,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             -- Have we the eco to build it ?
             --{ MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
@@ -618,7 +617,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             -- Have we the eco to build it ?
             --{ MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
@@ -639,7 +638,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             -- Have we the eco to build it ?
             --{ MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
@@ -661,7 +660,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             -- Have we the eco to build it ?
             --{ MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
@@ -683,7 +682,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             -- Have we the eco to build it ?
             --{ MIBC, 'HasParagon', {} },
             -- When do we want to build this ?

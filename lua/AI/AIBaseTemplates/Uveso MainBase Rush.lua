@@ -220,6 +220,13 @@ BaseBuilderTemplate {
 --        'AeonOptics',
         'CybranOptics',
 
+        -----------------------------------------------------------------------------
+        -- ==== MOD BUILDER ==== --
+        -----------------------------------------------------------------------------
+        'Total Mayhem EngineerBuilder',
+        'Total Mayhem FactoryBuilder',
+        'Total Mayhem PlatoonFormBuilder',
+
     },
     -- Not used by Uveso's AI. We always need intel in case the commander is dead.
     NonCheatBuilders = {
@@ -250,9 +257,8 @@ BaseBuilderTemplate {
     end,
     FirstBaseFunction = function(aiBrain)
         local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
-        if personality == ('uvesorush' or 'uvesorushcheat') then
-            --LOG('### M-FirstBaseFunction personality: '..personality)
-            return 1000, 'uvesorush' -- AIPersonality
+        if personality == 'uvesorush' then
+            return 1000, 'uvesorush'
         end
         return -1
     end,

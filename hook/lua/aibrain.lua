@@ -256,6 +256,7 @@ AIBrain = Class(UvesoAIBrainClass) {
                     self.BuilderManagers[k].Position = nil
                 end
             end
+            self.BuilderManagers = nil
             -- delete the AI pathcache
             self.PathCache = nil
         end

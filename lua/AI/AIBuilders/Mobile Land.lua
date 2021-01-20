@@ -27,7 +27,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             { UCBC, 'CheckBuildPlattonDelay', { 'Scouts' }},
             -- Have we the eco to build it ?
             -- When do we want to build this ?
@@ -60,7 +60,7 @@ BuilderGroup {
         PlatoonTemplate = 'T1LandArtillery',
         Priority = 0,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
@@ -81,7 +81,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { -0.10, -0.10 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
@@ -101,7 +101,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             { MIBC, 'FactionIndex', { 1, 2, 3 , 5 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { -0.10, -0.10 } },             -- Ratio from 0 to 1. (1=100%)
@@ -123,7 +123,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { -0.10, -0.10 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
@@ -144,7 +144,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { -0.10, -0.10 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
@@ -168,7 +168,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- When do we want to build this ?
@@ -188,7 +188,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- When do we want to build this ?
@@ -208,7 +208,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
             -- When do we want to build this ?
@@ -229,7 +229,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- When do we want to build this ?
@@ -274,7 +274,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             { MIBC, 'FactionIndex', { 1, 3, 4, 5 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { -0.10, -0.10 } },             -- Ratio from 0 to 1. (1=100%)
@@ -295,7 +295,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { -0.10, -0.10 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
@@ -315,7 +315,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { -0.10, -0.10 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
@@ -335,7 +335,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { -0.10, -0.10 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
@@ -356,7 +356,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { -0.10, -0.10 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
@@ -377,7 +377,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { -0.10, -0.10 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
@@ -403,7 +403,7 @@ BuilderGroup {
         PlatoonTemplate = 'T1LandArtillery',
         Priority = 0,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
             -- When do we want to build this ?
@@ -424,10 +424,10 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.12, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD } },
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.LAND - categories.ENGINEER, '<=', (categories.MOBILE * categories.LAND * (categories.DIRECTFIRE + categories.INDIRECTFIRE)) } },
@@ -447,11 +447,11 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             { MIBC, 'FactionIndex', { 1, 2, 3 , 5 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.12, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioUveso', { 0.2, categories.MOBILE * categories.LAND * categories.BOT * categories.TECH1, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE - categories.BOT } },
             -- Respect UnitCap
@@ -470,10 +470,10 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.12, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioUveso', { 0.1, categories.MOBILE * categories.LAND * categories.INDIRECTFIRE * categories.TECH1, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE } },
             -- Respect UnitCap
@@ -492,10 +492,10 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.12, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioUveso', { 0.05, categories.MOBILE * categories.LAND * categories.ANTIAIR * categories.TECH1, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE } },
             -- Respect UnitCap
@@ -517,10 +517,10 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.11, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.12, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.LAND - categories.ENGINEER, '<=', (categories.MOBILE * categories.LAND * (categories.DIRECTFIRE + categories.INDIRECTFIRE)) } },
             -- Respect UnitCap
@@ -539,10 +539,10 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.11, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.12, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.LAND - categories.ENGINEER, '<=', (categories.MOBILE * categories.LAND * (categories.DIRECTFIRE + categories.INDIRECTFIRE)) } },
             -- Respect UnitCap
@@ -561,10 +561,10 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.11, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.12, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioUveso', { 0.1, categories.MOBILE * categories.LAND * categories.INDIRECTFIRE * categories.TECH2, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE } },
             -- Respect UnitCap
@@ -583,10 +583,10 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.11, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.12, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioUveso', { 0.05, categories.MOBILE * categories.LAND * categories.ANTIAIR * categories.TECH2, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE } },
             -- Respect UnitCap
@@ -607,7 +607,7 @@ BuilderGroup {
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.11, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.12, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioUveso', { 0.1, (categories.MOBILE * categories.SHIELD) + (categories.MOBILE * categories.STEALTHFIELD), '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE } },
             -- Respect UnitCap
@@ -629,7 +629,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             { MIBC, 'FactionIndex', { 1, 3, 4, 5 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
@@ -652,7 +652,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.12, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
@@ -674,7 +674,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.12, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
@@ -696,12 +696,34 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.12, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioUveso', { 0.1, categories.MOBILE * categories.LAND * categories.INDIRECTFIRE * categories.TECH3, '<',categories.MOBILE * categories.LAND * categories.DIRECTFIRE } },
+            -- Respect UnitCap
+        },
+        BuilderType = 'Land',
+    },
+    Builder {
+        BuilderName = 'U3A Mobile AA MIN',
+        PlatoonTemplate = 'T3LandAA',
+        Priority = 350,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileLandTech3 then
+                return 350
+            else
+                return 0
+            end
+        end,
+        BuilderConditions = {
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.12, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 10, categories.MOBILE * categories.LAND * categories.ANTIAIR * categories.TECH3 }},
             -- Respect UnitCap
         },
         BuilderType = 'Land',
@@ -718,7 +740,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.12, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
@@ -740,7 +762,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.12, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
@@ -761,6 +783,20 @@ BuilderGroup {
     BuilderGroupName = 'U123 Land Builders Panic',                         -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'FactoryBuilder',
     Builder {
+        BuilderName = 'U1 PanicZone Mobile Arty Force',
+        PlatoonTemplate = 'T1LandArtillery',
+        Priority = 19000,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            { MIBC, 'HasNotParagon', {} },
+            -- When do we want to build this ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 1, categories.MOBILE * categories.LAND - categories.SCOUT }}, -- radius, LocationType, unitCount, categoryEnemy
+            -- Respect UnitCap
+        },
+        BuilderType = 'Land',
+    },
+    Builder {
         BuilderName = 'U1 PanicZone Mobile Arty',
         PlatoonTemplate = 'T1LandArtillery',
         Priority = 18600,
@@ -768,20 +804,34 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
-            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  50, 'LocationType', 1, categories.MOBILE * categories.LAND - categories.SCOUT }}, -- radius, LocationType, unitCount, categoryEnemy
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  60, 'LocationType', 1, categories.MOBILE * categories.LAND - categories.SCOUT }}, -- radius, LocationType, unitCount, categoryEnemy
             -- Respect UnitCap
         },
         BuilderType = 'Land',
     },
     Builder {
-        BuilderName = 'U1 PanicZone/2 Mobile AA',
+        BuilderName = 'U1 PanicZone Mobile AA Force',
+        PlatoonTemplate = 'T1LandAA',
+        Priority = 19000,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            { MIBC, 'HasNotParagon', {} },
+            -- When do we want to build this ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 1, categories.MOBILE * categories.AIR - categories.SCOUT - categories.SATELLITE}}, -- radius, LocationType, unitCount, categoryEnemy
+            -- Respect UnitCap
+        },
+        BuilderType = 'Land',
+    },
+    Builder {
+        BuilderName = 'U1 PanicZone Mobile AA',
         PlatoonTemplate = 'T1LandAA',
         Priority = 18600,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
-            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  50, 'LocationType', 1, categories.MOBILE * categories.AIR - categories.SCOUT - categories.SATELLITE}}, -- radius, LocationType, unitCount, categoryEnemy
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  60, 'LocationType', 1, categories.MOBILE * categories.AIR - categories.SCOUT - categories.SATELLITE}}, -- radius, LocationType, unitCount, categoryEnemy
             -- Respect UnitCap
         },
         BuilderType = 'Land',
@@ -801,9 +851,8 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
-            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  50, 'LocationType', 1, categories.MOBILE * categories.LAND - categories.SCOUT}}, -- radius, LocationType, unitCount, categoryEnemy
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 1, categories.MOBILE * categories.LAND - categories.SCOUT}}, -- radius, LocationType, unitCount, categoryEnemy
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
         BuilderType = 'Land',
     },
@@ -815,9 +864,8 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
-            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  50, 'LocationType', 1, categories.MOBILE * categories.AIR - categories.SCOUT - categories.SATELLITE}}, -- radius, LocationType, unitCount, categoryEnemy
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 1, categories.MOBILE * categories.AIR - categories.SCOUT - categories.SATELLITE}}, -- radius, LocationType, unitCount, categoryEnemy
             -- Respect UnitCap
-            { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce , '<=', categories.MOBILE } },
         },
         BuilderType = 'Land',
     },
@@ -888,7 +936,7 @@ BuilderGroup {
         BuilderName = 'U123 PANIC 2 20',                                        -- Random Builder Name.
         PlatoonTemplate = 'LandAttackInterceptUveso 2 20',                       -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates"
         Priority = 300,                                                          -- Priority. 1000 is normal.
-        InstanceCount = 1,                                                      -- Number of plattons that will be formed.
+        InstanceCount = 10,                                                      -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BasePanicZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
@@ -1237,9 +1285,10 @@ BuilderGroup {
         end,
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
+            DirectMoveEnemyBase = true, 
             RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
-            AttackEnemyStrength = 300,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            AttackEnemyStrength = 100000000,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.ALLUNITS - categories.AIR,                         -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
@@ -1276,6 +1325,7 @@ BuilderGroup {
         end,
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
+            DirectMoveEnemyBase = true, 
             RequireTransport = true,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100000000,                                    -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
@@ -1315,6 +1365,7 @@ BuilderGroup {
         end,
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                               -- Searchradius for new target.
+            DirectMoveEnemyBase = true, 
             RequireTransport = true,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100000000,                                    -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.

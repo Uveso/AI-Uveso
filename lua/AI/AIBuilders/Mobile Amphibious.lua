@@ -27,10 +27,10 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { false } },
+            { MIBC, 'CanPathToCurrentEnemy', { false, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD } },
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, categories.MOBILE * categories.INDIRECTFIRE } },
@@ -54,10 +54,10 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { false } },
+            { MIBC, 'CanPathToCurrentEnemy', { false, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.11, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.ENERGYPRODUCTION * categories.TECH3 }},
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.LAND - categories.ENGINEER, '<=', (categories.MOBILE * categories.LAND) + (categories.STRUCTURE * categories.DEFENSE) } },
@@ -80,10 +80,10 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { false } },
+            { MIBC, 'CanPathToCurrentEnemy', { false, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.12, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             -- Respect UnitCap
         },
@@ -169,7 +169,7 @@ BuilderGroup {
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to form this ?
-            { MIBC, 'CanPathToCurrentEnemy', { false } },
+            { MIBC, 'CanPathToCurrentEnemy', { false, 'LocationType' } },
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 0, categories.STRUCTURE + (categories.MOBILE - categories.AIR) }}, -- radius, LocationType, unitCount, categoryEnemy
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
@@ -214,7 +214,7 @@ BuilderGroup {
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to form this ?
-            { MIBC, 'CanPathToCurrentEnemy', { false } },
+            { MIBC, 'CanPathToCurrentEnemy', { false, 'LocationType' } },
             { UCBC, 'UnitsGreaterAtEnemy', { 1 , categories.STRUCTURE + (categories.MOBILE - categories.AIR) } },
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
@@ -257,7 +257,7 @@ BuilderGroup {
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to form this ?
-            { MIBC, 'CanPathToCurrentEnemy', { false } },
+            { MIBC, 'CanPathToCurrentEnemy', { false, 'LocationType' } },
             { UCBC, 'UnitCapCheckGreater', { 0.95 } },
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.

@@ -1,4 +1,35 @@
 *************************************************************************************************************************************
+v89 (20.Jan.2021)
+
+- New: Added a compleatly new AI Ecomanager that can now also pause/disable mobile units. Including stealth, cloak and jammer.
+- New: New attack function "AttackHug". Units will move as close as possible to the target and execute suicide.
+- New: Sub AI "Overwhelm" will now increase the build and eco factor by 0.05 every minute. (starts after 20 min)
+- New: Sub AI "Overwhelm" is now using the more developed "Adaptive" attack plan.
+- New: Sub AI "Overwhelm" restriction for nuke launcher builder removed.
+- Fix: Changing the path calculation for c-engine to early was causing desyncs in replays.
+- Fix: Nuke function stopped working while targeting moving experiemtals.
+- Fix: Targeting function no longer accept targets under water for units above water and vice versa.
+- Fix: Tactical Missile defense does no longer try to attack underwater targets
+- Fix: Function GenerateSafePath will no longer return a empty path in case it's very close to start and end point.
+- Fix: Pathing for air units now cut the first and last 3 waypoints to get a better attack angle.
+- Fix: Added Buildcondition for navalexpansions to prevent unwanted naval factories in range of the main base.
+- Fix: Attack function is no longer microing units without a rear weapons (units were driven in a circle)
+- Fix: First Tech2 factory will now be build a bit later.
+- Fix: Removed debug names from attacking platoon units.
+- Fix: Units no longer get stucked after changing target priorities.
+- Opt: AI will now also check for a land path from expansions.
+- Opt: Platoon microing improved (smarter).
+- Opt: Paragon will be build earlier and with more assistees.
+- Opt: SACU teleport platoons now move to the target for better dead explosion damage usage.
+- Opt: GreaterThanEconIncomeFunction only returns true now if eco trend is positive; Even if a paragon is found.
+- Opt: Air experimentals now tend to move inside the base (stopped at defense before).
+- Opt: Changed WeaponTargetCategories fore some LAND experimentals platoons (now also attcking Optics structures).
+- Opt: Added scouts to some bomber and gunship platoons.
+- Opt: Changes some categories to support SCTA mod.
+- For AI devs: Buildcondition changed (LocationType added): { MIBC, 'CanPathToCurrentEnemy', { false, 'LocationType' } },
+- For AI devs: Function changed (new args): AIFindNearestCategoryTargetInCloseRange(platoon, aiBrain, squad, [...])
+
+*************************************************************************************************************************************
 v88 (06.Aug.2020)
 
 - New: AI is now able to micro-move units inside a platoon. 

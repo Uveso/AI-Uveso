@@ -73,7 +73,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
@@ -141,7 +141,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.11, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
@@ -188,7 +188,7 @@ BuilderGroup {
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.11, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 11, categories.MOBILE * categories.AIR * categories.ANTINAVY }},
             { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.NAVAL } },
@@ -209,7 +209,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { false } },
+            { MIBC, 'CanPathToCurrentEnemy', { false, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.11, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
@@ -267,7 +267,28 @@ BuilderGroup {
         BuilderType = 'Air',
     },
     Builder {
-        BuilderName = 'U3A Air Fighter',
+        BuilderName = 'U3A Air Fighter always',
+        PlatoonTemplate = 'T3AirFighter',
+        Priority = 350,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech3 then
+                return 350
+            else
+                return 0
+            end
+        end,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.12, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, categories.MOBILE * categories.AIR * categories.HIGHALTAIR } },
+            -- Respect UnitCap
+        },
+        BuilderType = 'Air',
+    },
+    Builder {
+        BuilderName = 'U3A Air Fighter ratio',
         PlatoonTemplate = 'T3AirFighter',
         Priority = 350,
         PriorityFunction = function(self, aiBrain)
@@ -288,7 +309,28 @@ BuilderGroup {
         BuilderType = 'Air',
     },
     Builder {
-        BuilderName = 'U3A Air Gunship',
+        BuilderName = 'U3A Air Gunship always',
+        PlatoonTemplate = 'T3AirGunship',
+        Priority = 340,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.BuildMobileAirTech3 then
+                return 340
+            else
+                return 0
+            end
+        end,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.12, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, categories.MOBILE * categories.AIR * categories.GROUNDATTACK } },
+            -- Respect UnitCap
+        },
+        BuilderType = 'Air',
+    },
+    Builder {
+        BuilderName = 'U3A Air Gunship ratio',
         PlatoonTemplate = 'T3AirGunship',
         Priority = 340,
         PriorityFunction = function(self, aiBrain)
@@ -362,7 +404,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { false } },
+            { MIBC, 'CanPathToCurrentEnemy', { false, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.12, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
@@ -438,7 +480,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true } },
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
@@ -570,7 +612,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { false } },
+            { MIBC, 'CanPathToCurrentEnemy', { false, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
@@ -723,7 +765,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { false } },
+            { MIBC, 'CanPathToCurrentEnemy', { false, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
@@ -998,7 +1040,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { false } },
+            { MIBC, 'CanPathToCurrentEnemy', { false, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.12, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
@@ -1156,7 +1198,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { false } },
+            { MIBC, 'CanPathToCurrentEnemy', { false, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 30.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
@@ -1696,7 +1738,7 @@ BuilderGroup {
         PlatoonTemplate = 'U123-PanicAir 1 500',                                -- BuilderTypes are: EngineerBuilder, FactoryBuilder, PlatoonFormBuilder.
         PlatoonAddBehaviors = { 'AirUnitRefit' },                               -- Adds a ForkThread() to this platton. See: "AIBehaviors.lua"
         Priority = 90,                                                          -- Priority. 1000 is normal.
-        InstanceCount = 2,                                                      -- Number of plattons that will be formed.
+        InstanceCount = 10,                                                      -- Number of plattons that will be formed.
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush1stPhaseActive then
                 return 0
@@ -1723,7 +1765,7 @@ BuilderGroup {
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to form this ?
-            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.MOBILE - categories.SCOUT }}, -- radius, LocationType, unitCount, categoryEnemy
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 0, categories.MOBILE * categories.AIR - categories.SCOUT }}, -- radius, LocationType, unitCount, categoryEnemy
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
@@ -2575,7 +2617,7 @@ BuilderGroup {
         BuilderName = 'U123 Cap Fighter 50',
         PlatoonTemplate = 'U123-Fighter-Intercept 1 50',
         Priority = 50,                                                        -- Priority. 1000 is normal.
-        InstanceCount = 1,                                                      -- Number of plattons that will be formed.
+        InstanceCount = 4,                                                      -- Number of plattons that will be formed.
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush1stPhaseActive then
                 return 0
@@ -2616,8 +2658,9 @@ BuilderGroup {
         end,
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
+            DirectMoveEnemyBase = true, 
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
-            AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
+            AggressiveMove = false,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100000000,                                    -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = false,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = categories.ALLUNITS - categories.SCOUT,      -- Only find targets matching these categories.
@@ -2671,8 +2714,9 @@ BuilderGroup {
         end,
         BuilderData = {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
+            DirectMoveEnemyBase = true, 
             GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
-            AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
+            AggressiveMove = false,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100000000,                                    -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = categories.STRUCTURE,        -- Only find targets matching these categories.

@@ -390,7 +390,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { false } },
+            { MIBC, 'CanPathToCurrentEnemy', { false, 'LocationType' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}},
             -- When do we want to build this ?

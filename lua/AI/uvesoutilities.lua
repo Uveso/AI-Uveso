@@ -102,7 +102,6 @@ end
 function ExtractorUpgrade(self, aiBrain, MassExtractorUnitList, ratio, techLevel, UnitUpgradeTemplates, StructureUpgradeTemplates)
     -- Do we have the eco to upgrade ?
     local MassRatioCheckPositive = GlobalMassUpgradeCostVsGlobalMassIncomeRatio(self, aiBrain, ratio, techLevel, '<' )
-    local aiBrain = self:GetBrain()
     -- search for the neares building to the base for upgrade.
     local BasePosition = aiBrain.BuilderManagers['MAIN'].Position
     local factionIndex = aiBrain:GetFactionIndex()
@@ -112,7 +111,7 @@ function ExtractorUpgrade(self, aiBrain, MassExtractorUnitList, ratio, techLevel
     local upgradeID = nil
     local upgradeBuilding = nil
     local UnitPos = nil
-    local FactionToIndex  = { UEF = 1, AEON = 2, CYBRAN = 3, SERAPHIM = 4, NOMADS = 5}
+    local FactionToIndex  = { UEF = 1, AEON = 2, CYBRAN = 3, SERAPHIM = 4, NOMADS = 5, ARM = 6, CORE = 7}
     local UnitBeingUpgradeFactionIndex = nil
     for k, v in MassExtractorUnitList do
         local TempID
@@ -173,6 +172,9 @@ function ExtractorUpgrade(self, aiBrain, MassExtractorUnitList, ratio, techLevel
     -- Have we found a unit that can upgrade ?
     if upgradeID and upgradeBuilding then
         --LOG('* UnitUpgradeAIUveso: Upgrading Building in DistanceToBase '..(LowestDistanceToBase or 'Unknown ???')..' '..techLevel..' - UnitId '..upgradeBuilding:GetUnitId()..' - upgradeID '..upgradeID..' - GlobalUpgrading '..techLevel..': '..(UpgradingBuilding + 1) )
+        if self.Brain[ScenarioInfo.Options.AIPLatoonNameDebug] or ScenarioInfo.Options.AIPLatoonNameDebug == 'all' then
+            upgradeBuilding:SetCustomName('Upgrading BaseDist: '..(LowestDistanceToBase or 'Unknown ???'))
+        end
         IssueUpgrade({upgradeBuilding}, upgradeID)
         coroutine.yield(10)
         return true
@@ -462,13 +464,13 @@ function TMLAIThread(platoon,self,aiBrain)
         if self and not self.Dead and target and not target.Dead and MissileTimer < GetGameTimeSeconds() then
             MissileTimer = GetGameTimeSeconds() + 1
             if EntityCategoryContains(categories.STRUCTURE, target) then
-                if self:GetTacticalSiloAmmoCount() >= MaxLoad then
+                if self and not self.Dead and self:GetTacticalSiloAmmoCount() >= MaxLoad then
                     IssueTactical({self}, target)
                 end
             else
                 targPos = LeadTarget(self, target)
                 if targPos and targPos[1] > 0 and targPos[3] > 0 then
-                    if EntityCategoryContains(categories.EXPERIMENTAL - categories.AIR, target) or self:GetTacticalSiloAmmoCount() >= MaxLoad then
+                    if EntityCategoryContains(categories.EXPERIMENTAL - categories.AIR, target) or (self and not self.Dead and self:GetTacticalSiloAmmoCount() >= MaxLoad) then
                         IssueTactical({self}, targPos)
                     end
                 else
@@ -490,29 +492,34 @@ function FindTargetUnit(self, minRadius, maxRadius, MaxLoad)
     local UnitHealth
     local uBP
     for k, v in targets do
+        local TargetPosition = v:GetPosition()
         -- Only check if Unit is 100% builded and not AIR
         if not v.Dead and not v:BeenDestroyed() and v:GetFractionComplete() == 1 and EntityCategoryContains(categories.SELECTABLE - categories.AIR, v) then
+            -- if target is under water, skip it.
+            if not TargetPosition[2] >= GetSurfaceHeight( TargetPosition[1], TargetPosition[3] ) then
+                continue
+            end
             -- Get Target Data
             uBP = v:GetBlueprint()
             UnitHealth = uBP.Defense.Health or 1
             -- Check Targets
-            if not v:BeenDestroyed() and EntityCategoryContains(categories.COMMAND, v) and (not IsProtected(self,v:GetPosition())) then
+            if not v:BeenDestroyed() and EntityCategoryContains(categories.COMMAND, v) and (not IsProtected(self,TargetPosition)) then
                 AllTargets[1] = v
             elseif not v:BeenDestroyed() and (UnitHealth > MaxHealthpoints or (UnitHealth == MaxHealthpoints and v.distance < AllTargets[2].distance)) and EntityCategoryContains(categories.EXPERIMENTAL * categories.MOBILE, v) and (not IsProtected(self,v:GetPosition())) then
                 AllTargets[2] = v
                 MaxHealthpoints = UnitHealth
-            elseif not v:BeenDestroyed() and UnitHealth > MaxHealthpoints and EntityCategoryContains(categories.MOBILE, v) and uBP.StrategicIconName == 'icon_experimental_generic' and (not IsProtected(self,v:GetPosition())) then
+            elseif not v:BeenDestroyed() and UnitHealth > MaxHealthpoints and EntityCategoryContains(categories.MOBILE, v) and uBP.StrategicIconName == 'icon_experimental_generic' and (not IsProtected(self,TargetPosition)) then
                 AllTargets[3] = v
                 MaxHealthpoints = UnitHealth
-            elseif not v:BeenDestroyed() and (not AllTargets[5] or v.distance < AllTargets[5].distance) and EntityCategoryContains(categories.STRUCTURE - categories.WALL, v) and (not IsProtected(self,v:GetPosition())) then
+            elseif not v:BeenDestroyed() and (not AllTargets[5] or v.distance < AllTargets[5].distance) and EntityCategoryContains(categories.STRUCTURE - categories.WALL, v) and (not IsProtected(self,TargetPosition)) then
                 AllTargets[5] = v
                 break
             elseif not v:BeenDestroyed() and v:IsMoving() == false then
-                if (not AllTargets[4] or v.distance < AllTargets[4].distance) and EntityCategoryContains(categories.TECH3 * categories.MOBILE * categories.INDIRECTFIRE, v) and (not IsProtected(self,v:GetPosition())) then
+                if (not AllTargets[4] or v.distance < AllTargets[4].distance) and EntityCategoryContains(categories.TECH3 * categories.MOBILE * categories.INDIRECTFIRE, v) and (not IsProtected(self,TargetPosition)) then
                     AllTargets[4] = v
-                elseif (not AllTargets[6] or v.distance < AllTargets[6].distance) and EntityCategoryContains(categories.ENGINEER - categories.STATIONASSISTPOD, v) and (not IsProtected(self,v:GetPosition())) then
+                elseif (not AllTargets[6] or v.distance < AllTargets[6].distance) and EntityCategoryContains(categories.ENGINEER - categories.STATIONASSISTPOD, v) and (not IsProtected(self,TargetPosition)) then
                     AllTargets[6] = v
-                elseif (not AllTargets[7] or v.distance < AllTargets[7].distance) and EntityCategoryContains(categories.MOBILE, v) and (not IsProtected(self,v:GetPosition())) then
+                elseif (not AllTargets[7] or v.distance < AllTargets[7].distance) and EntityCategoryContains(categories.MOBILE, v) and (not IsProtected(self,TargetPosition)) then
                     AllTargets[7] = v
                 end
             end
@@ -858,16 +865,23 @@ end
 -- Please don't change any range here!!!
 -- Called from AIBuilders/*.*, simInit.lua, aiarchetype-managerloader.lua
 function GetDangerZoneRadii(bool)
+    -- Playable area
+    local playablearea
+    if  ScenarioInfo.MapData.PlayableRect then
+        playablearea = ScenarioInfo.MapData.PlayableRect
+    else
+        playablearea = {0, 0, ScenarioInfo.size[1], ScenarioInfo.size[2]}
+    end
     -- Military zone is the half the map size (10x10map) or maximal 250.
-    local BaseMilitaryZone = math.max( ScenarioInfo.size[1]-50, ScenarioInfo.size[2]-50 ) / 2
-    BaseMilitaryZone = math.max( 250, BaseMilitaryZone )
+    local BaseMilitaryZone = math.max( playablearea[3], playablearea[4] ) / 2
+    BaseMilitaryZone = math.min( 250, BaseMilitaryZone )
     -- Panic Zone is half the BaseMilitaryZone. That's 1/4 of a 10x10 map
     local BasePanicZone = BaseMilitaryZone / 2
     -- Make sure the Panic Zone is not smaller than 60 or greater than 120
     BasePanicZone = math.max( 60, BasePanicZone )
     BasePanicZone = math.min( 120, BasePanicZone )
     -- The rest of the map is enemy zone
-    local BaseEnemyZone = math.max( ScenarioInfo.size[1], ScenarioInfo.size[2] ) * 1.5
+    local BaseEnemyZone = math.max( playablearea[3], playablearea[4] ) * 1.5
     -- "bool" is only true if called from "AIBuilders/Mobile Land.lua", so we only print this once.
     if bool then
         LOG('* AI-Uveso: BasePanicZone= '..math.floor( BasePanicZone * 0.01953125 ) ..' Km - ('..BasePanicZone..' units)' )

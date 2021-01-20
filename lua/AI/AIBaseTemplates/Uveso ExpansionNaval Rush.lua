@@ -98,7 +98,7 @@ BaseBuilderTemplate {
             return -1
         end
         local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
-        if personality == ('uvesorush' or 'uvesorushcheat') then
+        if personality == 'uvesorush' then
             return 1000, 'UvesoExpansionNavalRush'
         end
         return -1

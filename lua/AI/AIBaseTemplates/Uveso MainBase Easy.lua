@@ -40,7 +40,7 @@ BaseBuilderTemplate {
         -- Build MassExtractors / Creators
         'U1 MassBuilders',                           -- Priority = 1100
         -- Upgrade MassExtractors from Tech 1 to 2 AND from Tech 2 to 3
---        'U123 ExtractorUpgrades',                      -- Priority = 1100
+        'U123 ExtractorUpgrades',                      -- Priority = 1100
         -- Build Mass Storage (Adjacency)
         'U1 MassStorage Builder',                     -- Priority = 1100
 
@@ -81,7 +81,7 @@ BaseBuilderTemplate {
         'U123 Land Formers PanicZone',
 --        'U123 Land Formers MilitaryZone',
 --        'U123 Land Formers EnemyZone',
---        'U123 Land Formers Trasher',
+        'U123 Land Formers Trasher',
         'U123 Land Formers Guards',
 
         -----------------------------------------------------------------------------
@@ -90,7 +90,7 @@ BaseBuilderTemplate {
         'U123 Hover Formers PanicZone',
 --        'U123 Hover Formers MilitaryZone',
 --        'U123 Hover Formers EnemyZone',
---        'U123 Hover Formers Trasher',
+        'U123 Hover Formers Trasher',
 
         -----------------------------------------------------------------------------
         -- ==== Amphibious Units BUILDER ==== --
@@ -103,7 +103,7 @@ BaseBuilderTemplate {
         'U123 Amphibious Formers PanicZone',
 --        'U123 Amphibious Formers MilitaryZone',
 --        'U123 Amphibious Formers EnemyZone',
---        'U123 Amphibious Formers Trasher',
+        'U123 Amphibious Formers Trasher',
 
         -----------------------------------------------------------------------------
         -- ==== Air Units BUILDER ==== --
@@ -118,8 +118,8 @@ BaseBuilderTemplate {
         'U123 Air Formers PanicZone',
         'U123 Air Formers MilitaryZone',
 --        'U123 Air Formers EnemyZone',
---        'U123 Air Formers Trasher',
---        'U123 TorpedoBomber Formers',
+        'U123 Air Formers Trasher',
+        'U123 TorpedoBomber Formers',
 
         -----------------------------------------------------------------------------
         -- ==== Sea Units BUILDER ==== --
@@ -133,7 +133,7 @@ BaseBuilderTemplate {
         'U123 Naval Formers PanicZone',
         'U123 Naval Formers MilitaryZone',
 --        'U123 Naval Formers EnemyZone',
---        'U123 Naval Formers Trasher',
+        'U123 Naval Formers Trasher',
 
         -----------------------------------------------------------------------------
         -- ==== EXPERIMENTALS BUILDER ==== --
@@ -147,11 +147,11 @@ BaseBuilderTemplate {
         'U4 Land Experimental Formers PanicZone',
 --        'U4 Land Experimental Formers MilitaryZone',
 --        'U4 Land Experimental Formers EnemyZone',
---        'U4 Land Experimental Formers Trasher',
+        'U4 Land Experimental Formers Trasher',
         'U4 Air Experimental Formers PanicZone',
---        'U4 Air Experimental Formers MilitaryZone',
+        'U4 Air Experimental Formers MilitaryZone',
 --        'U4 Air Experimental Formers EnemyZone',
---        'U4 Air Experimental Formers Trasher',
+        'U4 Air Experimental Formers Trasher',
 
         -----------------------------------------------------------------------------
         -- ==== Structure Shield BUILDER ==== --
@@ -166,11 +166,11 @@ BaseBuilderTemplate {
         'U2 Tactical Missile Launcher maximum',
         'U2 Tactical Missile Launcher Builder',
         'U2 Tactical Missile Defenses Builder',
---        'U3 Strategic Missile Launcher Builder',
+        'U3 Strategic Missile Launcher Builder',
         'U4 Strategic Missile Launcher NukeAI',
         'U4 Strategic Missile Defense Builders',
         'U4 Strategic Missile Defense Anti-NukeAI',
---        'U234 Artillery Builders',
+        'U234 Artillery Builders',
         'U4 Artillery Formers', -- also needed for UEF SATELLITE
         -- Build Anti Air near AirFactories
         'U123 Defense Anti Air Builders',
@@ -204,10 +204,10 @@ BaseBuilderTemplate {
         'U1 Land Radar Builders',
         'U1 Land Radar Upgrader',
 
-        'CounterIntelBuilders',
+--        'CounterIntelBuilders',
 
-        'AeonOptics',
-        'CybranOptics',
+--        'AeonOptics',
+--        'CybranOptics',
 
     },
     -- Not used by Uveso's AI. We always need intel in case the commander is dead.
@@ -239,9 +239,8 @@ BaseBuilderTemplate {
     end,
     FirstBaseFunction = function(aiBrain)
         local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
-        if personality == ('uvesoeasy' or 'uvesoeasycheat') then
-            --LOG('### M-FirstBaseFunction '..personality)
-            return 1000, 'uvesoeasy' -- AIPersonality
+        if personality == 'uvesoeasy' then
+            return 1000, 'uvesoeasy'
         end
         return -1
     end,

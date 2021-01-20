@@ -1,4 +1,5 @@
 --WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] * AI-Uveso: offset aiarchetype-managerloader.lua' )
+--200
 
 local Buff = import('/lua/sim/Buff.lua')
 local HighestThreat = {}
@@ -48,13 +49,8 @@ end
 -- Uveso AI
 
 function SetArmyPoolBuff(aiBrain, CheatMult, BuildMult)
-    -- Store the new mult inside options, so new builded units get the new mult automatically
-    if tostring(CheatMult) == tostring(ScenarioInfo.Options.CheatMult) and tostring(BuildMult) == tostring(ScenarioInfo.Options.BuildMult) then
-        --LOG('* SetArmyPoolBuff: CheatMult+BuildMult not changed. No buffing needed!')
-        return
-    end
-    ScenarioInfo.Options.CheatMult = tostring(CheatMult)
-    ScenarioInfo.Options.BuildMult = tostring(BuildMult)
+    -- we are looping over all units with this, so we make it local
+    local Buff = Buff
     -- Modify Buildrate buff
     local buffDef = Buffs['CheatBuildRate']
     local buffAffects = buffDef.Affects
@@ -80,17 +76,9 @@ function EcoManagerThread(aiBrain)
         coroutine.yield(10)
     end
     local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
-    local CheatMultOption = tonumber(ScenarioInfo.Options.CheatMult)
-    local BuildMultOption = tonumber(ScenarioInfo.Options.BuildMult)
-    local CheatMult = CheatMultOption
-    local BuildMult = BuildMultOption
-    if CheatMultOption ~= BuildMultOption then
-        CheatMultOption = math.max(CheatMultOption,BuildMultOption)
-        BuildMultOption = math.max(CheatMultOption,BuildMultOption)
-        ScenarioInfo.Options.CheatMult = tostring(CheatMultOption)
-        ScenarioInfo.Options.BuildMult = tostring(BuildMultOption)
-    end
-    LOG('* AI-Uveso: Function EcoManagerThread() started! CheatFactor:('..repr(CheatMultOption)..') - BuildFactor:('..repr(BuildMultOption)..') ['..aiBrain.Nickname..']')
+    aiBrain.CheatMult = tonumber(ScenarioInfo.Options.CheatMult)
+    aiBrain.BuildMult = tonumber(ScenarioInfo.Options.BuildMult)
+    LOG('* AI-Uveso: Function EcoManagerThread() started! CheatFactor:('..repr(aiBrain.CheatMult)..') - BuildFactor:('..repr(aiBrain.BuildMult)..') ['..aiBrain.Nickname..']')
     local Engineers = {}
     local Factories = {}
     local lastCall = 0
@@ -101,572 +89,415 @@ function EcoManagerThread(aiBrain)
     while aiBrain.Result ~= "defeat" do
         --LOG('* AI-Uveso: Function EcoManagerThread() beat. ['..aiBrain.Nickname..']')
         coroutine.yield(5)
+        -- Start Ecomanager at game minute 4
+        if GetGameTimeSeconds() < 60 * 4 then continue end
         Engineers = aiBrain:GetListOfUnits(categories.ENGINEER - categories.STATIONASSISTPOD - categories.COMMAND - categories.SUBCOMMANDER, false, false) -- also gets unbuilded units (planed to build)
         StationPods = aiBrain:GetListOfUnits(categories.STATIONASSISTPOD, false, false) -- also gets unbuilded units (planed to build)
         Factories = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.FACTORY, false, false)
         bussy = false
         -- Cheatbuffs
         if personality == 'uvesooverwhelm' then
-            -- Check every 30 seconds for new armyStats to change ECO
-            if (GetGameTimeSeconds() > 60 * 1) and lastCall+10 < GetGameTimeSeconds() then
+            -- Check every 60 seconds
+            if (GetGameTimeSeconds() > 60 * 20) and lastCall+60 < GetGameTimeSeconds() then
                 lastCall = GetGameTimeSeconds()
-                --score of all players (unitcount)
-                allyScore = 0
-                enemyScore = 0
-                for k, brain in ArmyBrains do
-                    if ArmyIsCivilian(brain:GetArmyIndex()) then
-                        --NOOP
-                    elseif IsAlly( aiBrain:GetArmyIndex(), brain:GetArmyIndex() ) then
-                        --allyScore = allyScore + table.getn(brain:GetListOfUnits( (categories.MOBILE + categories.DEFENSE) - categories.MASSEXTRACTION - categories.ENGINEER - categories.SCOUT, false, false))
-                        allyScore = allyScore + table.getn(brain:GetListOfUnits( categories.MOBILE - categories.MASSEXTRACTION - categories.ENGINEER - categories.SCOUT, false, false))
-                    elseif IsEnemy( aiBrain:GetArmyIndex(), brain:GetArmyIndex() ) then
-                        --enemyScore = enemyScore + table.getn(brain:GetListOfUnits( (categories.MOBILE + categories.DEFENSE) - categories.MASSEXTRACTION - categories.ENGINEER - categories.SCOUT, false, false))
-                        enemyScore = enemyScore + table.getn(brain:GetListOfUnits( categories.MOBILE - categories.MASSEXTRACTION - categories.ENGINEER - categories.SCOUT, false, false))
-                    end
-                end
-                if enemyScore ~= 0 then
-                    if allyScore == 0 then
-                        allyScore = 1
-                    end
-                    MyArmyRatio = 100/enemyScore*allyScore
-                else
-                    MyArmyRatio = 100
-                end
-
-                -- Increase cheatfactor to +1.5 after 1 hour gametime
-                if GetGameTimeSeconds() > 60 * 60 then
-                    CheatMult = CheatMult + 0.1
-                    BuildMult = BuildMult + 0.1
-                    if CheatMult < tonumber(CheatMultOption) then CheatMult = tonumber(CheatMultOption) end
-                    if BuildMult < tonumber(BuildMultOption) then BuildMult = tonumber(BuildMultOption) end
-                    if CheatMult > tonumber(CheatMultOption) + 1.5 then CheatMult = tonumber(CheatMultOption) + 1.5 end
-                    if BuildMult > tonumber(BuildMultOption) + 1.5 then BuildMult = tonumber(BuildMultOption) + 1.5 end
-                    --LOG('* ECO + ally('..allyScore..') enemy('..enemyScore..') - ArmyRatio: '..math.floor(MyArmyRatio)..'% - Build/CheatMult old: '..math.floor(tonumber(ScenarioInfo.Options.BuildMult)*10)..' '..math.floor(tonumber(ScenarioInfo.Options.CheatMult)*10)..' - new: '..math.floor(BuildMult*10)..' '..math.floor(CheatMult*10)..'')
-                    SetArmyPoolBuff(aiBrain, CheatMult, BuildMult)
-                -- Increase cheatfactor to +0.6 after 1 hour gametime
-                elseif GetGameTimeSeconds() > 60 * 35 then
-                    CheatMult = CheatMult + 0.1
-                    BuildMult = BuildMult + 0.1
-                    if CheatMult < tonumber(CheatMultOption) then CheatMult = tonumber(CheatMultOption) end
-                    if BuildMult < tonumber(BuildMultOption) then BuildMult = tonumber(BuildMultOption) end
-                    if CheatMult > tonumber(CheatMultOption) + 0.6 then CheatMult = tonumber(CheatMultOption) + 0.6 end
-                    if BuildMult > tonumber(BuildMultOption) + 0.6 then BuildMult = tonumber(BuildMultOption) + 0.6 end
-                    --LOG('* ECO + ally('..allyScore..') enemy('..enemyScore..') - ArmyRatio: '..math.floor(MyArmyRatio)..'% - Build/CheatMult old: '..math.floor(tonumber(ScenarioInfo.Options.BuildMult)*10)..' '..math.floor(tonumber(ScenarioInfo.Options.CheatMult)*10)..' - new: '..math.floor(BuildMult*10)..' '..math.floor(CheatMult*10)..'')
-                    SetArmyPoolBuff(aiBrain, CheatMult, BuildMult)
-                -- Increase ECO if we have less than 40% of the enemy units
-                elseif MyArmyRatio < 35 then
-                    CheatMult = CheatMult + 0.4
-                    BuildMult = BuildMult + 0.1
-                    if CheatMult > tonumber(CheatMultOption) + 8 then CheatMult = tonumber(CheatMultOption) + 8 end
-                    if BuildMult > tonumber(BuildMultOption) + 8 then BuildMult = tonumber(BuildMultOption) + 8 end
-                    --LOG('* ECO + ally('..allyScore..') enemy('..enemyScore..') - ArmyRatio: '..math.floor(MyArmyRatio)..'% - Build/CheatMult old: '..math.floor(tonumber(ScenarioInfo.Options.BuildMult)*10)..' '..math.floor(tonumber(ScenarioInfo.Options.CheatMult)*10)..' - new: '..math.floor(BuildMult*10)..' '..math.floor(CheatMult*10)..'')
-                    SetArmyPoolBuff(aiBrain, CheatMult, BuildMult)
-                elseif MyArmyRatio < 55 then
-                    CheatMult = CheatMult + 0.3
-                    if CheatMult > tonumber(CheatMultOption) + 6 then CheatMult = tonumber(CheatMultOption) + 6 end
-                    if BuildMult ~= tonumber(BuildMultOption) then BuildMult = tonumber(BuildMultOption) end
-                    --LOG('* ECO + ally('..allyScore..') enemy('..enemyScore..') - ArmyRatio: '..math.floor(MyArmyRatio)..'% - Build/CheatMult old: '..math.floor(tonumber(ScenarioInfo.Options.BuildMult)*10)..' '..math.floor(tonumber(ScenarioInfo.Options.CheatMult)*10)..' - new: '..math.floor(BuildMult*10)..' '..math.floor(CheatMult*10)..'')
-                    SetArmyPoolBuff(aiBrain, CheatMult, BuildMult)
-                -- Increase ECO if we have less than 85% of the enemy units
-                elseif MyArmyRatio < 75 then
-                    CheatMult = CheatMult + 0.2
-                    if CheatMult > tonumber(CheatMultOption) + 4 then CheatMult = tonumber(CheatMultOption) + 4 end
-                    if BuildMult ~= tonumber(BuildMultOption) then BuildMult = tonumber(BuildMultOption) end
-                    --LOG('* ECO + ally('..allyScore..') enemy('..enemyScore..') - ArmyRatio: '..math.floor(MyArmyRatio)..'% - Build/CheatMult old: '..math.floor(tonumber(ScenarioInfo.Options.BuildMult)*10)..' '..math.floor(tonumber(ScenarioInfo.Options.CheatMult)*10)..' - new: '..math.floor(BuildMult*10)..' '..math.floor(CheatMult*10)..'')
-                    SetArmyPoolBuff(aiBrain, CheatMult, BuildMult)
-                -- Decrease ECO if we have to much units
-                elseif MyArmyRatio < 95 then
-                    CheatMult = CheatMult + 0.1
-                    if CheatMult > tonumber(CheatMultOption) + 3 then CheatMult = tonumber(CheatMultOption) + 3 end
-                    if BuildMult ~= tonumber(BuildMultOption) then BuildMult = tonumber(BuildMultOption) end
-                    --LOG('* ECO + ally('..allyScore..') enemy('..enemyScore..') - ArmyRatio: '..math.floor(MyArmyRatio)..'% - Build/CheatMult old: '..math.floor(tonumber(ScenarioInfo.Options.BuildMult)*10)..' '..math.floor(tonumber(ScenarioInfo.Options.CheatMult)*10)..' - new: '..math.floor(BuildMult*10)..' '..math.floor(CheatMult*10)..'')
-                    SetArmyPoolBuff(aiBrain, CheatMult, BuildMult)
-                -- Decrease ECO if we have to much units
-                elseif MyArmyRatio > 125 then
-                    CheatMult = CheatMult - 0.5
-                    BuildMult = BuildMult - 0.1
-                    if CheatMult < 0.9 then CheatMult = 0.9 end
-                    if BuildMult < 0.9 then BuildMult = 0.9 end
-                    --LOG('* ECO + ally('..allyScore..') enemy('..enemyScore..') - ArmyRatio: '..math.floor(MyArmyRatio)..'% - Build/CheatMult old: '..math.floor(tonumber(ScenarioInfo.Options.BuildMult)*10)..' '..math.floor(tonumber(ScenarioInfo.Options.CheatMult)*10)..' - new: '..math.floor(BuildMult*10)..' '..math.floor(CheatMult*10)..'')
-                    SetArmyPoolBuff(aiBrain, CheatMult, BuildMult)
-                elseif MyArmyRatio > 105 then
-                    CheatMult = CheatMult - 0.1
-                    if CheatMult < 1.0 then CheatMult = 1.0 end
-                    if BuildMult ~= tonumber(BuildMultOption) then BuildMult = tonumber(BuildMultOption) end
-                    --LOG('* ECO + ally('..allyScore..') enemy('..enemyScore..') - ArmyRatio: '..math.floor(MyArmyRatio)..'% - Build/CheatMult old: '..math.floor(tonumber(ScenarioInfo.Options.BuildMult)*10)..' '..math.floor(tonumber(ScenarioInfo.Options.CheatMult)*10)..' - new: '..math.floor(BuildMult*10)..' '..math.floor(CheatMult*10)..'')
-                    SetArmyPoolBuff(aiBrain, CheatMult, BuildMult)
-                -- Normal ECO
-                else -- MyArmyRatio > 85  MyArmyRatio <= 100
-                    if CheatMult > CheatMultOption then
-                        CheatMult = CheatMult - 0.1
-                        if CheatMult < tonumber(CheatMultOption) then CheatMult = tonumber(CheatMultOption) end
-                    elseif CheatMult < CheatMultOption then
-                        CheatMult = CheatMult + 0.1
-                        if CheatMult > tonumber(CheatMultOption) then CheatMult = tonumber(CheatMultOption) end
-                    end
-                    if BuildMult > BuildMultOption then
-                        BuildMult = BuildMult - 0.1
-                        if BuildMult < tonumber(BuildMultOption) then BuildMult = tonumber(BuildMultOption) end
-                    elseif BuildMult < BuildMultOption then
-                        BuildMult = BuildMult + 0.1
-                        if BuildMult > tonumber(BuildMultOption) then BuildMult = tonumber(BuildMultOption) end
-                    end
-                    --LOG('* ECO + ally('..allyScore..') enemy('..enemyScore..') - ArmyRatio: '..math.floor(MyArmyRatio)..'% - Build/CheatMult old: '..math.floor(tonumber(ScenarioInfo.Options.BuildMult)*10)..' '..math.floor(tonumber(ScenarioInfo.Options.CheatMult)*10)..' - new: '..math.floor(BuildMult*10)..' '..math.floor(CheatMult*10)..'')
-                    SetArmyPoolBuff(aiBrain, CheatMult, BuildMult)
-                end
-                --LOG('* ECO + ally('..allyScore..') enemy('..enemyScore..') - ArmyRatio: '..math.floor(MyArmyRatio)..'% - Build/CheatMult old: '..math.floor(tonumber(ScenarioInfo.Options.BuildMult)*10)..' '..math.floor(tonumber(ScenarioInfo.Options.CheatMult)*10)..' - new: '..math.floor(BuildMult*10)..' '..math.floor(CheatMult*10)..'')
+                aiBrain.CheatMult = aiBrain.CheatMult + 0.05 -- +0.1 after 2 min. +1.0 after 20 min.
+                aiBrain.BuildMult = aiBrain.BuildMult + 0.05
+                if aiBrain.CheatMult > 8 then aiBrain.CheatMult = 8 end
+                if aiBrain.BuildMult > 8 then aiBrain.BuildMult = 8 end
+                SPEW('Setting new values for aiBrain.CheatMult:'..aiBrain.CheatMult..' - aiBrain.BuildMult:'..aiBrain.BuildMult)
+                SetArmyPoolBuff(aiBrain, aiBrain.CheatMult, aiBrain.BuildMult)
             end
         end
 
+        local massNeed = math.floor(aiBrain:GetEconomyRequested('MASS') * 10)
+        local massIncome = math.floor(aiBrain:GetEconomyIncome( 'MASS' ) * 10)
+        local massTrend = massIncome - massNeed
+        local energyNeed = math.floor(aiBrain:GetEconomyRequested('ENERGY') * 10)
+        local energyIncome = math.floor(aiBrain:GetEconomyIncome( 'ENERGY' ) * 10)
+        local energyTrend = energyIncome - energyNeed
 
--- ECO for Assisting StationPods
-        -- loop over assisting StationPods and manage pause / unpause
-        for _, unit in StationPods do
-            -- if the unit is dead, continue with the next unit
-            if unit.Dead then continue end
-            -- Do we have a Paragon like structure ?
-            if aiBrain.PriorityManager.HasParagon then
-                if unit:IsPaused() then
-                    unit:SetPaused( false )
-                    bussy = true
-                    break -- for _, unit in Engineers do
-                end
-            -- We have negative eco. Check if we can switch something off
-            elseif aiBrain:GetEconomyTrend('MASS') < 0.0 or aiBrain:GetEconomyTrend('ENERGY') < 0.0 then
-                -- if this unit is already paused, continue with the next unit
-                if unit:IsPaused() then continue end
-                -- Low eco, disable all pods
-                if aiBrain:GetEconomyStoredRatio('MASS') < 0.35 or aiBrain:GetEconomyStoredRatio('ENERGY') < 0.90 then
-                    unit:SetPaused( true )
-                    bussy = true
-                    break -- for _, unit in Engineers do
-                end
-            -- We have positive eco. Check if we can switch something on
-            elseif aiBrain:GetEconomyTrend('MASS') >= 0.0 and aiBrain:GetEconomyTrend('ENERGY') >= 0.0 then
-                -- if this unit is paused, continue with the next unit
-                if not unit:IsPaused() then continue end
-                if aiBrain:GetEconomyStoredRatio('MASS') >= 0.35 and aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.90 then
-                    unit:SetPaused( false )
-                    bussy = true
-                    break -- for _, unit in Engineers do
-                end
-            end
-        end
-        if bussy then
-            continue -- while true do
-        end
-
--- ECO for Assisting engineers
-        -- loop over assisting engineers and manage pause / unpause
-        for _, unit in Engineers do
-            -- if the unit is dead, continue with the next unit
-            if unit.Dead then continue end
-            -- Only Check units that are assisting
-            if not unit.PlatoonHandle.PlatoonData.Assist.AssisteeType then continue end
-            -- Only Check units that have UnitBeingAssist
-            if not unit.UnitBeingAssist then continue end
-
-            -- Do we have a Paragon like structure ?
-            if aiBrain.PriorityManager.HasParagon then
-                if unit:IsPaused() then
-                    unit:SetPaused( false )
-                    bussy = true
-                    break -- for _, unit in Engineers do
-                end
-            -- We have negative eco. Check if we can switch something off
-            elseif aiBrain:GetEconomyTrend('MASS') < 0.0 or aiBrain:GetEconomyTrend('ENERGY') < 0.0 then
-                -- if this unit is already paused, continue with the next unit
-                if unit:IsPaused() then continue end
-                -- Emergency low eco energy, prevent shield colaps: disable everything
-                if aiBrain:GetEconomyStoredRatio('ENERGY') < 0.25 then
-                    -- Pause Experimental assist
-                    if EntityCategoryContains(categories.STRUCTURE * categories.EXPERIMENTAL - categories.ECONOMIC, unit.UnitBeingAssist) then
-                        unit:SetPaused( true )
-                        bussy = true
-                        break -- for _, unit in Engineers do
-                    -- Pause Paragon assist
-                    elseif EntityCategoryContains(categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC, unit.UnitBeingAssist) then
-                        unit:SetPaused( true )
-                        bussy = true
-                        break -- for _, unit in Engineers do
-                    -- Pause Factory assist
-                    elseif EntityCategoryContains(categories.STRUCTURE * categories.FACTORY, unit.UnitBeingAssist) then
-                        unit:SetPaused( true )
-                        bussy = true
-                        break -- for _, unit in Engineers do
-                    -- Pause Energy assist
-                    elseif EntityCategoryContains(categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.ECONOMIC, unit.UnitBeingAssist) then
-                        unit:SetPaused( true )
-                        bussy = true
-                        break -- for _, unit in Engineers do
+        local safeguard
+        -- splitted from table to single variables. (faster)
+        local maxEnergyConsumptionUnitindex
+        local maxEnergyConsumption
+        local minEnergyConsumptionUnitindex
+        local minEnergyConsumption
+        local maxMassConsumptionUnitindex
+        local maxMassConsumption
+        local minMassConsumptionUnitindex
+        local minMassConsumption
+        local EcoUnits = {}
+        -- check if we have enemy units inside the base panic zone.
+        local BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua').GetDangerZoneRadii()
+        baseposition = aiBrain.BuilderManagers['MAIN'].FactoryManager.Location
+        local numUnitsPanicZone = aiBrain:GetNumUnitsAroundPoint(categories.MOBILE * categories.LAND - categories.SCOUT, baseposition, BasePanicZone, 'Enemy')
+        -- ECO manager
+        local AllUnits = aiBrain:GetListOfUnits( (categories.FACTORY - categories.TECH1) + categories.ENGINEER + categories.RADAR + categories.OMNI + categories.OPTICS + categories.SONAR + categories.OVERLAYCOUNTERINTEL + categories.COUNTERINTELLIGENCE + categories.MASSFABRICATION + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD) + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO ) - categories.COMMAND , false, false) -- also gets unbuilded units (planed to build)
+        if aiBrain:GetEconomyStoredRatio('ENERGY') < 0.50 then
+            if energyTrend < 0 then
+                --AllUnits = aiBrain:GetListOfUnits(categories.ALLUNITS - categories.COMMAND - categories.SHIELD - categories.MASSEXTRACTION, false, false) -- also gets unbuilded units (planed to build)
+                for index, unit in AllUnits do
+                    if unit.pausedMass or unit.pausedEnergy then continue end
+                    -- filter units that are not finished
+                    if unit:GetFractionComplete() < 1 then continue end
+                    -- if we build massextractors or energyproduction, don't pause it
+                    if unit.UnitBeingBuilt and EntityCategoryContains( ( categories.MASSEXTRACTION + categories.ENERGYPRODUCTION ) * (categories.TECH1 + categories.TECH2  + categories.TECH3) , unit.UnitBeingBuilt) then
+                        continue
                     end
-                    -- disband all other assist Platoons
-                    unit.PlatoonHandle:Stop()
-                    unit.PlatoonHandle:PlatoonDisband()
-                    bussy = true
-                    break
-                -- Extreme low eco mass, disable everything exept energy
-                elseif aiBrain:GetEconomyStoredRatio('MASS') < 0.05 or aiBrain:GetEconomyStoredRatio('ENERGY') < 0.50 then
-                    -- Pause Experimental assist
-                    if EntityCategoryContains(categories.STRUCTURE * categories.EXPERIMENTAL - categories.ECONOMIC, unit.UnitBeingAssist) then
-                        unit:SetPaused( true )
-                        bussy = true
-                        break -- for _, unit in Engineers do
-                    -- Pause Paragon assist
-                    elseif EntityCategoryContains(categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC, unit.UnitBeingAssist) then
-                        unit:SetPaused( true )
-                        bussy = true
-                        break -- for _, unit in Engineers do
-                    -- Pause Factory assist
-                    elseif EntityCategoryContains(categories.STRUCTURE * categories.FACTORY, unit.UnitBeingAssist) then
-                        unit:SetPaused( true )
-                        bussy = true
-                        break -- for _, unit in Engineers do
-                    -- Pause Energy assist
-                    elseif EntityCategoryContains(categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.ECONOMIC, unit.UnitBeingAssist) then
-                        -- noop
+                    -- if we build tech 1 units from a factory, don't pause it
+                    if unit.UnitBeingBuilt and EntityCategoryContains( categories.MOBILE * categories.TECH1 , unit.UnitBeingBuilt) then
+                        continue
                     end
-                    -- disband all other assist Platoons
-                    unit.PlatoonHandle:Stop()
-                    unit.PlatoonHandle:PlatoonDisband()
-                    bussy = true
-                    break
-                -- Very low eco, disable everything but factory
-                elseif aiBrain:GetEconomyStoredRatio('MASS') < 0.25 or aiBrain:GetEconomyStoredRatio('ENERGY') < 0.80 then
-                    -- Pause Experimental assist
-                    if EntityCategoryContains(categories.STRUCTURE * categories.EXPERIMENTAL - categories.ECONOMIC, unit.UnitBeingAssist) then
-                        unit:SetPaused( true )
-                        bussy = true
-                        break -- for _, unit in Engineers do
-                    -- Pause Paragon assist
-                    elseif EntityCategoryContains(categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC, unit.UnitBeingAssist) then
-                        unit:SetPaused( true )
-                        bussy = true
-                        break -- for _, unit in Engineers do
-                    -- Pause Factory assist
-                    elseif EntityCategoryContains(categories.STRUCTURE * categories.FACTORY, unit.UnitBeingAssist) then
-                        -- noop
-                    -- Pause Energy assist
-                    elseif EntityCategoryContains(categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.ECONOMIC, unit.UnitBeingAssist) then
-                        -- noop
+                    if unit.pausedMass or unit.pausedEnergy then continue end
+                    if EntityCategoryContains( (categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO, unit) then
+                        if unit.ProductionEnabled then
+                            -- siloBuildRate is only for debugging, we don't use it inside the code
+                            --local siloBuildRate = unit:GetBuildRate() or 1
+                            time, energy, mass = unit:GetBuildCosts(unit.SiloProjectile)
+--                            LOG('* AI-Uveso: ECO Buildcost time '..time..' - mass '..mass..' - energy '..energy..' - siloBuildRate '..siloBuildRate)
+                            energy = (energy / time)
+                            mass = (mass / time)
+--                            LOG('* AI-Uveso: ECO Buildcost time '..time..' - mass '..mass..' - energy '..energy..' - siloBuildRate '..siloBuildRate)
+                            unit.ConsumptionPerSecondEnergy = energy
+                        end
+                    else
+                        unit.ConsumptionPerSecondEnergy = unit:GetConsumptionPerSecondEnergy()
                     end
-                    -- disband all other assist Platoons
-                    unit.PlatoonHandle:Stop()
-                    unit.PlatoonHandle:PlatoonDisband()
-                    bussy = true
-                    break
-                -- Low eco, disable only special buildings
-                elseif aiBrain:GetEconomyStoredRatio('MASS') < 0.35 or aiBrain:GetEconomyStoredRatio('ENERGY') < 0.99 then
-                    -- Pause Experimental assist
-                    if EntityCategoryContains(categories.STRUCTURE * categories.EXPERIMENTAL - categories.ECONOMIC, unit.UnitBeingAssist) then
-                        unit:SetPaused( true )
-                        bussy = true
-                        break -- for _, unit in Engineers do
-                    -- Pause Paragon assist
-                    elseif EntityCategoryContains(categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC, unit.UnitBeingAssist) then
-                        -- noop
-                    -- Pause Factory assist
-                    elseif EntityCategoryContains(categories.STRUCTURE * categories.FACTORY, unit.UnitBeingAssist) then
-                        -- noop
-                    -- Pause Energy assist
-                    elseif EntityCategoryContains(categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.ECONOMIC, unit.UnitBeingAssist) then
-                        -- noop
-                    end
-                    -- disband all other assist Platoons
-                    unit.PlatoonHandle:Stop()
-                    unit.PlatoonHandle:PlatoonDisband()
-                    bussy = true
-                    break
-                end
-            -- We have positive eco. Check if we can switch something on
-            elseif aiBrain:GetEconomyTrend('MASS') >= 0.0 and aiBrain:GetEconomyTrend('ENERGY') >= 0.0 then
-                -- if this unit is paused, continue with the next unit
-                if not unit:IsPaused() then continue end
-                if aiBrain:GetEconomyStoredRatio('MASS') >= 0.35 and aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.99 then
-                    unit:SetPaused( false )
-                    bussy = true
-                    break -- for _, unit in Engineers do
-                elseif aiBrain:GetEconomyStoredRatio('MASS') >= 0.25 and aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.80 then
-                    -- UnPause Experimental assist
-                    if EntityCategoryContains(categories.STRUCTURE * categories.EXPERIMENTAL - categories.ECONOMIC, unit.UnitBeingAssist) then
-                        unit:SetPaused( false )
-                        bussy = true
-                        break -- for _, unit in Engineers do
-                    -- UnPause Factory assist
-                    elseif EntityCategoryContains(categories.STRUCTURE * categories.FACTORY, unit.UnitBeingAssist) then
-                        unit:SetPaused( false )
-                        bussy = true
-                        break -- for _, unit in Engineers do
-                    -- UnPause Energy assist
-                    elseif EntityCategoryContains(categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.ECONOMIC, unit.UnitBeingAssist) then
-                        unit:SetPaused( false )
-                        bussy = true
-                        break -- for _, unit in Engineers do
-                    end
-                elseif aiBrain:GetEconomyStoredRatio('MASS') >= 0.05 and aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.50 then
-                    -- UnPause Factory assist
-                    if EntityCategoryContains(categories.STRUCTURE * categories.FACTORY, unit.UnitBeingAssist) then
-                        unit:SetPaused( false )
-                        bussy = true
-                        break -- for _, unit in Engineers do
-                    elseif EntityCategoryContains(categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.ECONOMIC, unit.UnitBeingAssist) then
-                        unit:SetPaused( false )
-                        bussy = true
-                        break -- for _, unit in Engineers do
-                    end
-                elseif aiBrain:GetEconomyStoredRatio('ENERGY') > 0.25 then
-                    -- UnPause Energy assist
-                    if EntityCategoryContains(categories.STRUCTURE * categories.ENERGYPRODUCTION - categories.ECONOMIC, unit.UnitBeingAssist) then
-                        unit:SetPaused( false )
-                        bussy = true
-                        break -- for _, unit in Engineers do
+                    if unit.ConsumptionPerSecondEnergy > 0 then
+                        table.insert(EcoUnits, unit)
+                    else
                     end
                 end
-            end
-        end
-        if bussy then
-            continue -- while true do
-        end
--- ECO for Building engineers
-        -- loop over building engineers and manage pause / unpause
-        for _, unit in Engineers do
-            -- if the unit is dead, continue with the next unit
-            if unit.Dead then continue end
-            if unit.PlatoonHandle.PlatoonData.Assist.AssisteeType then continue end
-            -- Only Check units that are assisting
-            if not unit.UnitBeingBuilt then continue end
-            if aiBrain.PriorityManager.HasParagon or unit.noPause then
-                if unit:IsPaused() then
-                    unit:SetPaused( false )
-                    bussy = true
-                    break -- for _, unit in Engineers do
+                -- Disable units until energytrend is positive
+                safeguard = table.getn(EcoUnits)
+                while energyTrend < 0 do
+                    -- find unit with most energy consumption
+                    maxEnergyConsumptionUnitindex = nil
+                    maxEnergyConsumption = nil
+                    if EcoUnits[1] then
+                        for index, unit in EcoUnits do
+                            if unit.pausedMass or unit.pausedEnergy then continue end
+                            if not maxEnergyConsumption or maxEnergyConsumption < unit.ConsumptionPerSecondEnergy then
+                                maxEnergyConsumption = unit.ConsumptionPerSecondEnergy
+                                maxEnergyConsumptionUnitindex = index
+                            end
+                        end
+                    else
+--                        LOG('* AI-Uveso: ECO low energy; EcoUnits empty array. break!')
+                        break
+                    end
+                    if maxEnergyConsumptionUnitindex then
+--                        LOG(' ')
+--                        LOG('* AI-Uveso: ECO energyTrend < 0  ('..energyTrend..')')
+                        bussy = true
+                        energyTrend = energyTrend + maxEnergyConsumption
+                        if EntityCategoryContains(categories.FACTORY + categories.ENGINEER + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD) + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO), EcoUnits[maxEnergyConsumptionUnitindex]) then
+--                            LOG('* AI-Uveso: ECO ['..EcoUnits[maxEnergyConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[maxEnergyConsumptionUnitindex].UnitId].Description)..') unit:SetPaused( true ) Saving ('..maxEnergyConsumption..') energy')
+                            EcoUnits[maxEnergyConsumptionUnitindex]:SetPaused( true )
+                            EcoUnits[maxEnergyConsumptionUnitindex].pausedEnergy = true
+                        elseif EntityCategoryContains(categories.RADAR + categories.OMNI + categories.OPTICS + categories.SONAR + categories.COUNTERINTELLIGENCE, EcoUnits[maxEnergyConsumptionUnitindex]) then
+--                            LOG('* AI-Uveso: ECO ['..EcoUnits[maxEnergyConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[maxEnergyConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( IntelToggle, true ) Saving ('..maxEnergyConsumption..') energy')
+                            EcoUnits[maxEnergyConsumptionUnitindex]:SetScriptBit('RULEUTC_IntelToggle', true)
+                            EcoUnits[maxEnergyConsumptionUnitindex].pausedEnergy = true
+                        elseif EntityCategoryContains(categories.MASSFABRICATION, EcoUnits[maxEnergyConsumptionUnitindex]) then
+--                            LOG('* AI-Uveso: ECO ['..EcoUnits[maxEnergyConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[maxEnergyConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( ProductionToggle, true ) Saving ('..maxEnergyConsumption..') energy')
+                            EcoUnits[maxEnergyConsumptionUnitindex]:SetScriptBit('RULEUTC_ProductionToggle', true)
+                            EcoUnits[maxEnergyConsumptionUnitindex].pausedEnergy = true
+                        elseif EntityCategoryContains(categories.OVERLAYCOUNTERINTEL + categories.COUNTERINTELLIGENCE, EcoUnits[maxEnergyConsumptionUnitindex]) then
+--                            LOG('* AI-Uveso: ECO ['..EcoUnits[maxEnergyConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[maxEnergyConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( JammingToggle, true ) Saving ('..maxEnergyConsumption..') energy')
+                            EcoUnits[maxEnergyConsumptionUnitindex]:SetScriptBit('RULEUTC_JammingToggle', true)
+                            EcoUnits[maxEnergyConsumptionUnitindex].pausedEnergy = true
+                        else
+                            WARN('* AI-Uveso: Unit with unknown Category('..LOC(__blueprints[EcoUnits[maxEnergyConsumptionUnitindex].UnitId].Description)..') ['..EcoUnits[maxEnergyConsumptionUnitindex].UnitId..']')
+                        end
+                    else
+--                        SPEW('* AI-Uveso: ECO cant pause any unit. break!')
+                        break
+                    end
+--                    LOG('* AI-Uveso: ECO new energyTrend = '..energyTrend..'')
+                    -- Never remove this safeguard! Modded units can screw it up and cause a DeadLoop!!!
+                    safeguard = safeguard - 1
+                    if safeguard < 0 then
+                        WARN('* AI-Uveso: ECO E safeguard < 0')
+                        break
+                    end
                 end
-            -- We have negative eco. Check if we can switch something off
-            elseif aiBrain:GetEconomyStoredRatio('ENERGY') < 0.01 then
-                if not EntityCategoryContains( categories.ENERGYPRODUCTION + ((categories.MASSEXTRACTION + categories.FACTORY + categories.ENERGYSTORAGE)) , unit.UnitBeingBuilt) then
-                    if unit:IsPaused() then continue end
-                    unit:SetPaused( true )
-                    bussy = true
-                    break -- for _, unit in Engineers do
-                else
-                    if not unit:IsPaused() then continue end
-                    unit:SetPaused( false )
-                    bussy = true
-                    break -- for _, unit in Engineers do
-                end
-            elseif aiBrain:GetEconomyStoredRatio('MASS') < 0.01 then
-                if not EntityCategoryContains( categories.MASSEXTRACTION + ((categories.ENERGYPRODUCTION + categories.FACTORY + categories.MASSSTORAGE)) , unit.UnitBeingBuilt) then
-                    if unit:IsPaused() then continue end
-                    unit:SetPaused( true )
-                    bussy = true
-                    break -- for _, unit in Engineers do
-                else
-                    if not unit:IsPaused() then continue end
-                    unit:SetPaused( false )
-                    bussy = true
-                    break -- for _, unit in Engineers do
-                end
-            -- We have positive eco. Check if we can switch something on
-            elseif aiBrain:GetEconomyStoredRatio('MASS') >= 0.2 and aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.80 then
-                if not unit:IsPaused() then continue end
-                unit:SetPaused( false )
-                bussy = true
-                break -- for _, unit in Engineers do
-            elseif aiBrain:GetEconomyStoredRatio('MASS') >= 0.01 and aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.80 then
-                if not unit:IsPaused() then continue end
-                if EntityCategoryContains((categories.ENERGYPRODUCTION + categories.MASSEXTRACTION) - categories.EXPERIMENTAL, unit.UnitBeingBuilt) then
-                    unit:SetPaused( false )
-                    bussy = true
-                    break -- for _, unit in Engineers do
-                end
-            elseif aiBrain:GetEconomyStoredRatio('ENERGY') >= 1.00 then
-                if not unit:IsPaused() then continue end
-                if not EntityCategoryContains(categories.ENERGYPRODUCTION - categories.EXPERIMENTAL, unit.UnitBeingBuilt) then
-                    unit:SetPaused( false )
-                    bussy = true
-                    break -- for _, unit in Engineers do
-                end
-            end
-        end
-        if bussy then
-            continue -- while true do
-        end
--- ECO for FACTORIES
-        -- loop over Factories and manage pause / unpause
-        for _, unit in Factories do
-            -- if the unit is dead, continue with the next unit
-            if unit.Dead then continue end
-            if aiBrain.PriorityManager.HasParagon then
-                if unit:IsPaused() then
-                    unit:SetPaused( false )
-                    bussy = true
-                    break -- for _, unit in Engineers do
-                end
-            -- We have negative eco. Check if we can switch something off
-            elseif aiBrain:GetEconomyStoredRatio('MASS') < 0.01 or aiBrain:GetEconomyStoredRatio('ENERGY') < 0.75 then
-                if unit:IsPaused() or not unit:IsUnitState('Building') then continue end
-                if not unit.UnitBeingBuilt then continue end
-                if EntityCategoryContains(categories.ENGINEER + categories.TECH1, unit.UnitBeingBuilt) then continue end
-                if table.getn(Factories) == 1 then continue end
-                unit:SetPaused( true )
-                bussy = true
-                break -- for _, unit in Engineers do
-            else
-                if not unit:IsPaused() then continue end
-                unit:SetPaused( false )
-                bussy = true
-                break -- for _, unit in Engineers do
-            end
-        end
-        if bussy then
-            continue -- while true do
-        end
-
--- ECO for STRUCTURES
-        if aiBrain:GetEconomyTrend('ENERGY') < 0.0 and not aiBrain.PriorityManager.HasParagon then
-            -- Emergency Low Energy
-            if aiBrain:GetEconomyStoredRatio('ENERGY') < 0.75 then
-                -- Disable Nuke
-                if DisableUnits(aiBrain, categories.STRUCTURE * categories.MASSFABRICATION, 'MassFab') then bussy = true
-                -- Disable AntiNuke
-                elseif DisableUnits(aiBrain, categories.STRUCTURE * categories.NUKE * (categories.TECH3 + categories.EXPERIMENTAL), 'Nuke') then bussy = true
-                -- Disable Massfabricators
-                elseif DisableUnits(aiBrain, categories.STRUCTURE * categories.ANTIMISSILE * categories.SILO * categories.TECH3, 'AntiNuke') then bussy = true
-                -- Disable Intel
-                elseif DisableUnits(aiBrain, categories.RADAR + categories.OMNI + categories.SONAR, 'Intel') then bussy = true
-                -- Disable ExperimentalShields
-                elseif DisableUnits(aiBrain, categories.STRUCTURE * categories.SHIELD * categories.EXPERIMENTAL, 'ExperimentalShields') then bussy = true
-                -- Disable NormalShields
-                elseif DisableUnits(aiBrain, categories.STRUCTURE * categories.SHIELD - categories.EXPERIMENTAL, 'NormalShields') then bussy = true
-                end
-            elseif aiBrain:GetEconomyStoredRatio('ENERGY') < 0.95 then
-                if DisableUnits(aiBrain, categories.STRUCTURE * categories.MASSFABRICATION, 'MassFab') then bussy = true
-                end
+--                if bussy then
+--                    coroutine.yield(5)
+--                    energyNeed = math.floor(aiBrain:GetEconomyRequested('ENERGY') * 10)
+--                    energyIncome = math.floor(aiBrain:GetEconomyIncome( 'ENERGY' ) * 10)
+--                    energyTrendCheck = energyIncome - energyNeed
+--                    LOG('*ECO energyTrendCheck = '..energyTrendCheck..'')
+--                end
             end
         end
 
         if bussy then
+--            WARN('* AI-Uveso: ECO new ecomanager low energy is bussy')
             continue -- while true do
         end
 
-        if aiBrain:GetEconomyTrend('MASS') < 0.0 and not aiBrain.PriorityManager.HasParagon then
-            -- Emergency Low Mass
-            if aiBrain:GetEconomyStoredRatio('MASS') < 0.01 then
-                -- Disable AntiNuke
-                if DisableUnits(aiBrain, categories.STRUCTURE * categories.ANTIMISSILE * categories.SILO * categories.TECH3, 'AntiNuke') then bussy = true
+        local AllUnits = aiBrain:GetListOfUnits( (categories.FACTORY - categories.TECH1) + categories.ENGINEER + categories.RADAR + categories.OMNI + categories.OPTICS + categories.SONAR + categories.OVERLAYCOUNTERINTEL + categories.COUNTERINTELLIGENCE + categories.MASSFABRICATION + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD) + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO ) - categories.COMMAND , false, false) -- also gets unbuilded units (planed to build)
+        if aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.50 then
+--            LOG('* AI-Uveso: ECO conomyStoredRatio(ENERGY) > 0.50')
+            if energyTrend > 0 then
+                --AllUnits = aiBrain:GetListOfUnits(categories.ALLUNITS - categories.COMMAND - categories.SHIELD - categories.MASSEXTRACTION, false, false) -- also gets unbuilded units (planed to build)
+                for index, unit in AllUnits do
+                    -- filter units that are not finished
+                    if unit:GetFractionComplete() < 1 then continue end
+--                    LOG('* AI-Uveso: ECO checking unit ['..index..']  paused:('..repr(unit.pausedMass)..'/'..repr(unit.pausedEnergy)..') '..LOC(__blueprints[unit.UnitId].Description))
+                    if not unit.pausedEnergy then continue end
+                    if unit.ConsumptionPerSecondEnergy > 0 then
+--                        LOG('* AI-Uveso: ECO Adding unit ['..index..'] to table '..LOC(__blueprints[unit.UnitId].Description))
+                        table.insert(EcoUnits, unit)
+                    end
                 end
-            elseif aiBrain:GetEconomyStoredRatio('MASS') < 0.50 then
-                -- Disable Nuke
-                if DisableUnits(aiBrain, categories.STRUCTURE * categories.NUKE * (categories.TECH3 + categories.EXPERIMENTAL), 'Nuke') then bussy = true
+                -- Enable units until energytrend is negative
+                safeguard = table.getn(EcoUnits)
+                while energyTrend > 0 do
+--                    SPEW('* AI-Uveso: ECO safeguard = '..safeguard)
+                    -- find unit with most energy consumption
+                    minEnergyConsumptionUnitindex = nil
+                    minEnergyConsumption = nil
+                    if EcoUnits[1] then
+                        for index, unit in EcoUnits do
+                            if not unit.pausedEnergy then continue end
+                            if not minEnergyConsumption or minEnergyConsumption > unit.ConsumptionPerSecondEnergy then
+                                minEnergyConsumption = unit.ConsumptionPerSecondEnergy
+                                minEnergyConsumptionUnitindex = index
+                            end
+                        end
+                    else
+--                        LOG('* AI-Uveso: ECO high energy; EcoUnits empty array ')
+                        break
+                    end
+                    if minEnergyConsumptionUnitindex then
+--                        LOG(' ')
+--                        LOG('* AI-Uveso: ECO energyTrend > 0  ('..energyTrend..')')
+                        energyTrend = energyTrend - minEnergyConsumption
+                        bussy = true
+                        if EntityCategoryContains(categories.FACTORY + categories.ENGINEER + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO)), EcoUnits[minEnergyConsumptionUnitindex]) then
+--                            LOG('* AI-Uveso: ECO ['..EcoUnits[minEnergyConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[minEnergyConsumptionUnitindex].UnitId].Description)..') unit:SetPaused( false ) Consuming ('..minEnergyConsumption..') energy')
+                            EcoUnits[minEnergyConsumptionUnitindex]:SetPaused( false )
+                            EcoUnits[minEnergyConsumptionUnitindex].pausedEnergy = false
+                        elseif EntityCategoryContains(categories.RADAR + categories.OMNI + categories.OPTICS + categories.SONAR + categories.COUNTERINTELLIGENCE, EcoUnits[minEnergyConsumptionUnitindex]) then
+--                            LOG('* AI-Uveso: ECO ['..EcoUnits[minEnergyConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[minEnergyConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( IntelToggle, false ) Consuming ('..minEnergyConsumption..') energy')
+                            EcoUnits[minEnergyConsumptionUnitindex]:SetScriptBit('RULEUTC_IntelToggle', false)
+                            EcoUnits[minEnergyConsumptionUnitindex].pausedEnergy = false
+                        elseif EntityCategoryContains(categories.MASSFABRICATION, EcoUnits[minEnergyConsumptionUnitindex]) then
+--                            LOG('* AI-Uveso: ECO ['..EcoUnits[minEnergyConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[minEnergyConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( ProductionToggle, false ) Consuming ('..minEnergyConsumption..') energy')
+                            EcoUnits[minEnergyConsumptionUnitindex]:SetScriptBit('RULEUTC_ProductionToggle', false)
+                            EcoUnits[minEnergyConsumptionUnitindex].pausedEnergy = false
+                        elseif EntityCategoryContains(categories.OVERLAYCOUNTERINTEL + categories.COUNTERINTELLIGENCE, EcoUnits[minEnergyConsumptionUnitindex]) then
+--                            LOG('* AI-Uveso: ECO ['..EcoUnits[minEnergyConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[minEnergyConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( JammingToggle, false ) Consuming ('..minEnergyConsumption..') energy')
+                            EcoUnits[minEnergyConsumptionUnitindex]:SetScriptBit('RULEUTC_JammingToggle', false)
+                            EcoUnits[minEnergyConsumptionUnitindex].pausedEnergy = false
+                        else
+                            WARN('* AI-Uveso: Unit with unknown Category('..LOC(__blueprints[EcoUnits[minEnergyConsumptionUnitindex].UnitId].Description)..') ['..EcoUnits[minEnergyConsumptionUnitindex].UnitId..']')
+                        end
+--                            EcoUnits[minEnergyConsumptionUnitindex]:OnProductionUnpaused()
+--                            EcoUnits[minEnergyConsumptionUnitindex]:SetActiveConsumptionActive()
+                    else
+--                        SPEW('* AI-Uveso: ECO cant activate any unit. break!')
+                        break
+                    end
+--                    LOG('* AI-Uveso: ECO new energyTrend = '..energyTrend..'')
+                    -- Never remove this safeguard! Modded units can screw it up and cause a DeadLoop!!!
+                    safeguard = safeguard - 1
+                    if safeguard < 0 then
+                        WARN('* AI-Uveso: ECO E safeguard > 0')
+                        break
+                    end
                 end
-            end
-        elseif aiBrain:GetEconomyStoredRatio('ENERGY') > 0.95 then
-            if aiBrain:GetEconomyStoredRatio('MASS') > 0.50 or aiBrain.PriorityManager.HasParagon then
-                -- Enable NormalShields
-                if EnableUnits(aiBrain, categories.STRUCTURE * categories.SHIELD - categories.EXPERIMENTAL, 'NormalShields') then bussy = true
-                -- Enable ExperimentalShields
-                elseif EnableUnits(aiBrain, categories.STRUCTURE * categories.SHIELD * categories.EXPERIMENTAL, 'ExperimentalShields') then bussy = true
-                -- Enable Intel
-                elseif EnableUnits(aiBrain, categories.RADAR + categories.OMNI + categories.SONAR, 'Intel') then bussy = true
-                -- Enable AntiNuke
-                elseif EnableUnits(aiBrain, categories.STRUCTURE * categories.ANTIMISSILE * categories.SILO * categories.TECH3, 'AntiNuke') then bussy = true
-                -- Enable massfabricators
-                elseif EnableUnits(aiBrain, categories.STRUCTURE * categories.MASSFABRICATION, 'MassFab') then bussy = true
-                -- Enable Nuke
-                elseif EnableUnits(aiBrain, categories.STRUCTURE * categories.NUKE * (categories.TECH3 + categories.EXPERIMENTAL), 'Nuke') then bussy = true
-                end
-            elseif aiBrain:GetEconomyStoredRatio('MASS') > 0.25 or aiBrain.PriorityManager.HasParagon then
-                -- Enable NormalShields
-                if EnableUnits(aiBrain, categories.STRUCTURE * categories.SHIELD - categories.EXPERIMENTAL, 'NormalShields') then bussy = true
-                -- Enable ExperimentalShields
-                elseif EnableUnits(aiBrain, categories.STRUCTURE * categories.SHIELD * categories.EXPERIMENTAL, 'ExperimentalShields') then bussy = true
-                -- Enable Intel
-                elseif EnableUnits(aiBrain, categories.RADAR + categories.OMNI + categories.SONAR, 'Intel') then bussy = true
-                -- Enable AntiNuke
-                elseif EnableUnits(aiBrain, categories.STRUCTURE * categories.ANTIMISSILE * categories.SILO * categories.TECH3, 'AntiNuke') then bussy = true
-                -- Enable massfabricators
-                elseif EnableUnits(aiBrain, categories.STRUCTURE * categories.MASSFABRICATION, 'MassFab') then bussy = true
-                end
-            else
-                -- Enable NormalShields
-                if EnableUnits(aiBrain, categories.STRUCTURE * categories.SHIELD - categories.EXPERIMENTAL, 'NormalShields') then bussy = true
-                -- Enable ExperimentalShields
-                elseif EnableUnits(aiBrain, categories.STRUCTURE * categories.SHIELD * categories.EXPERIMENTAL, 'ExperimentalShields') then bussy = true
-                -- Enable Intel
-                elseif EnableUnits(aiBrain, categories.RADAR + categories.OMNI + categories.SONAR, 'Intel') then bussy = true
-                -- Enable massfabricators
-                elseif EnableUnits(aiBrain, categories.STRUCTURE * categories.MASSFABRICATION, 'MassFab') then bussy = true
-                end
+--                if bussy then
+--                    coroutine.yield(5)
+--                    energyNeed = math.floor(aiBrain:GetEconomyRequested('ENERGY') * 10)
+--                    energyIncome = math.floor(aiBrain:GetEconomyIncome( 'ENERGY' ) * 10)
+--                    energyTrendCheck = energyIncome - energyNeed
+--                    LOG('*ECO energyTrendCheck = '..energyTrendCheck..'')
+--                end
             end
         end
 
         if bussy then
+--            WARN('*ECO new ecomanager high energy is bussy')
             continue -- while true do
         end
 
+        local AllUnits = aiBrain:GetListOfUnits( (categories.FACTORY - categories.TECH1 - categories.TECH2) + categories.ENGINEER + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD) + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO ) - categories.COMMAND , false, false) -- also gets unbuilded units (planed to build)
+        if aiBrain:GetEconomyStoredRatio('MASS') < 0.15 then
+            if massTrend < 0 then
+                --AllUnits = aiBrain:GetListOfUnits(categories.ALLUNITS - categories.COMMAND - categories.SHIELD - categories.MASSEXTRACTION, false, false) -- also gets unbuilded units (planed to build)
+                for index, unit in AllUnits do
+                    -- filter units that are not finished
+                    if unit:GetFractionComplete() < 1 then continue end
+                    -- if we build massextractors or energyproduction, don't pause it
+                    if unit.UnitBeingBuilt and EntityCategoryContains( ( categories.MASSEXTRACTION + categories.ENERGYPRODUCTION ) * (categories.TECH1 + categories.TECH2  + categories.TECH3) , unit.UnitBeingBuilt) then
+                        continue
+                    end
+                    -- if we build tech 1 units from a factory, don't pause it
+                    if unit.UnitBeingBuilt and EntityCategoryContains( categories.MOBILE * categories.TECH1 , unit.UnitBeingBuilt) then
+                        continue
+                    end
+                    if unit.pausedMass or unit.pausedEnergy then continue end
+                    unit.ConsumptionPerSecondMass = unit:GetConsumptionPerSecondMass()
+                    if unit.ConsumptionPerSecondMass > 0 then
+--                        LOG('* AI-Uveso: ECO Adding unit ['..index..'] to table '..LOC(__blueprints[unit.UnitId].Description))
+                        table.insert(EcoUnits, unit)
+                    end
+                end
+                -- Disable units until massTrend is positive
+                safeguard = table.getn(EcoUnits)
+                while massTrend < 0 do
+                    -- find unit with most mass consumption
+                    maxMassConsumptionUnitindex = nil
+                    maxMassConsumption = nil
+                    if EcoUnits[1] then
+                        for index, unit in EcoUnits do
+                            -- Don't pause factories if we have enemies inside the Paniczone
+                            if numUnitsPanicZone > 0 and EntityCategoryContains( categories.FACTORY, unit) then continue end
+                            if unit.pausedMass or unit.pausedEnergy then continue end
+                            if not maxMassConsumption or maxMassConsumption < unit.ConsumptionPerSecondMass then
+                                maxMassConsumption = unit.ConsumptionPerSecondMass
+                                maxMassConsumptionUnitindex = index
+                            end
+                        end
+                    else
+--                        LOG('* AI-Uveso: ECO low mass; EcoUnits empty array. break!')
+                        break
+                    end
+                    if maxMassConsumptionUnitindex then
+--                        LOG(' ')
+--                        LOG('* AI-Uveso: ECO massTrend < 0  ('..massTrend..')')
+                        bussy = true
+                        massTrend = massTrend + maxMassConsumption
+                        if EntityCategoryContains(categories.FACTORY + categories.ENGINEER + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO)), EcoUnits[maxMassConsumptionUnitindex]) then
+--                            LOG('* AI-Uveso: ECO ['..EcoUnits[maxMassConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[maxMassConsumptionUnitindex].UnitId].Description)..') unit:SetPaused( true ) Saving ('..maxMassConsumption..') mass')
+                            EcoUnits[maxMassConsumptionUnitindex]:SetPaused( true )
+                            EcoUnits[maxMassConsumptionUnitindex].pausedMass = true
+                        elseif EntityCategoryContains(categories.RADAR + categories.OMNI + categories.OPTICS + categories.SONAR + categories.COUNTERINTELLIGENCE, EcoUnits[maxMassConsumptionUnitindex]) then
+--                            LOG('* AI-Uveso: ECO ['..EcoUnits[maxMassConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[maxMassConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( IntelToggle, true ) Saving ('..maxMassConsumption..') mass')
+                            EcoUnits[maxMassConsumptionUnitindex]:SetScriptBit('RULEUTC_IntelToggle', true)
+                            EcoUnits[maxMassConsumptionUnitindex].pausedMass = true
+                        elseif EntityCategoryContains(categories.MASSFABRICATION, EcoUnits[maxMassConsumptionUnitindex]) then
+--                            LOG('* AI-Uveso: ECO ['..EcoUnits[maxMassConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[maxMassConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( ProductionToggle, true ) Saving ('..maxMassConsumption..') mass')
+                            EcoUnits[maxMassConsumptionUnitindex]:SetScriptBit('RULEUTC_ProductionToggle', true)
+                            EcoUnits[maxMassConsumptionUnitindex].pausedMass = true
+                        elseif EntityCategoryContains(categories.OVERLAYCOUNTERINTEL + categories.COUNTERINTELLIGENCE, EcoUnits[maxMassConsumptionUnitindex]) then
+--                            LOG('* AI-Uveso: ECO ['..EcoUnits[maxMassConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[maxMassConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( JammingToggle, true ) Saving ('..maxMassConsumption..') mass')
+                            EcoUnits[maxMassConsumptionUnitindex]:SetScriptBit('RULEUTC_JammingToggle', true)
+                            EcoUnits[maxMassConsumptionUnitindex].pausedMass = true
+                        else
+                            WARN('* AI-Uveso: Unit with unknown Category('..LOC(__blueprints[EcoUnits[maxMassConsumptionUnitindex].UnitId].Description)..') ['..EcoUnits[maxMassConsumptionUnitindex].UnitId..']')
+                        end
+                    else
+--                        SPEW('* AI-Uveso: ECO cant pause any unit. break!')
+                        break
+                    end
+--                    LOG('*ECO new massTrend = '..massTrend..'')
+                    -- Never remove this safeguard! Modded units can screw it up and cause a DeadLoop!!!
+                    safeguard = safeguard - 1
+                    if safeguard < 0 then
+                        WARN('* AI-Uveso: ECO M safeguard < 0')
+                        break
+                    end
+                end
+--                if bussy then
+--                    coroutine.yield(5)
+--                    massNeed = math.floor(aiBrain:GetEconomyRequested('MASS') * 10)
+--                    massIncome = math.floor(aiBrain:GetEconomyIncome( 'MASS' ) * 10)
+--                    massTrendCheck = massIncome - massNeed
+--                    LOG('* AI-Uveso: ECO massTrendCheck = '..massTrendCheck..'')
+--                end
+            end
+        end
 
+        if bussy then
+--            WARN('*ECO new ecomanager low mass is bussy')
+            continue -- while true do
+        end
 
+        local AllUnits = aiBrain:GetListOfUnits( (categories.FACTORY - categories.TECH1 - categories.TECH2) + categories.ENGINEER + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD) + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO ) - categories.COMMAND , false, false) -- also gets unbuilded units (planed to build)
+        if aiBrain:GetEconomyStoredRatio('MASS') >= 0.15 then
+            if massTrend > 0 then
+                --AllUnits = aiBrain:GetListOfUnits(categories.ALLUNITS - categories.COMMAND - categories.SHIELD - categories.MASSEXTRACTION, false, false) -- also gets unbuilded units (planed to build)
+                for index, unit in AllUnits do
+                    -- filter units that are not finished
+                    if unit:GetFractionComplete() < 1 then continue end
+--                    LOG('* AI-Uveso: ECO checking unit ['..index..']  paused:('..repr(unit.pausedMass)..'/'..repr(unit.pausedEnergy)..') '..LOC(__blueprints[unit.UnitId].Description))
+                    if not unit.pausedMass then continue end
+                    if unit.ConsumptionPerSecondMass > 0 then
+--                        LOG('* AI-Uveso: ECO Adding unit ['..index..'] to table '..LOC(__blueprints[unit.UnitId].Description))
+                        table.insert(EcoUnits, unit)
+                    end
+                end
+                -- Enable units until massTrend is negative
+                safeguard = table.getn(EcoUnits)
+                while massTrend > 0 do
+--                    SPEW('* AI-Uveso: ECO safeguard = '..safeguard)
+                    -- find unit with most mass consumption
+                    minMassConsumptionUnitindex = nil
+                    minMassConsumption = nil
+                    if EcoUnits[1] then
+                        for index, unit in EcoUnits do
+                            if not unit.pausedMass then continue end
+                            if not minMassConsumption or minMassConsumption > unit.ConsumptionPerSecondMass then
+                                minMassConsumption = unit.ConsumptionPerSecondMass
+                                minMassConsumptionUnitindex = index
+                            end
+                        end
+                    else
+--                        LOG('* AI-Uveso: ECO high mass; EcoUnits empty array ')
+                        break
+                    end
+                    if minMassConsumptionUnitindex then
+--                        LOG(' ')
+--                        LOG('* AI-Uveso: ECO massTrend > 0  ('..massTrend..')')
+                        massTrend = massTrend - minMassConsumption
+                        bussy = true
+                        if EntityCategoryContains(categories.FACTORY + categories.ENGINEER + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO)), EcoUnits[minMassConsumptionUnitindex]) then
+--                            LOG('* AI-Uveso: ECO ['..EcoUnits[minMassConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[minMassConsumptionUnitindex].UnitId].Description)..') unit:SetPaused( false ) Consuming ('..minMassConsumption..') mass')
+                            EcoUnits[minMassConsumptionUnitindex]:SetPaused( false )
+                            EcoUnits[minMassConsumptionUnitindex].pausedMass = false
+                        elseif EntityCategoryContains(categories.RADAR + categories.OMNI + categories.OPTICS + categories.SONAR + categories.COUNTERINTELLIGENCE, EcoUnits[minMassConsumptionUnitindex]) then
+--                            LOG('* AI-Uveso: ECO ['..EcoUnits[minMassConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[minMassConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( IntelToggle, false ) Consuming ('..minMassConsumption..') mass')
+                            EcoUnits[minMassConsumptionUnitindex]:SetScriptBit('RULEUTC_IntelToggle', false)
+                            EcoUnits[minMassConsumptionUnitindex].pausedMass = false
+                        elseif EntityCategoryContains(categories.MASSFABRICATION, EcoUnits[minMassConsumptionUnitindex]) then
+--                            LOG('* AI-Uveso: ECO ['..EcoUnits[minMassConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[minMassConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( ProductionToggle, false ) Consuming ('..minMassConsumption..') mass')
+                            EcoUnits[minMassConsumptionUnitindex]:SetScriptBit('RULEUTC_ProductionToggle', false)
+                            EcoUnits[minMassConsumptionUnitindex].pausedMass = false
+                        elseif EntityCategoryContains(categories.OVERLAYCOUNTERINTEL + categories.COUNTERINTELLIGENCE, EcoUnits[minMassConsumptionUnitindex]) then
+--                            LOG('* AI-Uveso: ECO ['..EcoUnits[minMassConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[minMassConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( JammingToggle, false ) Consuming ('..minMassConsumption..') mass')
+                            EcoUnits[minMassConsumptionUnitindex]:SetScriptBit('RULEUTC_JammingToggle', false)
+                            EcoUnits[minMassConsumptionUnitindex].pausedMass = false
+                        else
+                            WARN('* AI-Uveso: Unit with unknown Category('..LOC(__blueprints[EcoUnits[minMassConsumptionUnitindex].UnitId].Description)..') ['..EcoUnits[minMassConsumptionUnitindex].UnitId..']')
+                        end
+--                            EcoUnits[minMassConsumptionUnitindex]:OnProductionUnpaused()
+--                            EcoUnits[minMassConsumptionUnitindex]:SetActiveConsumptionActive()
+                    else
+--                        SPEW('* AI-Uveso: ECO cant activate any unit. break!')
+                        break
+                    end
+--                    LOG('* AI-Uveso: ECO new massTrend = '..massTrend..'')
+                    -- Never remove this safeguard! Modded units can screw it up and cause a DeadLoop!!!
+                    safeguard = safeguard - 1
+                    if safeguard < 0 then
+                        WARN('* AI-Uveso: ECO M safeguard > 0')
+                        break
+                    end
+                end
+--                if bussy then
+--                    coroutine.yield(5)
+--                    massNeed = math.floor(aiBrain:GetEconomyRequested('MASS') * 10)
+--                    massIncome = math.floor(aiBrain:GetEconomyIncome( 'MASS' ) * 10)
+--                    massTrendCheck = massIncome - massNeed
+--                    LOG('* AI-Uveso: ECO massTrendCheck = '..massTrendCheck..'')
+--                end
+            end
+        end
    end
-end
-
-function DisableUnits(aiBrain, Category, UnitType)
-    local Units = aiBrain:GetListOfUnits(Category, false, false) -- also gets unbuilded units (planed to build)
-    for _, unit in Units do
-        if unit.Dead then continue end
-        if unit:GetFractionComplete() ~= 1 then continue end
-        -- Units that only needs to be set on pause
-        if UnitType == 'Nuke' or UnitType == 'AntiNuke' then
-            if not unit:IsPaused() then
-                --LOG('*DisableUnits: Unit :SetPaused true'..UnitType..' - '..unit:GetBlueprint().BlueprintId..' - '..aiBrain.Name)
-                unit:SetPaused( true )
-                -- now return, we only want do disable one unit per loop
-                return true
-            end
-        end
-        -- Maintenance -- for units that are usually "on": radar, mass extractors, etc.
-        if unit.MaintenanceConsumption == true then
-            unit:OnProductionPaused()
-            --LOG('*DisableUnits: Unit OnProductionPaused '..UnitType..' - '..unit:GetBlueprint().BlueprintId..' - '..aiBrain.Name)
-            return true
-        end
-        -- Active -- when upgrading, constructing, or something similar.
-        if unit.ActiveConsumption == true then
-            unit:SetActiveConsumptionInactive()
-            --LOG('*DisableUnits: Unit SetActiveConsumptionInactive '..UnitType..' - '..unit:GetBlueprint().BlueprintId..' - '..aiBrain.Name)
-            return true
-        end
-    end
-    return false
-end
-
-function EnableUnits(aiBrain, Category, UnitType)
-    local Units = aiBrain:GetListOfUnits(Category, false, false) -- also gets unbuilded units (planed to build)
-    for _, unit in Units do
-        if unit.Dead then continue end
-        if unit:GetFractionComplete() ~= 1 then continue end
-        -- Units that only needs to be set on pause
-        if UnitType == 'Nuke' or UnitType == 'AntiNuke' then
-            if unit:IsPaused() then
-                --LOG('*EnableUnits: Unit :SetPaused false '..UnitType..' - '..unit:GetBlueprint().BlueprintId..' - '..aiBrain.Name)
-                unit:SetPaused( false )
-                -- now return, we only want do disable one unit per loop
-                return true
-            end
-        end
-        -- Maintenance -- for units that are usually "on": radar, mass extractors, etc.
-        if unit.MaintenanceConsumption == false then
-            unit:OnProductionUnpaused()
-            --LOG('*EnableUnits: Unit OnProductionUnpaused '..UnitType..' - '..unit:GetBlueprint().BlueprintId..' - '..aiBrain.Name)
-            return true
-        end
-        -- Active -- when upgrading, constructing, or something similar.
-        if unit.ActiveConsumption == false then
-            unit:SetActiveConsumptionActive()
-            --LOG('*EnableUnits: Unit SetActiveConsumptionActive '..UnitType..' - '..unit:GetBlueprint().BlueprintId..' - '..aiBrain.Name)
-            return true
-        end
-    end
-    return false
 end
 
 function LocationRangeManagerThread(aiBrain)
@@ -733,12 +564,12 @@ function LocationRangeManagerThread(aiBrain)
                 for location, base in BasePositions do
                     -- If we need a naval base then skip all non naval areas
                     if NeedNavalBase and base.Type ~= 'Naval Area' then
-                        --LOG('Need naval; but got land base: '..base.Type)
+                        --LOG('* AI-Uveso: Need naval; but got land base: '..base.Type)
                         continue
                     end
                     -- If we need a land base then skip all naval areas
                     if not NeedNavalBase and base.Type == 'Naval Area' then
-                        --LOG('Need land; but got naval base: '..base.Type)
+                        --LOG('* AI-Uveso: Need land; but got naval base: '..base.Type)
                         continue
                     end
                     local dist = VDist2( UnitPos[1], UnitPos[3], base.Pos[1], base.Pos[3] )
@@ -780,24 +611,24 @@ function LocationRangeManagerThread(aiBrain)
                 unitcounterdelayer = 0
                 local MaxCap = GetArmyUnitCap(aiBrain:GetArmyIndex())
                 LOG('  ')
-                LOG(' 05.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE * categories.ENGINEER * categories.TECH1, false, false) ) )..' -  Engineers TECH1  - ' )
-                LOG(' 05.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE * categories.ENGINEER * categories.TECH2, false, false) ) )..' -  Engineers TECH2  - ' )
-                LOG(' 05.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE * categories.ENGINEER * categories.TECH3 - categories.SUBCOMMANDER, false, false) ) )..' -  Engineers TECH3  - ' )
-                LOG(' 03.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE * categories.SUBCOMMANDER, false, false) ) )..' -  SubCommander   - ' )
-                LOG(' 45.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE - (categories.ENGINEER * categories.MOBILE), false, false) ) )..' -  Mobile Attack Force  - ' )
-                LOG(' 10.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE * categories.MASSEXTRACTION, false, false) ) )..' -  Extractors    - ' )
-                LOG(' 12.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE * categories.DEFENSE, false, false) ) )..' -  Structures Defense   - ' )
-                LOG(' 12.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - (categories.STRUCTURE * categories.FACTORY), false, false) ) )..' -  Structures all   - ' )
-                LOG(' 02.4 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE * categories.FACTORY * categories.LAND, false, false) ) )..' -  Factory Land  - ' )
-                LOG(' 02.4 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE * categories.FACTORY * categories.AIR, false, false) ) )..' -  Factory Air   - ' )
-                LOG(' 02.4 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE * categories.FACTORY * categories.NAVAL, false, false) ) )..' -  Factory Sea   - ' )
-                LOG('------|------')
-                LOG('100.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE + categories.MOBILE, false, false) ) )..' -  Structure + Mobile   - ' )
+                LOG('* AI-Uveso:  05.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE * categories.ENGINEER * categories.TECH1, false, false) ) )..' -  Engineers TECH1  - ' )
+                LOG('* AI-Uveso:  05.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE * categories.ENGINEER * categories.TECH2, false, false) ) )..' -  Engineers TECH2  - ' )
+                LOG('* AI-Uveso:  05.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE * categories.ENGINEER * categories.TECH3 - categories.SUBCOMMANDER, false, false) ) )..' -  Engineers TECH3  - ' )
+                LOG('* AI-Uveso:  03.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE * categories.SUBCOMMANDER, false, false) ) )..' -  SubCommander   - ' )
+                LOG('* AI-Uveso:  45.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE - (categories.ENGINEER * categories.MOBILE), false, false) ) )..' -  Mobile Attack Force  - ' )
+                LOG('* AI-Uveso:  10.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE * categories.MASSEXTRACTION, false, false) ) )..' -  Extractors    - ' )
+                LOG('* AI-Uveso:  12.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE * categories.DEFENSE, false, false) ) )..' -  Structures Defense   - ' )
+                LOG('* AI-Uveso:  12.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - (categories.STRUCTURE * categories.FACTORY), false, false) ) )..' -  Structures all   - ' )
+                LOG('* AI-Uveso:  02.4 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE * categories.FACTORY * categories.LAND, false, false) ) )..' -  Factory Land  - ' )
+                LOG('* AI-Uveso:  02.4 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE * categories.FACTORY * categories.AIR, false, false) ) )..' -  Factory Air   - ' )
+                LOG('* AI-Uveso:  02.4 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE * categories.FACTORY * categories.NAVAL, false, false) ) )..' -  Factory Sea   - ' )
+                LOG('* AI-Uveso: ------|------')
+                LOG('* AI-Uveso: 100.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE + categories.MOBILE, false, false) ) )..' -  Structure + Mobile   - ' )
 --                UNITS = aiBrain:GetListOfUnits(categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - (categories.STRUCTURE * categories.FACTORY), false, false)
 --                for k,unit in UNITS do
 --                    local description = unit:GetBlueprint().Description
 --                    local location = unit:GetPosition()
---                    LOG('K='..k..' - Unit= '..description..' - '..repr(location))
+--                    LOG('* AI-Uveso: K='..k..' - Unit= '..description..' - '..repr(location))
 --                end
             end
         end
@@ -805,7 +636,7 @@ function LocationRangeManagerThread(aiBrain)
         
 --        local SUtils = import('/lua/AI/sorianutilities.lua')
 --        SUtils.AIRandomizeTaunt(aiBrain)
---        LOG('location manager '..repr(aiBrain.NukedArea))
+--        LOG('* AI-Uveso: location manager '..repr(aiBrain.NukedArea))
 
     end
 end
@@ -848,11 +679,11 @@ function BaseRanger(aiBrain)
                             -- Mainbase can use 66% of the distance to the next location (minimum 90). But only if we have enough space for the second base (>=30)
                             if NewMax > dist/3*2 and dist/3*2 > 90 and dist/3 >= 30 then
                                 NewMax = dist/3*2
-                                --LOG('Distance from mainbase['..k..']->['..k2..']='..dist..' Mainbase radius='..StartRad..' Set Radius to '..dist/3*2)
+                                --LOG('* AI-Uveso: Distance from mainbase['..k..']->['..k2..']='..dist..' Mainbase radius='..StartRad..' Set Radius to '..dist/3*2)
                             -- If we have not enough spacee for the second base, then use half the distance as location radius
                             elseif NewMax > dist/2 and dist/2 > 90 and dist/2 >= 30 then
                                 NewMax = dist/2
-                                --LOG('Distance to location['..k..']->['..k2..']='..dist..' location radius='..StartRad..' Set Radius to '..dist/2)
+                                --LOG('* AI-Uveso: Distance to location['..k..']->['..k2..']='..dist..' location radius='..StartRad..' Set Radius to '..dist/2)
                             -- We have not enough space for the mainbase. Set it to 90. Wee need this radius for gathering plattons etc
                             else
                                 NewMax = 90
@@ -862,14 +693,14 @@ function BaseRanger(aiBrain)
                             -- Expansion can use 33% of the distance to the Mainbase.
                             if NewMax > dist - EndRad and dist - EndRad >= 30 then
                                 NewMax = dist - EndRad
-                                --LOG('Distance to mainbase['..k..']->['..k2..']='..dist..' Mainbase radius='..EndRad..' Set Radius to '..dist - EndRad)
+                                --LOG('* AI-Uveso: Distance to mainbase['..k..']->['..k2..']='..dist..' Mainbase radius='..EndRad..' Set Radius to '..dist - EndRad)
                             end
                         -- Use as base radius half the way to the next marker.
                         else
                             -- if we dont compare against the mainbase then use 50% of the distance to the next location
                             if NewMax > dist/2 and dist/2 >= 30 then
                                 NewMax = dist/2
-                                --LOG('Distance to location['..k..']->['..k2..']='..dist..' location radius='..StartRad..' Set Radius to '..dist/2)
+                                --LOG('* AI-Uveso: Distance to location['..k..']->['..k2..']='..dist..' location radius='..StartRad..' Set Radius to '..dist/2)
                             end
                         end
                     end
@@ -910,7 +741,7 @@ function BaseRanger(aiBrain)
 end
 
 function BaseTargetManagerThread(aiBrain)
---        LOG('location manager '..repr(aiBrain.NukedArea))
+--        LOG('* AI-Uveso: location manager '..repr(aiBrain.NukedArea))
     while GetGameTimeSeconds() < 25 + aiBrain:GetArmyIndex() do
         coroutine.yield(10)
     end
@@ -1002,7 +833,7 @@ function BaseTargetManagerThread(aiBrain)
                         distance = targetRange
                         ClosestTarget = unit
                         -- we only need a single unit for targeting this area
-                        --LOG('High Threat Area: '.. repr(HighestThreat[armyIndex].TargetThreat)..' - '..repr(HighestThreat[armyIndex].TargetLocation))
+                        --LOG('* AI-Uveso: High Threat Area: '.. repr(HighestThreat[armyIndex].TargetThreat)..' - '..repr(HighestThreat[armyIndex].TargetLocation))
                         break --for _, unit in targets do
                     end
                 end
@@ -1116,7 +947,7 @@ function MarkerGridThreatManagerThread(aiBrain)
                         Threat = aiBrain:GetThreatAtPosition(vector, 1, true, 'AntiAir')
                         Threat = Threat + aiBrain:GetThreatAtPosition(vector, 0, true, 'Structures')
                     end
-                    --LOG('* MarkerGridThreatManagerThread: 1='..numTargetTECH1..'  2='..numTargetTECH2..'  3='..numTargetTECH123..'  4='..numTargetTECH4..' - Threat='..Threat..'.' )
+                    --LOG('* AI-Uveso: MarkerGridThreatManagerThread: 1='..numTargetTECH1..'  2='..numTargetTECH2..'  3='..numTargetTECH123..'  4='..numTargetTECH4..' - Threat='..Threat..'.' )
                     Scenario.MasterChain._MASTERCHAIN_.Markers[nodename][armyIndex] = Threat
                     if Threat > HighestThreat[armyIndex].ThreatCount then
                         HighestThreat[armyIndex].ThreatCount = Threat
@@ -1292,7 +1123,7 @@ function PriorityManagerThread(aiBrain)
         AIRMOBILE = aiBrain:GetCurrentUnits(categories.AIR * categories.MOBILE - categories.SCOUT - categories.TRANSPORTFOCUS)
         NAVALFACTORY = aiBrain:GetCurrentUnits(categories.NAVAL * categories.FACTORY)
         NAVALMOBILE = aiBrain:GetCurrentUnits(categories.NAVAL * categories.MOBILE)
-        --LOG(' '..LANDFACTORY..'/'..AIRFACTORY..'/'..NAVALFACTORY..' - LANDMOBILE: '..LANDMOBILE..' - AIRMOBILE: '..AIRMOBILE..' - NAVALMOBILE: '..NAVALMOBILE..'.')
+        --LOG('* AI-Uveso:  '..LANDFACTORY..'/'..AIRFACTORY..'/'..NAVALFACTORY..' - LANDMOBILE: '..LANDMOBILE..' - AIRMOBILE: '..AIRMOBILE..' - NAVALMOBILE: '..NAVALMOBILE..'.')
         -- can we build more units ?
         if UCBC.HaveUnitRatioVersusCap(aiBrain, 0.45, '<', categories.MOBILE) then
             if (LANDMOBILE >= AIRMOBILE) and (LANDMOBILE >= NAVALMOBILE) then
@@ -1307,11 +1138,7 @@ function PriorityManagerThread(aiBrain)
                 end
             elseif (AIRMOBILE >= LANDMOBILE) and (AIRMOBILE >= NAVALMOBILE) then
                 if LANDFACTORY > 0 then
-                    if MIBC.CanPathToCurrentEnemy(aiBrain,true) then
-                        aiBrain.PriorityManager.NeedMobileLand = true
-                    else
-                        aiBrain.PriorityManager.NeedMobileLand = false
-                    end
+                    aiBrain.PriorityManager.NeedMobileLand = true
                     aiBrain.PriorityManager.NeedMobileHover = true
                     aiBrain.PriorityManager.NeedMobileAmphibious = true
                 end
@@ -1321,11 +1148,7 @@ function PriorityManagerThread(aiBrain)
                 end
             elseif (NAVALMOBILE >= LANDMOBILE) and (NAVALMOBILE >= AIRMOBILE) then
                 if LANDFACTORY > 0 then
-                    if MIBC.CanPathToCurrentEnemy(aiBrain,true) then
-                        aiBrain.PriorityManager.NeedMobileLand = true
-                    else
-                        aiBrain.PriorityManager.NeedMobileLand = false
-                    end
+                    aiBrain.PriorityManager.NeedMobileLand = true
                     aiBrain.PriorityManager.NeedMobileHover = true
                     aiBrain.PriorityManager.NeedMobileAmphibious = true
                 end
@@ -1364,12 +1187,12 @@ function PriorityManagerThread(aiBrain)
             else
                 aiBrain.PriorityManager.BuildMobileLandTech1 = false
             end
-            if LandFactoryTech2 > 0 then
+            if LandFactoryTech2 > 1 then
                 aiBrain.PriorityManager.BuildMobileLandTech2 = true
             else
                 aiBrain.PriorityManager.BuildMobileLandTech2 = false
             end
-            if LandFactoryTech3 > 0 then
+            if LandFactoryTech3 > 1 then
                 aiBrain.PriorityManager.BuildMobileLandTech3 = true
             else
                 aiBrain.PriorityManager.BuildMobileLandTech3 = false

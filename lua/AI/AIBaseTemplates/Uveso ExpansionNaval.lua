@@ -98,7 +98,16 @@ BaseBuilderTemplate {
             return -1
         end
         local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
-        if personality == ('uvesoeasy' or 'uvesoeasycheat' or 'uvesoadaptive' or 'uvesoadaptivecheat' or 'uvesoexp' or 'uvesoexpcheat' or 'uvesooverwhelmcheat') then
+        if personality == 'uvesoeasy' then
+            return 600, 'UvesoExpansionNaval'
+        end
+        if personality == 'uvesoadaptive' then
+            return 900, 'UvesoExpansionNaval'
+        end
+        if personality == 'uvesoexp' then
+            return 900, 'UvesoExpansionNaval'
+        end
+        if personality == 'uvesooverwhelm' then
             return 1000, 'UvesoExpansionNaval'
         end
         return -1

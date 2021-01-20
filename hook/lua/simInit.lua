@@ -1,5 +1,5 @@
 --WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] * AI-Uveso: offset simInit.lua' )
---418
+--429
 local AIAttackUtils = import('/lua/ai/aiattackutilities.lua')
 
 -- hooks for map validation on game start and debugstuff for pathfinding and base ranger.
@@ -7,8 +7,8 @@ local MaxPassableElevation = 48
 local MaxSlope = 0.36 -- 36
 local MaxAngle = 0.18 -- 18
 local CREATEDMARKERS = {}
-local MarkerCountX = 30
-local MarkerCountY = 30
+local MarkerCountX = 32
+local MarkerCountY = 32
 local ScanResolution = 0.4
 local FootprintSize = 0.20
 
@@ -393,6 +393,28 @@ function DrawPathGraph(DrawOnly,Blink)
             end
         end
     end
+    for nodename, markerInfo in Scenario.MasterChain._MASTERCHAIN_.Markers or {} do
+        if markerInfo['type'] == 'Blank Marker' then
+            DrawCircle(markerInfo['position'], 8, 'ffFF0000' )
+            DrawCircle(markerInfo['position'], 7.5, 'ff000000' )
+            DrawCircle(markerInfo['position'], 9, 'ffF4A460' )
+        end
+        if markerInfo['type'] == 'Expansion Area' then
+            DrawCircle(markerInfo['position'], 5, 'ffFF0000' )
+            DrawCircle(markerInfo['position'], 4.5, 'ff808080' )
+            DrawCircle(markerInfo['position'], 6, 'ffF4A460' )
+        end
+        if markerInfo['type'] == 'Large Expansion Area' then
+            DrawCircle(markerInfo['position'], 10, 'ffFF0000' )
+            DrawCircle(markerInfo['position'], 9.5, 'ffFFFFFF' )
+            DrawCircle(markerInfo['position'], 11, 'ffF4A460' )
+        end
+        if markerInfo['type'] == 'Naval Area' then
+            DrawCircle(markerInfo['position'], 8, 'ffFF0000' )
+            DrawCircle(markerInfo['position'], 7.5, 'ff808080' )
+            DrawCircle(markerInfo['position'], 9, 'ffF0F0FF' )
+        end
+    end
 end
 
 local treatScale = {Land=1, Amphibious=1, Water=1, Air=1}
@@ -429,14 +451,6 @@ function DrawIMAPThreats()
     local PosX
     local PosY
     local enemyThreat
-    -- Playable area
-    local playablearea
-    if  ScenarioInfo.MapData.PlayableRect then
-        playablearea = ScenarioInfo.MapData.PlayableRect
-    else
-        playablearea = {0, 0, ScenarioInfo.size[1], ScenarioInfo.size[2]}
-    end
-
     local FocussedArmy = GetFocusArmy()
     for ArmyIndex, aiBrain in ArmyBrains do
         -- only draw the pathcache from the focussed army
@@ -801,6 +815,9 @@ function CopyMarkerToMASTERCHAIN(layer)
     -- Deleting all previous markers from MASTERCHAIN
     for nodename, markerInfo in Scenario.MasterChain._MASTERCHAIN_.Markers or {} do
         if markerInfo['graph'] == 'Default'..layer then
+            Scenario.MasterChain._MASTERCHAIN_.Markers[nodename] = nil
+            --LOG('Removed from Masterchain: '..nodename)
+        elseif markerInfo['type'] == layer..' Path Node' then
             Scenario.MasterChain._MASTERCHAIN_.Markers[nodename] = nil
             --LOG('Removed from Masterchain: '..nodename)
         end
@@ -1511,15 +1528,14 @@ function CreateLandExpansions()
     end
     -- build IndexTable with number as index
     local IndexTable = {}
-    local Index = 1
+    local count = 0
     for _, array in MexInMarkerRange do
         if array.mexcount > 1 then
-            IndexTable[Index] = array
-            Index = Index +1
+            IndexTable[count+1] = array
+            count = count +1
         end
     end
     -- bubblesort IndexTable
-    local count=table.getn(IndexTable)
     local Sorting
     repeat
         Sorting = false
@@ -1570,7 +1586,7 @@ function CreateLandExpansions()
     end
     -- search for possible expansion areas
     for k, v in IndexTable do
-        local MexInRange = table.getn(v)
+        local MexInRange = v.mexcount
         local UseThisMarker = true
         -- Search if we are near a start position
         for ks, vs in StartPosition do
@@ -1588,7 +1604,7 @@ function CreateLandExpansions()
         end
         -- save the expansion position
         if UseThisMarker then
-            table.insert(NewExpansion, {x = v.x, y = v.y, MexInRange = MexInRange} )
+            table.insert(NewExpansion, {x = v.x, y = v.y, MexInRange = v.mexcount} )
         end
     end
     -- creating real expasnion Marker
@@ -1880,8 +1896,8 @@ end
 function ValidateModFilesUveso()
     local ModName = '* '..'AI-Uveso'
     local ModDirectory = 'AI-Uveso'
-    local Files = 84
-    local Bytes = 1678707
+    local Files = 85
+    local Bytes = 1718308
     LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Running from: '..debug.getinfo(1).source..'.')
     LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Checking directory /mods/ for '..ModDirectory..'...')
     local FilesInFolder = DiskFindFiles('/mods/', '*.*')

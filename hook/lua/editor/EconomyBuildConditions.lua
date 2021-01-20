@@ -1,9 +1,9 @@
 
-UvesoGreaterThanEconStorageRatioFunction = GreaterThanEconStorageRatio
+GreaterThanEconStorageRatio_FunctionBackupUveso = GreaterThanEconStorageRatio
 function GreaterThanEconStorageRatio(aiBrain, mStorageRatio, eStorageRatio)
    -- Only use this with AI-Uveso
     if not aiBrain.Uveso then
-        return UvesoGreaterThanEconStorageRatioFunction(aiBrain, mStorageRatio, eStorageRatio)
+        return GreaterThanEconStorageRatio_FunctionBackupUveso(aiBrain, mStorageRatio, eStorageRatio)
     end
     local econ = AIUtils.AIGetEconomyNumbers(aiBrain)
     -- If a paragon is present and we not stall mass or energy, return true
@@ -15,11 +15,11 @@ function GreaterThanEconStorageRatio(aiBrain, mStorageRatio, eStorageRatio)
     return false
 end
 
-UvesoGreaterThanEconTrendFunction = GreaterThanEconTrend
+GreaterThanEconTrend_FunctionBackupUveso = GreaterThanEconTrend
 function GreaterThanEconTrend(aiBrain, MassTrend, EnergyTrend)
    -- Only use this with AI-Uveso
     if not aiBrain.Uveso then
-        return UvesoGreaterThanEconTrendFunction(aiBrain, MassTrend, EnergyTrend)
+        return GreaterThanEconTrend_FunctionBackupUveso(aiBrain, MassTrend, EnergyTrend)
     end
     local econ = AIUtils.AIGetEconomyNumbers(aiBrain)
     -- If a paragon is present and we have at least a neutral m+e trend, return true
@@ -31,18 +31,17 @@ function GreaterThanEconTrend(aiBrain, MassTrend, EnergyTrend)
     return false
 end
 
-UvesoGreaterThanEconIncomeFunction = GreaterThanEconIncome
+GreaterThanEconIncome_FunctionBackupUveso = GreaterThanEconIncome
 function GreaterThanEconIncome(aiBrain, MassIncome, EnergyIncome)
    -- Only use this with AI-Uveso
     if not aiBrain.Uveso then
-        return UvesoGreaterThanEconIncomeFunction(aiBrain, MassIncome, EnergyIncome)
-    end
-    -- If a paragon is present, return true
-    if aiBrain.PriorityManager.HasParagon then
-        return true
+        return GreaterThanEconIncome_FunctionBackupUveso(aiBrain, MassIncome, EnergyIncome)
     end
     local econ = AIUtils.AIGetEconomyNumbers(aiBrain)
-    if (econ.MassIncome >= MassIncome and econ.EnergyIncome >= EnergyIncome) then
+    -- If a paragon is present, return true
+    if aiBrain.PriorityManager.HasParagon and econ.MassTrend >= 0 and econ.EnergyTrend >= 0 then
+        return true
+    elseif (econ.MassIncome >= MassIncome and econ.EnergyIncome >= EnergyIncome) then
         return true
     end
     return false

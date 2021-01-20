@@ -187,7 +187,7 @@ BaseBuilderTemplate {
 
         'CounterIntelBuilders',
 
-        'AeonOptics',
+--        'AeonOptics',
         'CybranOptics',
 
     },
@@ -220,9 +220,8 @@ BaseBuilderTemplate {
     end,
     FirstBaseFunction = function(aiBrain)
         local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
-        if personality == ('uvesoexp' or 'uvesoexpcheat') then
-            --LOG('### M-FirstBaseFunction '..personality)
-            return 1000, 'uvesoexp' -- AIPersonality
+        if personality == 'uvesoexp' then
+            return 1000, 'uvesoexp'
         end
         return -1
     end,

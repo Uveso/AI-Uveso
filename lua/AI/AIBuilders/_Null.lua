@@ -16,7 +16,6 @@ BuilderGroup {
     Builder {
         BuilderName = 'NC Land Factory',
         PlatoonTemplate = 'CommanderBuilder',
-        TechRoot = 'FACTORY1',
         Priority = 600,
         DelayEqualBuildPlattons = {'Factories', 3},
         BuilderConditions = {
@@ -40,7 +39,6 @@ BuilderGroup {
     Builder {
         BuilderName = 'NC Air Factory',
         PlatoonTemplate = 'CommanderBuilder',
-        TechRoot = 'FACTORY1',
         Priority = 400,
         DelayEqualBuildPlattons = {'Factories', 3},
         BuilderConditions = {

@@ -29,9 +29,8 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.90}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'CanBuildCategory', { categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC } },
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.EXPERIMENTAL}},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC }},
-            { UCBC, 'GreaterThanGameTimeSeconds', { 60*30 } },
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60*20 } },
             -- Respect UnitCap
         },
         BuilderType = 'Any',
@@ -106,11 +105,10 @@ BuilderGroup {
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             --{ MIBC, 'HasNotParagon', {} },
-            { EBC, 'GreaterThanEconTrend', { 18.0, 270.0 } },                      -- relative income
+            { EBC, 'GreaterThanEconTrend', { 60.0, 900.0 } },                      -- relative income
             -- When do we want to build this ?
             { UCBC, 'CanBuildCategory', { categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC }},
-            { UCBC, 'GreaterThanGameTimeSeconds', { 60*30 } },
             -- Respect UnitCap
         },
         BuilderType = 'Any',
@@ -133,6 +131,7 @@ BuilderGroup {
         BuilderName = 'U4 Paragon 2nd',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 2000,
+        DelayEqualBuildPlattons = {'Paragon', 60},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.HasParagon then
                 return 2000
@@ -141,6 +140,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
+            { UCBC, 'CheckBuildPlattonDelay', { 'Paragon' }},
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             --{ MIBC, 'HasParagon', {} },
@@ -171,6 +171,7 @@ BuilderGroup {
         BuilderName = 'U4 Paragon 3nd',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 2000,
+        DelayEqualBuildPlattons = {'Paragon', 60},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.HasParagon then
                 return 2000
@@ -179,6 +180,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
+            { UCBC, 'CheckBuildPlattonDelay', { 'Paragon' }},
             -- Have we the eco to build it ?
             --{ MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
@@ -192,7 +194,7 @@ BuilderGroup {
         BuilderData = {
             Construction = {
                 AdjacencyCategory = categories.STRUCTURE * categories.SHIELD,
-                AdjacencyDistance = 120,
+                AdjacencyDistance = 200,
                 AvoidCategory = categories.ENERGYPRODUCTION * categories.EXPERIMENTAL,
                 maxUnits = 1,
                 maxRadius = 40,

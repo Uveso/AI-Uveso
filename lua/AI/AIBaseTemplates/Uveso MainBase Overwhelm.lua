@@ -30,7 +30,9 @@ BaseBuilderTemplate {
         -- ==== Engineer ==== --
         -----------------------------------------------------------------------------
         -- Build Engineers Tech 1,2,3 and SACU
-        'U123 Engineer Builders',            -- Priority = 900
+        'U123 Engineer Builders',
+        'U2 Hive+Kennel',
+        'U23 Hive+Kennel Upgrade',
         -- Assistees
         'UC123 Assistees',
         -- Reclaim mass
@@ -40,11 +42,11 @@ BaseBuilderTemplate {
         -- ==== Mass ==== --
         -----------------------------------------------------------------------------
         -- Build MassExtractors / Creators
-        'U1 MassBuilders',                           -- Priority = 1100
+        'U1 MassBuilders',
         -- Upgrade MassExtractors from Tech 1 to 2 AND from Tech 2 to 3
-        'U123 ExtractorUpgrades',                      -- Priority = 1100
+        'U123 ExtractorUpgrades',
         -- Build Mass Storage (Adjacency)
-        'U1 MassStorage Builder',                     -- Priority = 1100
+        'U1 MassStorage Builder',
 
         -----------------------------------------------------------------------------
         -- ==== Energy ==== --
@@ -111,7 +113,8 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== Air Units BUILDER ==== --
         -----------------------------------------------------------------------------
-        'U123 Air Builders',
+        'U123 Air Builders ADAPTIVE',
+        'U123 Air Builders Anti-Experimental',
         -- Build Air Transporter
         'U123 Air Transport Builders',
 
@@ -148,7 +151,7 @@ BaseBuilderTemplate {
         'Paragon Turbo FactoryUpgrader',
         'Paragon Turbo Air', -- T3 scouts, Fighter, Gunships, Bomber
         'Paragon Turbo Land',
-        
+
         -----------------------------------------------------------------------------
         -- ==== EXPERIMENTALS FORMER ==== --
         -----------------------------------------------------------------------------
@@ -217,8 +220,15 @@ BaseBuilderTemplate {
 
         'CounterIntelBuilders',
 
-        'AeonOptics',
+--        'AeonOptics',
         'CybranOptics',
+
+        -----------------------------------------------------------------------------
+        -- ==== MOD BUILDER ==== --
+        -----------------------------------------------------------------------------
+        'Total Mayhem EngineerBuilder',
+        'Total Mayhem FactoryBuilder',
+        'Total Mayhem PlatoonFormBuilder',
 
     },
     -- Not used by Uveso's AI. We always need intel in case the commander is dead.
@@ -250,9 +260,8 @@ BaseBuilderTemplate {
     end,
     FirstBaseFunction = function(aiBrain)
         local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
-        if personality == ('uvesooverwhelm' or 'uvesooverwhelmcheat') then
-            --LOG('### M-FirstBaseFunction '..personality)
-            return 1000, 'uvesooverwhelm' -- AIPersonality
+        if personality == 'uvesooverwhelm' then
+            return 1000, 'uvesooverwhelm'
         end
         return -1
     end,
