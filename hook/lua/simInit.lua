@@ -14,6 +14,7 @@ local FootprintSize = 0.20
 
 --local DebugMarker = 'Marker0-9' -- TKP Lakes
 --local DebugMarker = 'Marker1-0' -- Twin Rivers
+--local DebugMarker = 'Marker14-2' -- pass survival aix v8
 local DebugMarker = false
 local DebugValidMarkerPosition = false
 local TraceEast = false
@@ -870,16 +871,18 @@ function CheckValidMarkerPosition(MarkerIndex)
     local UHigh, DHigh, LHigh, RHigh = 0,0,0,0
     local LUHigh, RUHigh, LDHigh, RDHigh = 0,0,0,0
     local Elevation1, Elevation2, Elevation3, RDHigh = 0,0,0
-    local FAIL = 0
+    local FAILLINE = 0
+    local FAILSUMM = 0
     local MaxFails = 8 * 1/ScanResolution
     local MarkerPos = CREATEDMARKERS[MarkerIndex].position
     local ASCIIGFX = ''
     ------------------
     -- Check X Axis --
     ------------------
+    FAILSUMM = 0
     for Y = -4, 4, ScanResolution do
-        FAIL = 0
         ASCIIGFX = ''
+        FAILLINE = 0
         for X = -4, 4, ScanResolution do
 --            if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
 --                --DrawLine( {MarkerPos[1] -4, MarkerPos[2], MarkerPos[3] + Y}, {MarkerPos[1] + X, MarkerPos[2], MarkerPos[3] + Y}, 'ffFFE0E0' )
@@ -915,7 +918,7 @@ function CheckValidMarkerPosition(MarkerIndex)
 --                if DebugMarker == MarkerIndex then
 --                    --WARN('*ConnectMarker MaxPassableElevation Blocked!!! '..Elevation )
 --                end
-                FAIL = FAIL + 1
+                FAILLINE = FAILLINE + 1
                 ASCIIGFX = ASCIIGFX..'----'
             else
                 ASCIIGFX = ASCIIGFX..'....'
@@ -944,21 +947,34 @@ function CheckValidMarkerPosition(MarkerIndex)
 --        if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
 --            LOG(ASCIIGFX)
 --        end
-        if FAIL >= MaxFails then
+        if FAILLINE >= MaxFails then
 --            if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
---                WARN('*CheckValidMarkerPosition X Axis ('..FAIL..') Failed')
+--                WARN('*CheckValidMarkerPosition X Axis ('..FAILLINE..'/'..MaxFails..') LINE Failed')
 --            end
             return 'Blocked'
         end
+        if FAILLINE > 0 then
+            FAILSUMM = FAILSUMM + 1
+        end
+--        if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
+--            LOG('*CheckValidMarkerPosition X Axis FAILLINE ('..FAILLINE..'/'..MaxFails..')')
+--        end
+    end
+    if FAILSUMM >= MaxFails then
+--        if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
+--            WARN('*CheckValidMarkerPosition X Axis FAILSUMM ('..FAILSUMM..'/'..MaxFails..') SUMM Failed')
+--        end
+        return 'Blocked'
     end
 --    if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
---        LOG('*CheckValidMarkerPosition X Axis ('..FAIL..')')
+--        LOG('*CheckValidMarkerPosition X Axis FAILSUMM ('..FAILSUMM..'/'..MaxFails..')')
 --    end
     ------------------
     -- Check Y Axis --
     ------------------
+    FAILSUMM = 0
     for X = -4, 4, ScanResolution do
-        FAIL = 0
+        FAILLINE = 0
         ASCIIGFX = ''
         for Y = -4, 4, ScanResolution do
 --            if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
@@ -995,7 +1011,7 @@ function CheckValidMarkerPosition(MarkerIndex)
 --                if DebugMarker == MarkerIndex then
 --                    --WARN('*ConnectMarker MaxPassableElevation Blocked!!! '..Elevation )
 --                end
-                FAIL = FAIL + 1
+                FAILLINE = FAILLINE + 1
                 ASCIIGFX = ASCIIGFX..'----'
             else
                 ASCIIGFX = ASCIIGFX..'....'
@@ -1024,15 +1040,27 @@ function CheckValidMarkerPosition(MarkerIndex)
 --        if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
 --            LOG(ASCIIGFX)
 --        end
-        if FAIL >= MaxFails then
+        if FAILLINE >= MaxFails then
 --            if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
---                WARN('*CheckValidMarkerPosition Y Axis ('..FAIL..') Failed')
+--                WARN('*CheckValidMarkerPosition Y Axis ('..FAILLINE..'/'..MaxFails..') LINE Failed')
 --            end
             return 'Blocked'
         end
+        if FAILLINE > 0 then
+            FAILSUMM = FAILSUMM + 1
+        end
+--        if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
+--            LOG('*CheckValidMarkerPosition Y Axis FAILLINE ('..FAILLINE..'/'..MaxFails..')')
+--        end
+    end
+    if FAILSUMM >= MaxFails then
+--        if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
+--            WARN('*CheckValidMarkerPosition Y Axis FAILSUMM ('..FAILSUMM..'/'..MaxFails..') SUMM Failed')
+--        end
+        return 'Blocked'
     end
 --    if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
---        LOG('*CheckValidMarkerPosition Y Axis ('..FAIL..')')
+--        LOG('*CheckValidMarkerPosition Y Axis FAILSUMM ('..FAILSUMM..'/'..MaxFails..')')
 --    end
     return MarkerLayer
 end
@@ -1897,7 +1925,7 @@ function ValidateModFilesUveso()
     local ModName = '* '..'AI-Uveso'
     local ModDirectory = 'AI-Uveso'
     local Files = 85
-    local Bytes = 1718308
+    local Bytes = 1720897
     LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Running from: '..debug.getinfo(1).source..'.')
     LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Checking directory /mods/ for '..ModDirectory..'...')
     local FilesInFolder = DiskFindFiles('/mods/', '*.*')

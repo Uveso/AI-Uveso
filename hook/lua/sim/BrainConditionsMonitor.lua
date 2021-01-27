@@ -158,12 +158,14 @@ BrainConditionsMonitor = Class {
         local ResultTable = self.ResultTable
         while true do
             coroutine.yield(1)
-            --local numResults = 0
+--            local numResults = 0
+--            local numInstant = 0
             for k,v in ResultTable do
                 if v.InstantCondition then
+--                    numInstant = numInstant + 1
                     continue
                 end
-                --numResults = numResults + 1
+--                numResults = numResults + 1
                 v:CheckCondition()
                 checks = checks + 1
                 if checks >= 20 then
@@ -171,9 +173,8 @@ BrainConditionsMonitor = Class {
                     checks = 0
                 end
             end
-            --local numPerTick = 20
-            --LOG('*AI DEBUG: '.. self.Brain.Nickname ..' ConditionMonitorThread checked: '..numResults..' - numPerTick '..numPerTick..' - 1 loop every '..((numResults/numPerTick)/10)..' seconds.')
-            coroutine.yield(1)
+--            local numPerTick = 20
+--            LOG('*AI DEBUG: '.. self.Brain.Nickname ..' ConditionMonitorThread: Conditions checked: '..numResults..' - numPerTick '..numPerTick..' = 1 loop every '..((numResults/numPerTick)/10)..' seconds. ('..numInstant..' InstantConditions not checked)')
             checks = 0
         end
     end,

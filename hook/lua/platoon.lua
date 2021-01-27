@@ -2776,12 +2776,27 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                         else
                             unit.WeaponArc = 'none'
                         end
+                    else
+                        -- save a backup weapon in case we have only missiles or longrange weapons
+                        unit.MaxWeaponRangeBackup = weapon.MaxRadius * 0.9 -- maxrange minus 10%
+                        if weapon.BallisticArc == 'RULEUBA_LowArc' then
+                            unit.WeaponArcBackup = 'low'
+                        elseif weapon.BallisticArc == 'RULEUBA_HighArc' then
+                            unit.WeaponArcBackup = 'high'
+                        else
+                            unit.WeaponArcBackup = 'none'
+                        end
                     end
                 end
                 -- check for the overall range of the platoon
                 if not MaxPlatoonWeaponRange or MaxPlatoonWeaponRange > unit.MaxWeaponRange then
                     MaxPlatoonWeaponRange = unit.MaxWeaponRange
                 end
+            end
+            -- in case we have not a normal weapons, use the backupweapon if available
+            if not unit.MaxWeaponRange and unit.MaxWeaponRangeBackup then
+                unit.MaxWeaponRange = unit.MaxWeaponRangeBackup
+                unit.WeaponArc = unit.WeaponArcBackup
             end
             -- Search all platoon units and activate Stealth and Cloak (mostly Modded units)
             if unit:TestToggleCaps('RULEUTC_StealthToggle') then
@@ -2895,7 +2910,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                 unit.Blocked = false
             end
             -- wait a bit here, so continue commands can't deadloop/freeze the game
-            coroutine.yield(4)
+            coroutine.yield(3)
             if self.UsingTransport then
                 continue
             end
@@ -3006,6 +3021,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
             else
                 target = nil
                 path = nil
+                LastTargetPos = nil
                 -- no target, land units just wait for new targets, air and naval units return to their base
                 if HERODEBUG then
                     self:RenamePlatoon('No target returning home')
@@ -3096,7 +3112,11 @@ Platoon = Class(CopyOfOldPlatoonClass) {
             if aiBrain:PlatoonExists(self) then
                 self:Stop()
                 coroutine.yield(1)
-                self:Patrol(LastTargetPos)
+                if LastTargetPos then
+                    self:Patrol(LastTargetPos)
+                else
+                    self:Patrol(basePosition)
+                end
             else
                 return
             end
@@ -3108,11 +3128,11 @@ Platoon = Class(CopyOfOldPlatoonClass) {
             LastTargetPos = nil
             --self:RenamePlatoon('MICRO loop')
             while aiBrain:PlatoonExists(self) do
-                -- wait a bit here, so continue commands can't deadloop/freeze the game
                 if HERODEBUG then
-                    self:RenamePlatoon('microing in 4 ticks')
+                    self:RenamePlatoon('microing in 5 ticks')
                 end
-                coroutine.yield(3)
+                -- wait a bit here, so continue commands can't deadloop/freeze the game
+                coroutine.yield(10)
                 --LOG('* AI-Uveso: * HeroFightPlatoon: Starting micro loop')
                 PlatoonCenterPosition = self:GetPlatoonPosition()
                 if not PlatoonCenterPosition then
@@ -3130,11 +3150,11 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                 end
                 -- get a target on every loop, so we can see targets that are moving closer
                 if self.MovementLayer == 'Air' then
-                    TargetInPlatoonRange = AIUtils.AIFindNearestCategoryTargetInCloseRange(self, aiBrain, 'Attack', LastTargetPos or PlatoonCenterPosition, MaxPlatoonWeaponRange + 50 , WeaponTargetCategories, TargetSearchCategory, false)
+                    TargetInPlatoonRange = AIUtils.AIFindNearestCategoryTargetInCloseRange(self, aiBrain, 'Attack', PlatoonCenterPosition, MaxPlatoonWeaponRange + 50 , WeaponTargetCategories, TargetSearchCategory, false)
                 elseif TargetHug then
-                    TargetInPlatoonRange = AIUtils.AIFindNearestCategoryTargetInCloseRange(self, aiBrain, 'Attack', LastTargetPos or PlatoonCenterPosition, MaxPlatoonWeaponRange + 50 , MoveToCategories, TargetSearchCategory, false)
+                    TargetInPlatoonRange = AIUtils.AIFindNearestCategoryTargetInCloseRange(self, aiBrain, 'Attack', PlatoonCenterPosition, MaxPlatoonWeaponRange + 50 , MoveToCategories, TargetSearchCategory, false)
                 else
-                    TargetInPlatoonRange = AIUtils.AIFindNearestCategoryTargetInCloseRange(self, aiBrain, 'Attack', LastTargetPos or PlatoonCenterPosition, MaxPlatoonWeaponRange + 30 , {TargetSearchCategory}, TargetSearchCategory, false)
+                    TargetInPlatoonRange = AIUtils.AIFindNearestCategoryTargetInCloseRange(self, aiBrain, 'Attack', PlatoonCenterPosition, MaxPlatoonWeaponRange + 30 , {TargetSearchCategory}, TargetSearchCategory, false)
                 end
                 if HERODEBUG then
                     if TargetInPlatoonRange then
@@ -3192,6 +3212,10 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                             if unit.IsShieldOnlyUnit then
                                 continue
                             end
+                            -- clear move commands if we have queued more than 2
+                            if table.getn(unit:GetCommandQueue()) > 1 then
+                                IssueClearCommands({unit})
+                            end
                             unitPos = unit:GetPosition()
                             if unit.Blocked then
                                 -- Weapoon fire is blocked, move to the target as close as possible.
@@ -3204,8 +3228,6 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                             end
                             -- if we need to get as close to the target as possible, then just run to the target position
                             if TargetHug then
-                                IssueStop({unit})
-                                coroutine.yield(1)
                                 IssueMove({unit}, { LastTargetPos[1] + Random(-1, 1), LastTargetPos[2], LastTargetPos[3] + Random(-1, 1) } )
                             -- check if the move position is new or target has moved
                             -- if we don't have a rear weapon then attack (will move in circles otherwise)
@@ -3217,7 +3239,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                                 if not TargetInPlatoonRange.Dead then
                                     IssueAttack({unit}, TargetInPlatoonRange)
                                 end
-                            elseif unit.HasRearWeapon and ( VDist2( smartPos[1], smartPos[3], unit.smartPos[1], unit.smartPos[3] ) > 0.7 or unit.TargetPos ~= LastTargetPos ) then
+                            elseif unit.HasRearWeapon and ( VDist2( smartPos[1], smartPos[3], unit.smartPos[1], unit.smartPos[3] ) > 0.7 or VDist2( LastTargetPos[1], LastTargetPos[3], unit.TargetPos[1], unit.TargetPos[3] ) > 0.7 ) then
                                 if HERODEBUG then
                                     self:RenamePlatoon('micro attack Land has RearWeapon')
                                 end
@@ -3239,17 +3261,11 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                                     -- stucked units can't be unstucked, even with a forked thread and hammering movement commands. Let's kill it !!!
                                     unit:Kill()
                                 end
-                                -- clear move commands if we have queued more than 2
-                                if table.getn(unit:GetCommandQueue()) > 2 then
-                                    IssueClearCommands({unit})
-                                    coroutine.yield(3)
-                                end
-                                -- if our target is dead, jump out of the "for _, unit in self:GetPlatoonUnits() do" loop
                                 IssueMove({unit}, smartPos )
-                                if not TargetInPlatoonRange.Dead then
-                                    IssueAttack({unit}, TargetInPlatoonRange)
+                                if HERODEBUG then
+                                    unit:SetCustomName('Fight micro moving')
+                                    coroutine.yield(1)
                                 end
-                                --unit:SetCustomName('Fight micro moving')
                                 unit.smartPos = smartPos
                                 unit.TargetPos = LastTargetPos
                             -- in case we don't move, check if we can fire at the target
@@ -3266,7 +3282,8 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                                     end
                                     unit.Blocked = false
                                     if not TargetInPlatoonRange.Dead then
-                                        IssueAttack({unit}, TargetInPlatoonRange)
+                                        -- set the target as focus, we are in range, the unit will shoot without attack command
+                                        unit:SetFocusEntity(TargetInPlatoonRange)
                                     end
                                 end
                             end
@@ -3319,9 +3336,8 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                             -- check if the move position is new or target has moved
                             if VDist2( smartPos[1], smartPos[3], unit.smartPos[1], unit.smartPos[3] ) > 0.7 then
                                 -- clear move commands if we have queued more than 2
-                                if table.getn(unit:GetCommandQueue()) > 2 then
+                                if table.getn(unit:GetCommandQueue()) > 1 then
                                     IssueClearCommands({unit})
-                                    coroutine.yield(3)
                                 end
                                 -- if our target is dead, jump out of the "for _, unit in self:GetPlatoonUnits() do" loop
                                 IssueMove({unit}, smartPos )
