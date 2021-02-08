@@ -16,10 +16,39 @@ BuilderGroup {
     -- ============ --
     --    TECH 1    --
     -- ============ --
+    -- panic
+    Builder {
+        BuilderName = 'U1 Engineer builder Panic1',
+        PlatoonTemplate = 'T1BuildEngineer',
+        Priority = 19100,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.ENGINEER * categories.TECH1 - categories.COMMAND } },
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 3, categories.MOBILE * (categories.DIRECTFIRE + categories.INDIRECTFIRE) } },
+            -- Respect UnitCap
+         },
+        BuilderType = 'All',
+    },
+    Builder {
+        BuilderName = 'U1 Engineer builder Panic2',
+        PlatoonTemplate = 'T1BuildEngineer',
+        Priority = 19100,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.ENGINEER * categories.TECH1 - categories.COMMAND } },
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, categories.MOBILE * categories.ENGINEER * categories.TECH1 } },
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 6, categories.MOBILE * (categories.DIRECTFIRE + categories.INDIRECTFIRE) } },
+            -- Respect UnitCap
+         },
+        BuilderType = 'All',
+    },
     Builder {
         BuilderName = 'U1 Engineer builder Cap',
         PlatoonTemplate = 'T1BuildEngineer',
-        Priority = 19000,
+        Priority = 18990,
         BuilderConditions = {
             -- Have we the eco to build it ?
             -- When do we want to build this ?

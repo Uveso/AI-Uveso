@@ -6,6 +6,8 @@ local UUtils = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua')
 local UseHeroPlatoon = true
 local HERODEBUG = false
 local NUKEDEBUG = false
+local MarkerSwitchDist = 20
+local MarkerSwitchDistEXP = 40
 
 CopyOfOldPlatoonClass = Platoon
 Platoon = Class(CopyOfOldPlatoonClass) {
@@ -893,10 +895,14 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         end
     end,
 
-    MovePath = function(self, aiBrain, path, bAggroMove, target, MaxPlatoonWeaponRange, EnemyThreatCategory)
+    MovePath = function(self, aiBrain, path, bAggroMove, target, MaxPlatoonWeaponRange, EnemyThreatCategory, ExperimentalInPlatoon)
         local distEnd
         local MaxPlatoonWeaponRange = MaxPlatoonWeaponRange or 30
         local EnemyThreatCategory = EnemyThreatCategory or categories.ALLUNITS
+        local MarkerSwitchDistance = MarkerSwitchDist
+        if ExperimentalInPlatoon then
+            MarkerSwitchDistance = MarkerSwitchDistEXP
+        end
         local platoonUnits = self:GetPlatoonUnits()
         self:SetPlatoonFormationOverride('NoFormation')
         local PathNodesCount = table.getn(path)
@@ -951,7 +957,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                     self:SetPlatoonFormationOverride('AttackFormation')
                 end
                 -- are we closer then 20 units from the next marker ? Then break and move to the next marker
-                if dist < 20 then
+                if dist < MarkerSwitchDistance then
                     -- If we don't stop the movement here, then we have heavy traffic on this Map marker with blocking units
                     self:Stop()
                     break
@@ -998,6 +1004,10 @@ Platoon = Class(CopyOfOldPlatoonClass) {
     MoveToLocationInclTransport = function(self, target, TargetPosition, bAggroMove, WantsTransport, basePosition, ExperimentalInPlatoon, MaxPlatoonWeaponRange, EnemyThreatCategory)
         local MaxPlatoonWeaponRange = MaxPlatoonWeaponRange or 30
         local EnemyThreatCategory = EnemyThreatCategory or categories.ALLUNITS
+        local MarkerSwitchDistance = MarkerSwitchDist
+        if ExperimentalInPlatoon then
+            MarkerSwitchDistance = MarkerSwitchDistEXP
+        end
         local platoonUnits = self:GetPlatoonUnits()
         self:SetPlatoonFormationOverride('NoFormation')
         if not TargetPosition then
@@ -1080,7 +1090,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                             self:SetPlatoonFormationOverride('AttackFormation')
                         end
                         -- are we closer then 20 units from the next marker ? Then break and move to the next marker
-                        if dist < 20 then
+                        if dist < MarkerSwitchDistance then
                             -- If we don't stop the movement here, then we have heavy traffic on this Map marker with blocking units
                             self:Stop()
                             break
@@ -1493,8 +1503,8 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                 while aiBrain:PlatoonExists(self) do
                     PlatoonPosition = self:GetPlatoonPosition()
                     dist = VDist2( path[i][1], path[i][3], PlatoonPosition[1], PlatoonPosition[3] )
-                    -- are we closer then 15 units from the next marker ? Then break and move to the next marker
-                    if dist < 20 then
+                    -- are we closer then 20 units from the next marker ? Then break and move to the next marker
+                    if dist < MarkerSwitchDist then
                         -- If we don't stop the movement here, then we have heavy traffic on this Map marker with blocking units
                         self:Stop()
                         break
@@ -1506,7 +1516,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                     -- No, we are not moving, wait 100 ticks then break and use the next weaypoint
                     else
                         Stuck = Stuck + 1
-                        if Stuck > 15 then
+                        if Stuck > 20 then
                             --LOG('* AI-Uveso: * ForceReturnToNavalBaseAIUveso: Stucked while moving to Waypoint. Stuck='..Stuck..' - '..repr(path[i]))
                             self:Stop()
                             break
@@ -1837,9 +1847,9 @@ Platoon = Class(CopyOfOldPlatoonClass) {
             -- PrimaryTarget, launch a single nuke on primary targets.
             ---------------------------------------------------------------------------------------------------
             if NUKEDEBUG then
-                LOG('* AI-Uveso: * NukePlatoonAI: (Unprotected) Experimental PrimaryTarget ')
+                LOG('* AI-Uveso: * NukePlatoonAI: (Unprotected) PrimaryTarget ')
             end
-            if 1 == 1 and aiBrain.PrimaryTarget and table.getn(LauncherReady) > 0 and EntityCategoryContains(categories.EXPERIMENTAL, aiBrain.PrimaryTarget) then
+            if 1 == 1 and aiBrain.PrimaryTarget and table.getn(LauncherReady) > 0 then
                 -- Only shoot if the target is not protected by antimissile or experimental shields
                 if not self:IsTargetNukeProtected(aiBrain.PrimaryTarget, EnemyAntiMissile) then
                     -- Lead target function
@@ -2953,13 +2963,13 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                                 self:RenamePlatoon('MovePath (Air)')
                                 coroutine.yield(1)
                             end
-                            self:MovePath(aiBrain, path, bAggroMove, target, MaxPlatoonWeaponRange, TargetSearchCategory)
+                            self:MovePath(aiBrain, path, bAggroMove, target, MaxPlatoonWeaponRange, TargetSearchCategory, ExperimentalInPlatoon)
                         elseif self.MovementLayer == 'Water' then
                             if HERODEBUG then
                                 self:RenamePlatoon('MovePath (Water)')
                                 coroutine.yield(1)
                             end
-                            self:MovePath(aiBrain, path, bAggroMove, target, MaxPlatoonWeaponRange, TargetSearchCategory)
+                            self:MovePath(aiBrain, path, bAggroMove, target, MaxPlatoonWeaponRange, TargetSearchCategory, ExperimentalInPlatoon)
                         else
                             if HERODEBUG then
                                 self:RenamePlatoon('MovePath with transporter layer('..self.MovementLayer..')')

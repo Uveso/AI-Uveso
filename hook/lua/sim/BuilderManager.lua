@@ -38,10 +38,6 @@ BuilderManager = Class(TheOldBuilderManager) {
 
     -- Hook for Uveso AI debug
     GetHighestBuilder = function(self,bType,factory)
-       -- Only use this with AI-Uveso
-        if not self.Brain.Uveso then
-            return TheOldBuilderManager.GetHighestBuilder(self,bType,factory)
-        end
         if not self.BuilderData[bType] then
             error('*BUILDERMANAGER ERROR: Invalid builder type - ' .. bType)
         end

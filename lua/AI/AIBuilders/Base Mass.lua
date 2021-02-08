@@ -152,7 +152,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             --{ MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
-            { MABC, 'CanBuildOnMass', { 'LocationType', 30, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
+            { MABC, 'CanBuildOnMass', { 'LocationType', 30, false, false, false, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Don't build it if...
         },
         BuilderType = 'Any',

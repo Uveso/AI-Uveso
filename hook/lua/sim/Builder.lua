@@ -1,11 +1,12 @@
 -- For Platoon debugging. Unremarking the debugline will print all platoons with priority inside game.log
-TheOldPlatoonBuilder = PlatoonBuilder
-PlatoonBuilder = Class(TheOldPlatoonBuilder) {
+
+CopyOfPlatoonBuilderForUveso = PlatoonBuilder
+PlatoonBuilder = Class(CopyOfPlatoonBuilderForUveso) {
 
     Create = function(self,brain,data,locationType)
        -- Only use this with AI-Uveso
         if not brain.Uveso then
-            return TheOldPlatoonBuilder.Create(self,brain,data,locationType)
+            return CopyOfPlatoonBuilderForUveso.Create(self,brain,data,locationType)
         end
         Builder.Create(self,brain,data,locationType)
         --LOG(repr(data.BuilderType)..' - '..repr(data.Priority)..' - '..repr(data.BuilderName)..' - '..repr(data.PlatoonTemplate))
@@ -27,7 +28,7 @@ PlatoonBuilder = Class(TheOldPlatoonBuilder) {
     CalculatePriority = function(self, builderManager)
        -- Only use this with AI-Uveso
         if not self.Brain.Uveso then
-            return TheOldPlatoonBuilder.CalculatePriority(self, builderManager)
+            return CopyOfPlatoonBuilderForUveso.CalculatePriority(self, builderManager)
         end
         self.PriorityAltered = false
         if Builders[self.BuilderName].PriorityFunction then
@@ -38,7 +39,7 @@ PlatoonBuilder = Class(TheOldPlatoonBuilder) {
                 self.Priority = newPri
                 self.PriorityAltered = true
             end
-            --LOG('TheOldPlatoonBuilder New Priority '..self.BuilderName..' - '..self.Priority)
+            --LOG('CopyOfPlatoonBuilderForUveso New Priority '..self.BuilderName..' - '..self.Priority)
         end
         return self.PriorityAltered
     end,
@@ -46,13 +47,13 @@ PlatoonBuilder = Class(TheOldPlatoonBuilder) {
 }
 
 -- For Platoon debugging. Unremarking the debugline will print all platoons with priority inside game.log
-TheOldFactoryBuilder = FactoryBuilder
-FactoryBuilder = Class(TheOldFactoryBuilder) {
+CopyOfFactoryBuilderForUveso = FactoryBuilder
+FactoryBuilder = Class(CopyOfFactoryBuilderForUveso) {
 
     Create = function(self,brain,data,locationType)
        -- Only use this with AI-Uveso
         if not brain.Uveso then
-            return TheOldFactoryBuilder.Create(self,brain,data,locationType)
+            return CopyOfFactoryBuilderForUveso.Create(self,brain,data,locationType)
         end
         Builder.Create(self,brain,data,locationType)
         --LOG(repr(data.BuilderType)..' - '..repr(data.Priority)..' - '..repr(data.BuilderName)..' - '..repr(data.PlatoonTemplate))
@@ -66,7 +67,7 @@ FactoryBuilder = Class(TheOldFactoryBuilder) {
     CalculatePriority = function(self, builderManager)
        -- Only use this with AI-Uveso
         if not self.Brain.Uveso then
-            return TheOldFactoryBuilder.CalculatePriority(self, builderManager)
+            return CopyOfFactoryBuilderForUveso.CalculatePriority(self, builderManager)
         end
         self.PriorityAltered = false
         if Builders[self.BuilderName].PriorityFunction then
@@ -77,7 +78,7 @@ FactoryBuilder = Class(TheOldFactoryBuilder) {
                 self.Priority = newPri
                 self.PriorityAltered = true
             end
-            --LOG('TheOldFactoryBuilder New Priority '..self.BuilderName..' - '..self.Priority)
+            --LOG('CopyOfFactoryBuilderForUveso New Priority '..self.BuilderName..' - '..self.Priority)
         end
         return self.PriorityAltered
     end,
@@ -85,13 +86,13 @@ FactoryBuilder = Class(TheOldFactoryBuilder) {
 }
 
 -- For Platoon debugging. Unremarking the debugline will print all platoons with priority inside game.log
-TheOldEngineerBuilder = EngineerBuilder
-EngineerBuilder = Class(TheOldEngineerBuilder) {
+CopyOfEngineerBuilderForUveso = EngineerBuilder
+EngineerBuilder = Class(CopyOfEngineerBuilderForUveso) {
 
     Create = function(self,brain,data, locationType)
        -- Only use this with AI-Uveso
         if not brain.Uveso then
-            return TheOldEngineerBuilder.Create(self,brain,data, locationType)
+            return CopyOfEngineerBuilderForUveso.Create(self,brain,data, locationType)
         end
         PlatoonBuilder.Create(self,brain,data, locationType)
         --LOG(repr(data.BuilderType)..' - '..repr(data.Priority)..' - '..repr(data.BuilderName)..' - '..repr(data.PlatoonTemplate))
@@ -104,7 +105,7 @@ EngineerBuilder = Class(TheOldEngineerBuilder) {
     CalculatePriority = function(self, builderManager)
        -- Only use this with AI-Uveso
         if not self.Brain.Uveso then
-            return TheOldEngineerBuilder.CalculatePriority(self, builderManager)
+            return CopyOfEngineerBuilderForUveso.CalculatePriority(self, builderManager)
         end
         self.PriorityAltered = false
         if Builders[self.BuilderName].PriorityFunction then
@@ -115,7 +116,7 @@ EngineerBuilder = Class(TheOldEngineerBuilder) {
                 self.Priority = newPri
                 self.PriorityAltered = true
             end
-            --LOG('TheOldEngineerBuilder New Priority '..self.BuilderName..' - '..self.Priority)
+            --LOG('CopyOfEngineerBuilderForUveso New Priority '..self.BuilderName..' - '..self.Priority)
         end
         return self.PriorityAltered
     end,

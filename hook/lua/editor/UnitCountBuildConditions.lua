@@ -72,7 +72,18 @@ function HaveUnitRatioVersusCap(aiBrain, ratio, compareType, categoryOwn)
     return CompareBody(numOwnUnits / cap, ratio, compareType)
 end
 
+--             { UCBC, 'HaveUnitRatioUveso', { 0.75, 'MASSEXTRACTION TECH1', '<=','MASSEXTRACTION TECH2',true } },
+function HaveUnitRatioUveso(aiBrain, ratio, categoryOne, compareType, categoryTwo)
+    local numOne = aiBrain:GetCurrentUnits(categoryOne)
+    local numTwo = aiBrain:GetCurrentUnits(categoryTwo)
+    --LOG(aiBrain:GetArmyIndex()..' CompareBody {World} ( '..numOne..' '..compareType..' '..numTwo..' ) -- ['..ratio..'] -- '..categoryOne..' '..compareType..' '..categoryTwo..' ('..(numOne / numTwo)..' '..compareType..' '..ratio..' ?) return '..repr(CompareBody(numOne / numTwo, ratio, compareType)))
+    return CompareBody(numOne / numTwo, ratio, compareType)
+end
+
 function HaveUnitRatioVersusEnemy(aiBrain, ratio, categoryOwn, compareType, categoryEnemy)
+    if ScenarioInfo.Options.OmniCheat == "off" and aiBrain:GetCurrentUnits(categories.STRUCTURE * categories.OMNI) == 0 then
+        return true
+    end
     local numOwnUnits = aiBrain:GetCurrentUnits(categoryOwn)
     local numEnemyUnits = aiBrain:GetNumUnitsAroundPoint(categoryEnemy, Vector(mapSizeX/2,0,mapSizeZ/2), mapSizeX+mapSizeZ , 'Enemy')
     --LOG(aiBrain:GetArmyIndex()..' CompareBody {World} ( '..numOwnUnits..' '..compareType..' '..numEnemyUnits..' ) -- ['..ratio..'] -- return '..repr(CompareBody(numOwnUnits / numEnemyUnits, ratio, compareType)))
@@ -446,41 +457,7 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------------
-
-local timedilatation = false
-function IsGameSimSpeedLow(aiBrain)
-    local SystemTime = GetSystemTimeSecondsOnlyForProfileUse()
-    local GameTime = GetGameTimeSeconds()
-    if not timedilatation then
-        timedilatation = GetSystemTimeSecondsOnlyForProfileUse() - GetGameTimeSeconds()
-    end
-        
-    LOG('** SystemTime'..SystemTime)
-    LOG('** timedilatation'..timedilatation)
-    LOG('** SystemTimedilatation'..(GetSystemTimeSecondsOnlyForProfileUse()-timedilatation))
-    LOG('** GameTime'..GameTime)
-    
-    
-    LOG('** true')
-    return true
-end
------------------------------------------------------------------------------------------------------------------------------------
------------------------------------------------------------------------------------------------------------------------------------
------------------------------------------------------------------------------------------------------------------------------------
------------------------------------------------------------------------------------------------------------------------------------
--- In progess, next project, not working...
------------------------------------------------------------------------------------------------------------------------------------
------------------------------------------------------------------------------------------------------------------------------------
------------------------------------------------------------------------------------------------------------------------------------
------------------------------------------------------------------------------------------------------------------------------------
 -- For debug printing
---             { UCBC, 'HaveUnitRatioUveso', { 0.75, 'MASSEXTRACTION TECH1', '<=','MASSEXTRACTION TECH2',true } },
-function HaveUnitRatioUveso(aiBrain, ratio, categoryOne, compareType, categoryTwo)
-    local numOne = aiBrain:GetCurrentUnits(categoryOne)
-    local numTwo = aiBrain:GetCurrentUnits(categoryTwo)
-    --LOG(aiBrain:GetArmyIndex()..' CompareBody {World} ( '..numOne..' '..compareType..' '..numTwo..' ) -- ['..ratio..'] -- '..categoryOne..' '..compareType..' '..categoryTwo..' ('..(numOne / numTwo)..' '..compareType..' '..ratio..' ?) return '..repr(CompareBody(numOne / numTwo, ratio, compareType)))
-    return CompareBody(numOne / numTwo, ratio, compareType)
-end
 
 --             { UCBC, 'HaveLessUnitsInLayer', { 'AIR' } },
 function HaveLessUnitsInLayer(aiBrain, layer)

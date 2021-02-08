@@ -67,7 +67,7 @@ function EngineerMoveWithSafePath(aiBrain, unit, destination)
             for widx, waypointPath in path do
                 IssueMove({unit}, waypointPath)
             end
-            IssueMove({unit}, destination)
+            --IssueMove({unit}, destination)
         else
             IssueMove({unit}, destination)
         end
@@ -137,7 +137,8 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
     local AttackEnemyStrength = platoon.PlatoonData.AttackEnemyStrength or 300
     local platoonUnits = platoon:GetPlatoonUnits()
     local PlatoonStrength = table.getn(platoonUnits)
-
+    local IgnoreTargetLayerCheck = platoon.PlatoonData.IgnoreTargetLayerCheck
+    
     local enemyIndex = false
     local MyArmyIndex = aiBrain:GetArmyIndex()
     if enemyBrain then
@@ -194,7 +195,9 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
                     -- check if this is the right enemy
                     if not EntityCategoryContains(category, Target) then continue end
                     -- check if the target is on the same layer then the attacker
-                    if not ValidateAttackLayer(position, TargetPosition) then continue end
+                    if not IgnoreTargetLayerCheck then
+                        if not ValidateAttackLayer(position, TargetPosition) then continue end
+                    end
                     -- check if the Target is still alive, matches our target priority and can be attacked from our platoon
                     if not platoon:CanAttackTarget(squad, Target) then continue end
                     --LOG('* AIFindNearestCategoryTargetInRange: canAttack '..repr(canAttack))
@@ -354,6 +357,7 @@ function AIFindNearestCategoryTargetInCloseRange(platoon, aiBrain, squad, positi
         WARN('AIFindNearestCategoryTargetInCloseRange called with wrong args, use "   AIFindNearestCategoryTargetInCloseRange(platoon, aiBrain, squad, position, maxRange, MoveToCategories, TargetSearchCategory, enemyBrain)   " instead!')
         WARN('###########################################################################################')
     end
+    local IgnoreTargetLayerCheck = platoon.PlatoonData.IgnoreTargetLayerCheck
     local enemyIndex = false
     local MyArmyIndex = aiBrain:GetArmyIndex()
     if enemyBrain then
@@ -386,7 +390,9 @@ function AIFindNearestCategoryTargetInCloseRange(platoon, aiBrain, squad, positi
                 -- check if we have a special player as enemy
                 if enemyBrain and enemyIndex and enemyBrain ~= enemyIndex then continue end
                 -- check if the target is on the same layer then the attacker
-                if not ValidateAttackLayer(position, TargetPosition) then continue end
+                if not IgnoreTargetLayerCheck then
+                    if not ValidateAttackLayer(position, TargetPosition) then continue end
+                end
                 -- check if the Target is still alive, matches our target priority and can be attacked from our platoon
                 if not platoon:CanAttackTarget(squad, Target) then continue end
                 --LOG('* AIFindNearestCategoryTargetInRange: canAttack '..repr(canAttack))

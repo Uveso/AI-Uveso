@@ -181,6 +181,7 @@ BuilderGroup {
             TargetSearchCategory = categories.NAVAL,                           -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.EXPERIMENTAL,
+                categories.TECH3,
                 categories.ALLUNITS,
             },
         },

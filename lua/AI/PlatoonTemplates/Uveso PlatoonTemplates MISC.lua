@@ -85,3 +85,26 @@ PlatoonTemplate {
     },
 }
 
+PlatoonTemplate {
+    Name = 'U2 ShieldUpgrade',
+    FactionSquads = {
+        UEF = {
+            { 'ueb4202', 1, 1, 'Attack', 'None' }
+        },
+        -- We can't upgrade Aeon shields jet
+        --Aeon = {
+        --    { 'uab4202', 1, 1, 'Attack', 'None' }
+        --},
+        Cybran = {
+            { 'urb4202', 1, 1, 'Attack', 'None' }
+        },
+        Seraphim = {
+            { 'xsb4202', 1, 1, 'Attack', 'none' }
+        },
+        Nomads = {
+            { 'xnb4202', 1, 1, 'Attack', 'none' }
+        },
+    }
+}
+
+

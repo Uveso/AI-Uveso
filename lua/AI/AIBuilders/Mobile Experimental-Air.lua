@@ -130,11 +130,13 @@ BuilderGroup {
             TargetSearchCategory = categories.MOBILE - categories.SCOUT,        -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.EXPERIMENTAL,
+                categories.COMMAND,
                 categories.ANTIAIR,
                 categories.MOBILE,
             },
             WeaponTargetCategories = {                                          -- Override weapon target priorities
                 categories.ANTIAIR,
+                categories.COMMAND,
                 categories.EXPERIMENTAL,
                 categories.ALLUNITS,
             },
@@ -176,10 +178,13 @@ BuilderGroup {
             TargetSearchCategory = categories.MOBILE - categories.SCOUT,        -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.EXPERIMENTAL,
+                categories.COMMAND,
                 categories.ANTIAIR,
                 categories.MOBILE,
             },
             WeaponTargetCategories = {                                          -- Override weapon target priorities
+                categories.EXPERIMENTAL,
+                categories.COMMAND,
                 categories.ANTIAIR,
                 categories.EXPERIMENTAL,
                 categories.ALLUNITS,
@@ -187,7 +192,7 @@ BuilderGroup {
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to form this ?
-            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 0, categories.EXPERIMENTAL}}, -- radius, LocationType, unitCount, categoryEnemy
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 0, categories.EXPERIMENTAL + categories.COMMAND}}, -- radius, LocationType, unitCount, categoryEnemy
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },

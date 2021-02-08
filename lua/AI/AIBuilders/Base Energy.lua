@@ -30,7 +30,7 @@ BuilderGroup {
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'LessThanEconStorageRatio', { 1.00, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
-            { EBC, 'GreaterThanEconIncome',  { 0.2, 0.0}}, -- Absolut Base income
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 3, categories.STRUCTURE * categories.MASSEXTRACTION }},
             -- When do we want to build this ?
             -- Respect UnitCap
         },
@@ -62,7 +62,7 @@ BuilderGroup {
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'LessThanEconStorageRatio', { 1.00, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
-            { EBC, 'GreaterThanEconIncome',  { 0.2, 0.0}}, -- Absolut Base income
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 3, categories.STRUCTURE * categories.MASSEXTRACTION }},
             -- When do we want to build this ?
             -- Respect UnitCap
         },
@@ -291,7 +291,7 @@ BuilderGroup {
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'LessThanEconStorageRatio', { 1.00, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
-            { EBC, 'GreaterThanEconIncome',  { 0.2, 0.0}}, -- Absolut Base income
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 3, categories.STRUCTURE * categories.MASSEXTRACTION }},
             -- When do we want to build this ?
             -- Respect UnitCap
         },
@@ -323,7 +323,7 @@ BuilderGroup {
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'LessThanEconStorageRatio', { 1.00, 0.90 } },             -- Ratio from 0 to 1. (1=100%)
-            { EBC, 'GreaterThanEconIncome',  { 0.2, 0.0}}, -- Absolut Base income
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 3, categories.STRUCTURE * categories.MASSEXTRACTION }},
             -- When do we want to build this ?
             -- Respect UnitCap
         },

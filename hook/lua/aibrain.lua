@@ -31,7 +31,7 @@ AIBrain = Class(UvesoAIBrainClass) {
         self.NumBases = self.NumBases + 1
     end,
 
-    -- For AI Patch V9. remove AI tables and functions on defeat
+    -- For AI Patch V9. remove AI tables and functions on defeat; destroying first Buildmanager then condition manager
     OnDefeat = function(self)
         self:SetResult("defeat")
 
@@ -215,26 +215,8 @@ AIBrain = Class(UvesoAIBrainClass) {
         if self.BrainType == 'AI' then
             -- print AI "ilost" text to chat
             SUtils.AISendChat('enemies', ArmyBrains[self:GetArmyIndex()].Nickname, 'ilost')
-            -- remove PlatoonHandle from all AI units before we kill / transfer the army
-            local units = self:GetListOfUnits(categories.ALLUNITS - categories.WALL, false)
-            if units and table.getn(units) > 0 then
-                for _, unit in units do
-                    if not unit.Dead then
-                        if unit.PlatoonHandle and self:PlatoonExists(unit.PlatoonHandle) then
-                            unit.PlatoonHandle:Stop()
-                            unit.PlatoonHandle:PlatoonDisbandNoAssign()
-                        end
-                        IssueStop({unit})
-                        IssueClearCommands({unit})
-                    end
-                end
-            end
             -- Stop the AI from executing AI plans
             self.RepeatExecution = false
-            -- removing AI BrainConditionsMonitor
-            if self.ConditionsMonitor then
-                self.ConditionsMonitor:Destroy()
-            end
             -- removing AI BuilderManagers
             if self.BuilderManagers then
                 for k, v in self.BuilderManagers do
@@ -256,9 +238,27 @@ AIBrain = Class(UvesoAIBrainClass) {
                     self.BuilderManagers[k].Position = nil
                 end
             end
-            self.BuilderManagers = nil
+            -- remove PlatoonHandle from all AI units before we kill / transfer the army
+            local units = self:GetListOfUnits(categories.ALLUNITS - categories.WALL, false)
+            if units and table.getn(units) > 0 then
+                for _, unit in units do
+                    if not unit.Dead then
+                        if unit.PlatoonHandle and self:PlatoonExists(unit.PlatoonHandle) then
+                            unit.PlatoonHandle:Stop()
+                            unit.PlatoonHandle:PlatoonDisbandNoAssign()
+                        end
+                        IssueStop({unit})
+                        IssueClearCommands({unit})
+                    end
+                end
+            end
+            -- removing AI BrainConditionsMonitor
+            if self.ConditionsMonitor then
+                self.ConditionsMonitor:Destroy()
+            end
             -- delete the AI pathcache
             self.PathCache = nil
+            self.BuilderManagers = nil
         end
 
         ForkThread(KillArmy)

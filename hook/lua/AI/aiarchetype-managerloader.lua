@@ -35,11 +35,12 @@ function ExecutePlan(aiBrain)
                 mainManagers.FactoryManager:AddFactory(v)
             end
         end
-        aiBrain:ForkThread(LocationRangeManagerThread, aiBrain)
-        aiBrain:ForkThread(EcoManagerThread, aiBrain)
-        aiBrain:ForkThread(BaseTargetManagerThread, aiBrain)
-        aiBrain:ForkThread(MarkerGridThreatManagerThread, aiBrain)
-        aiBrain:ForkThread(PriorityManagerThread, aiBrain)
+        aiBrain:ForkThread(MarkerGridThreatManagerThread, aiBrain)  -- start after 10 seconds
+        aiBrain:ForkThread(LocationRangeManagerThread, aiBrain)     -- start after 30 seconds
+        aiBrain:ForkThread(BaseTargetManagerThread, aiBrain)        -- start after 50 seconds
+        aiBrain:ForkThread(PriorityManagerThread, aiBrain)          -- start after 1 minute 10 seconds
+        aiBrain:ForkThread(EcoManagerThread, aiBrain)               -- start after 4 minutes
+        --aiBrain:ForkThread(TimediletationThread, aiBrain)
     end
     if aiBrain.PBM then
         aiBrain:PBMSetEnabled(false)
@@ -48,92 +49,102 @@ end
 
 -- Uveso AI
 
-function SetArmyPoolBuff(aiBrain, CheatMult, BuildMult)
-    -- we are looping over all units with this, so we make it local
-    local Buff = Buff
-    -- Modify Buildrate buff
-    local buffDef = Buffs['CheatBuildRate']
-    local buffAffects = buffDef.Affects
-    buffAffects.BuildRate.Mult = BuildMult
-    -- Modify CheatIncome buff
-    buffDef = Buffs['CheatIncome']
-    buffAffects = buffDef.Affects
-    buffAffects.EnergyProduction.Mult = CheatMult
-    buffAffects.MassProduction.Mult = CheatMult
-    allUnits = aiBrain:GetListOfUnits(categories.ALLUNITS, false, false)
-    for _, unit in allUnits do
-        -- Remove old build rate and income buffs
-        Buff.RemoveBuff(unit, 'CheatIncome', true) -- true = removeAllCounts
-        Buff.RemoveBuff(unit, 'CheatBuildRate', true) -- true = removeAllCounts
-        -- Apply new build rate and income buffs
-        Buff.ApplyBuff(unit, 'CheatIncome')
-        Buff.ApplyBuff(unit, 'CheatBuildRate')
+function TimediletationThread(aiBrain)
+    local timeoffset = GetGameTimeSeconds() - GetSystemTimeSecondsOnlyForProfileUse()
+    while aiBrain.Result ~= "defeat" do
+        LOG('** Timediletation [ '..GetGameTimeSeconds() - GetSystemTimeSecondsOnlyForProfileUse() - timeoffset..']')
+        timeoffset = GetGameTimeSeconds() - GetSystemTimeSecondsOnlyForProfileUse()
+        coroutine.yield(10)
     end
 end
 
 function EcoManagerThread(aiBrain)
-    while GetGameTimeSeconds() < 15 + aiBrain:GetArmyIndex() do
+    -- Start Ecomanager at game minute 4
+    while GetGameTimeSeconds() < 60*4 + aiBrain:GetArmyIndex() do
         coroutine.yield(10)
     end
     local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
     aiBrain.CheatMult = tonumber(ScenarioInfo.Options.CheatMult)
     aiBrain.BuildMult = tonumber(ScenarioInfo.Options.BuildMult)
     LOG('* AI-Uveso: Function EcoManagerThread() started! CheatFactor:('..repr(aiBrain.CheatMult)..') - BuildFactor:('..repr(aiBrain.BuildMult)..') ['..aiBrain.Nickname..']')
-    local Engineers = {}
-    local Factories = {}
     local lastCall = 0
-    local allyScore
-    local enemyScore
-    local MyArmyRatio
     local bussy
+    -- Set all variables for the ecomanager
+    local massNeed = math.floor(aiBrain:GetEconomyRequested('MASS') * 10)
+    local massIncome = math.floor(aiBrain:GetEconomyIncome( 'MASS' ) * 10)
+    local massTrend = massIncome - massNeed
+    local energyNeed = math.floor(aiBrain:GetEconomyRequested('ENERGY') * 10)
+    local energyIncome = math.floor(aiBrain:GetEconomyIncome( 'ENERGY' ) * 10)
+    local energyTrend = energyIncome - energyNeed
+    local safeguard
+    -- splitted from table to single variables. (faster)
+    local maxEnergyConsumptionUnitindex
+    local maxEnergyConsumption
+    local minEnergyConsumptionUnitindex
+    local minEnergyConsumption
+    local maxMassConsumptionUnitindex
+    local maxMassConsumption
+    local minMassConsumptionUnitindex
+    local minMassConsumption
+    local EcoUnits = {}
+    local BasePanicZone, BaseMilitaryZone, BaseEnemyZone
+    local baseposition
+    local numUnitsPanicZone
+    local AllUnits
+    local function SetArmyPoolBuff(aiBrain, CheatMult, BuildMult)
+        -- we are looping over all units with this, so we make it local
+        local Buff = Buff
+        -- Modify Buildrate buff
+        local buffDef = Buffs['CheatBuildRate']
+        local buffAffects = buffDef.Affects
+        buffAffects.BuildRate.Mult = BuildMult
+        -- Modify CheatIncome buff
+        buffDef = Buffs['CheatIncome']
+        buffAffects = buffDef.Affects
+        buffAffects.EnergyProduction.Mult = CheatMult
+        buffAffects.MassProduction.Mult = CheatMult
+        allUnits = aiBrain:GetListOfUnits(categories.ALLUNITS, false, false)
+        for _, unit in allUnits do
+            -- Remove old build rate and income buffs
+            Buff.RemoveBuff(unit, 'CheatIncome', true) -- true = removeAllCounts
+            Buff.RemoveBuff(unit, 'CheatBuildRate', true) -- true = removeAllCounts
+            -- Apply new build rate and income buffs
+            Buff.ApplyBuff(unit, 'CheatIncome')
+            Buff.ApplyBuff(unit, 'CheatBuildRate')
+        end
+    end
     while aiBrain.Result ~= "defeat" do
         --LOG('* AI-Uveso: Function EcoManagerThread() beat. ['..aiBrain.Nickname..']')
-        coroutine.yield(5)
-        -- Start Ecomanager at game minute 4
-        if GetGameTimeSeconds() < 60 * 4 then continue end
-        Engineers = aiBrain:GetListOfUnits(categories.ENGINEER - categories.STATIONASSISTPOD - categories.COMMAND - categories.SUBCOMMANDER, false, false) -- also gets unbuilded units (planed to build)
-        StationPods = aiBrain:GetListOfUnits(categories.STATIONASSISTPOD, false, false) -- also gets unbuilded units (planed to build)
-        Factories = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.FACTORY, false, false)
-        bussy = false
+        coroutine.yield(1)
         -- Cheatbuffs
         if personality == 'uvesooverwhelm' then
             -- Check every 60 seconds
             if (GetGameTimeSeconds() > 60 * 20) and lastCall+60 < GetGameTimeSeconds() then
                 lastCall = GetGameTimeSeconds()
-                aiBrain.CheatMult = aiBrain.CheatMult + 0.05 -- +0.1 after 2 min. +1.0 after 20 min.
-                aiBrain.BuildMult = aiBrain.BuildMult + 0.05
+                aiBrain.CheatMult = aiBrain.CheatMult + 0.025 -- +0.1 after 4 min. +1.0 after 40 min.
+                aiBrain.BuildMult = aiBrain.BuildMult + 0.025
                 if aiBrain.CheatMult > 8 then aiBrain.CheatMult = 8 end
                 if aiBrain.BuildMult > 8 then aiBrain.BuildMult = 8 end
-                SPEW('Setting new values for aiBrain.CheatMult:'..aiBrain.CheatMult..' - aiBrain.BuildMult:'..aiBrain.BuildMult)
+                --SPEW('Setting new values for aiBrain.CheatMult:'..aiBrain.CheatMult..' - aiBrain.BuildMult:'..aiBrain.BuildMult)
                 SetArmyPoolBuff(aiBrain, aiBrain.CheatMult, aiBrain.BuildMult)
             end
         end
-
-        local massNeed = math.floor(aiBrain:GetEconomyRequested('MASS') * 10)
-        local massIncome = math.floor(aiBrain:GetEconomyIncome( 'MASS' ) * 10)
-        local massTrend = massIncome - massNeed
-        local energyNeed = math.floor(aiBrain:GetEconomyRequested('ENERGY') * 10)
-        local energyIncome = math.floor(aiBrain:GetEconomyIncome( 'ENERGY' ) * 10)
-        local energyTrend = energyIncome - energyNeed
-
-        local safeguard
-        -- splitted from table to single variables. (faster)
-        local maxEnergyConsumptionUnitindex
-        local maxEnergyConsumption
-        local minEnergyConsumptionUnitindex
-        local minEnergyConsumption
-        local maxMassConsumptionUnitindex
-        local maxMassConsumption
-        local minMassConsumptionUnitindex
-        local minMassConsumption
-        local EcoUnits = {}
+        -- Set all variables for the ecomanager
+        massNeed = math.floor(aiBrain:GetEconomyRequested('MASS') * 10)
+        massIncome = math.floor(aiBrain:GetEconomyIncome( 'MASS' ) * 10)
+        massTrend = massIncome - massNeed
+        energyNeed = math.floor(aiBrain:GetEconomyRequested('ENERGY') * 10)
+        energyIncome = math.floor(aiBrain:GetEconomyIncome( 'ENERGY' ) * 10)
+        energyTrend = energyIncome - energyNeed
         -- check if we have enemy units inside the base panic zone.
-        local BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua').GetDangerZoneRadii()
+        BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua').GetDangerZoneRadii()
         baseposition = aiBrain.BuilderManagers['MAIN'].FactoryManager.Location
-        local numUnitsPanicZone = aiBrain:GetNumUnitsAroundPoint(categories.MOBILE * categories.LAND - categories.SCOUT, baseposition, BasePanicZone, 'Enemy')
+        numUnitsPanicZone = aiBrain:GetNumUnitsAroundPoint(categories.MOBILE * categories.LAND - categories.SCOUT, baseposition, BasePanicZone, 'Enemy')
         -- ECO manager
-        local AllUnits = aiBrain:GetListOfUnits( (categories.FACTORY - categories.TECH1) + categories.ENGINEER + categories.RADAR + categories.OMNI + categories.OPTICS + categories.SONAR + categories.OVERLAYCOUNTERINTEL + categories.COUNTERINTELLIGENCE + categories.MASSFABRICATION + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD) + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO ) - categories.COMMAND , false, false) -- also gets unbuilded units (planed to build)
+        EcoUnits = {}
+        bussy = false
         if aiBrain:GetEconomyStoredRatio('ENERGY') < 0.50 then
+            AllUnits = aiBrain:GetListOfUnits( (categories.FACTORY - categories.TECH1) + categories.ENGINEER + categories.RADAR + categories.OMNI + categories.OPTICS + categories.SONAR + categories.OVERLAYCOUNTERINTEL + categories.COUNTERINTELLIGENCE + categories.MASSFABRICATION + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD) + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO ) - categories.COMMAND , false, false) -- also gets unbuilded units (planed to build)
             if energyTrend < 0 then
                 --AllUnits = aiBrain:GetListOfUnits(categories.ALLUNITS - categories.COMMAND - categories.SHIELD - categories.MASSEXTRACTION, false, false) -- also gets unbuilded units (planed to build)
                 for index, unit in AllUnits do
@@ -165,7 +176,6 @@ function EcoManagerThread(aiBrain)
                     end
                     if unit.ConsumptionPerSecondEnergy > 0 then
                         table.insert(EcoUnits, unit)
-                    else
                     end
                 end
                 -- Disable units until energytrend is positive
@@ -183,7 +193,6 @@ function EcoManagerThread(aiBrain)
                             end
                         end
                     else
---                        LOG('* AI-Uveso: ECO low energy; EcoUnits empty array. break!')
                         break
                     end
                     if maxEnergyConsumptionUnitindex then
@@ -195,18 +204,22 @@ function EcoManagerThread(aiBrain)
 --                            LOG('* AI-Uveso: ECO ['..EcoUnits[maxEnergyConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[maxEnergyConsumptionUnitindex].UnitId].Description)..') unit:SetPaused( true ) Saving ('..maxEnergyConsumption..') energy')
                             EcoUnits[maxEnergyConsumptionUnitindex]:SetPaused( true )
                             EcoUnits[maxEnergyConsumptionUnitindex].pausedEnergy = true
+                            EcoUnits[maxEnergyConsumptionUnitindex].managed = true
                         elseif EntityCategoryContains(categories.RADAR + categories.OMNI + categories.OPTICS + categories.SONAR + categories.COUNTERINTELLIGENCE, EcoUnits[maxEnergyConsumptionUnitindex]) then
 --                            LOG('* AI-Uveso: ECO ['..EcoUnits[maxEnergyConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[maxEnergyConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( IntelToggle, true ) Saving ('..maxEnergyConsumption..') energy')
                             EcoUnits[maxEnergyConsumptionUnitindex]:SetScriptBit('RULEUTC_IntelToggle', true)
                             EcoUnits[maxEnergyConsumptionUnitindex].pausedEnergy = true
+                            EcoUnits[maxEnergyConsumptionUnitindex].managed = true
                         elseif EntityCategoryContains(categories.MASSFABRICATION, EcoUnits[maxEnergyConsumptionUnitindex]) then
 --                            LOG('* AI-Uveso: ECO ['..EcoUnits[maxEnergyConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[maxEnergyConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( ProductionToggle, true ) Saving ('..maxEnergyConsumption..') energy')
                             EcoUnits[maxEnergyConsumptionUnitindex]:SetScriptBit('RULEUTC_ProductionToggle', true)
                             EcoUnits[maxEnergyConsumptionUnitindex].pausedEnergy = true
+                            EcoUnits[maxEnergyConsumptionUnitindex].managed = true
                         elseif EntityCategoryContains(categories.OVERLAYCOUNTERINTEL + categories.COUNTERINTELLIGENCE, EcoUnits[maxEnergyConsumptionUnitindex]) then
 --                            LOG('* AI-Uveso: ECO ['..EcoUnits[maxEnergyConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[maxEnergyConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( JammingToggle, true ) Saving ('..maxEnergyConsumption..') energy')
                             EcoUnits[maxEnergyConsumptionUnitindex]:SetScriptBit('RULEUTC_JammingToggle', true)
                             EcoUnits[maxEnergyConsumptionUnitindex].pausedEnergy = true
+                            EcoUnits[maxEnergyConsumptionUnitindex].managed = true
                         else
                             WARN('* AI-Uveso: Unit with unknown Category('..LOC(__blueprints[EcoUnits[maxEnergyConsumptionUnitindex].UnitId].Description)..') ['..EcoUnits[maxEnergyConsumptionUnitindex].UnitId..']')
                         end
@@ -231,22 +244,22 @@ function EcoManagerThread(aiBrain)
 --                end
             end
         end
-
+        coroutine.yield(1)
         if bussy then
---            WARN('* AI-Uveso: ECO new ecomanager low energy is bussy')
+            --WARN('* AI-Uveso: ECOmanager low energy is bussy')
             continue -- while true do
         end
-
-        local AllUnits = aiBrain:GetListOfUnits( (categories.FACTORY - categories.TECH1) + categories.ENGINEER + categories.RADAR + categories.OMNI + categories.OPTICS + categories.SONAR + categories.OVERLAYCOUNTERINTEL + categories.COUNTERINTELLIGENCE + categories.MASSFABRICATION + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD) + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO ) - categories.COMMAND , false, false) -- also gets unbuilded units (planed to build)
+        EcoUnits = {}
         if aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.50 then
+            AllUnits = aiBrain:GetListOfUnits( (categories.FACTORY - categories.TECH1) + categories.ENGINEER + categories.RADAR + categories.OMNI + categories.OPTICS + categories.SONAR + categories.OVERLAYCOUNTERINTEL + categories.COUNTERINTELLIGENCE + categories.MASSFABRICATION + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD) + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO ) - categories.COMMAND , false, false) -- also gets unbuilded units (planed to build)
 --            LOG('* AI-Uveso: ECO conomyStoredRatio(ENERGY) > 0.50')
             if energyTrend > 0 then
                 --AllUnits = aiBrain:GetListOfUnits(categories.ALLUNITS - categories.COMMAND - categories.SHIELD - categories.MASSEXTRACTION, false, false) -- also gets unbuilded units (planed to build)
                 for index, unit in AllUnits do
+                    if not unit.pausedEnergy then continue end
                     -- filter units that are not finished
                     if unit:GetFractionComplete() < 1 then continue end
 --                    LOG('* AI-Uveso: ECO checking unit ['..index..']  paused:('..repr(unit.pausedMass)..'/'..repr(unit.pausedEnergy)..') '..LOC(__blueprints[unit.UnitId].Description))
-                    if not unit.pausedEnergy then continue end
                     if unit.ConsumptionPerSecondEnergy > 0 then
 --                        LOG('* AI-Uveso: ECO Adding unit ['..index..'] to table '..LOC(__blueprints[unit.UnitId].Description))
                         table.insert(EcoUnits, unit)
@@ -268,7 +281,6 @@ function EcoManagerThread(aiBrain)
                             end
                         end
                     else
---                        LOG('* AI-Uveso: ECO high energy; EcoUnits empty array ')
                         break
                     end
                     if minEnergyConsumptionUnitindex then
@@ -280,18 +292,22 @@ function EcoManagerThread(aiBrain)
 --                            LOG('* AI-Uveso: ECO ['..EcoUnits[minEnergyConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[minEnergyConsumptionUnitindex].UnitId].Description)..') unit:SetPaused( false ) Consuming ('..minEnergyConsumption..') energy')
                             EcoUnits[minEnergyConsumptionUnitindex]:SetPaused( false )
                             EcoUnits[minEnergyConsumptionUnitindex].pausedEnergy = false
+                            EcoUnits[minEnergyConsumptionUnitindex].managed = true
                         elseif EntityCategoryContains(categories.RADAR + categories.OMNI + categories.OPTICS + categories.SONAR + categories.COUNTERINTELLIGENCE, EcoUnits[minEnergyConsumptionUnitindex]) then
 --                            LOG('* AI-Uveso: ECO ['..EcoUnits[minEnergyConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[minEnergyConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( IntelToggle, false ) Consuming ('..minEnergyConsumption..') energy')
                             EcoUnits[minEnergyConsumptionUnitindex]:SetScriptBit('RULEUTC_IntelToggle', false)
                             EcoUnits[minEnergyConsumptionUnitindex].pausedEnergy = false
+                            EcoUnits[minEnergyConsumptionUnitindex].managed = true
                         elseif EntityCategoryContains(categories.MASSFABRICATION, EcoUnits[minEnergyConsumptionUnitindex]) then
 --                            LOG('* AI-Uveso: ECO ['..EcoUnits[minEnergyConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[minEnergyConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( ProductionToggle, false ) Consuming ('..minEnergyConsumption..') energy')
                             EcoUnits[minEnergyConsumptionUnitindex]:SetScriptBit('RULEUTC_ProductionToggle', false)
                             EcoUnits[minEnergyConsumptionUnitindex].pausedEnergy = false
+                            EcoUnits[minEnergyConsumptionUnitindex].managed = true
                         elseif EntityCategoryContains(categories.OVERLAYCOUNTERINTEL + categories.COUNTERINTELLIGENCE, EcoUnits[minEnergyConsumptionUnitindex]) then
 --                            LOG('* AI-Uveso: ECO ['..EcoUnits[minEnergyConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[minEnergyConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( JammingToggle, false ) Consuming ('..minEnergyConsumption..') energy')
                             EcoUnits[minEnergyConsumptionUnitindex]:SetScriptBit('RULEUTC_JammingToggle', false)
                             EcoUnits[minEnergyConsumptionUnitindex].pausedEnergy = false
+                            EcoUnits[minEnergyConsumptionUnitindex].managed = true
                         else
                             WARN('* AI-Uveso: Unit with unknown Category('..LOC(__blueprints[EcoUnits[minEnergyConsumptionUnitindex].UnitId].Description)..') ['..EcoUnits[minEnergyConsumptionUnitindex].UnitId..']')
                         end
@@ -318,17 +334,19 @@ function EcoManagerThread(aiBrain)
 --                end
             end
         end
-
+        coroutine.yield(1)
         if bussy then
---            WARN('*ECO new ecomanager high energy is bussy')
+            --WARN('* AI-Uveso: ECOmanager high energy is bussy')
             continue -- while true do
         end
-
-        local AllUnits = aiBrain:GetListOfUnits( (categories.FACTORY - categories.TECH1 - categories.TECH2) + categories.ENGINEER + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD) + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO ) - categories.COMMAND , false, false) -- also gets unbuilded units (planed to build)
+        EcoUnits = {}
         if aiBrain:GetEconomyStoredRatio('MASS') < 0.15 then
+            --AllUnits = aiBrain:GetListOfUnits( (categories.FACTORY - categories.TECH1) + categories.ENGINEER + categories.RADAR + categories.OMNI + categories.OPTICS + categories.SONAR + categories.OVERLAYCOUNTERINTEL + categories.COUNTERINTELLIGENCE + categories.MASSFABRICATION + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD) + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO ) - categories.COMMAND , false, false) -- also gets unbuilded units (planed to build)
+            AllUnits = aiBrain:GetListOfUnits( categories.ENGINEER + categories.RADAR + categories.OMNI + categories.OPTICS + categories.SONAR + categories.OVERLAYCOUNTERINTEL + categories.COUNTERINTELLIGENCE + categories.MASSFABRICATION + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD) + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO ) - categories.COMMAND , false, false) -- also gets unbuilded units (planed to build)
             if massTrend < 0 then
                 --AllUnits = aiBrain:GetListOfUnits(categories.ALLUNITS - categories.COMMAND - categories.SHIELD - categories.MASSEXTRACTION, false, false) -- also gets unbuilded units (planed to build)
                 for index, unit in AllUnits do
+                    if unit.pausedMass or unit.pausedEnergy then continue end
                     -- filter units that are not finished
                     if unit:GetFractionComplete() < 1 then continue end
                     -- if we build massextractors or energyproduction, don't pause it
@@ -339,7 +357,6 @@ function EcoManagerThread(aiBrain)
                     if unit.UnitBeingBuilt and EntityCategoryContains( categories.MOBILE * categories.TECH1 , unit.UnitBeingBuilt) then
                         continue
                     end
-                    if unit.pausedMass or unit.pausedEnergy then continue end
                     unit.ConsumptionPerSecondMass = unit:GetConsumptionPerSecondMass()
                     if unit.ConsumptionPerSecondMass > 0 then
 --                        LOG('* AI-Uveso: ECO Adding unit ['..index..'] to table '..LOC(__blueprints[unit.UnitId].Description))
@@ -375,18 +392,22 @@ function EcoManagerThread(aiBrain)
 --                            LOG('* AI-Uveso: ECO ['..EcoUnits[maxMassConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[maxMassConsumptionUnitindex].UnitId].Description)..') unit:SetPaused( true ) Saving ('..maxMassConsumption..') mass')
                             EcoUnits[maxMassConsumptionUnitindex]:SetPaused( true )
                             EcoUnits[maxMassConsumptionUnitindex].pausedMass = true
+                            EcoUnits[maxMassConsumptionUnitindex].managed = true
                         elseif EntityCategoryContains(categories.RADAR + categories.OMNI + categories.OPTICS + categories.SONAR + categories.COUNTERINTELLIGENCE, EcoUnits[maxMassConsumptionUnitindex]) then
 --                            LOG('* AI-Uveso: ECO ['..EcoUnits[maxMassConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[maxMassConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( IntelToggle, true ) Saving ('..maxMassConsumption..') mass')
                             EcoUnits[maxMassConsumptionUnitindex]:SetScriptBit('RULEUTC_IntelToggle', true)
                             EcoUnits[maxMassConsumptionUnitindex].pausedMass = true
+                            EcoUnits[maxMassConsumptionUnitindex].managed = true
                         elseif EntityCategoryContains(categories.MASSFABRICATION, EcoUnits[maxMassConsumptionUnitindex]) then
 --                            LOG('* AI-Uveso: ECO ['..EcoUnits[maxMassConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[maxMassConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( ProductionToggle, true ) Saving ('..maxMassConsumption..') mass')
                             EcoUnits[maxMassConsumptionUnitindex]:SetScriptBit('RULEUTC_ProductionToggle', true)
                             EcoUnits[maxMassConsumptionUnitindex].pausedMass = true
+                            EcoUnits[maxMassConsumptionUnitindex].managed = true
                         elseif EntityCategoryContains(categories.OVERLAYCOUNTERINTEL + categories.COUNTERINTELLIGENCE, EcoUnits[maxMassConsumptionUnitindex]) then
 --                            LOG('* AI-Uveso: ECO ['..EcoUnits[maxMassConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[maxMassConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( JammingToggle, true ) Saving ('..maxMassConsumption..') mass')
                             EcoUnits[maxMassConsumptionUnitindex]:SetScriptBit('RULEUTC_JammingToggle', true)
                             EcoUnits[maxMassConsumptionUnitindex].pausedMass = true
+                            EcoUnits[maxMassConsumptionUnitindex].managed = true
                         else
                             WARN('* AI-Uveso: Unit with unknown Category('..LOC(__blueprints[EcoUnits[maxMassConsumptionUnitindex].UnitId].Description)..') ['..EcoUnits[maxMassConsumptionUnitindex].UnitId..']')
                         end
@@ -411,21 +432,21 @@ function EcoManagerThread(aiBrain)
 --                end
             end
         end
-
+        coroutine.yield(1)
         if bussy then
---            WARN('*ECO new ecomanager low mass is bussy')
+            --WARN('* AI-Uveso: ECOmanager low mass is bussy')
             continue -- while true do
         end
-
-        local AllUnits = aiBrain:GetListOfUnits( (categories.FACTORY - categories.TECH1 - categories.TECH2) + categories.ENGINEER + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD) + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO ) - categories.COMMAND , false, false) -- also gets unbuilded units (planed to build)
+        EcoUnits = {}
         if aiBrain:GetEconomyStoredRatio('MASS') >= 0.15 then
+            AllUnits = aiBrain:GetListOfUnits( (categories.FACTORY - categories.TECH1) + categories.ENGINEER + categories.RADAR + categories.OMNI + categories.OPTICS + categories.SONAR + categories.OVERLAYCOUNTERINTEL + categories.COUNTERINTELLIGENCE + categories.MASSFABRICATION + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD) + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO ) - categories.COMMAND , false, false) -- also gets unbuilded units (planed to build)
             if massTrend > 0 then
                 --AllUnits = aiBrain:GetListOfUnits(categories.ALLUNITS - categories.COMMAND - categories.SHIELD - categories.MASSEXTRACTION, false, false) -- also gets unbuilded units (planed to build)
                 for index, unit in AllUnits do
+                    if not unit.pausedMass then continue end
                     -- filter units that are not finished
                     if unit:GetFractionComplete() < 1 then continue end
 --                    LOG('* AI-Uveso: ECO checking unit ['..index..']  paused:('..repr(unit.pausedMass)..'/'..repr(unit.pausedEnergy)..') '..LOC(__blueprints[unit.UnitId].Description))
-                    if not unit.pausedMass then continue end
                     if unit.ConsumptionPerSecondMass > 0 then
 --                        LOG('* AI-Uveso: ECO Adding unit ['..index..'] to table '..LOC(__blueprints[unit.UnitId].Description))
                         table.insert(EcoUnits, unit)
@@ -459,18 +480,22 @@ function EcoManagerThread(aiBrain)
 --                            LOG('* AI-Uveso: ECO ['..EcoUnits[minMassConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[minMassConsumptionUnitindex].UnitId].Description)..') unit:SetPaused( false ) Consuming ('..minMassConsumption..') mass')
                             EcoUnits[minMassConsumptionUnitindex]:SetPaused( false )
                             EcoUnits[minMassConsumptionUnitindex].pausedMass = false
+                            EcoUnits[minMassConsumptionUnitindex].managed = true
                         elseif EntityCategoryContains(categories.RADAR + categories.OMNI + categories.OPTICS + categories.SONAR + categories.COUNTERINTELLIGENCE, EcoUnits[minMassConsumptionUnitindex]) then
 --                            LOG('* AI-Uveso: ECO ['..EcoUnits[minMassConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[minMassConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( IntelToggle, false ) Consuming ('..minMassConsumption..') mass')
                             EcoUnits[minMassConsumptionUnitindex]:SetScriptBit('RULEUTC_IntelToggle', false)
                             EcoUnits[minMassConsumptionUnitindex].pausedMass = false
+                            EcoUnits[minMassConsumptionUnitindex].managed = true
                         elseif EntityCategoryContains(categories.MASSFABRICATION, EcoUnits[minMassConsumptionUnitindex]) then
 --                            LOG('* AI-Uveso: ECO ['..EcoUnits[minMassConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[minMassConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( ProductionToggle, false ) Consuming ('..minMassConsumption..') mass')
                             EcoUnits[minMassConsumptionUnitindex]:SetScriptBit('RULEUTC_ProductionToggle', false)
                             EcoUnits[minMassConsumptionUnitindex].pausedMass = false
+                            EcoUnits[minMassConsumptionUnitindex].managed = true
                         elseif EntityCategoryContains(categories.OVERLAYCOUNTERINTEL + categories.COUNTERINTELLIGENCE, EcoUnits[minMassConsumptionUnitindex]) then
 --                            LOG('* AI-Uveso: ECO ['..EcoUnits[minMassConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[minMassConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( JammingToggle, false ) Consuming ('..minMassConsumption..') mass')
                             EcoUnits[minMassConsumptionUnitindex]:SetScriptBit('RULEUTC_JammingToggle', false)
                             EcoUnits[minMassConsumptionUnitindex].pausedMass = false
+                            EcoUnits[minMassConsumptionUnitindex].managed = true
                         else
                             WARN('* AI-Uveso: Unit with unknown Category('..LOC(__blueprints[EcoUnits[minMassConsumptionUnitindex].UnitId].Description)..') ['..EcoUnits[minMassConsumptionUnitindex].UnitId..']')
                         end
@@ -497,7 +522,52 @@ function EcoManagerThread(aiBrain)
 --                end
             end
         end
-   end
+        coroutine.yield(1)
+        if bussy then
+            --WARN('* AI-Uveso: ECOmanager high mass is bussy')
+            continue -- while true do
+        end
+        EcoUnits = {}
+        if aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.60 and aiBrain:GetEconomyStoredRatio('MASS') >= 0.20 then
+            AllUnits = aiBrain:GetListOfUnits( (categories.FACTORY - categories.TECH1) + categories.ENGINEER + categories.RADAR + categories.OMNI + categories.OPTICS + categories.SONAR + categories.OVERLAYCOUNTERINTEL + categories.COUNTERINTELLIGENCE + categories.MASSFABRICATION + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD) + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO ) - categories.COMMAND , false, false) -- also gets unbuilded units (planed to build)
+            for index, unit in AllUnits do
+                if not unit.managed then
+                    continue
+                end
+                -- filter units that are not finished
+                if unit:GetFractionComplete() < 1 then continue end
+                if EntityCategoryContains(categories.FACTORY + categories.ENGINEER + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO)), unit) then
+                    unit:SetPaused( false )
+                    unit.pausedMass = false
+                    unit.pausedEnergy = false
+                    unit.managed = false
+                elseif EntityCategoryContains(categories.RADAR + categories.OMNI + categories.OPTICS + categories.SONAR + categories.COUNTERINTELLIGENCE, unit) then
+                    unit:SetScriptBit('RULEUTC_IntelToggle', false)
+                    unit.pausedMass = false
+                    unit.pausedEnergy = false
+                    unit.managed = false
+                elseif EntityCategoryContains(categories.MASSFABRICATION, unit) then
+                    unit:SetScriptBit('RULEUTC_ProductionToggle', false)
+                    unit.pausedMass = false
+                    unit.pausedEnergy = false
+                    unit.managed = false
+                elseif EntityCategoryContains(categories.OVERLAYCOUNTERINTEL + categories.COUNTERINTELLIGENCE, unit) then
+                    unit:SetScriptBit('RULEUTC_JammingToggle', false)
+                    unit.pausedMass = false
+                    unit.pausedEnergy = false
+                    unit.managed = false
+                else
+                    WARN('* AI-Uveso: Unit with unknown Category('..LOC(__blueprints[unit.UnitId].Description)..') ['..unit.UnitId..']')
+                    unit:SetPaused( false )
+                    unit.pausedMass = false
+                    unit.pausedEnergy = false
+                    unit.managed = false
+                end
+                -- we only check 1 unit per tick.
+                break -- for index, unit in AllUnits do
+            end
+        end
+    end
 end
 
 function LocationRangeManagerThread(aiBrain)
@@ -505,7 +575,7 @@ function LocationRangeManagerThread(aiBrain)
     local unitcounterdelayer = 0
     local ArmyUnits = {}
     -- wait at start of the game for delayed AI message
-    while GetGameTimeSeconds() < 20 + aiBrain:GetArmyIndex() do
+    while GetGameTimeSeconds() < 30 + aiBrain:GetArmyIndex() do
         coroutine.yield(10)
     end
     if not import('/lua/AI/sorianutilities.lua').CheckForMapMarkers(aiBrain) then
@@ -742,7 +812,7 @@ end
 
 function BaseTargetManagerThread(aiBrain)
 --        LOG('* AI-Uveso: location manager '..repr(aiBrain.NukedArea))
-    while GetGameTimeSeconds() < 25 + aiBrain:GetArmyIndex() do
+    while GetGameTimeSeconds() < 50 + aiBrain:GetArmyIndex() do
         coroutine.yield(10)
     end
     LOG('* AI-Uveso: Function BaseTargetManagerThread() started. ['..aiBrain.Nickname..']')
@@ -775,7 +845,7 @@ function BaseTargetManagerThread(aiBrain)
             end
         end
         -- Search for experimentals in BasePanicZone
-        targets = aiBrain:GetUnitsAroundPoint(categories.EXPERIMENTAL - categories.AIR - categories.INSIGNIFICANTUNIT, baseposition, 120, 'Enemy')
+        targets = aiBrain:GetUnitsAroundPoint(categories.EXPERIMENTAL - categories.AIR - categories.INSIGNIFICANTUNIT, baseposition, BasePanicZone, 'Enemy')
         for _, unit in targets do
             if not unit.Dead then
                 if not IsEnemy( aiBrain:GetArmyIndex(), unit:GetAIBrain():GetArmyIndex() ) then continue end
@@ -802,8 +872,24 @@ function BaseTargetManagerThread(aiBrain)
                     end
                 end
             end
+            coroutine.yield(1)
         end
-        coroutine.yield(1)
+        -- Search for Submarine Nuke units
+        if not ClosestTarget then
+            targets = aiBrain:GetUnitsAroundPoint(categories.NUKESUB, baseposition, BaseEnemyZone, 'Enemy')
+            for _, unit in targets do
+                if not unit.Dead then
+                    if not IsEnemy( aiBrain:GetArmyIndex(), unit:GetAIBrain():GetArmyIndex() ) then continue end
+                    local TargetPosition = unit:GetPosition()
+                    local targetRange = VDist2(baseposition[1], baseposition[3], TargetPosition[1], TargetPosition[3])
+                    if targetRange < distance then
+                        distance = targetRange
+                        ClosestTarget = unit
+                    end
+                end
+            end
+            coroutine.yield(1)
+        end
         -- Search for Paragons in EnemyZone
         if not ClosestTarget then
             targets = aiBrain:GetUnitsAroundPoint(categories.EXPERIMENTAL * categories.ECONOMIC, baseposition, BaseEnemyZone, 'Enemy')
@@ -818,8 +904,40 @@ function BaseTargetManagerThread(aiBrain)
                     end
                 end
             end
+            coroutine.yield(1)
         end
-        coroutine.yield(1)
+        -- Search for Arty in EnemyZone
+        if not ClosestTarget then
+            targets = aiBrain:GetUnitsAroundPoint(categories.STRUCTURE * categories.ARTILLERY * (categories.TECH3 + categories.EXPERIMENTAL), baseposition, BaseEnemyZone, 'Enemy')
+            for _, unit in targets do
+                if not unit.Dead then
+                    if not IsEnemy( aiBrain:GetArmyIndex(), unit:GetAIBrain():GetArmyIndex() ) then continue end
+                    local TargetPosition = unit:GetPosition()
+                    local targetRange = VDist2(baseposition[1], baseposition[3], TargetPosition[1], TargetPosition[3])
+                    if targetRange < distance then
+                        distance = targetRange
+                        ClosestTarget = unit
+                    end
+                end
+            end
+            coroutine.yield(1)
+        end
+        -- Search for Nuke in EnemyZone
+        if not ClosestTarget then
+            targets = aiBrain:GetUnitsAroundPoint(categories.STRUCTURE * categories.NUKE * (categories.TECH3 + categories.EXPERIMENTAL), baseposition, BaseEnemyZone, 'Enemy')
+            for _, unit in targets do
+                if not unit.Dead then
+                    if not IsEnemy( aiBrain:GetArmyIndex(), unit:GetAIBrain():GetArmyIndex() ) then continue end
+                    local TargetPosition = unit:GetPosition()
+                    local targetRange = VDist2(baseposition[1], baseposition[3], TargetPosition[1], TargetPosition[3])
+                    if targetRange < distance then
+                        distance = targetRange
+                        ClosestTarget = unit
+                    end
+                end
+            end
+            coroutine.yield(1)
+        end
         -- Search for High Threat Area
         if not ClosestTarget and HighestThreat[armyIndex].TargetLocation then
             -- search for any unit in this area
@@ -838,8 +956,8 @@ function BaseTargetManagerThread(aiBrain)
                     end
                 end
             end
+            coroutine.yield(1)
         end
-        coroutine.yield(1)
         -- Search for Shields in EnemyZone
         if not ClosestTarget then
             targets = aiBrain:GetUnitsAroundPoint(categories.STRUCTURE * categories.SHIELD, baseposition, BaseEnemyZone, 'Enemy')
@@ -854,8 +972,8 @@ function BaseTargetManagerThread(aiBrain)
                     end
                 end
             end
+            coroutine.yield(1)
         end
-        coroutine.yield(1)
         -- Search for experimentals in EnemyZone
         if not ClosestTarget then
             targets = aiBrain:GetUnitsAroundPoint(categories.EXPERIMENTAL - categories.AIR - categories.INSIGNIFICANTUNIT, baseposition, BaseEnemyZone, 'Enemy')
@@ -870,8 +988,8 @@ function BaseTargetManagerThread(aiBrain)
                     end
                 end
             end
+            coroutine.yield(1)
         end
-        coroutine.yield(1)
         -- Search for T3 Factories / Gates in EnemyZone
         if not ClosestTarget then
             targets = aiBrain:GetUnitsAroundPoint((categories.STRUCTURE * categories.GATE) + (categories.STRUCTURE * categories.FACTORY * categories.TECH3 - categories.SUPPORTFACTORY), baseposition, BaseEnemyZone, 'Enemy')
@@ -886,6 +1004,7 @@ function BaseTargetManagerThread(aiBrain)
                     end
                 end
             end
+            coroutine.yield(1)
         end
         aiBrain.PrimaryTarget = ClosestTarget
     end
@@ -894,7 +1013,7 @@ end
 --OLD: - Highest:0.023910 - Average:0.017244
 --NEW: - Highest:0.002929 - Average:0.002018
 function MarkerGridThreatManagerThread(aiBrain)
-    while GetGameTimeSeconds() < 30 + aiBrain:GetArmyIndex() do
+    while GetGameTimeSeconds() < 10 + aiBrain:GetArmyIndex() do
         coroutine.yield(10)
     end
     LOG('* AI-Uveso: Function MarkerGridThreatManagerThread() started. ['..aiBrain.Nickname..']')
@@ -991,7 +1110,7 @@ function PriorityManagerThread(aiBrain)
     aiBrain.PriorityManager.BuildMobileNavalTech3 = true
     aiBrain.PriorityManager.NoRush1stPhaseActive = false
     aiBrain.PriorityManager.NoRush2ndPhaseActive = false
-    while GetGameTimeSeconds() < 10 + aiBrain:GetArmyIndex() do
+    while GetGameTimeSeconds() < 70 + aiBrain:GetArmyIndex() do
         coroutine.yield(10)
     end
     LOG('* AI-Uveso: Function PriorityManagerThread() started. ['..aiBrain.Nickname..']')
@@ -1240,6 +1359,6 @@ function PriorityManagerThread(aiBrain)
             aiBrain.PriorityManager.BuildMobileNavalTech2 = false
             aiBrain.PriorityManager.BuildMobileNavalTech3 = false
         end
-
+        
     end
 end

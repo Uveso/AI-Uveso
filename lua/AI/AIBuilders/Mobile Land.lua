@@ -797,9 +797,25 @@ BuilderGroup {
         BuilderType = 'Land',
     },
     Builder {
-        BuilderName = 'U1 PanicZone Mobile Arty',
+        BuilderName = 'U1 PanicZone Tank Force',
+        PlatoonTemplate = 'T1LandDFTank',
+        Priority = 19000,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            { MIBC, 'HasNotParagon', {} },
+            -- When do we want to build this ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 1, categories.MOBILE * categories.LAND - categories.SCOUT }}, -- radius, LocationType, unitCount, categoryEnemy
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 2, categories.STRUCTURE * categories.FACTORY * categories.LAND } },
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, categories.MOBILE * categories.DIRECTFIRE } },
+            -- Respect UnitCap
+        },
+        BuilderType = 'Land',
+    },
+    Builder {
+        BuilderName = 'U1 PanicZone Mobile Arty extreme',
         PlatoonTemplate = 'T1LandArtillery',
-        Priority = 18600,
+        Priority = 19000,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { MIBC, 'HasNotParagon', {} },
@@ -824,9 +840,9 @@ BuilderGroup {
         BuilderType = 'Land',
     },
     Builder {
-        BuilderName = 'U1 PanicZone Mobile AA',
+        BuilderName = 'U1 PanicZone Mobile AA extreme',
         PlatoonTemplate = 'T1LandAA',
-        Priority = 18600,
+        Priority = 19000,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { MIBC, 'HasNotParagon', {} },
@@ -909,7 +925,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U123 AntiCDR PANIC',                                     -- Random Builder Name.
         PlatoonTemplate = 'LandAttackInterceptUveso 2 20',                     -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates"
-        Priority = 300,                                                          -- Priority. Higher priotity will be build more often then lower priotity.
+        Priority = 301,                                                          -- Priority. Higher priotity will be build more often then lower priotity.
         InstanceCount = 1,                                                      -- Number of plattons that will be formed with this template.
         BuilderData = {
             SearchRadius = BasePanicZone,                                       -- Searchradius for new target.
@@ -934,9 +950,9 @@ BuilderGroup {
     },
     Builder {
         BuilderName = 'U123 PANIC 2 20',                                        -- Random Builder Name.
-        PlatoonTemplate = 'LandAttackInterceptUveso 2 20',                       -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates"
-        Priority = 300,                                                          -- Priority. 1000 is normal.
-        InstanceCount = 10,                                                      -- Number of plattons that will be formed.
+        PlatoonTemplate = 'LandAttackInterceptUveso 2 20',                      -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates"
+        Priority = 300,                                                         -- Priority. 1000 is normal.
+        InstanceCount = 20,                                                     -- Number of plattons that will be formed.
         BuilderData = {
             SearchRadius = BasePanicZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)

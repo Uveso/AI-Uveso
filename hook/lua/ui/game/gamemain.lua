@@ -1,21 +1,21 @@
 
-local originalCreateUI = CreateUI
-function CreateUI(isReplay)
-    -- call the original function first to set up the rest of the game UI
-    originalCreateUI(isReplay)
-    -- inject keybinding to call functions on the fly
-    if not isReplay then
-        local replacementMap = {
-            ['Ctrl-q']         = {action = 'UI_Lua import("/lua/ui/game/gamemain.lua").KeyTestFunction("Test123abc")'},
-        }
-        IN_AddKeyMapTable(replacementMap)
-    end
-end
+--local originalCreateUI = CreateUI
+--function CreateUI(isReplay)
+--    -- call the original function first to set up the rest of the game UI
+--    originalCreateUI(isReplay)
+--    -- inject keybinding to call functions on the fly
+--    if not isReplay then
+--        local replacementMap = {
+--            ['Ctrl-q']         = {action = 'UI_Lua import("/lua/ui/game/gamemain.lua").KeyTestFunction("Test123abc")'},
+--        }
+--        IN_AddKeyMapTable(replacementMap)
+--    end
+--end
 
-function KeyTestFunction(value)
-    LOG('** "Ctrl-q" KeyTestFunction('..value..')')
---    local selection = ValidateUnitsList(GetSelectedUnits())
-end
+--function KeyTestFunction(value)
+--    LOG('** "Ctrl-q" KeyTestFunction('..value..')')
+----    local selection = ValidateUnitsList(GetSelectedUnits())
+--end
 
 -- executing beats without throttling any beat.
 -- FAF way of throttling beats is desyncing the economic window and shows odd numbers.
@@ -33,11 +33,12 @@ function OnFirstUpdate()
             LOG('* AI-Uveso: Changing path calculating budget')
             coroutine.yield(50)
             -- can cause desyncs in replays if called to early
-            ConExecute("path_MaxInstantWorkUnits 500")              -- default 500  - Budget for instant pathfinds by the AI
-            ConExecute("path_ArmyBudget 1000")                      -- default 1000 - Budget for each army to do pathfinding each tick
-            ConExecute("path_BackgroundBudget 1000")                -- default 1000 - Maximum number of steps to run pathfinder in background
-            ConExecute("path_UnreachableTimeoutSearchSteps 1000")   -- default 1000 - Maximum number of ticks to allow a single pathfind to take for an unreachable path 
-            ConExecute("path_BackgroundUpdate on")                  -- Default on   - on/off
+            -- thisis also triggering a player x is cheating message, i will remove this for now
+            --ConExecute("path_MaxInstantWorkUnits 500")              -- default 500  - Budget for instant pathfinds by the AI
+            --ConExecute("path_ArmyBudget 1000")                      -- default 1000 - Budget for each army to do pathfinding each tick
+            --ConExecute("path_BackgroundBudget 1000")                -- default 1000 - Maximum number of steps to run pathfinder in background
+            --ConExecute("path_UnreachableTimeoutSearchSteps 1000")   -- default 1000 - Maximum number of ticks to allow a single pathfind to take for an unreachable path 
+            --ConExecute("path_BackgroundUpdate on")                  -- Default on   - on/off
             --ConExecute("d3d_windowscursor")                         -- Fix for Nvidia Mousedriver 21.Dec.2020
             local GameOptions = Prefs.GetFromCurrentProfile('LobbyPresets')[1].GameOptions
             SPEW('* AI-Uveso: OnFirstUpdate: GameOptions '..repr(GameOptions))

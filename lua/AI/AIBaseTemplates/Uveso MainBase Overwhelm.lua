@@ -217,6 +217,8 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         'U1 Land Radar Builders',
         'U1 Land Radar Upgrader',
+        'U1 Sonar Builders',
+        'U1 Sonar Upgraders', 
 
         'CounterIntelBuilders',
 

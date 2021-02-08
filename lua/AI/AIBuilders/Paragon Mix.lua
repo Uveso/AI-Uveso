@@ -555,6 +555,47 @@ BuilderGroup {
         },
         BuilderType = 'Air',
     },
+    Builder {
+        BuilderName = 'U2p TorpedoBomber AntiNukeSub',
+        PlatoonTemplate = 'T2AirTorpedoBomber',
+        Priority = 350,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 350
+            else
+                return 0
+            end
+        end,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.AIR * categories.ANTINAVY }},
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.NUKESUB } },
+            { UCBC, 'HaveUnitRatioUveso', { 3.0, categories.MOBILE * categories.AIR * categories.ANTINAVY, '<',categories.NUKESUB } },
+            -- Respect UnitCap
+        },
+        BuilderType = 'Air',
+    },
+    Builder {
+        BuilderName = 'U3p TorpedoBomber AntiNukeSub',
+        PlatoonTemplate = 'T3TorpedoBomber',
+        Priority = 350,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.HasParagon then
+                return 350
+            else
+                return 0
+            end
+        end,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            -- When do we want to build this ?
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.NUKESUB } },
+            { UCBC, 'HaveUnitRatioUveso', { 3.0, categories.MOBILE * categories.AIR * categories.ANTINAVY, '<',categories.NUKESUB } },
+            -- Respect UnitCap
+        },
+        BuilderType = 'Air',
+    },
 }
 -- ===================================================-======================================================== --
 -- ==                                           Land builder                                                 == --
@@ -563,7 +604,7 @@ BuilderGroup {
     BuilderGroupName = 'Paragon Turbo Land',                      -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'FactoryBuilder',
     Builder {
-        BuilderName = 'U3P Siege Assault Bot',
+        BuilderName = 'U3p Siege Assault Bot',
         PlatoonTemplate = 'T3LandBot',
         Priority = 350,
         PriorityFunction = function(self, aiBrain)
@@ -585,7 +626,7 @@ BuilderGroup {
         BuilderType = 'Land',
     },
     Builder {
-        BuilderName = 'U3P SniperBots',
+        BuilderName = 'U3p SniperBots',
         PlatoonTemplate = 'T3SniperBots',
         Priority = 350,
         PriorityFunction = function(self, aiBrain)
@@ -606,7 +647,7 @@ BuilderGroup {
         BuilderType = 'Land',
     },
     Builder {
-        BuilderName = 'U3P ArmoredAssault',
+        BuilderName = 'U3p ArmoredAssault',
         PlatoonTemplate = 'T3ArmoredAssault',
         Priority = 350,
         PriorityFunction = function(self, aiBrain)
@@ -627,7 +668,7 @@ BuilderGroup {
         BuilderType = 'Land',
     },
     Builder {
-        BuilderName = 'U3P Mobile Artillery',
+        BuilderName = 'U3p Mobile Artillery',
         PlatoonTemplate = 'T3LandArtillery',
         Priority = 350,
         PriorityFunction = function(self, aiBrain)
@@ -671,7 +712,7 @@ BuilderGroup {
         BuilderType = 'Land',
     },
     Builder {
-        BuilderName = 'U3P MobileShields',
+        BuilderName = 'U3p MobileShields',
         PlatoonTemplate = 'T3MobileShields',
         Priority = 350,
         PriorityFunction = function(self, aiBrain)

@@ -196,6 +196,7 @@ BuilderGroup {
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = categories.LAND - categories.SCOUT,          -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
+                categories.COMMAND,
                 categories.EXPERIMENTAL,
                 categories.MOBILE,
             },
@@ -211,10 +212,10 @@ BuilderGroup {
 --    MilitaryZone    --
 -- ================== --
 BuilderGroup {
-    BuilderGroupName = 'U4 Land Experimental Formers MilitaryZone',           -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U4 Land Experimental Formers MilitaryZone',             -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     Builder {
-        BuilderName = 'U4 BaseMilitaryZone LAND',                               -- Random Builder Name.
+        BuilderName = 'U4 BaseMilitaryZone EXP',                                -- Random Builder Name.
         PlatoonTemplate = 'T4ExperimentalLandUveso 1 1',                        -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates"
         --PlatoonAddPlans = {'NameUnitsSorian'},
         Priority = 80,                                                          -- Priority. 1000 is normal.
@@ -230,7 +231,7 @@ BuilderGroup {
         BuilderData = {
             SearchRadius = BaseMilitaryZone,                                    -- Searchradius for new target.
             GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
-            AggressiveMove = false,                                              -- If true, the unit will attack everything while moving to the target.
+            AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100000,                                       -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = categories.EXPERIMENTAL - categories.AIR,          -- Only find targets matching these categories.
@@ -243,6 +244,70 @@ BuilderGroup {
             -- When do we want to form this ?
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 0, categories.EXPERIMENTAL - categories.AIR}}, -- radius, LocationType, unitCount, categoryEnemy
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.EXPERIMENTAL * categories.MOBILE * categories.LAND } },
+        },
+        BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
+    },
+    Builder {
+        BuilderName = 'U4 BaseMilitaryZone ACU',                                -- Random Builder Name.
+        PlatoonTemplate = 'T4ExperimentalLandUveso 1 1',                        -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates"
+        --PlatoonAddPlans = {'NameUnitsSorian'},
+        Priority = 80,                                                          -- Priority. 1000 is normal.
+        InstanceCount = 3,                                                      -- Number of plattons that will be formed.
+        FormRadius = 10000,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 80
+            end
+        end,
+        BuilderData = {
+            SearchRadius = BaseMilitaryZone,                                    -- Searchradius for new target.
+            GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
+            AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
+            AttackEnemyStrength = 100000,                                       -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
+            TargetSearchCategory = categories.COMMAND,                          -- Only find targets matching these categories.
+            MoveToCategories = {                                                -- Move to targets
+                categories.COMMAND,
+                categories.ALLUNITS,
+            },
+        },
+        BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
+            -- When do we want to form this ?
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 0, categories.COMMAND}}, -- radius, LocationType, unitCount, categoryEnemy
+        },
+        BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
+    },
+    Builder {
+        BuilderName = 'U4 BaseMilitaryZone Danger',                             -- Random Builder Name.
+        PlatoonTemplate = 'T4ExperimentalLandUveso 1 1',                        -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates"
+        --PlatoonAddPlans = {'NameUnitsSorian'},
+        Priority = 80,                                                          -- Priority. 1000 is normal.
+        InstanceCount = 3,                                                      -- Number of plattons that will be formed.
+        FormRadius = 10000,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 80
+            end
+        end,
+        BuilderData = {
+            SearchRadius = BaseMilitaryZone,                                    -- Searchradius for new target.
+            GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
+            AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
+            AttackEnemyStrength = 100000,                                       -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
+            TargetSearchCategory = categories.MOBILE - categories.AIR,          -- Only find targets matching these categories.
+            MoveToCategories = {                                                -- Move to targets
+                categories.MOBILE * categories.TECH3,
+                categories.ALLUNITS,
+            },
+        },
+        BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
+            -- When do we want to form this ?
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 0, categories.MOBILE * categories.TECH3 - categories.AIR}}, -- radius, LocationType, unitCount, categoryEnemy
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },

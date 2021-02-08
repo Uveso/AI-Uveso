@@ -126,9 +126,14 @@ AIOpts = {
                 key = 'RNG',
             },
             {
+                text = "<LOC aisettingsUveso_0219>AI NutCracker names",
+                help = "<LOC aisettingsUveso_0220>Show platoon and AI plan name for AI NutCracker",
+                key = 'NutCracker',
+            },
+            {
                 text = "<LOC aisettingsUveso_0216>AI Swarm names",
                 help = "<LOC aisettingsUveso_0217>Show platoon and AI plan name for AI Swarm",
-                key = 'Dilli',
+                key = 'Swarm',
             },
             {
                 text = "<LOC aisettingsUveso_0172>AI Dilli names",
@@ -169,9 +174,14 @@ AIOpts = {
                 key = 'RNG',
             },
             {
+                text = "<LOC aisettingsUveso_0219>AI NutCracker names",
+                help = "<LOC aisettingsUveso_0221>Log builder for AI NutCracker",
+                key = 'NutCracker',
+            },
+            {
                 text = "<LOC aisettingsUveso_0216>AI Swarm names",
                 help = "<LOC aisettingsUveso_0218>Log builder for AI Swarm",
-                key = 'Dilli',
+                key = 'Swarm',
             },
             {
                 text = "<LOC aisettingsUveso_0172>AI Dilli names",
