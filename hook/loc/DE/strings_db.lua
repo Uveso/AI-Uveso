@@ -96,3 +96,9 @@ aisettingsUveso_0200="Keine Marker"
 aisettingsUveso_0201="Benutzt die c-engine für Wegfindung (20%% langsamer)"
 aisettingsUveso_0202="Drucke Marker ins game.log"
 aisettingsUveso_0203="Druckt die Marker MasterChain Tabelle zum Ausschneiden & Einfügen in das game.log"
+
+aisettingsUveso_0222="KIx Brecher Cheat Zunahme"
+aisettingsUveso_0223="Stellen Sie die Erhöhung des Cheat-Multiplikators für den KIx Brecher ein. Der Multiplikator wird mit diesem Wert jede Minute erhöht"
+
+aisettingsUveso_0224="KIx Brecher startzeit"
+aisettingsUveso_0225="Stellen Sie die Verzögerung in Minuten ein, bevor der KIx Brecher beginnt, den Cheat-Multiplikator zu erhöhen"
