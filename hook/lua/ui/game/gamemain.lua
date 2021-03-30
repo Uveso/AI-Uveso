@@ -30,7 +30,7 @@ function OnFirstUpdate()
     OriginalOnFirstUpdateFunction()
     ForkThread( 
         function()
-            LOG('* AI-Uveso: Changing path calculating budget')
+            --LOG('* AI-Uveso: Changing path calculating budget')
             coroutine.yield(50)
             -- can cause desyncs in replays if called to early
             -- thisis also triggering a player x is cheating message, i will remove this for now

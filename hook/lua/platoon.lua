@@ -49,7 +49,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                     --LOG('* AI-Uveso: PlatoonDisband: CanBuildOnMass')
                     coroutine.yield(10)
                     local count = 1
-                    while eng and not eng.Dead and not eng:IsIdleState() and count < 120 do
+                    while eng and not eng.Dead and not eng:IsIdleState() and aiBrain:PlatoonExists(self) and count < 120 do
                         coroutine.yield(10)
                         count = count + 1
                     end
@@ -63,8 +63,10 @@ Platoon = Class(CopyOfOldPlatoonClass) {
             self.PlatoonData.Construction.RepeatBuild = nil
             self:MoveToLocation(aiBrain.BuilderManagers['MAIN'].Position, false)
             coroutine.yield(10)
-            while eng and not eng.Dead and eng:IsUnitState("Moving") do
+            local count = 1
+            while eng and not eng.Dead and eng:IsUnitState("Moving") and aiBrain:PlatoonExists(self) and count < 120 do
                 coroutine.yield(10)
+                count = count + 1
             end
         end
         if aiBrain:PlatoonExists(self) then
@@ -767,7 +769,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
             local order = { TaskName = "EnhanceTask", Enhancement = enhancement }
             IssueScript({cdr}, order)
         end
-        while not cdr.Dead and not cdr:HasEnhancement(enhancement) do
+        while aiBrain:PlatoonExists(platoon) and not cdr.Dead and not cdr:HasEnhancement(enhancement) do
             if UUtils.ComHealth(cdr) < 60 then
                 --LOG('* AI-Uveso: * ACUAttackAIUveso: BuildEnhancement: '..platoon:GetBrain().Nickname..' Emergency!!! low health, canceling Enhancement '..enhancement)
                 IssueStop({cdr})
@@ -1409,6 +1411,10 @@ Platoon = Class(CopyOfOldPlatoonClass) {
     end,
 
     SimpleReturnToBase = function(self, basePosition)
+        if not basePosition or type(basePosition) ~= 'table' then
+            WARN('* AI-Uveso: SimpleReturnToBase: basePosition nil or not a table ['..repr(basePosition)..']')
+            return
+        end
         local aiBrain = self:GetBrain()
         local PlatoonPosition
         local Lastdist
@@ -1419,7 +1425,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         while aiBrain:PlatoonExists(self) do
             PlatoonPosition = self:GetPlatoonPosition()
             if not PlatoonPosition then
-                --LOG('* AI-Uveso: * SimpleReturnToBase: no Platoon Position')
+                --LOG('* AI-Uveso: SimpleReturnToBase: no Platoon Position')
                 break
             end
             dist = VDist2( basePosition[1], basePosition[3], PlatoonPosition[1], PlatoonPosition[3] )
@@ -1611,7 +1617,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                 local BlueprintID = ClosestTarget:GetBlueprint().BlueprintId
                 LastTarget = ClosestTarget
                 -- Wait until the target is dead
-                while ClosestTarget and not ClosestTarget.Dead do
+                while ClosestTarget and not ClosestTarget.Dead and self and aiBrain:PlatoonExists(self) do
                     -- leave the loop if the primary target has changed
                     if aiBrain.PrimaryTarget and aiBrain.PrimaryTarget ~= ClosestTarget then
                         break
@@ -1684,7 +1690,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                     unit.AssistSet = nil
                     unit.UnitBeingAssist = nil
                 end
-                while true do
+                while aiBrain:PlatoonExists(self) do
                     local numAssisters
                     local ShieldWithleastAssisters
                     -- get a shield with highest Health and lowest assistees
@@ -1980,7 +1986,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                 if NUKEDEBUG then
                     LOG('* AI-Uveso: * NukePlatoonAI: (Overwhelm) while EnemyTarget do ')
                 end
-                while EnemyTarget and not EnemyTarget.Dead do
+                while EnemyTarget and not EnemyTarget.Dead and aiBrain:PlatoonExists(self) do
                     if NUKEDEBUG then
                         LOG('* AI-Uveso: * NukePlatoonAI: (Overwhelm) Loop!')
                     end
@@ -2154,6 +2160,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
     end,
     
     LeadNukeTarget = function(self, target)
+        local aiBrain = self:GetBrain()
         local TargetPos
         -- Get target position in 1 second intervals.
         -- This allows us to get speed and direction from the target
@@ -2168,7 +2175,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         -- If x/y and xcheck/ycheck are equal, we can be sure the target is moving straight
         -- in one direction. At least for the last 2 seconds.
         local LoopSaveGuard = 0
-        while target and not target.Dead and (XmovePerSec ~= XmovePerSecCheck or YmovePerSec ~= YmovePerSecCheck) and LoopSaveGuard < 10 do
+        while target and not target.Dead and (XmovePerSec ~= XmovePerSecCheck or YmovePerSec ~= YmovePerSecCheck) and LoopSaveGuard < 10 and aiBrain:PlatoonExists(self) do
             if not target or target.Dead then return false end
             -- 1st position of target
             TargetPos = target:GetPosition()
@@ -2383,7 +2390,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         local maxRadius = self.PlatoonData.SearchRadius or 100
         -- search for a target
         local Target
-        while not Target do
+        while not Target and aiBrain:PlatoonExists(self) do
             coroutine.yield(50)
             Target, _, _, _ = AIUtils.AIFindNearestCategoryTeleportLocation(aiBrain, platoonPosition, maxRadius, MoveToCategories, TargetSearchCategory, false)
         end
@@ -2445,15 +2452,15 @@ Platoon = Class(CopyOfOldPlatoonClass) {
     BuildSACUEnhancements = function(platoon,unit)
         local EnhancementsByUnitID = {
             -- UEF
-            ['uel0301'] = {'xxx', 'xxx', 'xxx'},
+            ['uel0301'] = {'ResourceAllocation', 'AdvancedCoolingUpgrade'},
             -- Aeon
             ['ual0301'] = {'StabilitySuppressant', 'Teleporter'},
             -- Cybram
-            ['url0301'] = {'xxx', 'xxx', 'xxx'},
+            ['url0301'] = {'ResourceAllocation', 'EMPCharge'},
             -- Seraphim
             ['xsl0301'] = {'DamageStabilization', 'Shield', 'Teleporter'},
             -- Nomads
-            ['xnl0301'] = {'xxx', 'xxx', 'xxx'},
+            ['xnl0301'] = {'ResourceAllocation'},
         }
         local CRDBlueprint = unit:GetBlueprint()
         --LOG('* AI-Uveso: BlueprintId RAW:'..repr(CRDBlueprint.BlueprintId))

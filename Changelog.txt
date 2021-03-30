@@ -1,3 +1,13 @@
+v92 (30.Mar.2021)
+
+- New: Added option for AIx Overwhelm for variable start time and cheat increase (thanks to bergzand)
+- Fix: AI brain will now be deleted after a defeat in a forked thread to prevent errors
+- Fix: PlatoonFormManager is now able to delay equal formplatoons same like buildplatoons
+- Debug: temporary added gamefix for experimental transporters
+- Debug: added log output for missing buildcost on enhancements
+- Debug: temporary removed function TransferUnfinishedUnitsAfterDeath for testing
+
+*************************************************************************************************************************************
 v91 (08.Feb.2021)
 
 - New: Added strategy for NukeSub defense.

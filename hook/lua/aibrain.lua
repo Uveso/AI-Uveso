@@ -43,7 +43,7 @@ AIBrain = Class(UvesoAIBrainClass) {
         local function KillArmy()
             local shareOption = ScenarioInfo.Options.Share
 
-            local function KillWalls()
+            if shareOption == 'ShareUntilDeath' then
                 -- Kill all walls while the ACU is blowing up
                 local tokill = self:GetListOfUnits(categories.WALL, false)
                 if tokill and table.getn(tokill) > 0 then
@@ -53,15 +53,56 @@ AIBrain = Class(UvesoAIBrainClass) {
                 end
             end
 
-            if shareOption == 'ShareUntilDeath' then
-                ForkThread(KillWalls)
-            end
-
             WaitSeconds(10) -- Wait for commander explosion, then transfer units.
             local selfIndex = self:GetArmyIndex()
             local shareOption = ScenarioInfo.Options.Share
             local victoryOption = ScenarioInfo.Options.Victory
             local BrainCategories = {Enemies = {}, Civilians = {}, Allies = {}}
+
+            -- AI Start
+
+            if self.BrainType == 'AI' then
+                -- print AI "ilost" text to chat
+                SUtils.AISendChat('enemies', ArmyBrains[self:GetArmyIndex()].Nickname, 'ilost')
+                -- Stop the AI from executing AI plans
+                self.RepeatExecution = false
+                -- remove PlatoonHandle from all AI units before we kill / transfer the army
+                local units = self:GetListOfUnits(categories.ALLUNITS - categories.WALL, false)
+                if units and table.getn(units) > 0 then
+                    for _, unit in units do
+                        if not unit.Dead then
+                            if unit.PlatoonHandle and self:PlatoonExists(unit.PlatoonHandle) then
+                                unit.PlatoonHandle:Stop()
+                                unit.PlatoonHandle:PlatoonDisbandNoAssign()
+                            end
+                            IssueStop({unit})
+                            IssueClearCommands({unit})
+                        end
+                    end
+                end
+                coroutine.yield(3)
+                -- removing AI BrainConditionMonitorThread
+                if self.ConditionsMonitor.ConditionMonitor then
+                    KillThread(self.ConditionsMonitor.ConditionMonitor)
+                end
+                coroutine.yield(3)
+                -- stop AI BuilderManagers
+                if self.BuilderManagers then
+                    for k, v in self.BuilderManagers do
+                        v.EngineerManager:SetEnabled(false)
+                        v.FactoryManager:SetEnabled(false)
+                        v.PlatoonFormManager:SetEnabled(false)
+                        if v.StrategyManager then
+                            v.StrategyManager:SetEnabled(false)
+                        end
+                    end
+                end
+                -- remove ArmyStatsTrigger
+                self:RemoveArmyStatsTrigger('Economy_Ratio_Mass', 'EconLowMassStore')
+                self:RemoveArmyStatsTrigger('Economy_Ratio_Energy', 'EconLowEnergyStore')
+            end
+
+            -- AI End
 
             -- Used to have units which were transferred to allies noted permanently as belonging to the new player
             local function TransferOwnershipOfBorrowedUnits(brains)
@@ -209,63 +250,65 @@ AIBrain = Class(UvesoAIBrainClass) {
                     unit:Kill()
                 end
             end
-        end
+            
+            -- AI Start
 
-        -- AI
-        if self.BrainType == 'AI' then
-            -- print AI "ilost" text to chat
-            SUtils.AISendChat('enemies', ArmyBrains[self:GetArmyIndex()].Nickname, 'ilost')
-            -- Stop the AI from executing AI plans
-            self.RepeatExecution = false
-            -- removing AI BuilderManagers
-            if self.BuilderManagers then
-                for k, v in self.BuilderManagers do
-                    v.EngineerManager:SetEnabled(false)
-                    v.FactoryManager:SetEnabled(false)
-                    v.PlatoonFormManager:SetEnabled(false)
-                    v.EngineerManager:Destroy()
-                    v.FactoryManager:Destroy()
-                    v.PlatoonFormManager:Destroy()
-                    if v.StrategyManager then
-                        v.StrategyManager:SetEnabled(false)
-                        v.StrategyManager:Destroy()
-                    end
-                    self.BuilderManagers[k].EngineerManager = nil
-                    self.BuilderManagers[k].FactoryManager = nil
-                    self.BuilderManagers[k].PlatoonFormManager = nil
-                    self.BuilderManagers[k].BaseSettings = nil
-                    self.BuilderManagers[k].BuilderHandles = nil
-                    self.BuilderManagers[k].Position = nil
-                end
-            end
-            -- remove PlatoonHandle from all AI units before we kill / transfer the army
-            local units = self:GetListOfUnits(categories.ALLUNITS - categories.WALL, false)
-            if units and table.getn(units) > 0 then
-                for _, unit in units do
-                    if not unit.Dead then
-                        if unit.PlatoonHandle and self:PlatoonExists(unit.PlatoonHandle) then
-                            unit.PlatoonHandle:Stop()
-                            unit.PlatoonHandle:PlatoonDisbandNoAssign()
+            if self.BrainType == 'AI' then
+                coroutine.yield(3)
+                -- removing AI BuilderManagers
+                if self.BuilderManagers then
+                    for k, v in self.BuilderManagers do
+                        v.EngineerManager:Destroy()
+                        v.FactoryManager:Destroy()
+                        v.PlatoonFormManager:Destroy()
+                        if v.StrategyManager then
+                            v.StrategyManager:Destroy()
                         end
-                        IssueStop({unit})
-                        IssueClearCommands({unit})
+                        self.BuilderManagers[k].EngineerManager = nil
+                        self.BuilderManagers[k].FactoryManager = nil
+                        self.BuilderManagers[k].PlatoonFormManager = nil
+                        self.BuilderManagers[k].BaseSettings = nil
+                        self.BuilderManagers[k].BuilderHandles = nil
                     end
                 end
+                coroutine.yield(3)
+                -- removing AI BrainConditionsMonitor
+                if self.ConditionsMonitor then
+                    self.ConditionsMonitor:Destroy()
+                end
+                -- delete the AI pathcache
+                self.PathCache = {}
+                -- remove EconState tabes
+                self.EconMassStorageState = {}
+                self.EconEnergyStorageState = {}
+                self.EconStorageTrigs = {}
+                -- remove remaining tables
+                self.BuilderManagers = {}
+                self.CurrentPlan = {}
+                self.PlatoonNameCounter = {}
+                self.BaseTemplates = {}
+                self.IntelData = {}
+                self.UnitBuiltTriggerList = {}
+                self.FactoryAssistList = {}
+                self.DelayEqualBuildPlattons = {}
+                self.AIPlansList = {}
+                self.IntelTriggerList = {}
+                self.VeterancyTriggerList = {}
+                self.PingCallbackList = {}
+                self.UnitBuiltTriggerList = {}
+                self.VOTable = {}
             end
-            -- removing AI BrainConditionsMonitor
-            if self.ConditionsMonitor then
-                self.ConditionsMonitor:Destroy()
+
+            -- AI End
+
+            if self.Trash then
+                self.Trash:Destroy()
             end
-            -- delete the AI pathcache
-            self.PathCache = nil
-            self.BuilderManagers = nil
         end
 
+        -- the whole KillThread is forked here, so we can continue the game while removing/transfering the dead army
         ForkThread(KillArmy)
 
-        if self.Trash then
-            self.Trash:Destroy()
-        end
     end,
 
 

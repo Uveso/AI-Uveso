@@ -19,7 +19,7 @@ function ExecutePlan(aiBrain)
     aiBrain:SetConstantEvaluate(false)
     local behaviors = import('/lua/ai/AIBehaviors.lua')
     coroutine.yield(10)
-    if not aiBrain.BuilderManagers.MAIN.FactoryManager:HasBuilderList() then
+    if not aiBrain.BuilderManagers.MAIN.FactoryManager or not aiBrain.BuilderManagers.MAIN.FactoryManager:HasBuilderList() then
         -- we don't share resources with allies
         aiBrain:SetResourceSharing(false)
         --aiBrain:SetupUnderEnergyStatTrigger(0.1)
@@ -119,10 +119,10 @@ function EcoManagerThread(aiBrain)
         -- Cheatbuffs
         if personality == 'uvesooverwhelm' then
             -- Check every 60 seconds
-            if (GetGameTimeSeconds() > 60 * 20) and lastCall+60 < GetGameTimeSeconds() then
+            if (GetGameTimeSeconds() > ScenarioInfo.Options.AIOverwhelmDelay * 60) and lastCall+60 < GetGameTimeSeconds() then
                 lastCall = GetGameTimeSeconds()
-                aiBrain.CheatMult = aiBrain.CheatMult + 0.025 -- +0.1 after 4 min. +1.0 after 40 min.
-                aiBrain.BuildMult = aiBrain.BuildMult + 0.025
+                aiBrain.CheatMult = aiBrain.CheatMult + ScenarioInfo.Options.AIOverwhelmIncrease  -- with the default of 0.025, +0.1 after 4 min. +1.0 after 40 min.
+                aiBrain.BuildMult = aiBrain.BuildMult + ScenarioInfo.Options.AIOverwhelmIncrease
                 if aiBrain.CheatMult > 8 then aiBrain.CheatMult = 8 end
                 if aiBrain.BuildMult > 8 then aiBrain.BuildMult = 8 end
                 --SPEW('Setting new values for aiBrain.CheatMult:'..aiBrain.CheatMult..' - aiBrain.BuildMult:'..aiBrain.BuildMult)

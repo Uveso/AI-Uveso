@@ -2,6 +2,18 @@
 --429
 local AIAttackUtils = import('/lua/ai/aiattackutilities.lua')
 
+function DebugArray(Table)
+    for Index, Array in Table do
+        if type(Array) == 'thread' or type(Array) == 'userdata' then
+            LOG('Index['..Index..'] is type('..type(Array)..'). I won\'t print that!')
+        elseif type(Array) == 'table' then
+            LOG('Index['..Index..'] is type('..type(Array)..'). I won\'t print that!')
+        else
+            LOG('Index['..Index..'] is type('..type(Array)..'). "', repr(Array),'".')
+        end
+    end
+end
+
 -- hooks for map validation on game start and debugstuff for pathfinding and base ranger.
 local MaxPassableElevation = 48
 local MaxSlope = 0.36 -- 36
@@ -322,6 +334,11 @@ function GraphRenderThread()
             DrawAIPathCache('DefaultAir')
         end
         coroutine.yield(2)
+        --MKB
+        if Sync.GameEnded then
+            WARN('* AI-Uveso: Function GraphRenderThread() recieved Sync.GameEnded; ending Thread!')
+            return
+        end
     end
 end
 
@@ -627,6 +644,11 @@ function RenderMarkerCreatorThread()
         coroutine.yield(2)
         -- only display all markers at the start of the game
         if GetGameTimeSeconds() > 10 and not DebugValidMarkerPosition then
+            return
+        end
+        --MKB
+        if Sync.GameEnded then
+            WARN('* AI-Uveso: Function RenderMarkerCreatorThread() recieved Sync.GameEnded; ending Thread!')
             return
         end
     end
@@ -1918,14 +1940,19 @@ function ReclaimCleaner()
         InitialWrecks = true
         --LOG('reclaim count:'..count)
         coroutine.yield(50)
+        --MKB
+        if Sync.GameEnded then
+            WARN('* AI-Uveso: Function ReclaimCleaner() recieved Sync.GameEnded; ending Thread!')
+            return
+        end
     end
 end
 
 function ValidateModFilesUveso()
     local ModName = '* '..'AI-Uveso'
     local ModDirectory = 'AI-Uveso'
-    local Files = 85
-    local Bytes = 1777310
+    local Files = 88
+    local Bytes = 1814657
     LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Running from: '..debug.getinfo(1).source..'.')
     LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Checking directory /mods/ for '..ModDirectory..'...')
     local FilesInFolder = DiskFindFiles('/mods/', '*.*')

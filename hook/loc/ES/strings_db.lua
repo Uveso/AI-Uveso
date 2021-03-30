@@ -96,3 +96,9 @@ aisettingsUveso_0200="No Marker"
 aisettingsUveso_0201="Use the c-engine to path the way (20%% slower)"
 aisettingsUveso_0202="Print to game.log"
 aisettingsUveso_0203="Print the marker masterchain to the game.log for copy&paste"
+
+aisettingsUveso_0222="AIx Overwhelm cheat increase"
+aisettingsUveso_0223="Set the cheat multiplier increase for the AIx Overwhelm. The multiplier is increased every minute with this value"
+
+aisettingsUveso_0224="AIx Overwhelm start time"
+aisettingsUveso_0225="Set the delay in minutes before the AIx Overwhelm starts to increase the cheat multiplier"

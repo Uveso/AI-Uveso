@@ -161,7 +161,7 @@ function GeneratePathUveso(aiBrain, startNode, endNode, threatType, threatWeight
     }
     -- Now loop over all path's that are stored in queue. If we start, only the startNode is inside the queue
     -- (We are using here the "A*(Star) search algorithm". An extension of "Edsger Dijkstra's" pathfinding algorithm used by "Shakey the Robot" in 1959)
-    while true do
+    while aiBrain.Result ~= "defeat" do
         -- remove the table (shortest path) from the queue table and store the removed table in curPath
         -- (We remove the path from the queue here because if we don't find a adjacent marker and we
         --  have not reached the destination, then we no longer need this path. It's a dead end.)
@@ -295,7 +295,7 @@ function EngineerGeneratePathUveso(aiBrain, startNode, endNode, threatType, thre
     }
     -- Now loop over all path's that are stored in queue. If we start, only the startNode is inside the queue
     -- (We are using here the "A*(Star) search algorithm". An extension of "Edsger Dijkstra's" pathfinding algorithm used by "Shakey the Robot" in 1959)
-    while true do
+    while aiBrain.Result ~= "defeat" do
         -- remove the table (shortest path) from the queue table and store the removed table in curPath
         -- (We remove the path from the queue here because if we don't find a adjacent marker and we
         --  have not reached the destination, then we no longer need this path. It's a dead end.)

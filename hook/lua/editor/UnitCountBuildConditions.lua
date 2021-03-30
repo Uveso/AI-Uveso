@@ -195,6 +195,9 @@ function HaveEnemyUnitAtLocation(aiBrain, radius, locationType, unitCount, categ
     if not aiBrain.BuilderManagers[locationType] then
         WARN('*AI WARNING: HaveEnemyUnitAtLocation - Invalid location - ' .. locationType)
         return false
+    elseif not aiBrain.BuilderManagers[locationType].Position then
+        WARN('*AI WARNING: HaveEnemyUnitAtLocation - Invalid position - ' .. locationType)
+        return false
     end
     local numEnemyUnits = aiBrain:GetNumUnitsAroundPoint(categoryEnemy, aiBrain.BuilderManagers[locationType].Position, radius , 'Enemy')
     --LOG(aiBrain:GetArmyIndex()..' CompareBody {World} radius:['..radius..'] '..repr(DEBUG)..' ['..numEnemyUnits..'] '..compareType..' ['..unitCount..'] return '..repr(CompareBody(numEnemyUnits, unitCount, compareType)))

@@ -105,6 +105,102 @@ AIOpts = {
         },
     },
     {
+        default = 2,
+        label = "<LOC aisettingsUveso_0222>AI overwhelm increase",
+        help = "<LOC aisettingsUveso_0223>Increase the Overwhelm's resource and build speed multiplier every minute with this value",
+        key = 'AIOverwhelmIncrease',
+        values = {
+            {
+                text = "0.0125",
+                help = "0.0125",
+                key = 0.0125,
+            },
+            {
+                text = "0.025",
+                help = "0.025",
+                key = 0.025,
+            },
+            {
+                text = "0.0375",
+                help = "0.0375",
+                key = 0.0376,
+            },
+            {
+                text = "0.05",
+                help = "0.05",
+                key = 0.05,
+            },
+            {
+                text = "0.0625",
+                help = "0.0625",
+                key = 0.0625,
+            },
+            {
+                text = "0.075",
+                help = "0.075",
+                key = 0.075,
+            },
+            {
+                text = "0.0875",
+                help = "0.0875",
+                key = 0.0875,
+            },
+            {
+                text = "0.1",
+                help = "0.1",
+                key = 0.1,
+            },
+        },
+    },
+    {
+        default = 5,
+        label = "<LOC aisettingsUveso_0224>AIx Overwhelm start time",
+        help = "<LOC aisettingsUveso_0225>Set the delay in minutes before the AIx Overwhelm starts to increase the cheat multiplier",
+        key = 'AIOverwhelmDelay',
+        values = {
+            {
+                text = "5",
+                help = "5",
+                key = 5,
+            },
+            {
+                text = "7",
+                help = "7",
+                key = 7,
+            },
+            {
+                text = "10",
+                help = "10",
+                key = 10,
+            },
+            {
+                text = "15",
+                help = "15",
+                key = 15,
+            },
+            {
+                text = "20",
+                help = "20",
+                key = 20,
+            },
+            {
+                text = "25",
+                help = "25",
+                key = 25,
+            },
+            {
+                text = "30",
+                help = "30",
+                key = 30,
+            },
+            {
+                text = "45",
+                help = "45",
+                key = 45,
+            },
+        },
+    },
+    {
         default = 1,
         label = "<LOC aisettingsUveso_0167>DEBUG: AI Platoon names",
         help = "<LOC aisettingsUveso_0168>Displays Platoon and AI plan name",
