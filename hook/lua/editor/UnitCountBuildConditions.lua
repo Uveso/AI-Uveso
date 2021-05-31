@@ -433,15 +433,28 @@ function UnfinishedUnitsAtLocation(aiBrain, locationType)
 end
 
 --            { UCBC, 'UnitsLessInPlatoon', {} },
-function UnitsLessInPlatoon(aiBrain,PlatoonPlan, num)
+function UnitsLessInPlatoon(aiBrain,PlatoonPlan, num, cat)
+    local SearchCat = cat or categories.ALLUNITS
     local PlatoonList = aiBrain:GetPlatoonsList()
     local NumPlatoonUnits = 0
-    for _,Platoon in PlatoonList do
+    local PlatoonFound
+    for Li,Platoon in PlatoonList do
+        --LOG('* UnitsLessInPlatoon: Found Platoon: '..repr(Platoon:GetPlan()))
         if Platoon:GetPlan() == PlatoonPlan then
-            NumPlatoonUnits = table.getn(Platoon:GetPlatoonUnits() or 0)
+            PlatoonFound = true
+            for Ui,Unit in Platoon:GetPlatoonUnits() or {} do
+                if EntityCategoryContains(cat, Unit) then
+                    NumPlatoonUnits = NumPlatoonUnits + 1
+                end
+            end
             break
         end
-        --LOG('* PlatoonMerger: Found '..repr(Platoon:GetPlan()))
+    end
+    if not PlatoonFound then
+        --LOG('* UnitsLessInPlatoon: Platoon ('..PlatoonPlan..') not found.')
+        -- in case the platoon is not formed yet, just return false.
+        -- so the platoonformer does not try to add the unit to an non existing platoon
+        return false
     end
     if NumPlatoonUnits < num then
         --LOG('* UnitsLessInPlatoon: TRUE Units in platoon ('..PlatoonPlan..'): '..NumPlatoonUnits..'/'..num)
@@ -449,6 +462,19 @@ function UnitsLessInPlatoon(aiBrain,PlatoonPlan, num)
     end
     --LOG('* UnitsLessInPlatoon: FALSE Units in platoon('..PlatoonPlan..'): '..NumPlatoonUnits..'/'..num)
     return false
+end
+
+function CDRHealthLessThan(aiBrain, health)
+    local cdr = aiBrain:GetListOfUnits(categories.COMMAND, false)[1]
+    if cdr.Dead or not cdr.BeenDestroyed or cdr:BeenDestroyed() then
+        return false
+    end
+    local armorPercent = 100 / cdr:GetMaxHealth() * cdr:GetHealth()
+    local shieldPercent = armorPercent
+    if cdr.MyShield then
+        shieldPercent = 100 / cdr.MyShield:GetMaxHealth() * cdr.MyShield:GetHealth()
+    end
+    return math.floor(( armorPercent + shieldPercent ) / 2) < health
 end
 
 -----------------------------------------------------------------------------------------------------------------------------------

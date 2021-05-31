@@ -21,7 +21,7 @@ BuilderGroup {
         BuilderName = 'UC Land Factory 2nd',
         PlatoonTemplate = 'CommanderBuilder',
         Priority = 17880,
-        DelayEqualBuildPlattons = {'Factories', 3},
+        DelayEqualBuildPlattons = {'Factories', 5},
         BuilderConditions = {
             { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
             -- Have we the eco to build it ?
@@ -46,7 +46,7 @@ BuilderGroup {
         BuilderName = 'U1 Land Factory 2nd',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17880,
-        DelayEqualBuildPlattons = {'Factories', 3},
+        DelayEqualBuildPlattons = {'Factories', 5},
         BuilderConditions = {
             { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
             -- Have we the eco to build it ?
@@ -72,7 +72,7 @@ BuilderGroup {
         BuilderName = 'UC AIR Factory 1st',
         PlatoonTemplate = 'CommanderBuilder',
         Priority = 17880,
-        DelayEqualBuildPlattons = {'Factories', 3},
+        DelayEqualBuildPlattons = {'Factories', 5},
         BuilderConditions = {
             { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
             -- Have we the eco to build it ?
@@ -99,7 +99,7 @@ BuilderGroup {
         BuilderName = 'U1 AIR Factory 1st',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17880,
-        DelayEqualBuildPlattons = {'Factories', 3},
+        DelayEqualBuildPlattons = {'Factories', 5},
         BuilderConditions = {
             { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
             -- Have we the eco to build it ?
@@ -126,7 +126,7 @@ BuilderGroup {
         BuilderName = 'U1 AIR Factory NoRush',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17880,
-        DelayEqualBuildPlattons = {'Factories', 3},
+        DelayEqualBuildPlattons = {'Factories', 5},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush1stPhaseActive then
                 return 17880
@@ -167,10 +167,13 @@ BuilderGroup {
         BuilderName = 'U1 Land Factory RECOVER',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 19300,
+        DelayEqualBuildPlattons = {'Factories', 5},
         BuilderConditions = {
+            { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
             -- Have we the eco to build it ?
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND - categories.SUPPORTFACTORY } },
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH1 }},
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -189,12 +192,16 @@ BuilderGroup {
         BuilderName = 'U1 Land Factory RECOVERII',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 19300,
+        DelayEqualBuildPlattons = {'Factories', 5},
         BuilderConditions = {
+            { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
             -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.STRUCTURE * categories.FACTORY * categories.LAND - categories.SUPPORTFACTORY } },
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.MASSEXTRACTION } },
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION } },
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 2, categories.STRUCTURE * categories.MASSEXTRACTION } },
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 4, categories.STRUCTURE * categories.ENERGYPRODUCTION } },
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH1 }},
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -213,10 +220,13 @@ BuilderGroup {
         BuilderName = 'UC Land Factory RECOVER',
         PlatoonTemplate = 'CommanderBuilder',
         Priority = 19300,
+        DelayEqualBuildPlattons = {'Factories', 5},
         BuilderConditions = {
+            { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
             -- Have we the eco to build it ?
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND - categories.SUPPORTFACTORY } },
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND * categories.TECH1 }},
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -320,7 +330,7 @@ BuilderGroup {
         BuilderName = 'UCR Land Factory Mass > 10%',
         PlatoonTemplate = 'CommanderBuilder',
         Priority = 17885,
-        DelayEqualBuildPlattons = {'Factories', 3},
+        DelayEqualBuildPlattons = {'Factories', 5},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush2ndPhaseActive then
                 return 0
@@ -353,7 +363,7 @@ BuilderGroup {
         BuilderName = 'UCR Land Factory Mass > 15%',
         PlatoonTemplate = 'CommanderBuilder',
         Priority = 17886,
-        DelayEqualBuildPlattons = {'Factories', 3},
+        DelayEqualBuildPlattons = {'Factories', 5},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush2ndPhaseActive then
                 return 0
@@ -387,7 +397,7 @@ BuilderGroup {
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17887,
         InstanceCount = 1,                                                      -- Number of plattons that will be formed with this template.
-        DelayEqualBuildPlattons = {'Factories', 3},
+        DelayEqualBuildPlattons = {'Factories', 5},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush2ndPhaseActive then
                 return 0
@@ -401,6 +411,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND } },
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD }},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 2, categories.STRUCTURE * categories.FACTORY * categories.TECH1 }},
             -- Respect UnitCap
@@ -422,7 +433,7 @@ BuilderGroup {
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17887,
         InstanceCount = 2,                                                      -- Number of plattons that will be formed with this template.
-        DelayEqualBuildPlattons = {'Factories', 3},
+        DelayEqualBuildPlattons = {'Factories', 5},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush2ndPhaseActive then
                 return 0
@@ -436,6 +447,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.15, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND } },
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD }},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 2, categories.STRUCTURE * categories.FACTORY * categories.TECH1 }},
             -- Respect UnitCap
@@ -457,7 +469,7 @@ BuilderGroup {
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17887,
         InstanceCount = 3,                                                      -- Number of plattons that will be formed with this template.
-        DelayEqualBuildPlattons = {'Factories', 3},
+        DelayEqualBuildPlattons = {'Factories', 5},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush2ndPhaseActive then
                 return 0
@@ -471,6 +483,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.20, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.LAND } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapFactory , '<', categories.STRUCTURE * categories.FACTORY * categories.LAND } }, -- Maximal 3 factories at 125 unitcap, 12 factories at 500 unitcap...
         },
@@ -490,7 +503,7 @@ BuilderGroup {
         PlatoonTemplate = 'T2EngineerBuilder',
         Priority = 17887,
         InstanceCount = 1,                                                      -- Number of plattons that will be formed with this template.
-        DelayEqualBuildPlattons = {'Factories', 3},
+        DelayEqualBuildPlattons = {'Factories', 5},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush2ndPhaseActive then
                 return 0
@@ -523,7 +536,7 @@ BuilderGroup {
         BuilderName = 'UCR Air Factory Ratio Rush 10',
         PlatoonTemplate = 'CommanderBuilder',
         Priority = 17887,
-        DelayEqualBuildPlattons = {'Factories', 3},
+        DelayEqualBuildPlattons = {'Factories', 5},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush2ndPhaseActive then
                 return 0
@@ -556,7 +569,7 @@ BuilderGroup {
         BuilderName = 'U1R Air Factory Ratio Rush 15',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17887,
-        DelayEqualBuildPlattons = {'Factories', 3},
+        DelayEqualBuildPlattons = {'Factories', 5},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush2ndPhaseActive then
                 return 0
@@ -596,7 +609,7 @@ BuilderGroup {
         BuilderName = 'UC Land Factory CapCheck',
         PlatoonTemplate = 'CommanderBuilder',
         Priority = 17750,
-        DelayEqualBuildPlattons = {'Factories', 3},
+        DelayEqualBuildPlattons = {'Factories', 5},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush2ndPhaseActive then
                 return 0
@@ -631,7 +644,7 @@ BuilderGroup {
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17500,
         InstanceCount = 1,                                                      -- Number of plattons that will be formed with this template.
-        DelayEqualBuildPlattons = {'Factories', 3},
+        DelayEqualBuildPlattons = {'Factories', 5},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush2ndPhaseActive then
                 return 0
@@ -666,7 +679,7 @@ BuilderGroup {
         BuilderName = 'UC Air Factory CapCheck',
         PlatoonTemplate = 'CommanderBuilder',
         Priority = 17550,
-        DelayEqualBuildPlattons = {'Factories', 3},
+        DelayEqualBuildPlattons = {'Factories', 5},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush2ndPhaseActive then
                 return 0
@@ -700,7 +713,7 @@ BuilderGroup {
         BuilderName = 'U1 Air Factory CapCheck',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17550,
-        DelayEqualBuildPlattons = {'Factories', 3},
+        DelayEqualBuildPlattons = {'Factories', 5},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush2ndPhaseActive then
                 return 0
@@ -744,7 +757,7 @@ BuilderGroup {
         BuilderName = 'UC Land Factory Enemy',
         PlatoonTemplate = 'CommanderBuilder',
         Priority = 15500,
-        DelayEqualBuildPlattons = {'Factories', 3},
+        DelayEqualBuildPlattons = {'Factories', 5},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush2ndPhaseActive then
                 return 0
@@ -777,7 +790,7 @@ BuilderGroup {
         BuilderName = 'U1 Land Factory Enemy',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 15500,
-        DelayEqualBuildPlattons = {'Factories', 3},
+        DelayEqualBuildPlattons = {'Factories', 5},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush2ndPhaseActive then
                 return 0
@@ -810,7 +823,7 @@ BuilderGroup {
         BuilderName = 'U1 Air Factory Enemy',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 15500,
-        DelayEqualBuildPlattons = {'Factories', 3},
+        DelayEqualBuildPlattons = {'Factories', 5},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush2ndPhaseActive then
                 return 0
@@ -847,7 +860,7 @@ BuilderGroup {
         BuilderName = 'UC Land Factory Cap',
         PlatoonTemplate = 'CommanderBuilder',
         Priority = 15600,
-        DelayEqualBuildPlattons = {'Factories', 3},
+        DelayEqualBuildPlattons = {'Factories', 5},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush2ndPhaseActive then
                 return 0
@@ -881,7 +894,7 @@ BuilderGroup {
         BuilderName = 'U1 Land Factory Cap',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 15500,
-        DelayEqualBuildPlattons = {'Factories', 3},
+        DelayEqualBuildPlattons = {'Factories', 5},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush2ndPhaseActive then
                 return 0
@@ -915,7 +928,7 @@ BuilderGroup {
         BuilderName = 'UC Air Factory Cap',
         PlatoonTemplate = 'CommanderBuilder',
         Priority = 17880,
-        DelayEqualBuildPlattons = {'Factories', 3},
+        DelayEqualBuildPlattons = {'Factories', 5},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush2ndPhaseActive then
                 return 0
@@ -949,7 +962,7 @@ BuilderGroup {
         BuilderName = 'U1 Air Factory Cap',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17880,
-        DelayEqualBuildPlattons = {'Factories', 3},
+        DelayEqualBuildPlattons = {'Factories', 5},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush2ndPhaseActive then
                 return 0
@@ -986,7 +999,7 @@ BuilderGroup {
         BuilderName = 'UC Land Factory Max',
         PlatoonTemplate = 'CommanderBuilder',
         Priority = 15500,
-        DelayEqualBuildPlattons = {'Factories', 3},
+        DelayEqualBuildPlattons = {'Factories', 5},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush2ndPhaseActive then
                 return 0
@@ -1018,7 +1031,7 @@ BuilderGroup {
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 15500,
         InstanceCount = 3,
-        DelayEqualBuildPlattons = {'Factories', 3},
+        DelayEqualBuildPlattons = {'Factories', 5},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush2ndPhaseActive then
                 return 0
@@ -1050,7 +1063,7 @@ BuilderGroup {
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 15500,
         InstanceCount = 2,
-        DelayEqualBuildPlattons = {'Factories', 3},
+        DelayEqualBuildPlattons = {'Factories', 5},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush2ndPhaseActive then
                 return 0
@@ -1089,7 +1102,7 @@ BuilderGroup {
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17500,
         InstanceCount = 1,                                                      -- Number of plattons that will be formed with this template.
-        DelayEqualBuildPlattons = {'Factories', 3},
+        DelayEqualBuildPlattons = {'Factories', 5},
         BuilderConditions = {
             { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
             -- Have we the eco to build it ?
@@ -1114,7 +1127,7 @@ BuilderGroup {
         BuilderName = 'U1 Air Factory Expansions',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17550,
-        DelayEqualBuildPlattons = {'Factories', 3},
+        DelayEqualBuildPlattons = {'Factories', 5},
         BuilderConditions = {
             { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
             -- Have we the eco to build it ?

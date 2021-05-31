@@ -7,7 +7,8 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- Build Main Base (only once). Land/Air factory and basic Energy
         'UC ACU Attack Former',
-        
+        'UC ACU Support Platoon',
+
         -----------------------------------------------------------------------------
         -- ==== Expansion Builders ==== --
         -----------------------------------------------------------------------------
@@ -45,6 +46,7 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- Build Power Tech 1,2,3
         'U123 Energy Builders',
+        'U123 Energy Builders Recover',
         'U123 EnergyStorage Builders',
         'U123 Reclaim Energy Buildings',
 

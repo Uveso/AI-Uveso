@@ -10,7 +10,6 @@ function DoGameResult(armyIndex, result)
     local GameOptions = Prefs.GetFromCurrentProfile('LobbyPresets')[1].GameOptions
     local AIName = GetArmiesTable().armiesTable[armyIndex].nickname
     LOG('* AI-Uveso: Function DoGameResult(): Player Name: '..AIName..' - Result: '..result)
-    if GameOptions.AIEndlessGameLoop == 'on' then
         local condPos = string.find(result, " ")
         local GameResult
         if condPos > 0 then
@@ -25,10 +24,15 @@ function DoGameResult(armyIndex, result)
                     local hours   = math.floor(GTS / 3600);
                     local minutes = math.floor((GTS - (hours * 3600)) / 60);
                     local seconds = GTS - (hours * 3600) - (minutes * 60);
-                    LOG('* AI-Uveso: Function DoGameResult(): Game ended after ['..string.format("%02d:%02d:%02d", hours, minutes, seconds)..'] --- GameResult: "'..GameResult..'". Restarting in 5 seconds...')
-                    coroutine.yield(50)
-                    LOG('* AI-Uveso: Function DoGameResult(): Restarting!!!')
-                    RestartSession()
+                    if GameOptions.AIEndlessGameLoop == 'on' then
+                        LOG('* AI-Uveso: Function DoGameResult(): Game ended after ['..string.format("%02d:%02d:%02d", hours, minutes, seconds)..'] --- GameResult: "'..GameResult..'". Restarting in 5 seconds...')
+                        coroutine.yield(50)
+                        LOG('* AI-Uveso: Function DoGameResult(): Restarting!!!')
+                        RestartSession()
+                    else
+                        LOG('* AI-Uveso: Function DoGameResult(): Game ended after ['..string.format("%02d:%02d:%02d", hours, minutes, seconds)..'] --- GameResult: "'..GameResult..'".')
+                        return UvesoDoGameResult(armyIndex, result)
+                    end
                 end
             )
         else
@@ -51,10 +55,15 @@ function DoGameResult(armyIndex, result)
                         end
                         if Sync.GameEnded then
                             Restarting = true
-                            LOG('* AI-Uveso: Function DoGameResult(): Sync.GameEnded after ['..string.format("%02d:%02d:%02d", hours, minutes, seconds)..'] --- maybe DRAW ?. Restarting in 10 seconds...')
-                            coroutine.yield(100)
-                            LOG('* AI-Uveso: Function DoGameResult(): Restarting!!!')
-                            RestartSession()
+                            if GameOptions.AIEndlessGameLoop == 'on' then
+                                LOG('* AI-Uveso: Function DoGameResult(): Sync.GameEnded after ['..string.format("%02d:%02d:%02d", hours, minutes, seconds)..'] --- maybe DRAW ?. Restarting in 10 seconds...')
+                                coroutine.yield(100)
+                                LOG('* AI-Uveso: Function DoGameResult(): Restarting!!!')
+                                RestartSession()
+                            else
+                                LOG('* AI-Uveso: Function DoGameResult(): Sync.GameEnded after ['..string.format("%02d:%02d:%02d", hours, minutes, seconds)..'] --- maybe DRAW ?.')
+                                return UvesoDoGameResult(armyIndex, result)
+                            end
                         end
                         coroutine.yield(1)
                     end
@@ -63,7 +72,4 @@ function DoGameResult(armyIndex, result)
                 end
             )
         end
-    else
-        return UvesoDoGameResult(armyIndex, result)
-    end
 end

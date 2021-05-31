@@ -242,6 +242,11 @@ AIOpts = {
                 key = 'Sorian',
             },
             {
+                text = "<LOC aisettingsUveso_0226>AI SCTA names",
+                help = "<LOC aisettingsUveso_0227>Show platoon and AI plan name for AI SCTA",
+                key = 'SCTAAI',
+            },
+            {
                 text = "<LOC aisettingsUveso_0176>All AI's",
                 help = "<LOC aisettingsUveso_0177>Show platoon and AI plan name for all AI's",
                 key = 'all',
@@ -288,6 +293,11 @@ AIOpts = {
                 text = "<LOC aisettingsUveso_0174>AI Sorian names",
                 help = "<LOC aisettingsUveso_0183>Log builder for AI Sorian",
                 key = 'Sorian',
+            },
+            {
+                text = "<LOC aisettingsUveso_0226>AI SCTA names",
+                help = "<LOC aisettingsUveso_0228>Log builder for AI SCTA",
+                key = 'SCTAAI',
             },
             {
                 text = "<LOC aisettingsUveso_0176>All AI's",

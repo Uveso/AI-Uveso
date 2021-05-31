@@ -1,3 +1,11 @@
+-- Tagada (Balance Team) wrote:
+-- Different factions want different ratios of destroyers to frigates eg.
+-- Cybran destroyer can't really kite well and cybran frigate is the strongest and that's why cybran should make more frigates compared to other fations.
+-- On the other hand Aeon has the best destroyer and the worst frigate so it's the opposite for them.
+-- Seraphim destroyers are very good vs frigate/hover and they can kite insanely well so vs frig/hover spam you can make more of them and less frigs.
+-- UEF is kind of in the middle, they would rather wait for their destro + shieldboad + missile cruisers mix and keep it safe with
+-- enough frigates, then secure some contested territory and destroy expansions with their cruisers.
+
 local categories = categories
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 local EBC = '/lua/editor/EconomyBuildConditions.lua'

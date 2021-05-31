@@ -1,3 +1,23 @@
+*************************************************************************************************************************************
+v93 (31.May.2021)
+
+- New: Added advanced ACU fight function. Microing, threat management, proper overcharge targets.
+- New: AI is now able to use gifted factories also after full share or player disconnect.
+- New: Adding `DoNotAllowMarkerGenerator = true,` to the map scenario file will block autogenerating markers.
+- Opt: Added builder for an early energy storage to enable ACU overcharge
+- Fix: Hardcaped the amount of mobile AA that can be build per location
+- Fix: Fixed a bug inside the AI-Marker generator (thanks to chp2001)
+- Fix: Ecomanager will no longer pause the build of Tech1 factories.
+- Opt: Decreased the massextractor upgrade ratio for Sub AI Storm
+- Opt: 2nd factory now needs at least 2 mex and 4 energy buildings to be build.
+- Opt: Air Suicide Platoons no longer attack none game ender buildings.
+- Opt: Panic Builders are now also building tanks and bots, not only arties.
+- Opt: ACU will now assist engineers (energyproduction and factories)
+- Opt: Aeon ACU is now first enhancing with CrysalisBeam, not HeatSink.
+- Opt: Optimized AI marker generator. (fixed issue with Open Palms)
+- Opt: Added a value to the AI-Marker to identify related layer areas (.GraphArea)
+
+*************************************************************************************************************************************
 v92 (30.Mar.2021)
 
 - New: Added option for AIx Overwhelm for variable start time and cheat increase (thanks to bergzand)

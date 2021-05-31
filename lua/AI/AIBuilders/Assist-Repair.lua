@@ -13,6 +13,27 @@ BuilderGroup {
     --    Factories    --
     -- =============== --
     Builder {
+        BuilderName = 'UC Assist Factory build',
+        PlatoonTemplate = 'CommanderAssist',
+        Priority = 17950,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.FACTORY * categories.TECH1 }},
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Assist = {
+                AssistLocation = 'LocationType',
+                AssisteeType = 'Structure',
+                AssistRange = 80,
+                BeingBuiltCategories = {'STRUCTURE FACTORY TECH1'},        -- Unitcategories must be type string
+                AssistUntilFinished = true,
+                Time = 0,
+            },
+        }
+    },
+    Builder {
         BuilderName = 'U1 Assist 1st T2 Factory Upgrade',
         PlatoonTemplate = 'EngineerAssist',
         Priority = 200,
@@ -194,9 +215,30 @@ BuilderGroup {
     --    ENERGY    --
     -- ============ --
     Builder {
-        BuilderName = 'UC Assist Energy',
+        BuilderName = 'UC Assist Energy 1',
         PlatoonTemplate = 'CommanderAssist',
-        Priority = 17900,
+        Priority = 17950,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH1 }},
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Assist = {
+                AssistLocation = 'LocationType',
+                AssisteeType = 'Structure',
+                AssistRange = 50,
+                BeingBuiltCategories = {'STRUCTURE ENERGYPRODUCTION TECH1'},-- Unitcategories must be type string
+                AssistUntilFinished = true,
+                Time = 0,
+            },
+        }
+    },
+    Builder {
+        BuilderName = 'UC Assist Energy 2+3',
+        PlatoonTemplate = 'CommanderAssist',
+        Priority = 17950,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.25}}, -- Ratio from 0 to 1. (1=100%)
@@ -208,7 +250,7 @@ BuilderGroup {
             Assist = {
                 AssistLocation = 'LocationType',
                 AssisteeType = 'Structure',
-                AssistRange = 30,
+                AssistRange = 50,
                 BeingBuiltCategories = {'STRUCTURE ENERGYPRODUCTION TECH2', 'STRUCTURE ENERGYPRODUCTION TECH3'},-- Unitcategories must be type string
                 AssistUntilFinished = true,
                 Time = 0,
@@ -664,14 +706,12 @@ BuilderGroup {
         BuilderName = 'U1 Finisher',
         PlatoonTemplate = 'EngineerBuilder',
         PlatoonAIPlan = 'FinisherAI',
-        Priority = 50,
+        Priority = 17900,
         InstanceCount = 4,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD } },
             { UCBC, 'UnfinishedUnitsAtLocation', { 'LocationType' }},
         },
         BuilderData = {
@@ -683,14 +723,12 @@ BuilderGroup {
         BuilderName = 'U2 Finisher',
         PlatoonTemplate = 'T2EngineerBuilder',
         PlatoonAIPlan = 'FinisherAI',
-        Priority = 50,
+        Priority = 17900,
         InstanceCount = 4,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH2 - categories.STATIONASSISTPOD } },
             { UCBC, 'UnfinishedUnitsAtLocation', { 'LocationType' }},
         },
         BuilderData = {
@@ -702,14 +740,12 @@ BuilderGroup {
         BuilderName = 'U3 Finisher',
         PlatoonTemplate = 'T3EngineerBuilder',
         PlatoonAIPlan = 'FinisherAI',
-        Priority = 50,
+        Priority = 17900,
         InstanceCount = 2,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH3 - categories.STATIONASSISTPOD } },
             { UCBC, 'UnfinishedUnitsAtLocation', { 'LocationType' }},
         },
         BuilderData = {

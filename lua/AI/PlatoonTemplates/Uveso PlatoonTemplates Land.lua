@@ -14,10 +14,9 @@
 
 PlatoonTemplate {
     Name = 'CDR Attack',
-    Plan = 'ACUAttackAIUveso',
+    Plan = 'ACUChampionPlatoon',
     GlobalSquads = {
         { categories.COMMAND, 1, 1, 'Attack', 'none' },
-        { categories.MOBILE * (categories.SHIELD + categories.STEALTHFIELD) - categories.ANTIAIR - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND - categories.SUBCOMMANDER, 0, 4, 'support', 'none' }
     }
 }
 PlatoonTemplate {

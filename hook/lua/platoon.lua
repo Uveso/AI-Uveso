@@ -5,12 +5,104 @@ local UvesoOffsetPlatoonLUA = debug.getinfo(1).currentline - 1
 local UUtils = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua')
 local UseHeroPlatoon = true
 local HERODEBUG = false
+local CHAMPIONDEBUG = false -- you need to fucus the AI army to see the debug drawing
 local NUKEDEBUG = false
 local MarkerSwitchDist = 20
 local MarkerSwitchDistEXP = 40
 
 CopyOfOldPlatoonClass = Platoon
 Platoon = Class(CopyOfOldPlatoonClass) {
+
+    -- For AI Patch V9. Fixed a bug where the ACU stops working when build to close
+    ProcessBuildCommand = function(eng, removeLastBuild)
+        if not eng or eng.Dead or not eng.PlatoonHandle then
+            return
+        end
+        local aiBrain = eng.PlatoonHandle:GetBrain()
+
+        if not aiBrain or eng.Dead or not eng.EngineerBuildQueue or table.empty(eng.EngineerBuildQueue) then
+            if aiBrain:PlatoonExists(eng.PlatoonHandle) then
+                if not eng.AssistSet and not eng.AssistPlatoon and not eng.UnitBeingAssist then
+                    eng.PlatoonHandle:PlatoonDisband()
+                end
+            end
+            if eng then eng.ProcessBuild = nil end
+            return
+        end
+
+        -- it wasn't a failed build, so we just finished something
+        if removeLastBuild then
+            table.remove(eng.EngineerBuildQueue, 1)
+        end
+
+        eng.ProcessBuildDone = false
+        IssueClearCommands({eng})
+        local commandDone = false
+        local PlatoonPos
+        while not eng.Dead and not commandDone and not table.empty(eng.EngineerBuildQueue)  do
+            local whatToBuild = eng.EngineerBuildQueue[1][1]
+            local buildLocation = {eng.EngineerBuildQueue[1][2][1], 0, eng.EngineerBuildQueue[1][2][2]}
+            if GetTerrainHeight(buildLocation[1], buildLocation[3]) > GetSurfaceHeight(buildLocation[1], buildLocation[3]) then
+                --land
+                buildLocation[2] = GetTerrainHeight(buildLocation[1], buildLocation[3])
+            else
+                --water
+                buildLocation[2] = GetSurfaceHeight(buildLocation[1], buildLocation[3])
+            end
+            local buildRelative = eng.EngineerBuildQueue[1][3]
+            if not eng.NotBuildingThread then
+                eng.NotBuildingThread = eng:ForkThread(eng.PlatoonHandle.WatchForNotBuilding)
+            end
+            -- see if we can move there first
+            if AIUtils.EngineerMoveWithSafePath(aiBrain, eng, buildLocation) then
+                if not eng or eng.Dead or not eng.PlatoonHandle or not aiBrain:PlatoonExists(eng.PlatoonHandle) then
+                    return
+                end
+                -- issue buildcommand to block other engineers from caping mex/hydros or to reserve the buildplace
+                aiBrain:BuildStructure(eng, whatToBuild, {buildLocation[1], buildLocation[3], 0}, buildRelative)
+                -- wait until we are close to the buildplace so we have intel
+                while not eng.Dead do
+                    PlatoonPos = eng:GetPosition()
+                    if VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, buildLocation[1] or 0, buildLocation[3] or 0) < 12 then
+                        break
+                    end
+                    -- check if we are already building in close range
+                    -- (ACU can build at higher range than engineers)
+                    if eng:IsUnitState("Building") then
+                        break
+                    end
+                    coroutine.yield(1)
+                end
+                if not eng or eng.Dead or not eng.PlatoonHandle or not aiBrain:PlatoonExists(eng.PlatoonHandle) then
+                    if eng then eng.ProcessBuild = nil end
+                    return
+                end
+                -- cancel all commands, also the buildcommand for blocking mex to check for reclaim or capture
+                eng.PlatoonHandle:Stop()
+                -- check to see if we need to reclaim or capture...
+                AIUtils.EngineerTryReclaimCaptureArea(aiBrain, eng, buildLocation)
+                -- check to see if we can repair
+                AIUtils.EngineerTryRepair(aiBrain, eng, whatToBuild, buildLocation)
+                -- otherwise, go ahead and build the next structure there
+                aiBrain:BuildStructure(eng, whatToBuild, {buildLocation[1], buildLocation[3], 0}, buildRelative)
+                if not eng.NotBuildingThread then
+                    eng.NotBuildingThread = eng:ForkThread(eng.PlatoonHandle.WatchForNotBuilding)
+                end
+                commandDone = true
+            else
+                -- we can't move there, so remove it from our build queue
+                table.remove(eng.EngineerBuildQueue, 1)
+            end
+        end
+
+        -- final check for if we should disband
+        if not eng or eng.Dead or table.empty(eng.EngineerBuildQueue) then
+            if eng.PlatoonHandle and aiBrain:PlatoonExists(eng.PlatoonHandle) and not eng.PlatoonHandle.UsingTransport then
+                eng.PlatoonHandle:PlatoonDisband()
+            end
+        end
+        if eng then eng.ProcessBuild = nil end
+    end,    
 
 -- UVESO's Stuff: ------------------------------------------------------------------------------------
 
@@ -53,6 +145,13 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                         coroutine.yield(10)
                         count = count + 1
                     end
+                    -- disband on low energy
+                    if aiBrain:GetEconomyStoredRatio('ENERGY') < 0.50 or aiBrain:GetEconomyTrend('ENERGY') < 0.0 then
+                        if aiBrain:PlatoonExists(self) then
+                            CopyOfOldPlatoonClass.PlatoonDisband(self)
+                        end
+                    end
+                    
                     if aiBrain:PlatoonExists(self) and eng and not eng.Dead then
                         self:EngineerBuildAI()
                     end
@@ -495,169 +594,12 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         end
     end,
 
-    ACUAttackAIUveso = function(self)
-        --LOG('* AI-Uveso: * ACUAttackAIUveso: START '..self.BuilderName)
-        AIAttackUtils.GetMostRestrictiveLayer(self) -- this will set self.MovementLayer to the platoon
-        local aiBrain = self:GetBrain()
-        local PlatoonUnits = self:GetPlatoonUnits()
-        local cdr = PlatoonUnits[1]
-        -- There should be only the commander inside this platoon. Check it.
-        if not cdr then
-            WARN('* AI-Uveso: ACUAttackAIUveso: Platoon formed but Commander unit not found!')
-            coroutine.yield(1)
-            for k,v in self:GetPlatoonUnits() or {} do
-                if EntityCategoryContains(categories.COMMAND, v) then
-                    WARN('* AI-Uveso: ACUAttackAIUveso: Commander found in platoon on index: '..k)
-                    cdr = v
-                else
-                    WARN('* AI-Uveso: ACUAttackAIUveso: Platoon unit Index '..k..' is not a commander!')
-                end
-            end
-            if not cdr then
-                self:PlatoonDisband()
-                return
-            end
-        end
-        local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
-        cdr.HealthOLD = 100
-        cdr.CDRHome = aiBrain.BuilderManagers['MAIN'].Position
-        local MoveToCategories = {}
-        if self.PlatoonData.MoveToCategories then
-            for k,v in self.PlatoonData.MoveToCategories do
-                table.insert(MoveToCategories, v )
-            end
-        else
-            LOG('* AI-Uveso: * ACUAttackAIUveso: MoveToCategories missing in platoon '..self.BuilderName)
-        end
-        local WeaponTargetCategories = {}
-        if self.PlatoonData.WeaponTargetCategories then
-            for k,v in self.PlatoonData.WeaponTargetCategories do
-                table.insert(WeaponTargetCategories, v )
-            end
-        elseif self.PlatoonData.MoveToCategories then
-            WeaponTargetCategories = MoveToCategories
-        end
-        self:SetPrioritizedTargetList('Attack', WeaponTargetCategories)
-        -- prevent ACU from reclaiming while attack moving
-        cdr:RemoveCommandCap('RULEUCC_Reclaim')
-        cdr:RemoveCommandCap('RULEUCC_Repair')
-        local TargetUnit, DistanceToTarget
-        local PlatoonPos = self:GetPlatoonPosition()
-        -- land and air units are assigned to mainbase
-        local GetTargetsFromBase = self.PlatoonData.GetTargetsFromBase
-        local GetTargetsFrom = cdr.CDRHome
-        local LastTargetCheck
-        local DistanceToBase = 0
-        local UnitsInACUBaseRange
-        local ReturnToBaseAfterGameTime = self.PlatoonData.ReturnToBaseAfterGameTime or false
-        local DoNotLeavePlatoonUnderHealth = self.PlatoonData.DoNotLeavePlatoonUnderHealth or 30
-        local maxRadius
-        local maxTimeRadius
-        local SearchRadius = self.PlatoonData.SearchRadius or 250
-        local TargetSearchCategory = self.PlatoonData.TargetSearchCategory or 'ALLUNITS'
-        while aiBrain:PlatoonExists(self) do
-            if cdr.Dead then break end
-            cdr.position = self:GetPlatoonPosition()
-            -- leave the loop and disband this platton in time
-            if ReturnToBaseAfterGameTime and ReturnToBaseAfterGameTime < GetGameTimeSeconds()/60 then
-                --LOG('* AI-Uveso: * ACUAttackAIUveso: ReturnToBaseAfterGameTime:'..ReturnToBaseAfterGameTime..' >= '..GetGameTimeSeconds()/60)
-                UUtils.CDRParkingHome(self,cdr)
-                break
-            end
-            -- the maximum radis that the ACU can be away from base
-            maxRadius = (UUtils.ComHealth(cdr)-65)*7 -- If the comanders health is 100% then we have a maxtange of ~250 = (100-65)*7
-            maxTimeRadius = 240 - GetGameTimeSeconds()/60*6 -- reduce the radius by 6 map units per minute. After 30 minutes it's (240-180) = 60
-            if maxRadius > maxTimeRadius then 
-                maxRadius = math.max( 60, maxTimeRadius ) -- IF maxTimeRadius < 60 THEN maxTimeRadius = 60
-            end
-            if maxRadius > SearchRadius then
-                maxRadius = SearchRadius
-            end
-            UnitsInACUBaseRange = aiBrain:GetUnitsAroundPoint( TargetSearchCategory, cdr.CDRHome, maxRadius, 'Enemy')
-            -- get the position of this platoon (ACU)
-            if not GetTargetsFromBase then
-                -- we don't get out targets relativ to base position. Use the ACU position
-                GetTargetsFrom = cdr.position
-            end
-            ----------------------------------------------
-            --- This is the start of the main ACU loop ---
-            ----------------------------------------------
-            if aiBrain:GetEconomyStoredRatio('ENERGY') > 0.95 and UUtils.ComHealth(cdr) < 100 then
-                cdr:SetAutoOvercharge(true)
-            else
-                cdr:SetAutoOvercharge(false)
-            end
-           
-            -- in case we have no Factory left, recover!
-            if not aiBrain:GetListOfUnits(categories.STRUCTURE * categories.FACTORY * categories.LAND - categories.SUPPORTFACTORY, false)[1] then
-                --LOG('* AI-Uveso: * ACUAttackAIUveso: exiting attack function. RECOVER')
-                self:PlatoonDisband()
-                return
-            -- check if we are further away from base then the closest enemy
-            elseif UUtils.CDRRunHomeEnemyNearBase(self,cdr,UnitsInACUBaseRange) then
-                --LOG('* AI-Uveso: * ACUAttackAIUveso: CDRRunHomeEnemyNearBase')
-                TargetUnit = false
-            -- check if we get actual damage, then move home
-            elseif UUtils.CDRRunHomeAtDamage(self,cdr) then
-                --LOG('* AI-Uveso: * ACUAttackAIUveso: CDRRunHomeAtDamage')
-                TargetUnit = false
-            -- check how much % health we have and go closer to our base
-            elseif UUtils.CDRRunHomeHealthRange(self,cdr,maxRadius) then
-                --LOG('* AI-Uveso: * ACUAttackAIUveso: CDRRunHomeHealthRange')
-                TargetUnit = false
-            -- can we upgrade ?
-            elseif table.getn(UnitsInACUBaseRange) <= 0 and VDist2(cdr.position[1], cdr.position[3], cdr.CDRHome[1], cdr.CDRHome[3]) < 60 and self:BuildACUEnhancements(cdr) then
-                --LOG('* AI-Uveso: * ACUAttackAIUveso: BuildACUEnhancements')
-                -- Do nothing if BuildACUEnhancements is true. we are upgrading!
-            -- only get a new target and make a move command if the target is dead
-            else
-               --LOG('* AI-Uveso: * ACUAttackAIUveso: ATTACK')
-                -- ToDo: scann for enemy COM and change target if needed
-                TargetUnit = AIUtils.AIFindNearestCategoryTargetInRangeCDR(aiBrain, GetTargetsFrom, maxRadius, MoveToCategories, TargetSearchCategory, false)
-                -- if we have a target, move to the target and attack
-                if TargetUnit then
-                    --LOG('* AI-Uveso: * ACUAttackAIUveso: ATTACK TargetUnit')
-                    if aiBrain:PlatoonExists(self) and TargetUnit and not TargetUnit.Dead and not TargetUnit:BeenDestroyed() then
-                        local targetPos = TargetUnit:GetPosition()
-                        local cdrNewPos = {}
-                        cdr:GetNavigator():AbortMove()
-                        cdrNewPos[1] = targetPos[1] + Random(-3, 3)
-                        cdrNewPos[2] = targetPos[2]
-                        cdrNewPos[3] = targetPos[3] + Random(-3, 3)
-                        self:MoveToLocation(cdrNewPos, false)
-                        coroutine.yield(1)
-                        if TargetUnit and not TargetUnit.Dead and not TargetUnit:BeenDestroyed() then
-                            self:AttackTarget(TargetUnit)
-                        end
-                    end
-                -- if we have no target, move to base. If we are at base, dance. (random moves)
-                elseif UUtils.CDRForceRunHome(self,cdr) then
-                    --LOG('* AI-Uveso: * ACUAttackAIUveso: CDRForceRunHome true. we are running home')
-                -- we are at home, dance if we have nothing to do.
-                else
-                    -- There is nothing to fight; so we left the attack function and see if we can build something
-                    --LOG('* AI-Uveso: * ACUAttackAIUveso:We are at home and dancing')
-                    --LOG('* AI-Uveso: * ACUAttackAIUveso: exiting attack function')
-                    self:PlatoonDisband()
-                    return
-                end
-            end
-            --DrawCircle(cdr.CDRHome, maxRadius, '00FFFF')
-            coroutine.yield(10)
-            --------------------------------------------
-            --- This is the end of the main ACU loop ---
-            --------------------------------------------
-        end
-        --LOG('* AI-Uveso: * ACUAttackAIUveso: END '..self.BuilderName)
-        self:PlatoonDisband()
-    end,
-    
-    BuildACUEnhancements = function(platoon,cdr)
+    BuildACUEnhancements = function(platoon, cdr, force)
         local EnhancementsByUnitID = {
             -- UEF
             ['uel0001'] = {'HeavyAntiMatterCannon', 'DamageStabilization', 'Shield', 'ShieldGeneratorField'},
             -- Aeon
-            ['ual0001'] = {'HeatSink', 'CrysalisBeam', 'Shield', 'ShieldHeavy'},
+            ['ual0001'] = {'CrysalisBeam', 'HeatSink', 'Shield', 'ShieldHeavy'},
             -- Cybran
             ['url0001'] = {'CoolingUpgrade', 'StealthGenerator', 'MicrowaveLaserGenerator', 'CloakingGenerator'},
             -- Seraphim
@@ -695,6 +637,12 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                     HaveEcoForEnhancement = true
                     --LOG('* AI-Uveso: * ACUAttackAIUveso: *** Set as Enhancememnt: '..NextEnhancement)
                 end
+            elseif force then
+                --LOG('* AI-Uveso: * ACUAttackAIUveso: BuildACUEnhancements: Eco is bad for '..enhancement..' - Ignoring eco requirement!')
+                if not NextEnhancement then
+                    NextEnhancement = enhancement
+                    HaveEcoForEnhancement = true
+                end
             else
                 --LOG('* AI-Uveso: * ACUAttackAIUveso: BuildACUEnhancements: Eco is bad for '..enhancement)
                 if not NextEnhancement then
@@ -710,7 +658,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
             --LOG('* AI-Uveso: * ACUAttackAIUveso: BuildACUEnhancements Building '..NextEnhancement)
             if platoon:BuildEnhancement(cdr, NextEnhancement) then
                 --LOG('* AI-Uveso: * ACUAttackAIUveso: BuildACUEnhancements returned true'..NextEnhancement)
-                return true
+                return NextEnhancement
             else
                 --LOG('* AI-Uveso: * ACUAttackAIUveso: BuildACUEnhancements returned false'..NextEnhancement)
                 return false
@@ -732,22 +680,14 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         --LOG('* AI-Uveso: Pump: m'..math.floor(aiBrain:GetEconomyTrend('MASS')*10)..'  e'..math.floor(aiBrain:GetEconomyTrend('ENERGY')*10)..'')
         if aiBrain.PriorityManager.HasParagon then
             return true
-        elseif aiBrain:GetEconomyTrend('MASS')*10 >= drainMass and aiBrain:GetEconomyTrend('ENERGY')*10 >= drainEnergy
-        and aiBrain:GetEconomyStoredRatio('MASS') > 0.05 and aiBrain:GetEconomyStoredRatio('ENERGY') > 0.95 then
-            -- only RUSH AI; don't enhance if mass storage is lower than 90%
-            local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
-            if personality == 'uvesorush' or personality == 'uvesorushcheat' then
-                if aiBrain:GetEconomyStoredRatio('MASS') < 0.90 then
-                    return false
-                end
-            end
+        elseif aiBrain:GetEconomyTrend('MASS')*10 >= drainMass and aiBrain:GetEconomyTrend('ENERGY')*10 >= drainEnergy then
             return true
         end
         return false
     end,
     
     BuildEnhancement = function(platoon,cdr,enhancement)
-        --LOG('* AI-Uveso: * ACUAttackAIUveso: BuildEnhancement '..enhancement)
+        --LOG('* AI-Uveso: BuildEnhancement: '..enhancement)
         local aiBrain = platoon:GetBrain()
 
         IssueStop({cdr})
@@ -760,25 +700,33 @@ Platoon = Class(CopyOfOldPlatoonClass) {
             -- Do we have already a enhancment in this slot ?
             if unitEnhancements[tempEnhanceBp.Slot] and unitEnhancements[tempEnhanceBp.Slot] ~= tempEnhanceBp.Prerequisite then
                 -- remove the enhancement
-                --LOG('* AI-Uveso: * ACUAttackAIUveso: Found enhancement ['..unitEnhancements[tempEnhanceBp.Slot]..'] in Slot ['..tempEnhanceBp.Slot..']. - Removing...')
+                --LOG('* AI-Uveso: BuildEnhancement: Found enhancement ['..unitEnhancements[tempEnhanceBp.Slot]..'] in Slot ['..tempEnhanceBp.Slot..']. - Removing...')
                 local order = { TaskName = "EnhanceTask", Enhancement = unitEnhancements[tempEnhanceBp.Slot]..'Remove' }
                 IssueScript({cdr}, order)
                 coroutine.yield(10)
             end
-            --LOG('* AI-Uveso: * ACUAttackAIUveso: BuildEnhancement: '..platoon:GetBrain().Nickname..' IssueScript: '..enhancement)
+            SPEW('* AI-Uveso: BuildEnhancement: '..platoon:GetBrain().Nickname..' IssueScript: '..enhancement)
             local order = { TaskName = "EnhanceTask", Enhancement = enhancement }
             IssueScript({cdr}, order)
         end
         while aiBrain:PlatoonExists(platoon) and not cdr.Dead and not cdr:HasEnhancement(enhancement) do
-            if UUtils.ComHealth(cdr) < 60 then
-                --LOG('* AI-Uveso: * ACUAttackAIUveso: BuildEnhancement: '..platoon:GetBrain().Nickname..' Emergency!!! low health, canceling Enhancement '..enhancement)
+            if UUtils.ComHealth(cdr) < 50 and UUtils.UnderAttack(cdr) and cdr.WorkProgress < 0.90 then
+                SPEW('* AI-Uveso: BuildEnhancement: '..platoon:GetBrain().Nickname..' Emergency!!! low health < 50% and under attack, canceling Enhancement '..enhancement)
                 IssueStop({cdr})
                 IssueClearCommands({cdr})
                 return false
             end
-            coroutine.yield(10)
+            if cdr.WorkProgress < 0.30 and UUtils.UnderAttack(cdr) then
+                SPEW('* AI-Uveso: BuildEnhancement: '..platoon:GetBrain().Nickname..' Emergency!!! WorkProgress < 30% and under attack, canceling Enhancement '..enhancement)
+                IssueStop({cdr})
+                IssueClearCommands({cdr})
+                return false
+            end
+            
+
+            coroutine.yield(3)
         end
-        --LOG('* AI-Uveso: * ACUAttackAIUveso: BuildEnhancement: '..platoon:GetBrain().Nickname..' Upgrade finished '..enhancement)
+        SPEW('* AI-Uveso: BuildEnhancement: '..platoon:GetBrain().Nickname..' Upgrade finished '..enhancement)
         return true
     end,
 
@@ -1341,6 +1289,18 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         end
         -- Add our unit(s) to the platoon
         aiBrain:AssignUnitsToPlatoon( AlreadyMergedPlatoon, platoonUnits, 'support', 'none' )
+        -- transfer platoondata
+        AlreadyMergedPlatoon.PlatoonData.SearchRadius = self.PlatoonData.SearchRadius
+        AlreadyMergedPlatoon.PlatoonData.GetTargetsFromBase = self.PlatoonData.GetTargetsFromBase
+        AlreadyMergedPlatoon.PlatoonData.IgnorePathing = self.PlatoonData.IgnorePathing
+        AlreadyMergedPlatoon.PlatoonData.DirectMoveEnemyBase = self.PlatoonData.DirectMoveEnemyBase
+        AlreadyMergedPlatoon.PlatoonData.RequireTransport = self.PlatoonData.RequireTransport
+        AlreadyMergedPlatoon.PlatoonData.AggressiveMove = self.PlatoonData.AggressiveMove
+        AlreadyMergedPlatoon.PlatoonData.AttackEnemyStrength = self.PlatoonData.AttackEnemyStrength
+        AlreadyMergedPlatoon.PlatoonData.TargetSearchCategory = self.PlatoonData.TargetSearchCategory
+        AlreadyMergedPlatoon.PlatoonData.MoveToCategories = self.PlatoonData.MoveToCategories
+        AlreadyMergedPlatoon.PlatoonData.WeaponTargetCategories = self.PlatoonData.WeaponTargetCategories
+        AlreadyMergedPlatoon.PlatoonData.TargetHug = self.PlatoonData.TargetHug
         -- Disband this platoon, it's no longer needed.
         self:PlatoonDisbandNoAssign()
     end,
@@ -1349,26 +1309,38 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         --LOG('* AI-Uveso: +++ ExtractorUpgradeAI: START')
         local aiBrain = self:GetBrain()
         local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
+        local ratio = 0.0
+                          -- 0    6     10    15    20    25    30  >600  >1000
+                          -- 1    2     3     4     5     6     7     8     9
+        local RatioTable = {0.0, 0.10, 0.15, 0.20, 0.25, 0.30, 0.40, 0.50, 1.0}
+        if personality == 'uvesorush' then
+            RatioTable = {0.0, 0.00, 0.05, 0.10, 0.15, 0.20, 0.20, 0.50, 1.0}
+        end
         while aiBrain:PlatoonExists(self) do
-            local ratio = 0.3
+            --LOG('* AI-Uveso: +++ ExtractorUpgradeAI: PULSE')
             if aiBrain.PriorityManager.HasParagon then
                 -- if we have a paragon, upgrade mex as fast as possible. Mabye we lose the paragon and need mex again.
-                ratio = 1.0
+                ratio = RatioTable[9]
+            elseif aiBrain:GetEconomyIncome('MASS') * 10 > 1000 then
+                --LOG('* AI-Uveso: Mass over 1000. Eco running with 50%')
+                ratio = RatioTable[9]
             elseif aiBrain:GetEconomyIncome('MASS') * 10 > 600 then
-                --LOG('* AI-Uveso: Mass over 200. Eco running with 30%')
-                ratio = 0.25
+                --LOG('* AI-Uveso: Mass over 600. Eco running with 35%')
+                ratio = RatioTable[8]
             elseif GetGameTimeSeconds() > 1800 then -- 30 * 60
-                ratio = 0.25
+                ratio = RatioTable[7]
+            elseif GetGameTimeSeconds() > 1500 then -- 25 * 60
+                ratio = RatioTable[6]
             elseif GetGameTimeSeconds() > 1200 then -- 20 * 60
-                ratio = 0.20
+                ratio = RatioTable[5]
             elseif GetGameTimeSeconds() > 900 then -- 15 * 60
-                ratio = 0.15
+                ratio = RatioTable[4]
             elseif GetGameTimeSeconds() > 600 then -- 10 * 60
-                ratio = 0.15
+                ratio = RatioTable[3]
             elseif GetGameTimeSeconds() > 360 then -- 6 * 60
-                ratio = 0.10
+                ratio = RatioTable[2]
             elseif GetGameTimeSeconds() <= 360 then -- 6 * 60 run the first 6 minutes with 0% Eco and 100% Army
-                ratio = 0.00
+                ratio = RatioTable[1]
             end
             local platoonUnits = self:GetPlatoonUnits()
             local MassExtractorUnitList = aiBrain:GetListOfUnits(categories.MASSEXTRACTION * (categories.TECH1 + categories.TECH2 + categories.TECH3), false, false)
@@ -2856,12 +2828,17 @@ Platoon = Class(CopyOfOldPlatoonClass) {
             unit.IamLost = 0
         end
         if not MaxPlatoonWeaponRange then
+            if aiBrain:PlatoonExists(self) then
+                self:PlatoonDisband()
+            end
             return
         end
+        
         -- we only see targets from this targetcategories.
         local TargetSearchCategory = self.PlatoonData.TargetSearchCategory
         if not TargetSearchCategory then
             WARN('* AI-Uveso: Missing TargetSearchCategory in builder: '..repr(self.BuilderName))
+            TargetSearchCategory = categories.ALLUNITS
         end
         -- additional variables we need inside the platoon loop
         local TargetInPlatoonRange
@@ -2876,7 +2853,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         local alpha
         local x
         local y
-        local smartPos
+        local smartPos = {}
         local UnitToCover = nil
         local CoverIndex = 0
         local UnitMassCost = {}
@@ -2932,6 +2909,12 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                 continue
             end
             PlatoonCenterPosition = self:GetPlatoonPosition()
+            if not PlatoonCenterPosition[1] then
+                if aiBrain:PlatoonExists(self) then
+                    self:PlatoonDisband()
+                end
+                return
+            end
             -- set target search center position
             if not GetTargetsFromBase then
                 GetTargetsFrom = PlatoonCenterPosition
@@ -3053,6 +3036,9 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                             self:RenamePlatoon('returning (Air)')
                             coroutine.yield(10)
                         end
+                        if aiBrain:PlatoonExists(self) then
+                            self:PlatoonDisband()
+                        end
                         return
                     else
                         -- we are at home and we don't have a target. Disband!
@@ -3073,6 +3059,9 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                         end
                         self:SetPlatoonFormationOverride('NoFormation')
                         self:ForceReturnToNearestBaseAIUveso()
+                        if aiBrain:PlatoonExists(self) then
+                            self:PlatoonDisband()
+                        end
                         return
                     else
                     -- we are at home and we don't have a target. Disband!
@@ -3092,6 +3081,9 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                             coroutine.yield(1)
                         end
                         self:ForceReturnToNearestBaseAIUveso()
+                        if aiBrain:PlatoonExists(self) then
+                            self:PlatoonDisband()
+                        end
                         return
                     else
                         if HERODEBUG then
@@ -3166,13 +3158,28 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                     self:RenamePlatoon('AIFindNearestCategoryTargetInCloseRange')
                 end
                 -- get a target on every loop, so we can see targets that are moving closer
-                if self.MovementLayer == 'Air' then
-                    TargetInPlatoonRange = AIUtils.AIFindNearestCategoryTargetInCloseRange(self, aiBrain, 'Attack', PlatoonCenterPosition, MaxPlatoonWeaponRange + 50 , WeaponTargetCategories, TargetSearchCategory, false)
-                elseif TargetHug then
-                    TargetInPlatoonRange = AIUtils.AIFindNearestCategoryTargetInCloseRange(self, aiBrain, 'Attack', PlatoonCenterPosition, MaxPlatoonWeaponRange + 50 , MoveToCategories, TargetSearchCategory, false)
+                if TargetHug then
+                    TargetInPlatoonRange = self:FindClosestUnit('Attack', 'Enemy', true, TargetSearchCategory)
                 else
-                    TargetInPlatoonRange = AIUtils.AIFindNearestCategoryTargetInCloseRange(self, aiBrain, 'Attack', PlatoonCenterPosition, MaxPlatoonWeaponRange + 30 , {TargetSearchCategory}, TargetSearchCategory, false)
+                    TargetInPlatoonRange = self:FindClosestUnit('Attack', 'Enemy', true, categories.ALLUNITS)
                 end
+
+                -- check if the target is in range
+                if TargetInPlatoonRange then
+                    LastTargetPos = TargetInPlatoonRange:GetPosition()
+                    if self.MovementLayer == 'Air' then
+                        if VDist2( PlatoonCenterPosition[1], PlatoonCenterPosition[3], LastTargetPos[1], LastTargetPos[3] ) > MaxPlatoonWeaponRange + 60 then
+                            -- Air target is to far away, remove it and lets get a new main target 
+                            TargetInPlatoonRange = false
+                        end
+                    else
+                        if VDist2( PlatoonCenterPosition[1], PlatoonCenterPosition[3], LastTargetPos[1], LastTargetPos[3] ) > MaxPlatoonWeaponRange + 35 then
+                            -- land/naval target is to far away, remove it and lets get a new main target 
+                            TargetInPlatoonRange = false
+                        end
+                    end
+                end
+
                 if HERODEBUG then
                     if TargetInPlatoonRange then
                         if TargetInPlatoonRange.Dead then
@@ -3187,7 +3194,6 @@ Platoon = Class(CopyOfOldPlatoonClass) {
 
                 if TargetInPlatoonRange and not TargetInPlatoonRange.Dead then
                     --LOG('* AI-Uveso: * HeroFightPlatoon: TargetInPlatoonRange: ['..repr(TargetInPlatoonRange.UnitId)..']')
-                    LastTargetPos = TargetInPlatoonRange:GetPosition()
                     if AIUtils.IsNukeBlastArea(aiBrain, LastTargetPos) then
                         -- continue the "while aiBrain:PlatoonExists(self) do" loop
                         continue
@@ -3274,7 +3280,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                                     unit.IamLost = 0
                                 end
                                 if unit.IamLost > 5 then
-                                    WARN('* AI-Uveso: We have a LOST (stucked) unit. Killing it!!! Distance to platoon: '..math.floor(VDist2( unitPos[1], unitPos[3], PlatoonCenterPosition[1], PlatoonCenterPosition[3]))..' pos: ( '..math.floor(unitPos[1])..' , '..math.floor(unitPos[3])..' )' )
+                                    SPEW('* AI-Uveso: We have a LOST (stucked) unit. Killing it!!! Distance to platoon: '..math.floor(VDist2( unitPos[1], unitPos[3], PlatoonCenterPosition[1], PlatoonCenterPosition[3]))..' pos: ( '..math.floor(unitPos[1])..' , '..math.floor(unitPos[3])..' )' )
                                     -- stucked units can't be unstucked, even with a forked thread and hammering movement commands. Let's kill it !!!
                                     unit:Kill()
                                 end
@@ -3358,10 +3364,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                                 end
                                 -- if our target is dead, jump out of the "for _, unit in self:GetPlatoonUnits() do" loop
                                 IssueMove({unit}, smartPos )
-                                --unit:SetCustomName('Shield micro moving')
                                 unit.smartPos = smartPos
-                            else
-                                --unit:SetCustomName('Shield micro CoveringPosition')
                             end
 
                         end
@@ -3390,30 +3393,1044 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         end
     end,
 
+    ACUChampionPlatoon = function(self)
+        AIAttackUtils.GetMostRestrictiveLayer(self) -- this will set self.MovementLayer to the platoon
+        local aiBrain = self:GetBrain()
+        -- table for target and debug information
+        aiBrain.ACUChampion = {}
+        -- save the cration time, we want to wait 10 seconds before we issue any enhancement or platoon disband
+        self.created = GetGameTimeSeconds()
+        -- removing the debug function thread for line drawing
+        if not CHAMPIONDEBUG then
+            aiBrain.ACUChampion.RemoveDebugDrawThread = true
+        end
+        local PlatoonUnits = self:GetPlatoonUnits()
+        local cdr = PlatoonUnits[1]
+        -- There should be only the commander inside this platoon. Check it.
+        if not cdr or not EntityCategoryContains(categories.COMMAND, cdr) then
+            cdr = false
+            WARN('* AI-Uveso: ACUChampionPlatoon: Platoon formed but Commander unit not found!')
+            for k,v in self:GetPlatoonUnits() or {} do
+                if EntityCategoryContains(categories.COMMAND, v) then
+                    WARN('* AI-Uveso: ACUChampionPlatoon: Commander found in platoon on index: '..k)
+                    cdr = v
+                else
+                    WARN('* AI-Uveso: ACUChampionPlatoon: Platoon unit Index '..k..' is not a commander!')
+                end
+            end
+            if not cdr then
+                WARN('* AI-Uveso: ACUChampionPlatoon: PlatoonDisband (no ACU in platoon).')
+                self:PlatoonDisband()
+                return
+            end
+        end
+        -- ACU is in Support squad, but we want it in Attack squad
+        aiBrain:AssignUnitsToPlatoon(self, {cdr}, 'Attack', 'None')
+
+        local MoveToCategories = {}
+        if self.PlatoonData.MoveToCategories then
+            for k,v in self.PlatoonData.MoveToCategories do
+                table.insert(MoveToCategories, v )
+            end
+        else
+            WARN('* AI-Uveso: * ACUChampionPlatoon: MoveToCategories missing in platoon '..self.BuilderName)
+        end
+        local WeaponTargetCategories = {}
+        if self.PlatoonData.WeaponTargetCategories then
+            for k,v in self.PlatoonData.WeaponTargetCategories do
+                table.insert(WeaponTargetCategories, v )
+            end
+        elseif self.PlatoonData.MoveToCategories then
+            WeaponTargetCategories = MoveToCategories
+        end
+        self:SetPrioritizedTargetList('Attack', WeaponTargetCategories)
+        -- switch the automatic overcharge off
+        cdr:SetAutoOvercharge(false)
+        local TargetSearchCategory = self.PlatoonData.TargetSearchCategory or 'ALLUNITS'
+        local maxRadius = self.PlatoonData.SearchRadius or 512
+        local DoNotDisband = self.PlatoonData.DoNotDisband
+        -- make sure maxRadius is not over 512
+        maxRadius = math.min( 512, maxRadius )
+        local OverchargeWeapon
+        cdr.CDRHome = aiBrain.BuilderManagers['MAIN'].Position
+        cdr.smartPos = cdr:GetPosition()
+        cdr.position = cdr.smartPos
+        cdr.HealthOLD = 100
+        cdr.LastDamaged = 0
+        cdr.LastMoved = GetGameTimeSeconds()
+
+        local UnitBlueprint = cdr:GetBlueprint()
+        for _, weapon in UnitBlueprint.Weapon or {} do
+            -- filter dummy weapons
+            if weapon.Damage == 0
+            or weapon.WeaponCategory == 'Missile'
+            or weapon.WeaponCategory == 'Anti Navy'
+            or weapon.WeaponCategory == 'Anti Air'
+            or weapon.WeaponCategory == 'Defense'
+            or weapon.WeaponCategory == 'Teleport' then
+                continue
+            end
+            -- check if the weapon is only enabled by an enhancment
+            if weapon.EnabledByEnhancement then
+                WeaponEnabled = false
+                -- check if we have the enhancement
+                for k, v in SimUnitEnhancements[cdr.EntityId] or {} do
+                    if v == weapon.EnabledByEnhancement then
+                        -- enhancement is installed, the weapon is valid
+                        WeaponEnabled = true
+                        --LOG('* AI-Uveso: * ACUChampionPlatoon: Weapon: '..weapon.EnabledByEnhancement..' - is installed by an enhancement!')
+                        -- no need to search for other enhancements
+                        break
+                    end
+                end
+                -- if the wepon is not installed, continue with the next weapon
+                if not WeaponEnabled then
+                    --LOG('* AI-Uveso: * ACUChampionPlatoon: Weapon: '..weapon.EnabledByEnhancement..' - is not installed.')
+                    continue
+                end
+            end
+            --WARN('* AI-Uveso: * ACUChampionPlatoon: Weapon: '..weapon.DisplayName..' - WeaponCategory: '..weapon.WeaponCategory..' - MaxRadius:'..weapon.MaxRadius..'')
+            if weapon.OverChargeWeapon then
+                OverchargeWeapon = weapon
+            end
+            if not cdr.MaxWeaponRange or cdr.MaxWeaponRange < weapon.MaxRadius then
+                cdr.MaxWeaponRange = weapon.MaxRadius
+            end
+        end
+        UnitBlueprint = nil
+        --WARN('* AI-Uveso: * ACUChampionPlatoon: cdr.MaxWeaponRange: '..cdr.MaxWeaponRange)
+
+        -- set playablearea so we know where the map border is.
+        local playablearea
+        if ScenarioInfo.MapData.PlayableRect then
+            playablearea = ScenarioInfo.MapData.PlayableRect
+        else
+            playablearea = {0, 0, ScenarioInfo.size[1], ScenarioInfo.size[2]}
+        end
+
+        local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
+        local Braveness = 0
+        local RangeToBase
+        local MainBaseTargetWithPath
+        local MainBaseTargetWithPathPos
+        local MoveToTarget
+        local MoveToTargetPos
+        local OverchargeTarget
+        local OverchargeTargetPos
+        local FocusTarget
+        local FocusTargetPos
+        local ACUCloseRange
+        local ACUCloseRangePos
+        local TargetCloseRange
+        local TargetCloseRangePos
+        local smartPos = {}
+        local PlatoonCenterPosition
+        local unitPos
+        local alpha
+        local NavigatorGoal
+        local UnderAttack
+        local CDRHealth
+        local InstalledEnhancementsCount = 0
+        local UnitT1, UnitT2, UnitT3, UnitT4, Threat, Shielded
+        local EnemyBehindMe, ReachedBase
+        local BraveDEBUG = {}
+        
+        local DebugText, LastDebugText
+        -- count enhancements
+        for i, name in SimUnitEnhancements[cdr.EntityId] or {} do
+            InstalledEnhancementsCount = InstalledEnhancementsCount + 1
+            --WARN('* AI-Uveso: * ACUChampionPlatoon: Found enhancement: '..name..' - InstalledEnhancementsCount = '..InstalledEnhancementsCount..'')
+        end
+
+        -- Make a seperate Thread for base targets
+        self:ForkThread(self.ACUChampionBaseTargetThread, aiBrain, cdr)
+
+        -- Main platoon loop
+        while aiBrain:PlatoonExists(self) and not cdr.Dead do
+            -- wait here to prevent deadloops and heavy CPU load
+            coroutine.yield(10) -- not working with 1, 2, 3, works good with 10, 
+            cdr.position = cdr:GetPosition()
+            -- Debug Draw Position
+            if CHAMPIONDEBUG then
+                aiBrain.ACUChampion.CDRposition = {cdr.position, cdr.MaxWeaponRange}
+            end
+            --------------------------------------------------------------------------------------------------------------------------------
+            -- Braveness decides if the ACU will attack or withdraw. Positive numbers lead to attack, negative lead to fall back to base. --
+            --------------------------------------------------------------------------------------------------------------------------------
+
+            Braveness = 0
+            Shielded = false
+            BraveDEBUG = {}
+            -- We gain 1 Braveness if we have full health -------------------------------------------------------------------------------------------------------------------------
+            CDRHealth = UUtils.ComHealth(cdr)
+            if CDRHealth == 100 then
+                Braveness = Braveness + 1
+                BraveDEBUG['Health100%'] = 1
+            end
+
+            -- We gain 1 Braveness for every 7% health we have over 30% health (+10 on 100% health) -------------------------------------------------------------------------------
+            CDRHealth = UUtils.ComHealth(cdr)
+            Braveness = Braveness + math.floor( (CDRHealth - 30) / 7 )
+            BraveDEBUG['Health'] = math.floor( (CDRHealth - 30)  / 7 )
+
+            -- We gain 1 Braveness (max +3) for every 12 friendly T1 units nearby --------------------------------------------------------------------------------------------------
+            UnitT1 = aiBrain:GetNumUnitsAroundPoint( (categories.STRUCTURE + categories.MOBILE) * (categories.DIRECTFIRE + categories.INDIRECTFIRE) * categories.TECH1, cdr.position, 25, 'Ally' )
+            UnitT2 = aiBrain:GetNumUnitsAroundPoint( (categories.STRUCTURE + categories.MOBILE) * (categories.DIRECTFIRE + categories.INDIRECTFIRE) * categories.TECH2, cdr.position, 25, 'Ally' )
+            UnitT3 = aiBrain:GetNumUnitsAroundPoint( (categories.STRUCTURE + categories.MOBILE) * (categories.DIRECTFIRE + categories.INDIRECTFIRE) * categories.TECH3, cdr.position, 25, 'Ally' )
+            UnitT4 = aiBrain:GetNumUnitsAroundPoint( (categories.STRUCTURE + categories.MOBILE) * (categories.DIRECTFIRE + categories.INDIRECTFIRE) * categories.EXPERIMENTAL, cdr.position, 25, 'Ally' )
+            -- Tech1 ~25 dps -- Tech2 ~90 dps = 3 x T1 -- Tech3 ~333 dps = 13 x T1 -- Tech4 ~2000 dps = 80 x T1
+            Threat = UnitT1 + UnitT2 * 3 + UnitT3 * 13 + UnitT4 * 80
+            if Threat > 0 then
+                Braveness = Braveness + math.min( 3, math.floor(Threat / 12) )
+                BraveDEBUG['Ally'] = math.min( 3, math.floor(Threat / 12) )
+            end
+
+            -- We gain 0.5 Braveness if we have at least 5 Anti Air units in close range --------------------------------------------------------------------------------------------
+            Threat = aiBrain:GetNumUnitsAroundPoint( categories.MOBILE * categories.ANTIAIR, cdr.position, 30, 'Ally' )
+            if Threat > 0 then
+                Braveness = Braveness + 0.5
+                BraveDEBUG['AllyAA'] = 0.5
+            end
+
+            -- We gain 1 Braveness if overcharge is available ---------------------------------------------------------------------------------------------------------------------
+            if OverchargeWeapon then
+                if aiBrain:GetEconomyStored('ENERGY') >= OverchargeWeapon.EnergyRequired then
+                    Braveness = Braveness + 1
+                    BraveDEBUG['OC'] = 1
+                end
+            end
+
+            -- We gain 1 Braveness for every enhancement --------------------------------------------------------------------------------------------------------------------------
+            Braveness = Braveness + InstalledEnhancementsCount * 0.5
+            BraveDEBUG['Enhance'] = InstalledEnhancementsCount * 0.5
+
+            -- We gain 0.1 Braveness for every tactical missile defense nearby ----------------------------------------------------------------------------------------------------
+            UnitT2 = aiBrain:GetNumUnitsAroundPoint( categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * categories.TECH2, cdr.position, 28, 'Ally' )
+            if UnitT2 > 0 then
+                Braveness = Braveness + UnitT2 * 0.1
+                Shielded = true
+                BraveDEBUG['TMD'] = UnitT2 * 0.1
+            end
+
+            -- We gain 0.5 Braveness for every Tech2 and 1 Braveness for every tech3 shield nearby --------------------------------------------------------------------------------
+            UnitT1 = aiBrain:GetNumUnitsAroundPoint( categories.MOBILE * categories.SHIELD * (categories.TECH2 + categories.TECH3), cdr.position, 12, 'Ally' )
+            UnitT2 = aiBrain:GetNumUnitsAroundPoint( categories.STRUCTURE * categories.SHIELD * categories.TECH2, cdr.position, 12, 'Ally' )
+            UnitT3 = aiBrain:GetNumUnitsAroundPoint( categories.STRUCTURE * categories.SHIELD * categories.TECH3, cdr.position, 21, 'Ally' )
+            UnitT4 = aiBrain:GetNumUnitsAroundPoint( categories.STRUCTURE * categories.SHIELD * categories.EXPERIMENTAL, cdr.position, 30, 'Ally' )
+            Threat = UnitT1 * 0.5 + UnitT2 * 0.5 + UnitT3 * 1 + UnitT4 * 2
+            if Threat > 0 then
+                Braveness = Braveness + Threat
+                Shielded = true
+                BraveDEBUG['Shield'] = Threat
+            end
+
+
+            -- We lose 1 Braveness for every 5 t1 enemy units in close range ------------------------------------------------------------------------------------------------------
+            UnitT1 = aiBrain:GetNumUnitsAroundPoint( (categories.DIRECTFIRE + categories.INDIRECTFIRE) * categories.TECH1, cdr.position, 40, 'Enemy' )
+            UnitT2 = aiBrain:GetNumUnitsAroundPoint( (categories.DIRECTFIRE + categories.INDIRECTFIRE) * categories.TECH2, cdr.position, 40, 'Enemy' )
+            UnitT3 = aiBrain:GetNumUnitsAroundPoint( (categories.DIRECTFIRE + categories.INDIRECTFIRE) * categories.TECH3, cdr.position, 40, 'Enemy' )
+            UnitT4 = aiBrain:GetNumUnitsAroundPoint( (categories.DIRECTFIRE + categories.INDIRECTFIRE) * categories.EXPERIMENTAL, cdr.position, 40, 'Enemy' )
+            -- Tech1 ~25 dps -- Tech2 ~90 dps = 3 x T1 -- Tech3 ~333 dps = 13 x T1 -- Tech4 ~2000 dps = 80 x T1
+            Threat = UnitT1 + UnitT2 * 3 + UnitT3 * 13 + UnitT4 * 80
+            if Threat > 0 then
+                Braveness = Braveness - math.floor(Threat / 5)
+                BraveDEBUG['Enemy'] = - math.floor(Threat / 5)
+            end
+
+            -- We lose 5 Braveness for every additional enemy ACU nearby (+0 for 1 ACU, +5 for 2 ACUs, +10 for 3 ACUs
+            UnitT1 = aiBrain:GetNumUnitsAroundPoint( categories.COMMAND, cdr.position, 60, 'Enemy' )
+            Threat = UnitT1 - 1
+            if Threat > 0 then
+                Braveness = Braveness - math.floor(Threat * 5)
+                BraveDEBUG['EnemyACU'] = - math.floor(Threat * 5)
+            end
+
+            -- We lose 1 Braveness if we got damaged in the last 4 seconds --------------------------------------------------------------------------------------------------------
+            UnderAttack = UUtils.UnderAttack(cdr)
+            if UnderAttack then
+                Braveness = Braveness - 1
+                BraveDEBUG['Hitted'] = - 1
+            end
+
+            -- We lose 1 Braveness for every 20 map units that we are away from the main base (a 5x5 map has 256x256 map units) ---------------------------------------------------
+            RangeToBase = VDist2(cdr.position[1], cdr.position[3], cdr.CDRHome[1], cdr.CDRHome[3])
+            Braveness = Braveness - math.floor(RangeToBase/20)
+            BraveDEBUG['Range'] = - math.floor(RangeToBase/20)
+
+            -- We lose 3 bravness in range of an enemy tactical missile launcher, we lose 10 in case we are at low health
+            if aiBrain.ACUChampion.EnemyTMLPos then
+                CDRHealth = UUtils.ComHealth(cdr)
+                if CDRHealth > 60 then
+                    Braveness = Braveness - 3
+                    BraveDEBUG['TML'] = - 3
+                else
+                    Braveness = Braveness - 10
+                    BraveDEBUG['TML'] = - 10
+                end
+            end
+
+            -- We lose 10 bravness in case the enemy has more than 8 Tech2/3 bomber or gunships
+            if aiBrain.ACUChampion.numAirEnemyUnits > 8 then
+                Braveness = Braveness - 10
+                BraveDEBUG['Bomber'] = 10
+            end
+
+            -- We lose all Braveness if we have under 20% health -------------------------------------------------------------------------------------------------------------------------
+            CDRHealth = UUtils.ComHealth(cdr)
+            if CDRHealth < 20 then
+                Braveness = -1
+            end
+
+            ---------------
+            -- Targeting --
+            ---------------
+            MoveToTarget = false
+            MoveToTargetPos = false
+            -- Targets from the ACUChampionBaseTargetThread
+            MainBaseTargetWithPath = aiBrain.ACUChampion.MainBaseTargetWithPath
+            MainBaseTargetWithPathPos = aiBrain.ACUChampion.MainBaseTargetWithPathPos[2]
+            FocusTarget = aiBrain.ACUChampion.FocusTarget
+            FocusTargetPos = aiBrain.ACUChampion.FocusTargetPos[2]
+            OverchargeTarget = aiBrain.ACUChampion.OverchargeTarget
+            OverchargeTargetPos = aiBrain.ACUChampion.OverchargeTargetPos[2]
+            TargetCloseRange = aiBrain.ACUChampion.MainBaseTargetCloseRange
+            TargetCloseRangePos = aiBrain.ACUChampion.MainBaseTargetCloseRangePos[2]
+            ACUCloseRange = aiBrain.ACUChampion.MainBaseTargetACUCloseRange
+            ACUCloseRangePos = aiBrain.ACUChampion.MainBaseTargetACUCloseRangePos[2]
+
+            -- start micro only if the ACU is closer to our base than any other enemy unit
+            if FocusTarget then
+                MoveToTarget = FocusTarget
+                MoveToTargetPos = FocusTargetPos
+            -- we don't have a dfocussed target, is there a enemy ACU in close range ? 
+            elseif ACUCloseRange then
+                MoveToTarget = ACUCloseRange
+                MoveToTargetPos = ACUCloseRangePos
+            -- do we have a target with path and a target with ignored pathing? What target is closer ?
+            elseif MainBaseTargetWithPathPos and TargetCloseRangePos then
+                -- is the TargetWithPath closer than the TargetCloseRange 
+                if VDist2( cdr.CDRHome[1], cdr.CDRHome[3], MainBaseTargetWithPathPos[1], MainBaseTargetWithPathPos[3] ) < VDist2( cdr.CDRHome[1], cdr.CDRHome[3], TargetCloseRangePos[1], TargetCloseRangePos[3] ) then
+                    -- is the TargetWithPath further away than our ACU to our base ?
+                    if VDist2( cdr.CDRHome[1], cdr.CDRHome[3], MainBaseTargetWithPathPos[1], MainBaseTargetWithPathPos[3] ) > VDist2( cdr.CDRHome[1], cdr.CDRHome[3], cdr.position[1], cdr.position[3] ) then
+                        MoveToTarget = MainBaseTargetWithPath
+                        MoveToTargetPos = MainBaseTargetWithPathPos
+                    end
+                -- TargetCloseRange is closer than the TargetWithPath 
+                else
+                    -- is the TargetCloseRange further away than our ACU to our base ?
+                    if VDist2( cdr.CDRHome[1], cdr.CDRHome[3], TargetCloseRangePos[1], TargetCloseRangePos[3] ) > VDist2( cdr.CDRHome[1], cdr.CDRHome[3], cdr.position[1], cdr.position[3] ) then
+                        MoveToTarget = TargetCloseRange
+                        MoveToTargetPos = TargetCloseRangePos
+                    end
+                end
+            -- Do we have a target with path and is the target not closer to my base then me ?
+            elseif MainBaseTargetWithPathPos and VDist2( cdr.CDRHome[1], cdr.CDRHome[3], MainBaseTargetWithPathPos[1], MainBaseTargetWithPathPos[3] ) > VDist2( cdr.CDRHome[1], cdr.CDRHome[3], cdr.position[1], cdr.position[3] ) then
+                MoveToTarget = MainBaseTargetWithPath
+                MoveToTargetPos = MainBaseTargetWithPathPos
+            -- Do we have a target without path and is the target not closer to my base then me ?
+            elseif TargetCloseRange and VDist2( cdr.CDRHome[1], cdr.CDRHome[3], TargetCloseRangePos[1], TargetCloseRangePos[3] ) > VDist2( cdr.CDRHome[1], cdr.CDRHome[3], cdr.position[1], cdr.position[3] ) then
+                MoveToTarget = TargetCloseRange
+                MoveToTargetPos = TargetCloseRangePos
+            end
+
+            ------------------
+            -- Enhancements --
+            ------------------
+
+            -- check if we are close to Main base, then decide if we can enhance
+            if VDist2(cdr.position[1], cdr.position[3], cdr.CDRHome[1], cdr.CDRHome[3]) < 60 then
+                -- only upgrade if we are good at health
+                local check = true
+                if self.created + 10 > GetGameTimeSeconds() then
+                    check = false
+                else
+                end
+                if CDRHealth < 20 then
+                    check = false
+                end
+                if UnderAttack then
+                    check = false
+                end
+                if FocusTarget then
+                    check = false
+                end
+                if aiBrain.ACUChampion.EnemyInArea > 0 then
+                    check = false
+                end
+                if aiBrain.ACUChampion.EnemyTMLPos and not Shielded then
+                    check = false
+                end
+                -- Only upgrade with full Energy storage
+                if aiBrain:GetEconomyStoredRatio('ENERGY') < 1.00 then
+                    check = false
+                end
+                -- First enhancement needs at least +300 energy
+                if aiBrain:GetEconomyTrend('ENERGY')*10 < 300 then
+                    check = false
+                end
+                -- Enhancement 3 and all other should only be done if we have good eco. (Black Ops ACU!)
+                if InstalledEnhancementsCount >= 2 and (aiBrain:GetEconomyStoredRatio('MASS') < 0.40 or not Shielded) then
+                    check = false
+                end
+                if check then
+                    -- in case we have engineers inside the platoon, let them assist the ACU
+                    for _, unit in self:GetPlatoonUnits() do
+                        if unit.Dead then continue end
+                        -- exclude the ACU
+                        if unit.CDRHome then
+                            continue
+                        end
+                        if EntityCategoryContains(categories.ENGINEER, unit) then
+                            --LOG('Engineer ASSIST ACU')
+                            -- NOT working for enhancements
+                            IssueGuard({unit}, cdr)
+                        end
+                        
+                    end
+                    -- will only start enhancing if ECO is good
+                    local InstalledEnhancement = self:BuildACUEnhancements(cdr, InstalledEnhancementsCount < 1)
+                    --local InstalledEnhancement = self:BuildACUEnhancements(cdr, false)
+                    -- do we have succesfull installed the enhancement ?
+                    if InstalledEnhancement then
+                        SPEW('* AI-Uveso: * ACUChampionPlatoon: enhancement '..InstalledEnhancement..' installed')
+                        -- count enhancements
+                        InstalledEnhancementsCount = 0
+                        for i, name in SimUnitEnhancements[cdr.EntityId] or {} do
+                            InstalledEnhancementsCount = InstalledEnhancementsCount + 1
+                            SPEW('* AI-Uveso: * ACUChampionPlatoon: Found enhancement: '..name..' - InstalledEnhancementsCount = '..InstalledEnhancementsCount..'')
+                        end
+                        -- check if we have installed a weapon
+                        local tempEnhanceBp = cdr:GetBlueprint().Enhancements[InstalledEnhancement]
+                        -- Is it a weapon with a new max range ?
+                        if tempEnhanceBp.NewMaxRadius then
+                            -- set the new max range
+                            if not cdr.MaxWeaponRange or cdr.MaxWeaponRange < tempEnhanceBp.NewMaxRadius then
+                                cdr.MaxWeaponRange = tempEnhanceBp.NewMaxRadius -- maxrange minus 10%
+                                SPEW('* AI-Uveso: * ACUChampionPlatoon: New cdr.MaxWeaponRange: '..cdr.MaxWeaponRange..' ['..InstalledEnhancement..']')
+                            end
+                        else
+                            --DebugArray(tempEnhanceBp)
+                        end
+                    end
+                end
+            end
+
+            --------------
+            -- Movement --
+            --------------
+--function IsNukeBlastArea(aiBrain, TargetPosition)
+
+            if not aiBrain:PlatoonExists(self) or cdr.Dead then
+                self:PlatoonDisband()
+                return
+            end
+            -- is any enemy closer to our base then our ACU ?
+            if TargetCloseRangePos then
+                EnemyBehindMe = VDist2( cdr.CDRHome[1], cdr.CDRHome[3], TargetCloseRangePos[1], TargetCloseRangePos[3] ) < VDist2( cdr.CDRHome[1], cdr.CDRHome[3], cdr.position[1], cdr.position[3] )
+                if EnemyBehindMe then
+                    BraveDEBUG['Behind'] = 1
+                end
+            elseif MainBaseTargetWithPathPos then
+                EnemyBehindMe = VDist2( cdr.CDRHome[1], cdr.CDRHome[3], MainBaseTargetWithPathPos[1], MainBaseTargetWithPathPos[3] ) < VDist2( cdr.CDRHome[1], cdr.CDRHome[3], cdr.position[1], cdr.position[3] )
+                if EnemyBehindMe then
+                    BraveDEBUG['Behind'] = 2
+                end
+            else
+                EnemyBehindMe = false
+                BraveDEBUG['Behind'] = 0
+            end
+            NavigatorGoal = cdr:GetNavigator():GetGoalPos()
+            -- Run away from experimentals. (move out of experimental wepon range)
+            if aiBrain.ACUChampion.EnemyExperimentalPos and VDist2( cdr.position[1], cdr.position[3], aiBrain.ACUChampion.EnemyExperimentalPos[1][1], aiBrain.ACUChampion.EnemyExperimentalPos[1][3] ) < aiBrain.ACUChampion.EnemyExperimentalWepRange + 30 then
+                alpha = math.atan2 (aiBrain.ACUChampion.EnemyExperimentalPos[1][3] - cdr.position[3] ,aiBrain.ACUChampion.EnemyExperimentalPos[1][1] - cdr.position[1])
+                x = aiBrain.ACUChampion.EnemyExperimentalPos[1][1] - math.cos(alpha) * (aiBrain.ACUChampion.EnemyExperimentalWepRange + 30)
+                y = aiBrain.ACUChampion.EnemyExperimentalPos[1][3] - math.sin(alpha) * (aiBrain.ACUChampion.EnemyExperimentalWepRange + 30)
+                smartPos = { x, GetTerrainHeight( x, y), y }
+                BraveDEBUG['Reason'] = 'Evade from EXPERIMENTAL'
+            -- Move to the enemy if Braveness is positive or if we are inside our base
+            elseif not EnemyBehindMe and Braveness >= 0 and MoveToTargetPos then
+                ReachedBase = false
+                BraveDEBUG['ReachedBase'] = 0
+                -- if the target has moved or we got a new target, delete the Weapon Blocked flag.
+                if cdr.LastMoveToTargetPos ~= MoveToTargetPos then
+                    cdr.WeaponBlocked = false
+                    cdr.LastMoveToTargetPos = MoveToTargetPos
+                end
+                -- Set different move destination if weapon fire is blocked
+                if cdr.WeaponBlocked then
+                    -- Weapoon fire is blocked, move to the target as close as possible.
+                    smartPos = { MoveToTargetPos[1], MoveToTargetPos[2], MoveToTargetPos[3] }
+                    BraveDEBUG['Reason'] = 'Weapon Blocked'
+                else
+                    -- go closeer to the target depending on ACU health
+                    local RangeMod = CDRHealth/10
+                    if RangeMod < 0 then RangeMod = 0 end
+                    if RangeMod > 10 then RangeMod = 10 end
+                    -- Weapoon fire is not blocked, move to the target at Max Weapon Range.
+                    alpha = math.atan2 (MoveToTargetPos[3] - cdr.position[3] ,MoveToTargetPos[1] - cdr.position[1])
+                    x = MoveToTargetPos[1] - math.cos(alpha) * (cdr.MaxWeaponRange * 0.9 - RangeMod)
+                    y = MoveToTargetPos[3] - math.sin(alpha) * (cdr.MaxWeaponRange * 0.9 - RangeMod)
+                    smartPos = { x, GetTerrainHeight( x, y), y }
+                    BraveDEBUG['Reason'] = 'Attack target'
+                end
+            -- Back to base if Braveness is negative
+            else
+                -- decide if we move to our base or if we need to evade
+                if VDist2( cdr.position[1], cdr.position[3], cdr.CDRHome[1], cdr.CDRHome[3] ) > 30 and not ReachedBase then
+                    -- move to main base
+                    smartPos = cdr.CDRHome
+                    BraveDEBUG['Reason'] = 'go home >30'
+                -- evade from focus target
+                elseif not EnemyBehindMe and CDRHealth > 30 and FocusTargetPos and MoveToTargetPos then
+                    ReachedBase = true
+                    BraveDEBUG['ReachedBase'] = 1
+                    alpha = math.atan2 (MoveToTargetPos[3] - cdr.position[3] ,MoveToTargetPos[1] - cdr.position[1])
+                    x = MoveToTargetPos[1] - math.cos(alpha) * (50)
+                    y = MoveToTargetPos[3] - math.sin(alpha) * (50)
+                    smartPos = { x, GetTerrainHeight( x, y), y }
+                    BraveDEBUG['Reason'] = 'Evade from FocusTarget'
+                -- in case we got attacked but don't have a target to shoot at or low health
+                elseif CDRHealth < 30 or aiBrain.ACUChampion.EnemyInArea then
+                    ReachedBase = true
+                    BraveDEBUG['ReachedBase'] = 1
+                    local lessEnemyAreaPos
+                    if (aiBrain.ACUChampion.EnemyInArea > 0 or FocusTargetPos) and aiBrain.ACUChampion.AreaTable then
+                        local MostEnemyAreaIndex
+                        local MostEnemyArea
+                        for index, pos in aiBrain.ACUChampion.AreaTable do
+                            if not MostEnemyArea or MostEnemyArea < aiBrain.ACUChampion.AreaTable[index][4] then
+                                MostEnemyArea = aiBrain.ACUChampion.AreaTable[index][4]
+                                MostEnemyAreaIndex = index
+                            end
+                        end
+                        local countMin = false
+                        local mirrorIndex
+                        for index = 4, 3, -1 do
+                            mirrorIndex = MostEnemyAreaIndex + index
+                            if mirrorIndex > 8 then mirrorIndex = mirrorIndex - 8 end
+                            if not countMin or countMin > aiBrain.ACUChampion.AreaTable[mirrorIndex][4] then
+                                countMin = aiBrain.ACUChampion.AreaTable[mirrorIndex][4]
+                                lessEnemyAreaPos = {aiBrain.ACUChampion.AreaTable[mirrorIndex][1], aiBrain.ACUChampion.AreaTable[mirrorIndex][2], aiBrain.ACUChampion.AreaTable[mirrorIndex][3]}
+                                --LOG('lessEnemyAreaPos + = mirrorIndex: '..mirrorIndex..' - countMin:'..countMin)
+                            end
+                            mirrorIndex = MostEnemyAreaIndex - index
+                            if mirrorIndex < 1 then mirrorIndex = mirrorIndex + 8 end
+                            if not countMin or countMin > aiBrain.ACUChampion.AreaTable[mirrorIndex][4] then
+                                countMin = aiBrain.ACUChampion.AreaTable[mirrorIndex][4]
+                                lessEnemyAreaPos = {aiBrain.ACUChampion.AreaTable[mirrorIndex][1], aiBrain.ACUChampion.AreaTable[mirrorIndex][2], aiBrain.ACUChampion.AreaTable[mirrorIndex][3]}
+                                --LOG('lessEnemyAreaPos - = mirrorIndex: '..mirrorIndex..' - countMin:'..countMin)
+                            end
+                        end
+                    end
+                    if lessEnemyAreaPos then
+                        smartPos = lessEnemyAreaPos
+                        BraveDEBUG['Reason'] = 'Evade to lessEnemyAreaPos'
+                    else
+                        ReachedBase = false
+                        smartPos = UUtils.RandomizePosition(cdr.CDRHome)
+                        BraveDEBUG['Reason'] = 'Evade to cdr.CDRHom'
+                    end
+                else
+                    ReachedBase = true
+                    BraveDEBUG['ReachedBase'] = 1
+                    if VDist2( cdr.position[1], cdr.position[3], cdr.CDRHome[1], cdr.CDRHome[3] ) > 30 then
+                        smartPos = cdr.CDRHome
+                        BraveDEBUG['Reason'] = 'dance go home'
+                    elseif VDist2( cdr.position[1], cdr.position[3], NavigatorGoal[1], NavigatorGoal[3] ) <= 0.7 then
+                        -- we are at home and not under attack, dance
+                        smartPos = UUtils.RandomizePosition(cdr.CDRHome)
+                        BraveDEBUG['Reason'] = 'dance at home'
+                    else
+                        BraveDEBUG['Reason'] = 'dance at home Navigator'
+                    end
+                end
+            end
+
+            if CHAMPIONDEBUG then
+                cdr:SetCustomName('Braveness: '..Braveness..' - '..BraveDEBUG['Reason'])
+                DebugText = 'Full:'..(BraveDEBUG['Health100%'] or "--")..' '
+                DebugText = DebugText..'Heal:'..(BraveDEBUG['Health'] or "--")..' '
+                DebugText = DebugText..'Ally:'..(BraveDEBUG['Ally'] or "--")..' '
+                DebugText = DebugText..'AlAA:'..(BraveDEBUG['AllyAA'] or "--")..' '
+                DebugText = DebugText..'Over:'..(BraveDEBUG['OC'] or "--")..' '
+                DebugText = DebugText..'Enh:'..(BraveDEBUG['Enhance'] or "--")..' '
+                DebugText = DebugText..'TMD:'..(BraveDEBUG['TMD'] or "--")..' '
+                DebugText = DebugText..'Shield:'..(BraveDEBUG['Shield'] or "--")..' '
+                DebugText = DebugText..'Enemy:'..(BraveDEBUG['Enemy'] or "--")..' '
+                DebugText = DebugText..'EnemyACU:'..(BraveDEBUG['EnemyACU'] or "--")..' '   -- -0 -5
+                DebugText = DebugText..'Behind:'..(BraveDEBUG['Behind'] or "--")..' '
+                DebugText = DebugText..'Hitted:'..(BraveDEBUG['Hitted'] or "--")..' '
+                DebugText = DebugText..'Range:'..(BraveDEBUG['Range'] or "--")..' '         -- -0 -12
+                DebugText = DebugText..'TML:'..(BraveDEBUG['TML'] or "--")..' '
+                DebugText = DebugText..'Bomber:'..(BraveDEBUG['Bomber'] or "--")..' '
+                DebugText = DebugText..'RBase:'..(BraveDEBUG['ReachedBase'] or "--")..' '
+                DebugText = DebugText..'Braveness: '..Braveness..' - '
+                DebugText = DebugText..'ACTION: '..(BraveDEBUG['Reason'] or "--")..' '
+                if DebugText != LastDebugText then
+                    LastDebugText = DebugText
+                    LOG(DebugText)
+                end
+            end
+            
+            -- clear move commands if we have queued more than 2
+            if table.getn(cdr:GetCommandQueue()) > 2 then
+                IssueClearCommands({cdr})
+                --WARN('* AI-Uveso: ACUChampionPlatoon: IssueClearCommands({cdr}) ) 2'..table.getn(cdr:GetCommandQueue()))
+            end
+
+            -- fire overcharge
+            if OverchargeWeapon then
+                -- Do we have the energy in general to overcharge ?
+                if aiBrain:GetEconomyStored('ENERGY') >= OverchargeWeapon.EnergyRequired then
+                    -- only shoot when we have low mass (then we don't need energy) or at full energy (max damage) or when in danger
+                    if aiBrain:GetEconomyStoredRatio('MASS') < 0.05 or aiBrain:GetEconomyStoredRatio('ENERGY') > 0.99 or CDRHealth < 60 then
+                        if OverchargeTarget and not OverchargeTarget.Dead and not OverchargeTarget:BeenDestroyed() then
+                            IssueOverCharge({cdr}, OverchargeTarget)
+                        end
+                    end
+                end
+            end
+
+            -- in case we are in range of an enemy TMl, always move to different positions
+            if aiBrain.ACUChampion.EnemyTMLPos or UnderAttack then
+                smartPos = UUtils.RandomizePositionTML(smartPos)
+            end
+            -- in case we are not moving for 4 seconds, force moving (maybe blocked line of sight)
+            if not cdr:IsUnitState("Moving") then
+                if cdr.LastMoved + 4 < GetGameTimeSeconds() then
+                    smartPos = UUtils.RandomizePositionTML(smartPos)
+                    cdr.LastMoved = GetGameTimeSeconds()
+                end
+            else
+                cdr.LastMoved = GetGameTimeSeconds()
+            end
+
+            -- check if we have already a move position
+            if not smartPos[1] then
+                smartPos = cdr.position
+            end
+            -- Validate move position, make sure it's not out of map
+            if smartPos[1] < playablearea[1] then
+                smartPos[1] = playablearea[1]
+            elseif smartPos[1] > playablearea[3] then
+                smartPos[1] = playablearea[3]
+            end
+            if smartPos[3] < playablearea[2] then
+                smartPos[3] = playablearea[2]
+            elseif smartPos[3] > playablearea[4] then
+                smartPos[3] = playablearea[4]
+            end
+            -- check if the move position is new, then issue a move command
+            if VDist2( smartPos[1], smartPos[3], NavigatorGoal[1], NavigatorGoal[3] ) > 0.7 then
+                IssueClearCommands({cdr})
+                IssueMove({cdr}, smartPos )
+                if CHAMPIONDEBUG then
+                    aiBrain.ACUChampion.moveto = {cdr.position, smartPos}
+                end
+            elseif VDist2( cdr.position[1], cdr.position[3], NavigatorGoal[1], NavigatorGoal[3] ) <= 0.7 then
+                if CHAMPIONDEBUG then
+                    aiBrain.ACUChampion.moveto = false
+                end
+            end
+
+            -- fire primary weapon
+            if FocusTargetPos and aiBrain:CheckBlockingTerrain(cdr.position, FocusTargetPos, 'low') then
+                cdr.WeaponBlocked = true
+            else
+                cdr.WeaponBlocked = false
+            end
+            if not cdr.WeaponBlocked and FocusTarget and not FocusTarget.Dead and not FocusTarget:BeenDestroyed() then
+                IssueAttack({cdr}, FocusTarget)
+            end
+
+            -- At home, no target and not under attack ? Then we can maybe disband
+            if VDist2( cdr.position[1], cdr.position[3], cdr.CDRHome[1], cdr.CDRHome[3] ) < 30 and not MoveToTarget and not UnderAttack then
+                -- in case we have no Factory left, recover!
+                if not aiBrain:GetListOfUnits(categories.STRUCTURE * categories.FACTORY * categories.LAND - categories.SUPPORTFACTORY, false)[1] then
+                    --WARN('* AI-Uveso: ACUChampionPlatoon: PlatoonDisband (no HQ Factory)')
+                    aiBrain.ACUChampion.CDRposition = false
+                    aiBrain.ACUChampion.moveto = false
+                    aiBrain.ACUChampion.MainBaseTargetWithPath = false
+                    aiBrain.ACUChampion.MainBaseTargetWithPathPos = false
+                    aiBrain.ACUChampion.MainBaseTargetCloseRange = false
+                    aiBrain.ACUChampion.MainBaseTargetCloseRangePos = false
+                    aiBrain.ACUChampion.MainBaseTargetACUCloseRange = false
+                    aiBrain.ACUChampion.MainBaseTargetACUCloseRangePos = false
+                    aiBrain.ACUChampion.OverchargeTargetPos = false
+                    aiBrain.ACUChampion.FocusTarget = false
+                    aiBrain.ACUChampion.FocusTargetPos = false
+                    aiBrain.ACUChampion.EnemyTMLPos = false
+                    aiBrain.ACUChampion.EnemyExperimentalPos = false
+                    aiBrain.ACUChampion.AreaTable = false
+                    aiBrain.ACUChampion.numAirEnemyUnits = false
+                    aiBrain.ACUChampion.OverchargeTarget = false
+                    aiBrain.ACUChampion.Assistees = false
+                    if CHAMPIONDEBUG then
+                        cdr:SetCustomName('Engineer Recover')
+                    end
+                    self:PlatoonDisband()
+                    return
+                end
+
+                -- no target in platoon max range ? Disband; Maybe another platoon has more max range
+                if self.created + 30 < GetGameTimeSeconds() and Braveness > 0 and CDRHealth >= 100 and not aiBrain.ACUChampion.MainBaseTargetCloseRange and not DoNotDisband then
+                    --WARN('* AI-Uveso: ACUChampionPlatoon: PlatoonDisband (no targets in range)')
+                    aiBrain.ACUChampion.CDRposition = false
+                    aiBrain.ACUChampion.moveto = false
+                    aiBrain.ACUChampion.MainBaseTargetWithPath = false
+                    aiBrain.ACUChampion.MainBaseTargetWithPathPos = false
+                    aiBrain.ACUChampion.MainBaseTargetCloseRange = false
+                    aiBrain.ACUChampion.MainBaseTargetCloseRangePos = false
+                    aiBrain.ACUChampion.MainBaseTargetACUCloseRange = false
+                    aiBrain.ACUChampion.MainBaseTargetACUCloseRangePos = false
+                    aiBrain.ACUChampion.OverchargeTargetPos = false
+                    aiBrain.ACUChampion.FocusTarget = false
+                    aiBrain.ACUChampion.FocusTargetPos = false
+                    aiBrain.ACUChampion.EnemyTMLPos = false
+                    aiBrain.ACUChampion.EnemyExperimentalPos = false
+                    aiBrain.ACUChampion.AreaTable = false
+                    aiBrain.ACUChampion.numAirEnemyUnits = false
+                    aiBrain.ACUChampion.OverchargeTarget = false
+                    aiBrain.ACUChampion.Assistees = false
+                    if CHAMPIONDEBUG then
+                        cdr:SetCustomName('Engineer')
+                    end
+                    self:PlatoonDisband()
+                    return
+                end
+            end
+            ----------------------------------------------
+            -- Second micro part for cover/shield units --
+            ----------------------------------------------
+            PlatoonCenterPosition = self:GetPlatoonPosition()
+            aiBrain.ACUChampion.Assistees = {}
+            local debugIndex = 0
+            local DistToACU = 0
+            for index, unit in self:GetPlatoonUnits() do
+                if unit.Dead then continue end
+                -- exclude the ACU
+                if unit.CDRHome then
+                    continue
+                end
+                -- check and save if a unit has shield or stealth or cloak, so we can place the unit behind the ACU
+                if not unit.HasShield then
+                    UnitBlueprint = unit:GetBlueprint()
+                    -- We need to cover other units with the shield, so only count non personal shields.
+                    if UnitBlueprint.CategoriesHash.SHIELD and not UnitBlueprint.Defense.Shield.PersonalShield then
+                        unit.HasShield = 1
+                    elseif UnitBlueprint.Intel.RadarStealthField then
+                        unit.HasShield = 1
+                    elseif UnitBlueprint.Intel.CloakField then
+                        unit.HasShield = 1
+                    else
+                        unit.HasShield = 0
+                    end
+                end
+                -- Positive numbers will move units behind the ACU, negative numbers in front of the ACU
+                if unit.HasShield == 1 then
+                    -- Shield units
+                    DistToACU = 5
+                elseif EntityCategoryContains(categories.LAND * categories.ANTIAIR, unit) then
+                    -- Mobile Land Anti Air
+                    DistToACU = 20
+                elseif EntityCategoryContains(categories.AIR, unit) then
+                    -- Air units
+                    DistToACU = 1
+                elseif EntityCategoryContains(categories.ENGINEER, unit) then
+                    DistToACU = 10
+                else
+                    -- land units -6 means the unit will stay in front of the ACU
+                    DistToACU = -6
+                end
+                --LOG('Valid Unit in ACU platoon: '..unit.UnitId)
+                unitPos = unit:GetPosition()
+                -- for debug lines
+                debugIndex = debugIndex + 1
+                aiBrain.ACUChampion.Assistees[debugIndex] = {unitPos, cdr.position }
+                if not unit.smartPos then
+                    unit.smartPos = unitPos
+                end
+                -- calculate a position behind the unit we want to cover (behind unit from enemy view)
+                if NavigatorGoal and FocusTargetPos then
+                    -- if we have a target, then move behind the ACU
+                    alpha = math.atan2 (NavigatorGoal[3] - FocusTargetPos[3] ,NavigatorGoal[1] - FocusTargetPos[1])
+                    x = cdr.smartPos[1] + math.cos(alpha) * DistToACU
+                    y = cdr.smartPos[3] + math.sin(alpha) * DistToACU
+                    smartPos = { x, GetTerrainHeight( x, y), y }
+                else
+                    -- Move so the ACU is between units and Base
+                    --alpha = math.atan2 (cdr.position[3] - cdr.CDRHome[3] ,cdr.position[1] - cdr.CDRHome[1])
+                    -- Move so our support units are between ACU and base
+                    alpha = math.atan2 (cdr.CDRHome[3] - cdr.position[3] ,cdr.CDRHome[1] - cdr.position[1])
+                    x = cdr.smartPos[1] + math.cos(alpha) * DistToACU
+                    y = cdr.smartPos[3] + math.sin(alpha) * DistToACU
+                    smartPos = { x, GetTerrainHeight( x, y), y }
+                end
+                -- check if the move position is new
+                if VDist2( smartPos[1], smartPos[3], unit.smartPos[1], unit.smartPos[3] ) > 0.7 then
+                    -- clear move commands if we have queued more than 2
+                    if table.getn(unit:GetCommandQueue()) > 1 then
+                        IssueClearCommands({unit})
+                    end
+                    IssueMove({unit}, smartPos )
+                    unit.smartPos = smartPos
+                end
+            end
+
+        end
+    end,
+
+    ACUChampionBaseTargetThread = function(platoon, aiBrain, cdr)
+        local MoveToCategories = {}
+        if platoon.PlatoonData.MoveToCategories then
+            for k,v in platoon.PlatoonData.MoveToCategories do
+                table.insert(MoveToCategories, v )
+            end
+        end
+        local SearchRadius = platoon.PlatoonData.SearchRadius or 250
+        local TargetSearchCategory = platoon.PlatoonData.TargetSearchCategory or 'ALLUNITS'
+        local SelfArmyIndex = aiBrain:GetArmyIndex()
+        local ValidUnit, NavigatorGoal, FocusTarget, TargetsInACURange, blip
+        local EnemyACU, EnemyACUPos, EnemyUnit, EnemyUnitPos, OverchargeVictims, MostUnitAround
+        local playablearea
+        if ScenarioInfo.MapData.PlayableRect then
+            playablearea = ScenarioInfo.MapData.PlayableRect
+        else
+            playablearea = {0, 0, ScenarioInfo.size[1], ScenarioInfo.size[2]}
+        end
+
+        while aiBrain:PlatoonExists(platoon) and not cdr.Dead do
+            -- wait here to prevent deadloops and heavy CPU load
+            coroutine.yield(1)
+
+            -- get the closest target to mainbase with path
+            ValidUnit = false
+            UnitWithPath, UnitNoPath, path, reason = AIUtils.AIFindNearestCategoryTargetInRange(aiBrain, platoon, 'Attack', cdr.CDRHome, SearchRadius, {TargetSearchCategory}, TargetSearchCategory, false )
+            if UnitWithPath then
+                blip = UnitWithPath:GetBlip(SelfArmyIndex)
+                if blip then
+                    if blip:IsOnRadar(SelfArmyIndex) or blip:IsSeenEver(SelfArmyIndex) then
+                        if not blip:BeenDestroyed() and not blip:IsKnownFake(SelfArmyIndex) and not blip:IsMaybeDead(SelfArmyIndex) then
+                            aiBrain.ACUChampion.MainBaseTargetWithPath = UnitWithPath
+                            ValidUnit = true
+                        end
+                    end
+                end
+            end
+            if not ValidUnit then
+                aiBrain.ACUChampion.MainBaseTargetWithPath = false
+            end
+            -- draw a line from base to the base target
+            if aiBrain.ACUChampion.MainBaseTargetWithPath then
+                aiBrain.ACUChampion.MainBaseTargetWithPathPos = {cdr.CDRHome, aiBrain.ACUChampion.MainBaseTargetWithPath:GetPosition()}
+            else
+                aiBrain.ACUChampion.MainBaseTargetWithPathPos = false
+            end
+
+            -- get the closest target to mainbase ignoring path
+            ValidUnit = false
+            UnitCloseRange = AIUtils.AIFindNearestCategoryTargetInCloseRange(platoon, aiBrain, 'Attack', cdr.CDRHome, SearchRadius, {TargetSearchCategory}, TargetSearchCategory, false)
+            if UnitCloseRange then
+                blip = UnitCloseRange:GetBlip(SelfArmyIndex)
+                if blip then
+                    if blip:IsOnRadar(SelfArmyIndex) or blip:IsSeenEver(SelfArmyIndex) then
+                        if not blip:BeenDestroyed() and not blip:IsKnownFake(SelfArmyIndex) and not blip:IsMaybeDead(SelfArmyIndex) then
+                            aiBrain.ACUChampion.MainBaseTargetCloseRange = UnitCloseRange
+                            ValidUnit = true
+                        end
+                    end
+                end
+            end
+            if not ValidUnit then
+                aiBrain.ACUChampion.MainBaseTargetCloseRange = false
+            end
+            -- draw a line from base to the base target
+            if aiBrain.ACUChampion.MainBaseTargetCloseRange then
+                aiBrain.ACUChampion.MainBaseTargetCloseRangePos = {cdr.CDRHome, aiBrain.ACUChampion.MainBaseTargetCloseRange:GetPosition()}
+            else
+                aiBrain.ACUChampion.MainBaseTargetCloseRangePos = false
+            end
+            
+            -- get the closest ACU target to mainbase ignoring path
+            -- get units around point, acu wiht lowest health = target
+            ValidUnit = false
+            ACUCloseRange = AIUtils.AIFindNearestCategoryTargetInCloseRange(platoon, aiBrain, 'Attack', cdr.position, cdr.MaxWeaponRange, {categories.COMMAND}, categories.COMMAND, false)
+            if ACUCloseRange then
+                blip = ACUCloseRange:GetBlip(SelfArmyIndex)
+                if blip then
+                    if blip:IsOnRadar(SelfArmyIndex) or blip:IsSeenEver(SelfArmyIndex) then
+                        if not blip:BeenDestroyed() and not blip:IsKnownFake(SelfArmyIndex) and not blip:IsMaybeDead(SelfArmyIndex) then
+                            aiBrain.ACUChampion.MainBaseTargetACUCloseRange = ACUCloseRange
+                            ValidUnit = true
+                        end
+                    end
+                end
+            end
+            if not ValidUnit then
+                aiBrain.ACUChampion.MainBaseTargetACUCloseRange = false
+            end
+            -- draw a line from base to the base target
+            if aiBrain.ACUChampion.MainBaseTargetACUCloseRange then
+                aiBrain.ACUChampion.MainBaseTargetACUCloseRangePos = {cdr.CDRHome, aiBrain.ACUChampion.MainBaseTargetACUCloseRange:GetPosition()}
+            else
+                aiBrain.ACUChampion.MainBaseTargetACUCloseRangePos = false
+            end
+            -- get the closest target to the ACU
+            EnemyACU = platoon:FindClosestUnit('Attack', 'Enemy', true, categories.COMMAND)
+            if EnemyACU then
+                EnemyACUPos = EnemyACU:GetPosition()
+                -- out of range ?
+                if VDist2( cdr.position[1], cdr.position[3], EnemyACUPos[1], EnemyACUPos[3] ) > cdr.MaxWeaponRange then
+                    EnemyACU = false
+                end
+            end
+            EnemyUnit = platoon:FindClosestUnit('Attack', 'Enemy', true, TargetSearchCategory)
+            if EnemyUnit then
+                EnemyUnitPos = EnemyUnit:GetPosition()
+                -- out of range ?
+                if VDist2( cdr.position[1], cdr.position[3], EnemyUnitPos[1], EnemyUnitPos[3] ) > cdr.MaxWeaponRange then
+                    EnemyUnit = false
+                end 
+            end
+            if EnemyACU then
+                aiBrain.ACUChampion.FocusTarget = EnemyACU
+                aiBrain.ACUChampion.FocusTargetPos = {cdr.position, EnemyACU:GetPosition()}
+            elseif EnemyUnit then
+                aiBrain.ACUChampion.FocusTarget = EnemyUnit
+                aiBrain.ACUChampion.FocusTargetPos = {cdr.position, EnemyUnit:GetPosition()}
+            else
+                aiBrain.ACUChampion.FocusTarget = false
+                aiBrain.ACUChampion.FocusTargetPos = false
+            end
+            -- get target for overcharge 
+            TargetsInACURange = aiBrain:GetUnitsAroundPoint(TargetSearchCategory, cdr.position, cdr.MaxWeaponRange, 'Enemy')
+            OverchargeVictims = {}
+            for i, Target in TargetsInACURange do
+                if Target.Dead or Target:BeenDestroyed() then
+                    continue
+                end
+                TargetPosition = Target:GetPosition()
+                if VDist2( cdr.position[1], cdr.position[3], TargetPosition[1], TargetPosition[3] ) < cdr.MaxWeaponRange then
+                    table.insert(OverchargeVictims, {Target, TargetPosition, 0})
+                end
+            end
+            -- count the unit with most units around (overcharge splat radius = 2.5)
+            ValidUnit = false
+            MostUnitAround = 0
+            for IndexA, UnitA in OverchargeVictims do
+                for IndexB, UnitB in OverchargeVictims do
+                    if IndexA ~= IndexB and VDist2( UnitA[2][1], UnitA[2][3], UnitB[2][1], UnitB[2][3] ) < 2.5 then
+                        UnitA[3] = UnitA[3] + 1
+                        if UnitA[3] > MostUnitAround then
+                            MostUnitAround = UnitA[3]
+                            aiBrain.ACUChampion.OverchargeTarget = UnitA[1]
+                            ValidUnit = true
+                        end
+                    end
+                end
+            end
+            if not ValidUnit then
+                aiBrain.ACUChampion.OverchargeTarget = false
+            end
+            -- draw a line for overcharge target
+            if aiBrain.ACUChampion.OverchargeTarget then
+                aiBrain.ACUChampion.OverchargeTargetPos = {cdr.position, aiBrain.ACUChampion.OverchargeTarget:GetPosition()}
+            else
+                aiBrain.ACUChampion.OverchargeTargetPos = false
+            end
+            
+            -- Find free spots around the ACU for evading
+            local AreaTable = {
+                {cdr.position[1]-12, cdr.position[2], cdr.position[3]-30}, -- 1
+                {cdr.position[1]+12, cdr.position[2], cdr.position[3]-30}, -- 2
+                {cdr.position[1]+30, cdr.position[2], cdr.position[3]-12}, -- 4         1 2
+                {cdr.position[1]+30, cdr.position[2], cdr.position[3]+12}, -- 6       3     4
+                {cdr.position[1]+12, cdr.position[2], cdr.position[3]+30}, -- 8       5     6
+                {cdr.position[1]-12, cdr.position[2], cdr.position[3]+30}, -- 7         7 8
+                {cdr.position[1]-30, cdr.position[2], cdr.position[3]+12}, -- 5
+                {cdr.position[1]-30, cdr.position[2], cdr.position[3]-12}, -- 3
+            }
+            aiBrain.ACUChampion.EnemyInArea = 0
+            for index, pos in AreaTable do
+                UnitT1 = aiBrain:GetNumUnitsAroundPoint( categories.ALLUNITS, pos, 24, 'Enemy' )
+                aiBrain.ACUChampion.EnemyInArea = aiBrain.ACUChampion.EnemyInArea + UnitT1
+                -- mimic the map border as enemy units, so the ACU will not get to close to the border
+                if pos[1] <= playablearea[1] + 1 then                  -- left border
+                    UnitT1 = UnitT1 + playablearea[1] + 1 - pos[1]
+                elseif pos[1] >= playablearea[3] -1 then               -- right border
+                    UnitT1 = UnitT1 + pos[1] - (playablearea[3] - 1)
+                end
+                if pos[3] <= playablearea[2] + 1then                  -- top border
+                    UnitT1 = UnitT1 + playablearea[2] + 1 - pos[3]
+                elseif pos[3] >= playablearea[4] -1 then               -- bottom border
+                    UnitT1 = UnitT1 + pos[3] - (playablearea[4] - 1)
+                end
+                AreaTable[index][4] = UnitT1
+            end
+            aiBrain.ACUChampion.AreaTable = AreaTable
+
+            -- Enemy tactical missile threat
+            local EnemyTML = platoon:FindClosestUnit('Attack', 'Enemy', true, categories.TACTICALMISSILEPLATFORM)
+            if EnemyTML then
+                local EnemyTMLPos = EnemyTML:GetPosition()
+                -- in range ?
+                if VDist2( cdr.position[1], cdr.position[3], EnemyTMLPos[1], EnemyTMLPos[3] ) < 256 then
+                    --aiBrain.ACUChampion.EnemyTML = EnemyTML
+                    aiBrain.ACUChampion.EnemyTMLPos = {EnemyTMLPos, cdr.position}
+                else
+                    aiBrain.ACUChampion.EnemyTMLPos = false
+                end
+            end
+
+            -- Enemy tactical missile threat
+            local EnemyExperimental = platoon:FindClosestUnit('Attack', 'Enemy', true, categories.MOBILE * categories.EXPERIMENTAL)
+            if EnemyExperimental then
+                local EnemyExperimentalPos = EnemyExperimental:GetPosition()
+                local UnitBlueprint = EnemyExperimental:GetBlueprint()
+                local MaxWeaponRange
+                for _, weapon in UnitBlueprint.Weapon or {} do
+                    -- filter dummy weapons
+                    if weapon.Damage == 0 or weapon.WeaponCategory == 'Missile' or weapon.WeaponCategory == 'Teleport' then
+                        continue
+                    end
+                    if not MaxWeaponRange or MaxWeaponRange < weapon.MaxRadius then
+                        MaxWeaponRange = weapon.MaxRadius
+                    end
+                end
+                -- in range ?
+                aiBrain.ACUChampion.EnemyExperimentalPos = {EnemyExperimentalPos, cdr.position}
+                aiBrain.ACUChampion.EnemyExperimentalWepRange = MaxWeaponRange
+            else
+                aiBrain.ACUChampion.EnemyExperimentalPos = false
+                aiBrain.ACUChampion.EnemyExperimentalWepRange = false
+            end
+
+            -- Enemy Bomber/gunship threat
+            local numAirEnemyUnits = aiBrain:GetNumUnitsAroundPoint(categories.MOBILE * categories.AIR * (categories.BOMBER + categories.GROUNDATTACK) - categories.TECH1, Vector(playablearea[3]/2,0,playablearea[4]/2), playablearea[3]+playablearea[4] , 'Enemy')
+            aiBrain.ACUChampion.numAirEnemyUnits = numAirEnemyUnits
+        end
+    end,
+
+    -- call with self:DebugPlatoonSquads()
+    DebugPlatoonSquads = function(self)
+        local squadTypes = {'Unassigned', 'Attack', 'Artillery', 'Support', 'Scout', 'Guard'}
+        for i, typ in squadTypes do
+            LOG('Checking Squad: '..typ)
+            local squadUnits = self:GetSquadUnits(typ)
+            if squadUnits then
+                for k, v in squadUnits do
+                    LOG('Squad: '..typ..' - unit: '..repr(v.UnitId))
+                end
+            end
+        end
+    end,
+
 }
 
---T4 Kanonenbot
---Speed 0.8
---High 12
---Impact after 18 map units
 
---Schüssel
---Speed 0.8
---High 25
---Impact after 26 map units
-
---T4 Bomber
---Speed 2.0
---High 25
---Impact after 60
-
---T3 Bomber
---Speed 1.6
---High 20
---Impact after 
-
---T2 Kanonenbot
---Speed 1.2
---High 10
---Impact after 12  map units
-
+-- [ALT]+[a]
+--            if not aiBrain:IsOpponentAIRunning() then
+--                LOG('MarkerGridThreatManagerThread paused')
+--                coroutine.yield(1)
+--                continue
+--            end

@@ -368,7 +368,7 @@ BuilderGroup {
 --    Unit Cap Trasher  --
 -- ==================== --
 BuilderGroup {
-    BuilderGroupName = 'U4 Air Experimental Formers Trasher',                 -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U4 Air Experimental Formers Trasher',                   -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',                                        -- BuilderTypes are: EngineerBuilder, FactoryBuilder, PlatoonFormBuilder.
     Builder {
         BuilderName = 'U4 AIR Trasher',                                         -- Random Builder Name.
@@ -389,7 +389,7 @@ BuilderGroup {
             DirectMoveEnemyBase = true, 
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
-            AttackEnemyStrength = 100000000,                                       -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            AttackEnemyStrength = 100000000,                                    -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.ALLUNITS,                         -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
@@ -431,10 +431,10 @@ BuilderGroup {
     BuilderGroupName = 'U4 Suicide Air Crash',                                  -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     Builder {
-        BuilderName = 'U4 Suicide AIR',                                         -- Random Builder Name.
+        BuilderName = 'U4 Suicide AIR exp',                                     -- Random Builder Name.
         PlatoonTemplate = 'U4-Suicide 1 1',                                     -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates"
         Priority = 10000,                                                       -- Priority. 1000 is normal.
-        InstanceCount = 5,                                                      -- Number of plattons that will be formed.
+        InstanceCount = 1,                                                      -- Number of plattons that will be formed.
         FormRadius = 10000,
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush1stPhaseActive then
@@ -453,14 +453,7 @@ BuilderGroup {
             MoveToCategories = {                                                -- Move to targets
                 categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
                 categories.STRUCTURE * categories.EXPERIMENTAL * categories.SHIELD,
-                categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
-                categories.OPTICS,
-                categories.STRUCTURE * categories.MASSEXTRACTION * categories.TECH3,
-                categories.FACTORY * categories.TECH3,
-                categories.STRUCTURE * categories.EXPERIMENTAL,
-                categories.STRUCTURE * categories.NUKE,
-                categories.STRUCTURE,
-                categories.ALLUNITS,
+                categories.STRUCTURE * categories.EXPERIMENTAL * categories.ARTILLERY,
             },
             WeaponTargetCategories = {                                          -- Override weapon target priorities
                 categories.ANTIAIR,
@@ -470,6 +463,43 @@ BuilderGroup {
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             -- When do we want to form this ?
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.STRUCTURE * categories.EXPERIMENTAL * (categories.ECONOMIC + categories.SHIELD + categories.ARTILLERY) } },
+        },
+        BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
+    },
+    Builder {
+        BuilderName = 'U4 Suicide AIR T3',                                      -- Random Builder Name.
+        PlatoonTemplate = 'U4-Suicide 1 1',                                     -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates"
+        Priority = 9000,                                                        -- Priority. 1000 is normal.
+        InstanceCount = 1,                                                      -- Number of plattons that will be formed.
+        FormRadius = 10000,
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 10000
+            end
+        end,
+        BuilderData = {
+            SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
+            GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
+            AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
+            AttackEnemyStrength = 100000,                                       -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
+            TargetSearchCategory = categories.STRUCTURE,                        -- Only find targets matching these categories.
+            MoveToCategories = {                                                -- Move to targets
+                categories.STRUCTURE * categories.TECH3 * categories.ARTILLERY,
+                categories.STRUCTURE * categories.TECH3 * categories.NUKE,
+            },
+            WeaponTargetCategories = {                                          -- Override weapon target priorities
+                categories.ANTIAIR,
+                categories.EXPERIMENTAL,
+                categories.ALLUNITS,
+            },
+        },
+        BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
+            -- When do we want to form this ?
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.STRUCTURE * categories.TECH3 * (categories.ARTILLERY + categories.NUKE + categories.OPTICS) } },
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },

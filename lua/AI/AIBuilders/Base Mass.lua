@@ -119,6 +119,7 @@ BuilderGroup {
         BuilderConditions = {
             { UCBC, 'CheckBuildPlattonDelay', { 'Mass' }},
             -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconStorageRatio', { -9.99, 0.01 } },             -- Ratio from 0 to 1. (1=100%)
             --{ MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
             { MABC, 'CanBuildOnMass', { 'LocationType', NoRushRadius, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
@@ -150,10 +151,12 @@ BuilderGroup {
         end,
         BuilderConditions = {
             -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconStorageRatio', { -9.99, 0.01 } },             -- Ratio from 0 to 1. (1=100%)
             --{ MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
             { MABC, 'CanBuildOnMass', { 'LocationType', 30, false, false, false, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Don't build it if...
+            --{ UCBC, 'GreaterThanGameTimeSeconds', { 60*30 } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -179,10 +182,13 @@ BuilderGroup {
         end,
         BuilderConditions = {
             -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { -9.99, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             --{ MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
             { MABC, 'CanBuildOnMass', { 'LocationType', 60, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Don't build it if...
+            --{ UCBC, 'GreaterThanGameTimeSeconds', { 60*30 } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -208,8 +214,10 @@ BuilderGroup {
         end,
         BuilderConditions = {
             -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconStorageRatio', { -9.99, 0.10 } },             -- Ratio from 0 to 1. (1=100%)
             --{ MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
+            { MABC, 'CanBuildOnMass', { 'LocationType', 1000, false, false, false, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Don't build it if...
         },
         BuilderType = 'Any',
@@ -237,9 +245,13 @@ BuilderGroup {
         end,
         BuilderConditions = {
             -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { -9.99, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             --{ MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
+            { MABC, 'CanBuildOnMass', { 'LocationType', 1000, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Don't build it if...
+            --{ UCBC, 'GreaterThanGameTimeSeconds', { 60*4 } },
         },
         BuilderType = 'Any',
         BuilderData = {
@@ -266,9 +278,13 @@ BuilderGroup {
         end,
         BuilderConditions = {
             -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { -9.99, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             --{ MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
+            { MABC, 'CanBuildOnMass', { 'LocationType', 1000, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Don't build it if...
+            --{ UCBC, 'GreaterThanGameTimeSeconds', { 60*30 } },
         },
         BuilderType = 'Any',
         BuilderData = {

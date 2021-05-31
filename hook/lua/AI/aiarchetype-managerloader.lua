@@ -66,7 +66,15 @@ function EcoManagerThread(aiBrain)
     local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
     aiBrain.CheatMult = tonumber(ScenarioInfo.Options.CheatMult)
     aiBrain.BuildMult = tonumber(ScenarioInfo.Options.BuildMult)
-    LOG('* AI-Uveso: Function EcoManagerThread() started! CheatFactor:('..repr(aiBrain.CheatMult)..') - BuildFactor:('..repr(aiBrain.BuildMult)..') ['..aiBrain.Nickname..']')
+    if aiBrain.CheatMult ~= aiBrain.BuildMult then
+        aiBrain.CheatMult = math.max(aiBrain.CheatMult,aiBrain.BuildMult)
+        aiBrain.BuildMult = math.max(aiBrain.CheatMult,aiBrain.BuildMult)
+    end
+    if aiBrain.CheatEnabled then
+        LOG('* AI-Uveso: Function EcoManagerThread() started! - Cheat(eco)Factor:( '..repr(aiBrain.CheatMult)..' ) - BuildFactor:( '..repr(aiBrain.BuildMult)..' ) - ['..aiBrain.Nickname..']')
+    else
+        LOG('* AI-Uveso: Function EcoManagerThread() started! - No Cheat(eco) or BuildFactor')
+    end
     local lastCall = 0
     local bussy
     -- Set all variables for the ecomanager
@@ -91,6 +99,7 @@ function EcoManagerThread(aiBrain)
     local baseposition
     local numUnitsPanicZone
     local AllUnits
+    local time, energy, mass
     local function SetArmyPoolBuff(aiBrain, CheatMult, BuildMult)
         -- we are looping over all units with this, so we make it local
         local Buff = Buff
@@ -152,11 +161,19 @@ function EcoManagerThread(aiBrain)
                     -- filter units that are not finished
                     if unit:GetFractionComplete() < 1 then continue end
                     -- if we build massextractors or energyproduction, don't pause it
-                    if unit.UnitBeingBuilt and EntityCategoryContains( ( categories.MASSEXTRACTION + categories.ENERGYPRODUCTION ) * (categories.TECH1 + categories.TECH2  + categories.TECH3) , unit.UnitBeingBuilt) then
+                    if unit.UnitBeingBuilt and EntityCategoryContains( ( categories.MASSEXTRACTION + categories.ENERGYPRODUCTION + categories.ENERGYSTORAGE ) , unit.UnitBeingBuilt) then
+                        continue
+                    end
+                    -- if we build tech1 factories, don't pause it
+                    if unit.UnitBeingBuilt and EntityCategoryContains( categories.FACTORY * categories.TECH1 , unit.UnitBeingBuilt) then
                         continue
                     end
                     -- if we build tech 1 units from a factory, don't pause it
                     if unit.UnitBeingBuilt and EntityCategoryContains( categories.MOBILE * categories.TECH1 , unit.UnitBeingBuilt) then
+                        continue
+                    end
+                    -- don't pause any ACU assisting
+                    if unit.UnitBeingAssist and EntityCategoryContains( categories.COMMAND, unit.UnitBeingAssist) then
                         continue
                     end
                     if unit.pausedMass or unit.pausedEnergy then continue end
@@ -350,11 +367,19 @@ function EcoManagerThread(aiBrain)
                     -- filter units that are not finished
                     if unit:GetFractionComplete() < 1 then continue end
                     -- if we build massextractors or energyproduction, don't pause it
-                    if unit.UnitBeingBuilt and EntityCategoryContains( ( categories.MASSEXTRACTION + categories.ENERGYPRODUCTION ) * (categories.TECH1 + categories.TECH2  + categories.TECH3) , unit.UnitBeingBuilt) then
+                    if unit.UnitBeingBuilt and EntityCategoryContains( ( categories.MASSEXTRACTION + categories.ENERGYPRODUCTION + categories.ENERGYSTORAGE ) , unit.UnitBeingBuilt) then
+                        continue
+                    end
+                    -- if we build tech1 factories, don't pause it
+                    if unit.UnitBeingBuilt and EntityCategoryContains( categories.FACTORY * categories.TECH1 , unit.UnitBeingBuilt) then
                         continue
                     end
                     -- if we build tech 1 units from a factory, don't pause it
                     if unit.UnitBeingBuilt and EntityCategoryContains( categories.MOBILE * categories.TECH1 , unit.UnitBeingBuilt) then
+                        continue
+                    end
+                    -- don't pause any ACU assisting
+                    if unit.UnitBeingAssist and EntityCategoryContains( categories.COMMAND, unit.UnitBeingAssist) then
                         continue
                     end
                     unit.ConsumptionPerSecondMass = unit:GetConsumptionPerSecondMass()
@@ -571,11 +596,11 @@ function EcoManagerThread(aiBrain)
 end
 
 function LocationRangeManagerThread(aiBrain)
-    LOG('* AI-Uveso: Function LocationRangeManagerThread() started. ['..aiBrain.Nickname..']')
+    SPEW('* AI-Uveso: Function LocationRangeManagerThread() started. ['..aiBrain.Nickname..']')
     local unitcounterdelayer = 0
     local ArmyUnits = {}
     -- wait at start of the game for delayed AI message
-    while GetGameTimeSeconds() < 30 + aiBrain:GetArmyIndex() do
+    while GetGameTimeSeconds() < 15 + aiBrain:GetArmyIndex() do
         coroutine.yield(10)
     end
     if not import('/lua/AI/sorianutilities.lua').CheckForMapMarkers(aiBrain) then
@@ -583,6 +608,7 @@ function LocationRangeManagerThread(aiBrain)
     end
 
     while aiBrain.Result ~= "defeat" do
+        coroutine.yield(50)
         --LOG('* AI-Uveso: Function LocationRangeManagerThread() beat. ['..aiBrain.Nickname..']')
         -- Check and set the location radius of our main base and expansions
         local BasePositions = BaseRanger(aiBrain)
@@ -674,6 +700,28 @@ function LocationRangeManagerThread(aiBrain)
                 coroutine.yield(1)
             end
         end
+
+        coroutine.yield(1)
+
+        -- check for factories without a location manager
+        ArmyUnits = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.FACTORY, false, false) -- also gets unbuilded units (planed to build)
+        for _, factory in ArmyUnits do
+            if factory.Dead then
+                continue
+            end
+            if factory:GetFractionComplete() ~= 1 then
+                continue
+            end
+            if not factory.BuilderManagerData then
+                if not factory.lost then
+                    factory.lost = GetGameTimeSeconds()
+                elseif factory.lost + 10 < GetGameTimeSeconds() then
+                    AddFactoryToClosestManager(aiBrain, factory)
+                end
+            end
+        end
+
+
         if 1 == 2 then
         -- watching the unit Cap for AI balance.
             unitcounterdelayer = unitcounterdelayer + 1
@@ -702,11 +750,9 @@ function LocationRangeManagerThread(aiBrain)
 --                end
             end
         end
-        coroutine.yield(50)
         
 --        local SUtils = import('/lua/AI/sorianutilities.lua')
 --        SUtils.AIRandomizeTaunt(aiBrain)
---        LOG('* AI-Uveso: location manager '..repr(aiBrain.NukedArea))
 
     end
 end
@@ -811,11 +857,10 @@ function BaseRanger(aiBrain)
 end
 
 function BaseTargetManagerThread(aiBrain)
---        LOG('* AI-Uveso: location manager '..repr(aiBrain.NukedArea))
-    while GetGameTimeSeconds() < 50 + aiBrain:GetArmyIndex() do
+    while GetGameTimeSeconds() < 20 + aiBrain:GetArmyIndex() do
         coroutine.yield(10)
     end
-    LOG('* AI-Uveso: Function BaseTargetManagerThread() started. ['..aiBrain.Nickname..']')
+    SPEW('* AI-Uveso: Function BaseTargetManagerThread() started. ['..aiBrain.Nickname..']')
     local BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua').GetDangerZoneRadii()
     local targets = {}
     local baseposition, radius
@@ -1016,7 +1061,7 @@ function MarkerGridThreatManagerThread(aiBrain)
     while GetGameTimeSeconds() < 10 + aiBrain:GetArmyIndex() do
         coroutine.yield(10)
     end
-    LOG('* AI-Uveso: Function MarkerGridThreatManagerThread() started. ['..aiBrain.Nickname..']')
+    SPEW('* AI-Uveso: Function MarkerGridThreatManagerThread() started. ['..aiBrain.Nickname..']')
     local AIAttackUtils = import('/lua/ai/aiattackutilities.lua')
     local numTargetTECH123 = 0
     local numTargetTECH4 = 0
@@ -1025,7 +1070,7 @@ function MarkerGridThreatManagerThread(aiBrain)
     local PathGraphs = AIAttackUtils.GetPathGraphs()
     local vector
     if not (PathGraphs['Land'] or PathGraphs['Amphibious'] or PathGraphs['Air'] or PathGraphs['Water']) then
-        WARN('* AI-Uveso: Function MarkerGridThreatManagerThread() No AI path markers found on map. Threat handling diabled!  '..ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality)
+        WARN('* AI-Uveso: Function MarkerGridThreatManagerThread() No AI path markers found on map. ThreatManager disabled!  '..ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality)
         -- end this forked thead
         return
     end
@@ -1110,10 +1155,10 @@ function PriorityManagerThread(aiBrain)
     aiBrain.PriorityManager.BuildMobileNavalTech3 = true
     aiBrain.PriorityManager.NoRush1stPhaseActive = false
     aiBrain.PriorityManager.NoRush2ndPhaseActive = false
-    while GetGameTimeSeconds() < 70 + aiBrain:GetArmyIndex() do
+    while GetGameTimeSeconds() < 5 + aiBrain:GetArmyIndex() do
         coroutine.yield(10)
     end
-    LOG('* AI-Uveso: Function PriorityManagerThread() started. ['..aiBrain.Nickname..']')
+    SPEW('* AI-Uveso: Function PriorityManagerThread() started. ['..aiBrain.Nickname..']')
     local paragons = {}
     local ParaComplete
     local EnergyTech1num
@@ -1362,3 +1407,76 @@ function PriorityManagerThread(aiBrain)
         
     end
 end
+
+function AddFactoryToClosestManager(aiBrain, factory)
+    SPEW('* AI-Uveso: AddFactoryToClosestManager: Factory '..factory.UnitId..' is not assigned to a factory manager!')
+    local FactoryPos = factory:GetPosition()
+    -- searching for the closest location near the factory (MAIN, Expansion Area)
+    local ClosestMarkerBasePos, MarkerBaseName = AIUtils.AIGetClosestMarkerLocation(aiBrain, 'Blank Marker', FactoryPos[1], FactoryPos[3], {'Naval Area', 'Expansion Area', 'Large Expansion Area'})
+    -- get the location type of this marker ( Blank Marker, Naval Area, Expansion Area, Large Expansion Area )
+    local LocationType = Scenario.MasterChain._MASTERCHAIN_.Markers[MarkerBaseName].type
+    -- Is this a start location ?
+    if LocationType == 'Blank Marker' then
+        -- Is this our own start location ?
+        if MarkerBaseName == 'ARMY_'..aiBrain:GetArmyIndex() then
+            -- Our mainbase is called 'MAIN', so rename ARMY_x
+            MarkerBaseName = 'MAIN'
+            -- FirstBaseFunction does not need an expansion name, so we can use a custom name here
+            LocationType = 'Start Area '..aiBrain:GetArmyIndex()
+        else
+            -- Not our own start area, lets make an large expansion here
+            LocationType = 'Large Expansion Area'
+        end
+    -- This is only for debug in case map markers have wrong .type
+    elseif LocationType ~= 'Naval Area' and LocationType ~= 'Expansion Area' and LocationType ~= 'Large Expansion Area' then
+        WARN('* AI-Uveso: AddFactoryToClosestManager: unknown LocationType '..LocationType..' !')
+    end
+    SPEW('* AI-Uveso: AddFactoryToClosestManager: Factory '..factory.UnitId..' is close to MarkerBaseName '..MarkerBaseName..' ('..LocationType..')')
+    -- search for an manager on this location
+    if aiBrain.BuilderManagers[MarkerBaseName] then
+        SPEW('* AI-Uveso: AddFactoryToClosestManager: BuilderManagers for MarkerBaseName '..MarkerBaseName..' exist!')
+        -- Just a failsafe, normaly we have an FactoryManager if the BuilderManagers on this location is present.
+        if aiBrain.BuilderManagers[MarkerBaseName].FactoryManager then
+            SPEW('* AI-Uveso: AddFactoryToClosestManager: FactoryManager at MarkerBaseName '..MarkerBaseName..' exist! Adding Factory!')
+            -- using AddFactory() from the factory manager to add the factory to the manager.
+            aiBrain.BuilderManagers[MarkerBaseName].FactoryManager:AddFactory(factory)
+            factory.lost = nil
+        end
+    else
+        -- no basemanager found, create a new one.
+        SPEW('* AI-Uveso: AddFactoryToClosestManager: BuilderManagers for MarkerBaseName '..MarkerBaseName..' does not exist! Creating Manager')
+        -- Create the new expansion on the expansion marker position with a radius of 100. 100 is only an default value, it will be changed from BaseRanger() thread
+        aiBrain:AddBuilderManagers(ClosestMarkerBasePos, 100, MarkerBaseName, true)
+        -- add the factory to the new manager
+        SPEW('* AI-Uveso: AddFactoryToClosestManager: FactoryManager at MarkerBaseName '..MarkerBaseName..' created! Adding Factory!')
+        aiBrain.BuilderManagers[MarkerBaseName].FactoryManager:AddFactory(factory)
+        -- Factory is no longer without an manager
+        factory.lost = nil
+        -- Search for a basetemplates for the new expansion ( original code can be found in aibuildstructures.lua.AINewExpansionBase() )
+        -- Calling the ExpansionFunction inside all /AIBaseTemplates/*.* files to find the right expansion template
+        local baseValues = {}
+        local highPri = false
+        for templateName, baseData in BaseBuilderTemplates do
+            local baseValue = baseData.ExpansionFunction(aiBrain, ClosestMarkerBasePos, LocationType)
+            table.insert(baseValues, { Base = templateName, Value = baseValue })
+            if not highPri or baseValue > highPri then
+                highPri = baseValue
+            end
+        end
+        -- create a table with all possible base expansion templates
+        local validNames = {}
+        for k,v in baseValues do
+            if v.Value == highPri then
+                table.insert(validNames, v.Base)
+            end
+        end
+        -- get a random name if we have more than one possible base template
+        local pick = validNames[ Random(1, table.getn(validNames)) ]
+        SPEW('* AI-Uveso: AddFactoryToClosestManager: picked basetemplate '..pick..' for location '..MarkerBaseName..' ('..LocationType..')')
+        -- finaly loading the templates for the new base location. From now on the new factory can work for us :D
+        import('/lua/ai/AIAddBuilderTable.lua').AddGlobalBaseTemplate(aiBrain, MarkerBaseName, pick)
+    end
+end
+
+--self.Brain.BuilderManagers[self.LocationType].FactoryManager:AddFactory(finishedUnit)
+--local AIUtils = import('ai/aiutilities.lua')

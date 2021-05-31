@@ -1,14 +1,15 @@
+--WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] * AI-Uveso: offset MiscBuildConditions.lua' )
 
 -- Uveso AI. Function to see if we are on a water map and/or can't send Land units to the enemy
 local CanPathToEnemy = {}
 local debugoutput = false
 function CanPathToCurrentEnemy(aiBrain, bool, LocationType)
-    -- in case the old CanPathToCurrentEnemy is used
-    if not LocationType then
-        LocationType = 'MAIN'
-        debugoutput = true
-    end
     -- Get the armyindex from the enemy
+    local CurrentEnemy = aiBrain:GetCurrentEnemy()
+    -- in case we started to erly and we have no enemy yet, or we started a game with only Allies
+    if not CurrentEnemy then
+        return true == bool
+    end
     local EnemyIndex = ArmyBrains[aiBrain:GetCurrentEnemy():GetArmyIndex()].Nickname
     local Nickname = ArmyBrains[aiBrain:GetArmyIndex()].Nickname
 
@@ -20,13 +21,6 @@ function CanPathToCurrentEnemy(aiBrain, bool, LocationType)
         return true == bool
     elseif CanPathToEnemy[Nickname][LocationType][EnemyIndex] == 'WATER' then
         return false == bool
-    end
-
-    -- message to AI developers 
-    if debugoutput then
-        WARN('###########################################################################################')
-        WARN('Condition "CanPathToCurrentEnemy" has wrong args, use "   { MIBC, \'CanPathToCurrentEnemy\', { true/false, \'LocationType\' } },   " instead!')
-        WARN('###########################################################################################')
     end
 
     -- We have no cached path. Searching now for a path.

@@ -16,6 +16,8 @@ AIBrain = Class(UvesoAIBrainClass) {
             --StrategyManager = StratManager.CreateStrategyManager(self, baseName, position, radius),
 
             -- Table to track consumption
+            -- can be removed after game patch is released
+            -- https://github.com/FAForever/fa/pull/3281
             MassConsumption = {
                 Resources = {Units = {}, Drain = 0, },
                 Units = {Units = {}, Drain = 0, },

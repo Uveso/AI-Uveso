@@ -200,8 +200,14 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
                     end
                     -- check if the Target is still alive, matches our target priority and can be attacked from our platoon
                     if not platoon:CanAttackTarget(squad, Target) then continue end
-                    --LOG('* AIFindNearestCategoryTargetInRange: canAttack '..repr(canAttack))
+                    --LOG('* AIFindNearestCategoryTargetInRange: canAttack CHECKED')
                     if platoon.MovementLayer == 'Land' and EntityCategoryContains(categories.AIR, Target) then continue end
+
+        local blip = Target:GetBlip(MyArmyIndex)
+        if blip then
+            if blip:IsOnRadar(MyArmyIndex) or blip:IsSeenEver(MyArmyIndex) then
+                if not blip:BeenDestroyed() and not blip:IsKnownFake(MyArmyIndex) and not blip:IsMaybeDead(MyArmyIndex) then
+
                     if not Target.Dead then
                         -- yes... we need to check if we got friendly units with GetUnitsAroundPoint(_, _, _, 'Enemy')
                         if not IsEnemy( MyArmyIndex, Target.Army ) then continue end
@@ -265,6 +271,10 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
                         end
                     end
                 end
+            end
+        end
+
+                end
                 count = count + 1
                 if count > 300 then -- 300 
                     coroutine.yield(1)
@@ -301,7 +311,7 @@ function AIFindNearestCategoryTargetInRangeCDR(aiBrain, position, maxRange, Move
     }
     local TargetUnit = false
     local basePostition = aiBrain.BuilderManagers['MAIN'].Position
-    local TargetsInRange, EnemyStrength, TargetPosition, distance, targetRange, baseTargetRange, canAttack
+    local TargetsInRange, EnemyStrength, TargetPosition, distance, targetRange, canAttack
     for _, range in RangeList do
         TargetsInRange = aiBrain:GetUnitsAroundPoint(TargetSearchCategory, position, range, 'Enemy')
         --DrawCircle(position, range, '0000FF')
@@ -331,9 +341,8 @@ function AIFindNearestCategoryTargetInRangeCDR(aiBrain, position, maxRange, Move
                         continue
                     end
                     targetRange = VDist2(position[1],position[3],TargetPosition[1],TargetPosition[3])
-                    baseTargetRange = VDist2(basePostition[1],basePostition[3],TargetPosition[1],TargetPosition[3])
                     -- check if the target is in range of the ACU and in range of the base
-                    if targetRange < distance and baseTargetRange < maxRange then
+                    if targetRange < distance then
                         TargetUnit = Target
                         distance = targetRange
                     end
@@ -342,14 +351,13 @@ function AIFindNearestCategoryTargetInRangeCDR(aiBrain, position, maxRange, Move
             if TargetUnit then
                 return TargetUnit
             end
-           coroutine.yield(10)
+           coroutine.yield(1)
         end
         coroutine.yield(1)
     end
     return TargetUnit
 end
 
-local debugoutput = false
 function AIFindNearestCategoryTargetInCloseRange(platoon, aiBrain, squad, position, maxRange, MoveToCategories, TargetSearchCategory, enemyBrain)
     -- message to AI developers 
     if not TargetSearchCategory then

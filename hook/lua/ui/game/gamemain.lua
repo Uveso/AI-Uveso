@@ -175,6 +175,3 @@ function OnFirstUpdate()
         end
     )
 end
-
-
-
