@@ -861,7 +861,7 @@ BuilderGroup {
 --    TECH 2   PanicZone Main Base    --
 -- ================================== --
     Builder {
-        BuilderName = 'U2A DFTank',
+        BuilderName = 'U2A DFTank PanicZone',
         PlatoonTemplate = 'T2LandDFTank',
         Priority = 250,
         PriorityFunction = function(self, aiBrain)
@@ -875,7 +875,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
-            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  60, 'LocationType', 1, categories.MOBILE * categories.AIR - categories.SCOUT - categories.SATELLITE}}, -- radius, LocationType, unitCount, categoryEnemy
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 1, categories.MOBILE * categories.AIR - categories.SCOUT - categories.SATELLITE}}, -- radius, LocationType, unitCount, categoryEnemy
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.TECH2 } },
             -- Respect UnitCap
             { UCBC, 'UnitCapCheckLess', { 0.95 } },

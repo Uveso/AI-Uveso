@@ -59,32 +59,39 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                     return
                 end
                 -- issue buildcommand to block other engineers from caping mex/hydros or to reserve the buildplace
-                aiBrain:BuildStructure(eng, whatToBuild, {buildLocation[1], buildLocation[3], 0}, buildRelative)
-                -- wait until we are close to the buildplace so we have intel
-                while not eng.Dead do
-                    PlatoonPos = eng:GetPosition()
-                    if VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, buildLocation[1] or 0, buildLocation[3] or 0) < 12 then
-                        break
+                PlatoonPos = eng:GetPosition()
+                if VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, buildLocation[1] or 0, buildLocation[3] or 0) >= 30 then
+                    aiBrain:BuildStructure(eng, whatToBuild, {buildLocation[1], buildLocation[3], 0}, buildRelative)
+                    coroutine.yield(3)
+                    -- wait until we are close to the buildplace so we have intel
+                    while not eng.Dead do
+                        PlatoonPos = eng:GetPosition()
+                        if VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, buildLocation[1] or 0, buildLocation[3] or 0) < 12 then
+                            break
+                        end
+                        -- check if we are already building in close range
+                        -- (ACU can build at higher range than engineers)
+                        if eng:IsUnitState("Building") then
+                            break
+                        end
+                        coroutine.yield(1)
                     end
-                    -- check if we are already building in close range
-                    -- (ACU can build at higher range than engineers)
-                    if eng:IsUnitState("Building") then
-                        break
-                    end
-                    coroutine.yield(1)
                 end
                 if not eng or eng.Dead or not eng.PlatoonHandle or not aiBrain:PlatoonExists(eng.PlatoonHandle) then
                     if eng then eng.ProcessBuild = nil end
                     return
                 end
-                -- cancel all commands, also the buildcommand for blocking mex to check for reclaim or capture
-                eng.PlatoonHandle:Stop()
-                -- check to see if we need to reclaim or capture...
-                AIUtils.EngineerTryReclaimCaptureArea(aiBrain, eng, buildLocation)
-                -- check to see if we can repair
-                AIUtils.EngineerTryRepair(aiBrain, eng, whatToBuild, buildLocation)
-                -- otherwise, go ahead and build the next structure there
-                aiBrain:BuildStructure(eng, whatToBuild, {buildLocation[1], buildLocation[3], 0}, buildRelative)
+                -- if we are already building then we don't need to reclaim, repair or issue the BuildStructure again
+                if not eng:IsUnitState("Building") then
+                    -- cancel all commands, also the buildcommand for blocking mex to check for reclaim or capture
+                    eng.PlatoonHandle:Stop()
+                    -- check to see if we need to reclaim or capture...
+                    AIUtils.EngineerTryReclaimCaptureArea(aiBrain, eng, buildLocation)
+                    -- check to see if we can repair
+                    AIUtils.EngineerTryRepair(aiBrain, eng, whatToBuild, buildLocation)
+                    -- otherwise, go ahead and build the next structure there
+                    aiBrain:BuildStructure(eng, whatToBuild, {buildLocation[1], buildLocation[3], 0}, buildRelative)
+                end
                 if not eng.NotBuildingThread then
                     eng.NotBuildingThread = eng:ForkThread(eng.PlatoonHandle.WatchForNotBuilding)
                 end
@@ -605,7 +612,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
             -- Seraphim
             ['xsl0001'] = {'RateOfFire', 'DamageStabilization', 'BlastAttack', 'DamageStabilizationAdvanced'},
             -- Nomads
-            ['xnl0001'] = {'Capacitor', 'GunUpgrade', 'MovementSpeedIncrease', 'DoubleGuns'},
+            ['xnl0001'] = {'GunUpgrade', 'Capacitor', 'MovementSpeedIncrease', 'DoubleGuns'},
 
             -- UEF - Black Ops ACU
             ['eel0001'] = {'GatlingEnergyCannon', 'CombatEngineering', 'ShieldBattery', 'AutomaticBarrelStabalizers', 'AssaultEngineering', 'ImprovedShieldBattery', 'EnhancedPowerSubsystems', 'ApocalypticEngineering', 'AdvancedShieldBattery'},
@@ -3841,6 +3848,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
             end
             NavigatorGoal = cdr:GetNavigator():GetGoalPos()
             -- Run away from experimentals. (move out of experimental wepon range)
+            -- MKB Max distance to experimental DistBase/2 or EnemyExperimentalWepRange + 100. whatever is bigger
             if aiBrain.ACUChampion.EnemyExperimentalPos and VDist2( cdr.position[1], cdr.position[3], aiBrain.ACUChampion.EnemyExperimentalPos[1][1], aiBrain.ACUChampion.EnemyExperimentalPos[1][3] ) < aiBrain.ACUChampion.EnemyExperimentalWepRange + 30 then
                 alpha = math.atan2 (aiBrain.ACUChampion.EnemyExperimentalPos[1][3] - cdr.position[3] ,aiBrain.ACUChampion.EnemyExperimentalPos[1][1] - cdr.position[1])
                 x = aiBrain.ACUChampion.EnemyExperimentalPos[1][1] - math.cos(alpha) * (aiBrain.ACUChampion.EnemyExperimentalWepRange + 30)

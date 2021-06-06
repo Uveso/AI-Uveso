@@ -356,6 +356,21 @@ function EngineerGeneratePathUveso(aiBrain, startNode, endNode, threatType, thre
     aiBrain.PathCache[startNode.name][endNode.name][threatWeight] = { settime = GetGameTimeSeconds(), path = 'bad' }
     return false
 end
+
+function CanGraphAreaTo(unit, destPos, layer)
+    local position = unit:GetPosition()
+    local startNode = GetClosestPathNodeInRadiusByLayer(position, 100, layer)
+    local endNode = false
+    if startNode then
+        endNode = GetClosestPathNodeInRadiusByLayer(destPos, 100, layer)
+    end
+    --WARN('* AI-Uveso: CanGraphAreaTo: Start Area: '..repr(Scenario.MasterChain._MASTERCHAIN_.Markers[startNode.name].GraphArea)..' - End Area: '..repr(Scenario.MasterChain._MASTERCHAIN_.Markers[endNode.name].GraphArea)..'')
+    if Scenario.MasterChain._MASTERCHAIN_.Markers[startNode.name].GraphArea == Scenario.MasterChain._MASTERCHAIN_.Markers[endNode.name].GraphArea then
+        return true
+    end
+    return false
+end
+
 ----For time debug GeneratePathUveso()
 --local TimeHIGHEST
 --local TimeSUM = 0

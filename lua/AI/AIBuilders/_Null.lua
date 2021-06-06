@@ -518,3 +518,77 @@ BuilderGroup {
     },
 }
 
+BuilderGroup {
+    BuilderGroupName = 'N1 Hydro Energy Builders',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuildersType = 'EngineerBuilder',
+    Builder {
+        BuilderName = 'N1 Hydro Power',
+        PlatoonTemplate = 'EngineerBuilder',
+        Priority = 17895,
+        DelayEqualBuildPlattons = {'Energy', 10},
+        InstanceCount = 1,
+        BuilderConditions = {
+            { UCBC, 'CheckBuildPlattonDelay', { 'Energy' }},
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconIncome',  { 0.4, 2.0}}, -- Absolut Base income 4 60
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ECONOMIC * categories.HYDROCARBON }},
+            -- When do we want to build this ?
+            { MABC, 'CanBuildOnHydro', { 'LocationType', 90, -1000, 100, 1, 'AntiSurface', 1 }},            -- Do we need additional conditions to build it ?
+            -- Respect UnitCap
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Construction = {
+                BuildStructures = {
+                    'T1HydroCarbon',
+                }
+            }
+        }
+    },
+}
+
+BuilderGroup {
+	BuilderGroupName = 'N1 Hydro UP',
+	BuildersType = 'PlatoonFormBuilder',
+    Builder {
+        BuilderName = 'N1 HydroUpgrade',
+        PlatoonTemplate = 'Upgrade-HC1',
+        Priority = 200,
+        BuilderConditions = {
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.HYDROCARBON * categories.ENERGYPRODUCTION * categories.TECH1 } },
+        },
+        FormRadius = 10000,
+        BuilderType = 'Any',
+    },
+
+	Builder {
+		BuilderName = 'Upgrade-HydroT2PGen',
+		PlatoonTemplate = 'Upgrade-HC1',
+		Priority = 19000,
+		BuilderConditions = {
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.HYDROCARBON * categories.ENERGYPRODUCTION * categories.TECH1 } },
+		},
+		FormRadius = 10000,
+		BuilderType = 'Any',
+	},
+	Builder {
+		BuilderName = 'Upgrade-HydroT3PGen',
+		PlatoonTemplate = 'Upgrade-HC2',
+		Priority = 19000,
+		BuilderConditions = {
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.HYDROCARBON * categories.ENERGYPRODUCTION * categories.TECH2 } },
+		},
+		FormRadius = 10000,
+		BuilderType = 'Any',
+	},
+	Builder {
+		BuilderName = 'Upgrade-HydroT4PGen',
+		PlatoonTemplate = 'Upgrade-HC3',
+		Priority = 19000,
+		BuilderConditions = {
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.HYDROCARBON * categories.ENERGYPRODUCTION * categories.TECH3 } },
+		},
+		FormRadius = 10000,
+		BuilderType = 'Any',
+	},
+}

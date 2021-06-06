@@ -182,7 +182,7 @@ BuilderGroup {
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
             { UCBC, 'CheckBuildPlattonDelay', { 'ACUFORM' }},
             -- When do we want to build this ?
-            { EBC, 'GreaterThanEconIncome',  { 0.6, 500.0}}, -- Absolut Base income
+            { EBC, 'GreaterThanEconIncome',  { 0.6, 50.0}}, -- Absolut Base income Mass 6, Energy 500
             -- Do we need additional conditions to build it ?
             -- Don't build it if...
         },

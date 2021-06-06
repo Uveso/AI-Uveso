@@ -501,7 +501,7 @@ BuilderGroup {
         Priority = 1000,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconIncome',  { 2.0, 500.0}}, -- Absolut Base income 60 1800
+            { EBC, 'GreaterThanEconIncome',  { 2.0, 500.0}}, -- Absolut Base income 20 5000
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.NUKE * categories.STRUCTURE}},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.NUKE * (categories.TECH3 + categories.EXPERIMENTAL) }},
@@ -537,7 +537,7 @@ BuilderGroup {
         end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconIncome',  { 4.0, 1000.0}}, -- Absolut Base income 60 1800
+            { EBC, 'GreaterThanEconIncome',  { 4.0, 1000.0}}, -- Absolut Base income 40 10000
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 4, categories.ENERGYPRODUCTION * categories.TECH3 } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.NUKE * categories.STRUCTURE}},

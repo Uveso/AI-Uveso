@@ -20,23 +20,25 @@ BaseBuilderTemplate {
         'N1 Engineer Builders',
 
         'N1 Energy Builders',
-        'U123 EnergyStorage Builders',
+        'N1 Hydro Energy Builders',
+        'N1 Hydro UP',
+--        'U123 EnergyStorage Builders',
 
         'N1 MassBuilders', 
         'U123 ExtractorUpgrades',
         'U1 MassStorage Builder',
 
-        'N1 Land Builders',
-        'N2 Land Builders',
-        'N3 Land Builders',
+--        'N1 Land Builders',
+--        'N2 Land Builders',
+--        'N3 Land Builders',
 
-        'U1 Land Radar Builders',
-        'U1 Land Radar Upgrader',
+--        'U1 Land Radar Builders',
+--        'U1 Land Radar Upgrader',
 
-        'U1 Land Scout Builders',
-        'U1 Land Scout Formers',
-        'U1 Air Scout Builders',
-        'U13 Air Scout Formers', 
+--        'U1 Land Scout Builders',
+--        'U1 Land Scout Formers',
+--        'U1 Air Scout Builders',
+--        'U13 Air Scout Formers', 
 
 
 --        'U123 Factory Upgrader Rush',

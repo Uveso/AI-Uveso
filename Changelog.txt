@@ -1,4 +1,14 @@
 *************************************************************************************************************************************
+v94 (06.Jun.2021)
+
+- Fix: ACU was waiting for 5000 energy not 500 to issue an enhancement.
+- Fix: Sub AI Rush was not building Hydrocarbons
+- Fix: LocationRangeManager can now create new locations everywhere. (no location marker needed)
+- Fix: ACU was not building if the buildarea was between 12 and 13 map units away.
+- Opt: Nomads ACU is now first enhancing with GunUpgrade, not Capacitor.
+- For AI devs: New function CanGraphAreaTo(). Check if two points are on the same land/sea area
+
+*************************************************************************************************************************************
 v93 (31.May.2021)
 
 - New: Added advanced ACU fight function. Microing, threat management, proper overcharge targets.

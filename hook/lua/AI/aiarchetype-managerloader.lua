@@ -3,6 +3,7 @@
 
 local Buff = import('/lua/sim/Buff.lua')
 local HighestThreat = {}
+local AIAttackUtils = import('/lua/ai/aiattackutilities.lua')
 
 -- This hook is for debug-option Platoon-Names. Hook for all AI's
 OldExecutePlanFunctionUveso = ExecutePlan
@@ -712,6 +713,23 @@ function LocationRangeManagerThread(aiBrain)
             if factory:GetFractionComplete() ~= 1 then
                 continue
             end
+            -- naval factory ?
+            if EntityCategoryContains(categories.NAVAL, factory) then
+                -- Is this a Naval Factory and assigned to the main base ?
+                if factory.BuilderManagerData.FactoryBuildManager.LocationType == 'MAIN' then
+                    -- Search the Main base FactoryList and delte the factory from it
+                    for k,v in factory.BuilderManagerData.FactoryBuildManager.FactoryList do
+                        -- if we found the factory, delete it. It will assign to a new location
+                        if v == factory then
+                            factory.BuilderManagerData.FactoryBuildManager.FactoryList[k] = nil
+                            factory.BuilderManagerData = nil
+                            factory.lost = GetGameTimeSeconds() - 12
+                        end
+                    end
+
+                end
+            end
+            -- welcher manager ?
             if not factory.BuilderManagerData then
                 if not factory.lost then
                     factory.lost = GetGameTimeSeconds()
@@ -719,6 +737,8 @@ function LocationRangeManagerThread(aiBrain)
                     AddFactoryToClosestManager(aiBrain, factory)
                 end
             end
+            -- Debug, show the actual location where the factory is assigned to as name.
+            --factory:SetCustomName(factory.BuilderManagerData.FactoryBuildManager.LocationType or 'Unknown')
         end
 
 
@@ -1412,9 +1432,42 @@ function AddFactoryToClosestManager(aiBrain, factory)
     SPEW('* AI-Uveso: AddFactoryToClosestManager: Factory '..factory.UnitId..' is not assigned to a factory manager!')
     local FactoryPos = factory:GetPosition()
     -- searching for the closest location near the factory (MAIN, Expansion Area)
-    local ClosestMarkerBasePos, MarkerBaseName = AIUtils.AIGetClosestMarkerLocation(aiBrain, 'Blank Marker', FactoryPos[1], FactoryPos[3], {'Naval Area', 'Expansion Area', 'Large Expansion Area'})
+    local ClosestMarkerBasePos, MarkerBaseName, layer
+    local NavalFactory = EntityCategoryContains(categories.NAVAL, factory)
+    if NavalFactory then
+        ClosestMarkerBasePos, MarkerBaseName = AIUtils.AIGetClosestMarkerLocation(aiBrain, 'Naval Area', FactoryPos[1], FactoryPos[3])
+        layer = 'Water'
+    else
+        ClosestMarkerBasePos, MarkerBaseName = AIUtils.AIGetClosestMarkerLocation(aiBrain, 'Blank Marker', FactoryPos[1], FactoryPos[3], {'Expansion Area', 'Large Expansion Area'})
+        layer = 'Land'
+    end
     -- get the location type of this marker ( Blank Marker, Naval Area, Expansion Area, Large Expansion Area )
     local LocationType = Scenario.MasterChain._MASTERCHAIN_.Markers[MarkerBaseName].type
+    local dist = VDist2(FactoryPos[1], FactoryPos[3], ClosestMarkerBasePos[1], ClosestMarkerBasePos[3])
+    local BaseRadius = 30
+    local areatype
+    if aiBrain.BuilderManagers[MarkerBaseName].FactoryManager.Radius then
+        BaseRadius = aiBrain.BuilderManagers[MarkerBaseName].FactoryManager.Radius 
+    end
+    if dist > BaseRadius or not AIAttackUtils.CanGraphAreaTo(factory, ClosestMarkerBasePos, layer) then -- needs graph check for land and naval locations
+        WARN('* AI-Uveso: AddFactoryToClosestManager: Found '..MarkerBaseName..' Baseradius('..math.floor(BaseRadius)..') but it\'s to not reachable: '..math.floor(dist)..' - Creating new location')
+        if NavalFactory then
+            MarkerBaseName = 'Naval Area '..Random(1000,5000)
+            areatype = 'Naval Area'
+        else
+            MarkerBaseName = 'Expansion Area '..Random(1000,5000)
+            areatype = 'Expansion Area'
+        end
+        -- creating a marker for the expansion or AIUtils.AIGetClosestMarkerLocation() will not find it.
+        Scenario.MasterChain._MASTERCHAIN_.Markers[MarkerBaseName] = {}
+        Scenario.MasterChain._MASTERCHAIN_.Markers[MarkerBaseName].color = 'fff4a460'
+        Scenario.MasterChain._MASTERCHAIN_.Markers[MarkerBaseName].hint = true
+        Scenario.MasterChain._MASTERCHAIN_.Markers[MarkerBaseName].orientation = { 0, 0, 0 }
+        Scenario.MasterChain._MASTERCHAIN_.Markers[MarkerBaseName].prop = "/env/common/props/markers/M_Expansion_prop.bp"
+        Scenario.MasterChain._MASTERCHAIN_.Markers[MarkerBaseName].type = areatype
+        Scenario.MasterChain._MASTERCHAIN_.Markers[MarkerBaseName].position = FactoryPos
+        ClosestMarkerBasePos = FactoryPos
+    end
     -- Is this a start location ?
     if LocationType == 'Blank Marker' then
         -- Is this our own start location ?
@@ -1431,7 +1484,7 @@ function AddFactoryToClosestManager(aiBrain, factory)
     elseif LocationType ~= 'Naval Area' and LocationType ~= 'Expansion Area' and LocationType ~= 'Large Expansion Area' then
         WARN('* AI-Uveso: AddFactoryToClosestManager: unknown LocationType '..LocationType..' !')
     end
-    SPEW('* AI-Uveso: AddFactoryToClosestManager: Factory '..factory.UnitId..' is close to MarkerBaseName '..MarkerBaseName..' ('..LocationType..')')
+    SPEW('* AI-Uveso: AddFactoryToClosestManager: Factory '..factory.UnitId..' is close ('..math.floor(dist)..') to MarkerBaseName '..MarkerBaseName..' ('..LocationType..')')
     -- search for an manager on this location
     if aiBrain.BuilderManagers[MarkerBaseName] then
         SPEW('* AI-Uveso: AddFactoryToClosestManager: BuilderManagers for MarkerBaseName '..MarkerBaseName..' exist!')
@@ -1477,6 +1530,7 @@ function AddFactoryToClosestManager(aiBrain, factory)
         import('/lua/ai/AIAddBuilderTable.lua').AddGlobalBaseTemplate(aiBrain, MarkerBaseName, pick)
     end
 end
+
 
 --self.Brain.BuilderManagers[self.LocationType].FactoryManager:AddFactory(finishedUnit)
 --local AIUtils = import('ai/aiutilities.lua')
