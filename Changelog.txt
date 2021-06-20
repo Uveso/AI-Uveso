@@ -1,4 +1,17 @@
 *************************************************************************************************************************************
+v95 (21.Jun.2021)
+
+- Opt: ACU-AI point defenses are detecting as threat now.
+- Opt: ACU-AI increased threat for mobile enemy units.
+- Opt: Eco management optimized for first buildorders.
+- Opt: ACU can now walk closer to the map border while evading from the enemy
+- Opt: Added assist platoon for energy build and mass upgrade
+- Opt: Increased the speed of the AI markergenerator by 15%
+- Fix: fixed an issue with adding the first locationamanger on water.
+- Fix: CanGraphAreaTo() no longer needs a unit, only position and layer
+- Fix: SACU teleport function had an error while checking for SACU health.(thanks to Wingflier)
+
+*************************************************************************************************************************************
 v94 (06.Jun.2021)
 
 - Fix: ACU was waiting for 5000 energy not 500 to issue an enhancement.

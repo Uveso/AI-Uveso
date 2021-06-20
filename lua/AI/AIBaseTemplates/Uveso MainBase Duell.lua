@@ -24,7 +24,7 @@ BaseBuilderTemplate {
         -- ==== Mass ==== --
         -----------------------------------------------------------------------------
         'UD MassBuilders',
-        'U123 ExtractorUpgrades',
+--        'U123 ExtractorUpgrades',
         -----------------------------------------------------------------------------
         -- ==== Energy ==== --
         -----------------------------------------------------------------------------
@@ -34,6 +34,9 @@ BaseBuilderTemplate {
         -- ==== Factory ==== --
         -----------------------------------------------------------------------------
         'UD Factory Builders',
+
+        'D123 Land Builders DUELL',
+        'D123 Land Formers Trasher',
     },
     -- Not used by Uveso's AI. We always need intel in case the commander is dead.
     NonCheatBuilders = {

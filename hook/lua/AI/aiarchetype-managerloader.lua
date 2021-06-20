@@ -1431,9 +1431,9 @@ end
 function AddFactoryToClosestManager(aiBrain, factory)
     SPEW('* AI-Uveso: AddFactoryToClosestManager: Factory '..factory.UnitId..' is not assigned to a factory manager!')
     local FactoryPos = factory:GetPosition()
-    -- searching for the closest location near the factory (MAIN, Expansion Area)
-    local ClosestMarkerBasePos, MarkerBaseName, layer
     local NavalFactory = EntityCategoryContains(categories.NAVAL, factory)
+    local ClosestMarkerBasePos, MarkerBaseName, layer, dist, areatype, BaseRadius
+    -- searching for the closest location near the factory (MAIN, Expansion Area)
     if NavalFactory then
         ClosestMarkerBasePos, MarkerBaseName = AIUtils.AIGetClosestMarkerLocation(aiBrain, 'Naval Area', FactoryPos[1], FactoryPos[3])
         layer = 'Water'
@@ -1441,15 +1441,20 @@ function AddFactoryToClosestManager(aiBrain, factory)
         ClosestMarkerBasePos, MarkerBaseName = AIUtils.AIGetClosestMarkerLocation(aiBrain, 'Blank Marker', FactoryPos[1], FactoryPos[3], {'Expansion Area', 'Large Expansion Area'})
         layer = 'Land'
     end
-    -- get the location type of this marker ( Blank Marker, Naval Area, Expansion Area, Large Expansion Area )
-    local LocationType = Scenario.MasterChain._MASTERCHAIN_.Markers[MarkerBaseName].type
-    local dist = VDist2(FactoryPos[1], FactoryPos[3], ClosestMarkerBasePos[1], ClosestMarkerBasePos[3])
-    local BaseRadius = 30
-    local areatype
-    if aiBrain.BuilderManagers[MarkerBaseName].FactoryManager.Radius then
-        BaseRadius = aiBrain.BuilderManagers[MarkerBaseName].FactoryManager.Radius 
+    --  if exist, get the distance to the closest Marker Location
+    if ClosestMarkerBasePos then
+        dist = VDist2(FactoryPos[1], FactoryPos[3], ClosestMarkerBasePos[1], ClosestMarkerBasePos[3])
+    else
+        dist = 0
     end
-    if dist > BaseRadius or not AIAttackUtils.CanGraphAreaTo(factory, ClosestMarkerBasePos, layer) then -- needs graph check for land and naval locations
+    --  if we have already found a manager, get it's BaseRadius
+    if aiBrain.BuilderManagers[MarkerBaseName].FactoryManager.Radius then
+        BaseRadius = aiBrain.BuilderManagers[MarkerBaseName].FactoryManager.Radius
+    else
+        BaseRadius = 30
+    end
+    -- check if the distance from our factory to the closest basemanager is closeer than the managers max range and check if we are on the same land/sea
+    if dist > BaseRadius or not AIAttackUtils.CanGraphAreaTo(FactoryPos, ClosestMarkerBasePos, layer) then -- needs graph check for land and naval locations
         WARN('* AI-Uveso: AddFactoryToClosestManager: Found '..MarkerBaseName..' Baseradius('..math.floor(BaseRadius)..') but it\'s to not reachable: '..math.floor(dist)..' - Creating new location')
         if NavalFactory then
             MarkerBaseName = 'Naval Area '..Random(1000,5000)
@@ -1468,6 +1473,8 @@ function AddFactoryToClosestManager(aiBrain, factory)
         Scenario.MasterChain._MASTERCHAIN_.Markers[MarkerBaseName].position = FactoryPos
         ClosestMarkerBasePos = FactoryPos
     end
+    -- get the location type of this marker ( Blank Marker, Naval Area, Expansion Area, Large Expansion Area )
+    local LocationType = Scenario.MasterChain._MASTERCHAIN_.Markers[MarkerBaseName].type
     -- Is this a start location ?
     if LocationType == 'Blank Marker' then
         -- Is this our own start location ?

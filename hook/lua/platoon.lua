@@ -5,7 +5,7 @@ local UvesoOffsetPlatoonLUA = debug.getinfo(1).currentline - 1
 local UUtils = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua')
 local UseHeroPlatoon = true
 local HERODEBUG = false
-local CHAMPIONDEBUG = false -- you need to fucus the AI army to see the debug drawing
+local CHAMPIONDEBUG = true -- you need to fucus the AI army to see the debug drawing
 local NUKEDEBUG = false
 local MarkerSwitchDist = 20
 local MarkerSwitchDistEXP = 40
@@ -1322,6 +1322,9 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         local RatioTable = {0.0, 0.10, 0.15, 0.20, 0.25, 0.30, 0.40, 0.50, 1.0}
         if personality == 'uvesorush' then
             RatioTable = {0.0, 0.00, 0.05, 0.10, 0.15, 0.20, 0.20, 0.50, 1.0}
+        end
+        if personality == 'uvesoduell' then
+            RatioTable = {0.0, 0.00, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 1.0}
         end
         while aiBrain:PlatoonExists(self) do
             --LOG('* AI-Uveso: +++ ExtractorUpgradeAI: PULSE')
@@ -3401,7 +3404,8 @@ Platoon = Class(CopyOfOldPlatoonClass) {
     end,
 
     ACUChampionPlatoon = function(self)
-        AIAttackUtils.GetMostRestrictiveLayer(self) -- this will set self.MovementLayer to the platoon
+        --AIAttackUtils.GetMostRestrictiveLayer(self) -- this will set self.MovementLayer to the platoon
+        self.MovementLayer = 'Land'
         local aiBrain = self:GetBrain()
         -- table for target and debug information
         aiBrain.ACUChampion = {}
@@ -3462,7 +3466,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         cdr.CDRHome = aiBrain.BuilderManagers['MAIN'].Position
         cdr.smartPos = cdr:GetPosition()
         cdr.position = cdr.smartPos
-        cdr.HealthOLD = 100
+--        cdr.HealthOLD = 100
         cdr.LastDamaged = 0
         cdr.LastMoved = GetGameTimeSeconds()
 
@@ -3555,7 +3559,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         -- Main platoon loop
         while aiBrain:PlatoonExists(self) and not cdr.Dead do
             -- wait here to prevent deadloops and heavy CPU load
-            coroutine.yield(10) -- not working with 1, 2, 3, works good with 10, 
+            coroutine.yield(30) -- not working with 1, 2, 3, works good with 10, 
             cdr.position = cdr:GetPosition()
             -- Debug Draw Position
             if CHAMPIONDEBUG then
@@ -3632,7 +3636,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
             end
 
 
-            -- We lose 1 Braveness for every 5 t1 enemy units in close range ------------------------------------------------------------------------------------------------------
+            -- We lose 1 Braveness for every 3 t1 enemy units in close range ------------------------------------------------------------------------------------------------------
             UnitT1 = aiBrain:GetNumUnitsAroundPoint( (categories.DIRECTFIRE + categories.INDIRECTFIRE) * categories.TECH1, cdr.position, 40, 'Enemy' )
             UnitT2 = aiBrain:GetNumUnitsAroundPoint( (categories.DIRECTFIRE + categories.INDIRECTFIRE) * categories.TECH2, cdr.position, 40, 'Enemy' )
             UnitT3 = aiBrain:GetNumUnitsAroundPoint( (categories.DIRECTFIRE + categories.INDIRECTFIRE) * categories.TECH3, cdr.position, 40, 'Enemy' )
@@ -3640,8 +3644,8 @@ Platoon = Class(CopyOfOldPlatoonClass) {
             -- Tech1 ~25 dps -- Tech2 ~90 dps = 3 x T1 -- Tech3 ~333 dps = 13 x T1 -- Tech4 ~2000 dps = 80 x T1
             Threat = UnitT1 + UnitT2 * 3 + UnitT3 * 13 + UnitT4 * 80
             if Threat > 0 then
-                Braveness = Braveness - math.floor(Threat / 5)
-                BraveDEBUG['Enemy'] = - math.floor(Threat / 5)
+                Braveness = Braveness - math.floor(Threat / 3)
+                BraveDEBUG['Enemy'] = - math.floor(Threat / 3)
             end
 
             -- We lose 5 Braveness for every additional enemy ACU nearby (+0 for 1 ACU, +5 for 2 ACUs, +10 for 3 ACUs
@@ -3650,6 +3654,18 @@ Platoon = Class(CopyOfOldPlatoonClass) {
             if Threat > 0 then
                 Braveness = Braveness - math.floor(Threat * 5)
                 BraveDEBUG['EnemyACU'] = - math.floor(Threat * 5)
+            end
+
+            -- We lose 6 Braveness for every T2 Point Defense nearby
+            UnitT1 = aiBrain:GetNumUnitsAroundPoint( categories.STRUCTURE * categories.DEFENSE * categories.TECH1, cdr.position, 40, 'Enemy' )
+            UnitT2 = aiBrain:GetNumUnitsAroundPoint( categories.STRUCTURE * categories.DEFENSE * categories.TECH2, cdr.position, 65, 'Enemy' )
+            UnitT3 = aiBrain:GetNumUnitsAroundPoint( categories.STRUCTURE * categories.DEFENSE * categories.TECH3, cdr.position, 85, 'Enemy' )
+            UnitT4 = aiBrain:GetNumUnitsAroundPoint( categories.STRUCTURE * categories.DEFENSE * categories.EXPERIMENTAL, cdr.position, 120, 'Enemy' )
+            -- Tech1 ~150 dps -- Tech2 ~130 dps = 1 x T1 -- Tech3 ~260 dps = 2 x T1 -- Tech4 ~2000 dps = 80 x T1
+            Threat = UnitT1 + UnitT2 * 1 + UnitT3 * 2 + UnitT4 * 13
+            if Threat > 0 then
+                Braveness = Braveness - math.floor(Threat * 6)
+                BraveDEBUG['PD'] = - math.floor(Threat * 6)
             end
 
             -- We lose 1 Braveness if we got damaged in the last 4 seconds --------------------------------------------------------------------------------------------------------
@@ -3685,7 +3701,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
             -- We lose all Braveness if we have under 20% health -------------------------------------------------------------------------------------------------------------------------
             CDRHealth = UUtils.ComHealth(cdr)
             if CDRHealth < 20 then
-                Braveness = -1
+                Braveness = -20
             end
 
             ---------------
@@ -3965,6 +3981,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                 DebugText = DebugText..'TMD:'..(BraveDEBUG['TMD'] or "--")..' '
                 DebugText = DebugText..'Shield:'..(BraveDEBUG['Shield'] or "--")..' '
                 DebugText = DebugText..'Enemy:'..(BraveDEBUG['Enemy'] or "--")..' '
+                DebugText = DebugText..'PD:'..(BraveDEBUG['PD'] or "--")..' '
                 DebugText = DebugText..'EnemyACU:'..(BraveDEBUG['EnemyACU'] or "--")..' '   -- -0 -5
                 DebugText = DebugText..'Behind:'..(BraveDEBUG['Behind'] or "--")..' '
                 DebugText = DebugText..'Hitted:'..(BraveDEBUG['Hitted'] or "--")..' '
@@ -4029,6 +4046,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                 smartPos[3] = playablearea[4]
             end
             -- check if the move position is new, then issue a move command
+            -- ToDo in case we are under fire we should move in zig-zag to evade
             if VDist2( smartPos[1], smartPos[3], NavigatorGoal[1], NavigatorGoal[3] ) > 0.7 then
                 IssueClearCommands({cdr})
                 IssueMove({cdr}, smartPos )
@@ -4360,18 +4378,18 @@ Platoon = Class(CopyOfOldPlatoonClass) {
             }
             aiBrain.ACUChampion.EnemyInArea = 0
             for index, pos in AreaTable do
-                UnitT1 = aiBrain:GetNumUnitsAroundPoint( categories.ALLUNITS, pos, 24, 'Enemy' )
+                UnitT1 = aiBrain:GetNumUnitsAroundPoint( categories.ALLUNITS, pos, 25, 'Enemy' )
                 aiBrain.ACUChampion.EnemyInArea = aiBrain.ACUChampion.EnemyInArea + UnitT1
                 -- mimic the map border as enemy units, so the ACU will not get to close to the border
                 if pos[1] <= playablearea[1] + 1 then                  -- left border
-                    UnitT1 = UnitT1 + playablearea[1] + 1 - pos[1]
+                    UnitT1 = 1
                 elseif pos[1] >= playablearea[3] -1 then               -- right border
-                    UnitT1 = UnitT1 + pos[1] - (playablearea[3] - 1)
+                    UnitT1 = 1
                 end
-                if pos[3] <= playablearea[2] + 1then                  -- top border
-                    UnitT1 = UnitT1 + playablearea[2] + 1 - pos[3]
+                if pos[3] <= playablearea[2] + 1then                   -- top border
+                    UnitT1 = 1
                 elseif pos[3] >= playablearea[4] -1 then               -- bottom border
-                    UnitT1 = UnitT1 + pos[3] - (playablearea[4] - 1)
+                    UnitT1 = 1
                 end
                 AreaTable[index][4] = UnitT1
             end
@@ -4390,7 +4408,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                 end
             end
 
-            -- Enemy tactical missile threat
+            -- Enemy Experimental threat
             local EnemyExperimental = platoon:FindClosestUnit('Attack', 'Enemy', true, categories.MOBILE * categories.EXPERIMENTAL)
             if EnemyExperimental then
                 local EnemyExperimentalPos = EnemyExperimental:GetPosition()

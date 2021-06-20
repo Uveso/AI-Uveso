@@ -799,7 +799,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 PanicZone Tank Force',
         PlatoonTemplate = 'T1LandDFTank',
-        Priority = 0,
+        Priority = 19000,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { MIBC, 'HasNotParagon', {} },

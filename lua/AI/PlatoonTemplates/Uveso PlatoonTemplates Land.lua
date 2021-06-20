@@ -253,6 +253,13 @@ PlatoonTemplate {
         { categories.MOBILE * categories.LAND - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND - categories.SUBCOMMANDER, 1, 50, 'Attack', 'none' }
     },
 }
+PlatoonTemplate {
+    Name = 'U1234-Trash Land 50 200',
+    Plan = 'LandAttackAIUveso',
+    GlobalSquads = {
+        { categories.MOBILE * categories.LAND - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND - categories.SUBCOMMANDER, 50, 200, 'Attack', 'none' }
+    },
+}
 
 -- Test Platoon for Null AI
 PlatoonTemplate {

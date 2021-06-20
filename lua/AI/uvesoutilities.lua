@@ -746,7 +746,7 @@ end
 
 function UnderAttack(cdr)
     local CDRHealth = ComHealth(cdr)
-    if CDRHealth - cdr.HealthOLD < -1 then
+    if CDRHealth - (cdr.HealthOLD or CDRHealth) < -1 then
         cdr.LastDamaged = GetGameTimeSeconds()
     end
     cdr.HealthOLD = CDRHealth

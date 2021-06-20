@@ -223,6 +223,40 @@ BuilderGroup {
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
+    Builder {
+        BuilderName = 'UC CDR Rush',                                            -- Random Builder Name.
+        PlatoonTemplate = 'CDR Attack',                                         -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
+        Priority = 19250,                                                       -- Priority. Higher priotity will be build more often then lower priotity.
+        InstanceCount = 5,                                                      -- Number of plattons that will be formed with this template.
+        BuilderData = {
+            SearchRadius = BaseEnemyZone,                                       -- Searchradius from main base for new target. (A 5x5 Map is 256 high)
+            GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
+            RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
+            AttackEnemyStrength = 2000,                                         -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
+            NodeWeight = 10000,                                                 -- pathfinding with nodes up to a threat of 10000
+            TargetSearchCategory = categories.ALLUNITS - categories.SCOUT - categories.ENGINEER - categories.EXPERIMENTAL - (categories.MOBILE * categories.AIR) - categories.STRUCTURE, -- Only find targets matching these categories.
+            MoveToCategories = {                                                -- Attack these targets.
+                categories.COMMAND,
+                categories.LAND - categories.ANTIAIR,
+                categories.LAND,
+                categories.ALLUNITS,
+            },
+            WeaponTargetCategories = {                                          -- Override weapon target priorities
+                categories.COMMAND,
+                categories.LAND - categories.ANTIAIR - categories.ENGINEER,
+                categories.LAND - categories.ENGINEER,
+                categories.ALLUNITS,
+            },
+        },
+        BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
+            -- When do we want to build this ?
+            -- Do we need additional conditions to build it ?
+            { EBC, 'GreaterThanEconIncome',  { 0.0, 32.0}}, -- Absolut Base income
+            -- Don't build it if...
+        },
+        BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
+    },
 }
 
 -- ===================================================-======================================================== --
@@ -279,7 +313,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 0, categories.SUBCOMMANDER} },
-            { UCBC, 'UnitsLessInPlatoon', { 'ACUChampionPlatoon', 2, categories.SUBCOMMANDER } },
+            { UCBC, 'UnitsLessInPlatoon', { 'ACUChampionPlatoon', 1, categories.SUBCOMMANDER } },
         },
         BuilderType = 'Any',
     },
@@ -296,7 +330,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 0, categories.MOBILE * categories.DIRECTFIRE - categories.ANTIAIR - categories.EXPERIMENTAL } },
-            { UCBC, 'UnitsLessInPlatoon', { 'ACUChampionPlatoon', 2, categories.MOBILE * categories.DIRECTFIRE - categories.ANTIAIR - categories.EXPERIMENTAL } },
+            { UCBC, 'UnitsLessInPlatoon', { 'ACUChampionPlatoon', 1, categories.MOBILE * categories.DIRECTFIRE - categories.ANTIAIR - categories.EXPERIMENTAL } },
         },
         BuilderType = 'Any',
     },
@@ -330,7 +364,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 0, categories.MOBILE * categories.AIR * categories.GROUNDATTACK - categories.TRANSPORTFOCUS } },
-            { UCBC, 'UnitsLessInPlatoon', { 'ACUChampionPlatoon', 8, categories.MOBILE * categories.AIR * categories.GROUNDATTACK - categories.TRANSPORTFOCUS } },
+            { UCBC, 'UnitsLessInPlatoon', { 'ACUChampionPlatoon', 3, categories.MOBILE * categories.AIR * categories.GROUNDATTACK - categories.TRANSPORTFOCUS } },
         },
         BuilderType = 'Any',
     },

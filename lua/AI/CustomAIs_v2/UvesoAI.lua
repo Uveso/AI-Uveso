@@ -1,11 +1,3 @@
-#****************************************************************************
-#**
-#**  File     :  /lua/AI/CustomAIs_v2/UvesoAI.lua
-#**  Author(s): Uveso
-#**
-#**  Summary  : Utility File to insert custom AI into the game.
-#**
-#****************************************************************************
 
 AI = {
     AIList = {

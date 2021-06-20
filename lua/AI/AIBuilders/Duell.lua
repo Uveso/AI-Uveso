@@ -2,6 +2,7 @@ local categories = categories
 local EBC = '/lua/editor/EconomyBuildConditions.lua'
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 local MABC = '/lua/editor/MarkerBuildConditions.lua'
+local MIBC = '/lua/editor/MiscBuildConditions.lua'
 
 local BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua').GetDangerZoneRadii()
 
@@ -79,6 +80,27 @@ BuilderGroup {
     },
 
     Builder {
+        BuilderName = 'UD Mass 3+4',
+        PlatoonTemplate = 'EngineerBuilder',
+        Priority = 17800,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            -- When do we want to build this ?
+            { MABC, 'CanBuildOnMass', { 'LocationType', 40, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 4, categories.STRUCTURE * categories.MASSEXTRACTION }},
+            -- Don't build it if...
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            DesiresAssist = false,
+            Construction = {
+                BuildStructures = {
+                    'T1Resource',
+                },
+            }
+        }
+    },
+    Builder {
         BuilderName = 'UD Mass 5+',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17900,
@@ -143,8 +165,8 @@ BuilderGroup {
             -- Have we the eco to build it ?
             -- When do we want to build this ?
             { MABC, 'CanBuildOnHydro', { 'LocationType', 90, -1000, 100, 1, 'AntiSurface', 1 }},            -- Do we need additional conditions to build it ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.ENERGYPRODUCTION * categories.HYDROCARBON } },
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.ENERGYPRODUCTION } },
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.HYDROCARBON } },
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.ENERGYPRODUCTION } },
             -- Respect UnitCap
         },
         BuilderType = 'Any',
@@ -334,5 +356,191 @@ BuilderGroup {
             }
         }
     },
+    Builder {
+        BuilderName = 'UD Land Factory > 50',
+        PlatoonTemplate = 'EngineerBuilder',
+        Priority = 19300,
+        DelayEqualBuildPlattons = {'Factories', 5},
+        BuilderConditions = {
+            { UCBC, 'CheckBuildPlattonDelay', { 'Factories' }},
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Location = 'LocationType',
+            Construction = {
+                BuildClose = false,
+                AdjacencyCategory = categories.MASSEXTRACTION * (categories.TECH3 + categories.TECH2 + categories.TECH1),
+                LocationType = 'LocationType',
+                BuildStructures = {
+                    'T1LandFactory',
+                },
+            }
+        }
+    },
+}
+BuilderGroup {
+    BuilderGroupName = 'D123 Land Builders DUELL',                           -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuildersType = 'FactoryBuilder',
+    -- ============ --
+    --    TECH 1    --
+    -- ============ --
+
+    -- Terror builder, don't activate !!!
+    Builder {
+        BuilderName = 'D1R Terror mobile Tank',
+        PlatoonTemplate = 'T1LandDFTank',
+        Priority = 100,
+        BuilderConditions = {
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+        },
+        BuilderType = 'Land',
+    },
+    Builder {
+        BuilderName = 'D1R Terror mobile Arty',
+        PlatoonTemplate = 'T1LandArtillery',
+        Priority = 100,
+        BuilderConditions = {
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+        },
+        BuilderType = 'Land',
+    },
 }
 
+BuilderGroup {
+    BuilderGroupName = 'D123 Land Formers Trasher',                             -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuildersType = 'PlatoonFormBuilder',                                        -- BuilderTypes are: EngineerBuilder, FactoryBuilder, PlatoonFormBuilder.
+    Builder {
+        BuilderName = 'D1234 panic',
+        PlatoonTemplate = 'U1234-Trash Land 50 200',                               -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates"
+        Priority = 60,                                                          -- Priority. 1000 is normal.
+        InstanceCount = 2,                                                      -- Number of plattons that will be formed.
+        BuilderData = {
+            SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
+            DirectMoveEnemyBase = false, 
+            RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
+            AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
+            GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
+            IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
+            AttackEnemyStrength = 100000000,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            TargetSearchCategory = categories.ALLUNITS - categories.AIR,                         -- Only find targets matching these categories.
+            MoveToCategories = {                                                -- Move to targets
+                categories.ALLUNITS - categories.AIR,
+            },
+        },
+        BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
+            -- When do we want to form this ?
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 1, categories.MOBILE * categories.LAND - categories.SCOUT }}, -- radius, LocationType, unitCount, categoryEnemy
+        },
+        BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
+    },
+    Builder {
+        BuilderName = 'D1234 military',
+        PlatoonTemplate = 'U1234-Trash Land 1 50',                               -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates"
+        Priority = 60,                                                          -- Priority. 1000 is normal.
+        InstanceCount = 1,                                                      -- Number of plattons that will be formed.
+        BuilderData = {
+            SearchRadius = BaseMilitaryZone,                                       -- Searchradius for new target.
+            DirectMoveEnemyBase = false, 
+            RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
+            AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
+            GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
+            AttackEnemyStrength = 100000000,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            TargetSearchCategory = categories.ALLUNITS - categories.AIR,                         -- Only find targets matching these categories.
+            MoveToCategories = {                                                -- Move to targets
+                categories.STRUCTURE * categories.MASSEXTRACTION,
+                categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
+                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.STRUCTURE * categories.NUKE,
+                categories.STRUCTURE * categories.FACTORY * categories.TECH3,
+                categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
+                categories.STRUCTURE * categories.DEFENSE * categories.TECH3,
+                categories.STRUCTURE * categories.DEFENSE * categories.TECH2,
+                categories.STRUCTURE * categories.DEFENSE,
+                categories.STRUCTURE * categories.ENERGYPRODUCTION,
+                categories.STRUCTURE * categories.FACTORY,
+                categories.STRUCTURE,
+                categories.ALLUNITS - categories.AIR,
+            },
+        },
+        BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
+            -- When do we want to form this ?
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 1, categories.MOBILE * categories.LAND - categories.SCOUT }}, -- radius, LocationType, unitCount, categoryEnemy
+        },
+        BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
+    },
+    Builder {
+        BuilderName = 'D1234 enemy',
+        PlatoonTemplate = 'U1234-Trash Land 1 50',                               -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates"
+        Priority = 60,                                                          -- Priority. 1000 is normal.
+        InstanceCount = 1,                                                      -- Number of plattons that will be formed.
+        BuilderData = {
+            SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
+            DirectMoveEnemyBase = false, 
+            RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
+            AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
+            GetTargetsFromBase = true,                                          -- Get targets from base position (true) or platoon position (false)
+            AttackEnemyStrength = 100000000,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            TargetSearchCategory = categories.ALLUNITS - categories.AIR,                         -- Only find targets matching these categories.
+            MoveToCategories = {                                                -- Move to targets
+                categories.STRUCTURE * categories.MASSEXTRACTION,
+                categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
+                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.STRUCTURE * categories.NUKE,
+                categories.STRUCTURE * categories.FACTORY * categories.TECH3,
+                categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
+                categories.STRUCTURE * categories.DEFENSE * categories.TECH3,
+                categories.STRUCTURE * categories.DEFENSE * categories.TECH2,
+                categories.STRUCTURE * categories.DEFENSE,
+                categories.STRUCTURE * categories.ENERGYPRODUCTION,
+                categories.STRUCTURE * categories.FACTORY,
+                categories.STRUCTURE,
+                categories.ALLUNITS - categories.AIR,
+            },
+        },
+        BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
+            -- When do we want to form this ?
+        },
+        BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
+    },
+    Builder {
+        BuilderName = 'D1234 Unit > 200',
+        PlatoonTemplate = 'U1234-Trash Land 50 200',                               -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates"
+        Priority = 60,                                                          -- Priority. 1000 is normal.
+        InstanceCount = 1,                                                      -- Number of plattons that will be formed.
+        BuilderData = {
+            SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
+            DirectMoveEnemyBase = false, 
+            RequireTransport = false,                                           -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
+            AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
+            GetTargetsFromBase = false,                                          -- Get targets from base position (true) or platoon position (false)
+            AttackEnemyStrength = 100000000,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            TargetSearchCategory = categories.ALLUNITS - categories.AIR,                         -- Only find targets matching these categories.
+            MoveToCategories = {                                                -- Move to targets
+                categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
+                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.STRUCTURE * categories.NUKE,
+                categories.STRUCTURE * categories.FACTORY * categories.TECH3,
+                categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
+                categories.STRUCTURE * categories.DEFENSE * categories.TECH3,
+                categories.STRUCTURE * categories.DEFENSE * categories.TECH2,
+                categories.STRUCTURE * categories.DEFENSE,
+                categories.STRUCTURE * categories.ENERGYPRODUCTION,
+                categories.STRUCTURE * categories.FACTORY,
+                categories.STRUCTURE,
+                categories.ALLUNITS - categories.AIR,
+            },
+        },
+        BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
+            -- When do we want to form this ?
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 50, categories.MOBILE * categories.LAND - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND - categories.SUBCOMMANDER }},
+        },
+        BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
+    },
+
+}

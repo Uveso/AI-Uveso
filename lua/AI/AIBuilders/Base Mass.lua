@@ -529,7 +529,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             -- When do we want to build this ?
             { EBC, 'GreaterThanEconTrend', { 0.1, 0.1 } },                      -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.99, 0.70 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.80, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             { UCBC, 'GreaterThanGameTimeSeconds', { 1*60 } },
         },
         BuilderData = {

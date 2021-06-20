@@ -408,8 +408,8 @@ function DrawACUChampion()
             if aiBrain.ACUChampion.AreaTable then
                 for index, pos in aiBrain.ACUChampion.AreaTable do
                 --LOG('index='..index..' - pos='..repr(pos)..'')
-                    DrawCircle({pos[1], pos[2], pos[3]}, 24, 'c0000000')
-                    DrawCircle({pos[1], pos[2], pos[3]}, pos[4], 'ffFF6060')
+                    DrawCircle({pos[1], pos[2], pos[3]}, 25, 'c0000000')
+                    DrawCircle({pos[1], pos[2], pos[3]}, math.min( 26, pos[4] ) , 'ffFF6060')
                 end
             end
 
@@ -972,6 +972,8 @@ function CopyMarkerToMASTERCHAIN(layer)
 end
 
 function CheckValidMarkerPosition(MarkerIndex)
+    local math = math
+    local GetSurfaceHeight = GetSurfaceHeight
     local MarkerLayer = 'DefaultLand'
     if GetTerrainHeight(CREATEDMARKERS[MarkerIndex].position[1], CREATEDMARKERS[MarkerIndex].position[3]) < GetSurfaceHeight(CREATEDMARKERS[MarkerIndex].position[1], CREATEDMARKERS[MarkerIndex].position[3]) then
         MarkerLayer = 'DefaultWater'
@@ -982,13 +984,13 @@ function CheckValidMarkerPosition(MarkerIndex)
     local FAILSUMM = 0
     local MaxFails = 8 * 1/ScanResolution
     local MarkerPos = CREATEDMARKERS[MarkerIndex].position
-    local ASCIIGFX = ''
+--    local ASCIIGFX = ''
     ------------------
     -- Check X Axis --
     ------------------
     FAILSUMM = 0
     for Y = -4, 4, ScanResolution do
-        ASCIIGFX = ''
+--        ASCIIGFX = ''
         FAILLINE = 0
         for X = -4, 4, ScanResolution do
 --            if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
@@ -1023,15 +1025,14 @@ function CheckValidMarkerPosition(MarkerIndex)
             end
             if Block == true then
                 FAILLINE = FAILLINE + 1
-                ASCIIGFX = ASCIIGFX..'----'
-            else
-                ASCIIGFX = ASCIIGFX..'....'
+--                ASCIIGFX = ASCIIGFX..'----'
+--            else
+--                ASCIIGFX = ASCIIGFX..'....'
             end
             -- check Land / Water passage
-            SHigh = GetSurfaceHeight( MarkerPos[1] + X, MarkerPos[3] + Y )
             THigh = GetTerrainHeight( MarkerPos[1] + X, MarkerPos[3] + Y )
             if MarkerLayer ~= 'DefaultAmphibious' then
-                if THigh < SHigh then
+                if THigh < High then
                     if MarkerLayer ~= 'DefaultWater' then
 --                        if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
 --                            WARN('*CheckValidMarkerPosition Land / Water passage!!!')
@@ -1079,7 +1080,7 @@ function CheckValidMarkerPosition(MarkerIndex)
     FAILSUMM = 0
     for X = -4, 4, ScanResolution do
         FAILLINE = 0
-        ASCIIGFX = ''
+--        ASCIIGFX = ''
         for Y = -4, 4, ScanResolution do
 --            if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
 --                --DrawLine( {MarkerPos[1] + X , MarkerPos[2], MarkerPos[3] -4}, {MarkerPos[1] + X, MarkerPos[2], MarkerPos[3] + Y}, 'ffFFE0E0' )
@@ -1113,15 +1114,14 @@ function CheckValidMarkerPosition(MarkerIndex)
             end
             if Block == true then
                 FAILLINE = FAILLINE + 1
-                ASCIIGFX = ASCIIGFX..'----'
-            else
-                ASCIIGFX = ASCIIGFX..'....'
+--                ASCIIGFX = ASCIIGFX..'----'
+--            else
+--                ASCIIGFX = ASCIIGFX..'....'
             end
             -- check Land / Water passage
-            SHigh = GetSurfaceHeight( MarkerPos[1] + X, MarkerPos[3] + Y )
             THigh = GetTerrainHeight( MarkerPos[1] + X, MarkerPos[3] + Y )
             if MarkerLayer ~= 'DefaultAmphibious' then
-                if THigh < SHigh then
+                if THigh < High then
                     if MarkerLayer ~= 'DefaultWater' then
 --                        if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
 --                            WARN('*CheckValidMarkerPosition Land / Water passage!!!')
@@ -1167,6 +1167,8 @@ function CheckValidMarkerPosition(MarkerIndex)
 end
 
 function ConnectMarker(X,Y)
+    local math = math
+    local GetSurfaceHeight = GetSurfaceHeight
     local MarkerIndex = 'Marker'..X..'-'..Y
     -- Check if this marker is valid
     if not CREATEDMARKERS[MarkerIndex] or CREATEDMARKERS[MarkerIndex].graph == 'Blocked' then
@@ -1178,7 +1180,7 @@ function ConnectMarker(X,Y)
     local LUHigh, RUHigh, LDHigh, RDHigh = 0,0,0,0
     local LUHigh, RUHigh, LDHigh, RDHigh = 0,0,0,0
     local MarkerPos = CREATEDMARKERS[MarkerIndex].position
-    local ASCIIGFX = ''
+--    local ASCIIGFX = ''
     -----------------------------------------
     -- Search for a connection to E (East) --
     -----------------------------------------
@@ -1186,7 +1188,7 @@ function ConnectMarker(X,Y)
     local EastMarkerIndex = 'Marker'..(X+1)..'-'..Y
     if CREATEDMARKERS[EastMarkerIndex] and CREATEDMARKERS[EastMarkerIndex].graph ~= 'Blocked' then
         for Y = -3, 3, ScanResolution do
-            ASCIIGFX = ''
+--            ASCIIGFX = ''
             for X = MarkerPos[1], CREATEDMARKERS[EastMarkerIndex].position[1], ScanResolution do
 --                if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceEast then
 --                    DrawLine( {MarkerPos[1], MarkerPos[2], MarkerPos[3] + Y}, { X, MarkerPos[2], MarkerPos[3] + Y}, 'ffFFE0E0' )
@@ -1203,6 +1205,12 @@ function ConnectMarker(X,Y)
                 RUHigh = High - GetSurfaceHeight( X+FootprintSize*0.8, MarkerPos[3] + Y-FootprintSize*0.8 )
                 LDHigh = High - GetSurfaceHeight( X-FootprintSize*0.8, MarkerPos[3] + Y+FootprintSize*0.8 )
                 RDHigh = High - GetSurfaceHeight( X+FootprintSize*0.8, MarkerPos[3] + Y+FootprintSize*0.8 )
+
+-- TypeCode 9 an 230 is blocking terrain type (Did not find a map that is using it)
+--if GetTerrainType(X,  MarkerPos[3] + Y).Blocking then
+--    WARN('############ Blocking ############')
+--end
+
 --                if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceEast then
 --                    LOG('*ConnectMarker slope  : '..string.format("slope:  %.3f  %.3f  %.3f  %.3f   angle:  %.3f  %.3f  %.3f  %.3f ... %.3f  %.3f  %.3f  %.3f", math.abs(UHigh - DHigh), math.abs(LHigh - RHigh), math.abs(LUHigh - RDHigh), math.abs(RUHigh - LDHigh), math.abs(UHigh), math.abs(DHigh), math.abs(LHigh), math.abs(RHigh), math.abs(LUHigh), math.abs(RUHigh), math.abs(LDHigh), math.abs(RDHigh) ) )
 --                end
@@ -1220,10 +1228,10 @@ function ConnectMarker(X,Y)
                 end
                 if Block == true then
                     FAIL = FAIL + 1
-                    ASCIIGFX = ASCIIGFX..'----'
+--                    ASCIIGFX = ASCIIGFX..'----'
                     break
-                else
-                    ASCIIGFX = ASCIIGFX..'....'
+--                else
+--                    ASCIIGFX = ASCIIGFX..'....'
                 end
             end
 --            if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
@@ -1269,7 +1277,7 @@ function ConnectMarker(X,Y)
     local SouthMarkerIndex = 'Marker'..X..'-'..(Y+1)
     if CREATEDMARKERS[SouthMarkerIndex] and CREATEDMARKERS[SouthMarkerIndex].graph ~= 'Blocked' then
         for X = -3, 3, ScanResolution do
-            ASCIIGFX = ''
+--            ASCIIGFX = ''
             for Y = MarkerPos[3], CREATEDMARKERS[SouthMarkerIndex].position[3], ScanResolution do
 --                if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceSouth then
 --                    DrawLine( {MarkerPos[1] + X, MarkerPos[2], MarkerPos[3]}, { MarkerPos[1] + X, MarkerPos[2], Y}, 'ffFFE0E0' )
@@ -1304,10 +1312,10 @@ function ConnectMarker(X,Y)
                 end
                 if Block == true then
                     FAIL = FAIL + 1
-                    ASCIIGFX = ASCIIGFX..'----'
+--                    ASCIIGFX = ASCIIGFX..'----'
                     break
-                else
-                    ASCIIGFX = ASCIIGFX..'....'
+--                else
+--                    ASCIIGFX = ASCIIGFX..'....'
                 end
             end
 --            if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
@@ -1354,7 +1362,7 @@ function ConnectMarker(X,Y)
     local SouthEastMarkerIndex = 'Marker'..(X+1)..'-'..(Y+1)
     if CREATEDMARKERS[SouthEastMarkerIndex] and CREATEDMARKERS[SouthEastMarkerIndex].graph ~= 'Blocked' then
         for X = -3, 3, ScanResolution do
-            ASCIIGFX = ''
+--            ASCIIGFX = ''
             for XY = 0, CREATEDMARKERS[SouthEastMarkerIndex].position[3] - MarkerPos[3] , ScanResolution do
 --                if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
 --                    DrawLine( {MarkerPos[1] + X, MarkerPos[2], MarkerPos[3] - X}, { MarkerPos[1] + X+XY, MarkerPos[2], MarkerPos[3] + XY - X}, 'ffFFE0E0' )
@@ -1388,10 +1396,10 @@ function ConnectMarker(X,Y)
                 end
                 if Block == true then
                     FAIL = FAIL + 1
-                    ASCIIGFX = ASCIIGFX..'----'
+--                    ASCIIGFX = ASCIIGFX..'----'
                     break
-                else
-                    ASCIIGFX = ASCIIGFX..'....'
+--                else
+--                    ASCIIGFX = ASCIIGFX..'....'
                 end
             end
 --            if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
@@ -1437,7 +1445,7 @@ function ConnectMarker(X,Y)
     local SouthWestMarkerIndex = 'Marker'..(X-1)..'-'..(Y+1)
     if CREATEDMARKERS[SouthWestMarkerIndex] and CREATEDMARKERS[SouthWestMarkerIndex].graph ~= 'Blocked' then
         for X = -3, 3, ScanResolution do
-            ASCIIGFX = ''
+--            ASCIIGFX = ''
             for XY = 0, CREATEDMARKERS[SouthWestMarkerIndex].position[3] - MarkerPos[3] , ScanResolution do
 --                if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
 --                    DrawLine( {MarkerPos[1] + X, MarkerPos[2], MarkerPos[3] + X}, { MarkerPos[1] + X-XY, MarkerPos[2], MarkerPos[3] + XY + X}, 'ffFFE0E0' )
@@ -1471,10 +1479,10 @@ function ConnectMarker(X,Y)
                 end
                 if Block == true then
                     FAIL = FAIL + 1
-                    ASCIIGFX = ASCIIGFX..'----'
+--                    ASCIIGFX = ASCIIGFX..'----'
                     break
-                else
-                    ASCIIGFX = ASCIIGFX..'....'
+--                else
+--                    ASCIIGFX = ASCIIGFX..'....'
                 end
             end
 --            if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
@@ -2095,7 +2103,7 @@ function ValidateModFilesUveso()
     local ModName = '* '..'AI-Uveso'
     local ModDirectory = 'AI-Uveso'
     local Files = 90
-    local Bytes = 1970219
+    local Bytes = 1989695
     LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Running from: '..debug.getinfo(1).source..'.')
     LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Checking directory /mods/ for '..ModDirectory..'...')
     local FilesInFolder = DiskFindFiles('/mods/', '*.*')
