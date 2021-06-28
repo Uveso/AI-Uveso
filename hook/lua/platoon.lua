@@ -4378,7 +4378,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
             }
             aiBrain.ACUChampion.EnemyInArea = 0
             for index, pos in AreaTable do
-                UnitT1 = aiBrain:GetNumUnitsAroundPoint( categories.ALLUNITS, pos, 25, 'Enemy' )
+                UnitT1 = aiBrain:GetNumUnitsAroundPoint( categories.DIRECTFIRE + categories.INDIRECTFIRE + categories.DEFENSE, pos, 25, 'Enemy' )
                 aiBrain.ACUChampion.EnemyInArea = aiBrain.ACUChampion.EnemyInArea + UnitT1
                 -- mimic the map border as enemy units, so the ACU will not get to close to the border
                 if pos[1] <= playablearea[1] + 1 then                  -- left border

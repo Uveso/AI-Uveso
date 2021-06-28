@@ -876,8 +876,10 @@ function CleanMarkersInMASTERCHAIN(layer)
                 --LOG('Cleaning marker '..layer..X..'-'..Y)
                 -- check if we have 8 adjacentTo. If yes, delete this Marker
                 local adjancents = STR_GetTokens(Scenario.MasterChain._MASTERCHAIN_.Markers[layer..X..'-'..Y].adjacentTo or '', ' ')
-                if adjancents[7] then
-                    --LOG('markers has 8 adjacentTo: '..Scenario.MasterChain._MASTERCHAIN_.Markers[layer..X..'-'..Y].adjacentTo)
+                -- disabled for chp2001, it's also not really needed.
+                -- if adjancents[7] then -- pruning markers with 8 adjancents
+                if adjancents[8] then
+                    LOG('markers has 8 adjacentTo: '..Scenario.MasterChain._MASTERCHAIN_.Markers[layer..X..'-'..Y].adjacentTo)
                     Scenario.MasterChain._MASTERCHAIN_.Markers[layer..X..'-'..Y] = nil
                     -- delete adjacentTo from near markers
                     for YD = -1, 1 do
@@ -2103,7 +2105,7 @@ function ValidateModFilesUveso()
     local ModName = '* '..'AI-Uveso'
     local ModDirectory = 'AI-Uveso'
     local Files = 90
-    local Bytes = 1989695
+    local Bytes = 1990235
     LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Running from: '..debug.getinfo(1).source..'.')
     LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Checking directory /mods/ for '..ModDirectory..'...')
     local FilesInFolder = DiskFindFiles('/mods/', '*.*')

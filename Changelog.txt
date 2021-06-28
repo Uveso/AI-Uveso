@@ -1,4 +1,10 @@
 *************************************************************************************************************************************
+v96 (28.Jun.2021)
+
+- Opt: ACU-AI was evading from non combat units like massextractors.
+- For AI devs: removed marker pruning from function CleanMarkersInMASTERCHAIN for all layers.
+
+*************************************************************************************************************************************
 v95 (21.Jun.2021)
 
 - Opt: ACU-AI point defenses are detecting as threat now.

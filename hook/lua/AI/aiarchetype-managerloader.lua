@@ -1455,7 +1455,7 @@ function AddFactoryToClosestManager(aiBrain, factory)
     end
     -- check if the distance from our factory to the closest basemanager is closeer than the managers max range and check if we are on the same land/sea
     if dist > BaseRadius or not AIAttackUtils.CanGraphAreaTo(FactoryPos, ClosestMarkerBasePos, layer) then -- needs graph check for land and naval locations
-        WARN('* AI-Uveso: AddFactoryToClosestManager: Found '..MarkerBaseName..' Baseradius('..math.floor(BaseRadius)..') but it\'s to not reachable: '..math.floor(dist)..' - Creating new location')
+        WARN('* AI-Uveso: AddFactoryToClosestManager: Found ['..MarkerBaseName..'] Baseradius('..math.floor(BaseRadius)..') but it\'s to not reachable: Distance to base: '..math.floor(dist)..' - Creating new location')
         if NavalFactory then
             MarkerBaseName = 'Naval Area '..Random(1000,5000)
             areatype = 'Naval Area'
