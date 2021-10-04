@@ -110,7 +110,7 @@ AIBrain = Class(UvesoAIBrainClass) {
             local function TransferOwnershipOfBorrowedUnits(brains)
                 for index, brain in brains do
                     local units = brain:GetListOfUnits(categories.ALLUNITS, false)
-                    if units and table.getn(units) > 0 then
+                    if units and not table.empty(units) then
                         for _, unit in units do
                             if unit.oldowner == selfIndex then
                                 unit.oldowner = nil
@@ -122,19 +122,19 @@ AIBrain = Class(UvesoAIBrainClass) {
 
             -- Transfer our units to other brains. Wait in between stops transfer of the same units to multiple armies.
             local function TransferUnitsToBrain(brains)
-                if table.getn(brains) > 0 then
-                    if shareOption == 'FullShare' then 
+                if not table.empty(brains) then
+                    if shareOption == 'FullShare' then
                         local indexes = {}
-                        for _, brain in brains do 
+                        for _, brain in brains do
                             table.insert(indexes, brain.index)
-                        end 
+                        end
                         local units = self:GetListOfUnits(categories.ALLUNITS - categories.WALL - categories.COMMAND, false)
                         TransferUnfinishedUnitsAfterDeath(units, indexes)
                     end
-                    
+
                     for k, brain in brains do
                         local units = self:GetListOfUnits(categories.ALLUNITS - categories.WALL - categories.COMMAND, false)
-                        if units and table.getn(units) > 0 then
+                        if units and not table.empty(units) then
                             TransferUnitsOwnership(units, brain.index)
                             WaitSeconds(1)
                         end
@@ -144,7 +144,7 @@ AIBrain = Class(UvesoAIBrainClass) {
 
             -- Sort the destiniation armies by score
             local function TransferUnitsToHighestBrain(brains)
-                if table.getn(brains) > 0 then
+                if not table.empty(brains) then
                     table.sort(brains, function(a, b) return a.score > b.score end)
                     TransferUnitsToBrain(brains)
                 end
@@ -154,7 +154,7 @@ AIBrain = Class(UvesoAIBrainClass) {
             local function TransferUnitsToKiller()
                 local KillerIndex = 0
                 local units = self:GetListOfUnits(categories.ALLUNITS - categories.WALL - categories.COMMAND, false)
-                if units and table.getn(units) > 0 then
+                if units and not table.empty(units) then
                     if victoryOption == 'demoralization' then
                         KillerIndex = ArmyBrains[selfIndex].CommanderKilledBy or selfIndex
                         TransferUnitsOwnership(units, KillerIndex)
@@ -192,7 +192,7 @@ AIBrain = Class(UvesoAIBrainClass) {
                 local given = {}
                 for index, brain in brains do
                     local units = brain:GetListOfUnits(categories.ALLUNITS - categories.WALL, false)
-                    if units and table.getn(units) > 0 then
+                    if units and not table.empty(units) then
                         for _, unit in units do
                             if unit.oldowner == selfIndex then -- The unit was built by me
                                 table.insert(given, unit)
@@ -247,12 +247,12 @@ AIBrain = Class(UvesoAIBrainClass) {
 
             -- Kill all units left over
             local tokill = self:GetListOfUnits(categories.ALLUNITS - categories.WALL, false)
-            if tokill and table.getn(tokill) > 0 then
+            if tokill and not table.empty(tokill) then
                 for index, unit in tokill do
                     unit:Kill()
                 end
             end
-            
+
             -- AI Start
 
             if self.BrainType == 'AI' then
@@ -312,7 +312,6 @@ AIBrain = Class(UvesoAIBrainClass) {
         ForkThread(KillArmy)
 
     end,
-
 
     -- Hook AI-Uveso, set self.Uveso = true
     OnCreateAI = function(self, planName)

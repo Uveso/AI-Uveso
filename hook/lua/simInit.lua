@@ -280,35 +280,21 @@ function GraphRenderThread()
                 DrawPathGraph('DefaultLand', false)
                 DrawPathGraph('DefaultAmphibious', false)
                 DrawPathGraph('DefaultWater', false)
-                --DrawPathGraph('DefaultAir', false)
             elseif GetGameTimeSeconds() < 20 then
-                --DrawPathGraph('DefaultAmphibious', false)
-                --DrawPathGraph('DefaultWater', false)
-                --DrawPathGraph('DefaultAir', false)
                 DrawPathGraph('DefaultLand', true)
             -- display amphibious nodes
             elseif GetGameTimeSeconds() < 25 then
-                --DrawPathGraph('DefaultLand', false)
-                --DrawPathGraph('DefaultWater', false)
-                --DrawPathGraph('DefaultAir', false)
                 DrawPathGraph('DefaultAmphibious', true)
             -- water nodes
             elseif GetGameTimeSeconds() < 30 then
-                --DrawPathGraph('DefaultLand', false)
-                --DrawPathGraph('DefaultAmphibious', false)
-                --DrawPathGraph('DefaultAir', false)
                 DrawPathGraph('DefaultWater', true)
             -- air nodes
             elseif GetGameTimeSeconds() < 35 then
-                --DrawPathGraph('DefaultLand', false)
-                --DrawPathGraph('DefaultAmphibious', false)
-                --DrawPathGraph('DefaultWater', false)
                 DrawPathGraph('DefaultAir', true)
             elseif GetGameTimeSeconds() < 40 then
                 DrawPathGraph('DefaultLand', false)
                 DrawPathGraph('DefaultAmphibious', false)
                 DrawPathGraph('DefaultWater', false)
-                --DrawPathGraph('DefaultAir', false)
             end
             -- Draw the radius of each base(manager)
             if ScenarioInfo.Options.AIPathingDebug == 'pathlocation' then
@@ -2085,7 +2071,7 @@ function BuildGraphAreas()
         end
     end
 
-    -- Validate
+    -- Validate (only for debug printing)
     local GraphCountIndex = {
         ['Land Path Node'] = {},
         ['Water Path Node'] = {},
@@ -2104,8 +2090,8 @@ end
 function ValidateModFilesUveso()
     local ModName = '* '..'AI-Uveso'
     local ModDirectory = 'AI-Uveso'
-    local Files = 90
-    local Bytes = 1990235
+    local Files = 87
+    local Bytes = 1925422
     LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Running from: '..debug.getinfo(1).source..'.')
     LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Checking directory /mods/ for '..ModDirectory..'...')
     local FilesInFolder = DiskFindFiles('/mods/', '*.*')

@@ -12,7 +12,7 @@ BuilderGroup {
 -- ================ --
     Builder {
         BuilderName = 'UC CDR Attack 50',                                       -- Random Builder Name.
-        PlatoonTemplate = 'CDR Attack',                                         -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
+        PlatoonTemplate = 'Uveso CDR Attack',                                         -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
         Priority = 19250,                                                       -- Priority. Higher priotity will be build more often then lower priotity.
         InstanceCount = 5,                                                      -- Number of plattons that will be formed with this template.
         BuilderData = {
@@ -46,7 +46,7 @@ BuilderGroup {
     },
     Builder {
         BuilderName = 'UC CDR Attack PANIC',                                    -- Random Builder Name.
-        PlatoonTemplate = 'CDR Attack',                                         -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
+        PlatoonTemplate = 'Uveso CDR Attack',                                         -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
         Priority = 19250,                                                       -- Priority. Higher priotity will be build more often then lower priotity.
         InstanceCount = 5,                                                      -- Number of plattons that will be formed with this template.
         BuilderData = {
@@ -82,7 +82,7 @@ BuilderGroup {
     },
     Builder {
         BuilderName = 'UC CDR Attack Military',                                 -- Random Builder Name.
-        PlatoonTemplate = 'CDR Attack',                                         -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
+        PlatoonTemplate = 'Uveso CDR Attack',                                         -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
         Priority = 19250,                                                       -- Priority. Higher priotity will be build more often then lower priotity.
         InstanceCount = 5,                                                      -- Number of plattons that will be formed with this template.
         BuilderData = {
@@ -118,7 +118,7 @@ BuilderGroup {
     },
     Builder {
         BuilderName = 'UC CDR Attack Enemy',                                 -- Random Builder Name.
-        PlatoonTemplate = 'CDR Attack',                                         -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
+        PlatoonTemplate = 'Uveso CDR Attack',                                         -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
         Priority = 19250,                                                       -- Priority. Higher priotity will be build more often then lower priotity.
         InstanceCount = 5,                                                      -- Number of plattons that will be formed with this template.
         BuilderData = {
@@ -154,7 +154,7 @@ BuilderGroup {
     },
     Builder {
         BuilderName = 'UC CDR Enhancer',                                        -- Random Builder Name.
-        PlatoonTemplate = 'CDR Attack',                                         -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
+        PlatoonTemplate = 'Uveso CDR Attack',                                         -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
         Priority = 17800,                                                       -- Priority. Higher priotity will be build more often then lower priotity.
         DelayEqualBuildPlattons = {'ACUFORM', 10},
         InstanceCount = 5,                                                      -- Number of plattons that will be formed with this template.
@@ -190,7 +190,7 @@ BuilderGroup {
     },
     Builder {
         BuilderName = 'UC CDR Low health',                                        -- Random Builder Name.
-        PlatoonTemplate = 'CDR Attack',                                         -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
+        PlatoonTemplate = 'Uveso CDR Attack',                                         -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
         Priority = 17800,                                                       -- Priority. Higher priotity will be build more often then lower priotity.
         DelayEqualBuildPlattons = {'ACUFORM', 10},
         InstanceCount = 5,                                                      -- Number of plattons that will be formed with this template.
@@ -225,7 +225,7 @@ BuilderGroup {
     },
     Builder {
         BuilderName = 'UC CDR Rush',                                            -- Random Builder Name.
-        PlatoonTemplate = 'CDR Attack',                                         -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
+        PlatoonTemplate = 'Uveso CDR Attack',                                   -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
         Priority = 19250,                                                       -- Priority. Higher priotity will be build more often then lower priotity.
         InstanceCount = 5,                                                      -- Number of plattons that will be formed with this template.
         BuilderData = {
@@ -346,8 +346,8 @@ BuilderGroup {
         BuilderConditions = {
             -- Have we the eco to build it ?
             -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 0, categories.MOBILE * categories.LAND * categories.ANTIAIR } },
-            { UCBC, 'UnitsLessInPlatoon', { 'ACUChampionPlatoon', 3, categories.MOBILE * categories.LAND * categories.ANTIAIR } },
+            { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 0, categories.MOBILE * categories.LAND * categories.ANTIAIR - categories.EXPERIMENTAL } },
+            { UCBC, 'UnitsLessInPlatoon', { 'ACUChampionPlatoon', 3, categories.MOBILE * categories.LAND * categories.ANTIAIR - categories.EXPERIMENTAL } },
         },
         BuilderType = 'Any',
     },
@@ -363,8 +363,8 @@ BuilderGroup {
         BuilderConditions = {
             -- Have we the eco to build it ?
             -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 0, categories.MOBILE * categories.AIR * categories.GROUNDATTACK - categories.TRANSPORTFOCUS } },
-            { UCBC, 'UnitsLessInPlatoon', { 'ACUChampionPlatoon', 3, categories.MOBILE * categories.AIR * categories.GROUNDATTACK - categories.TRANSPORTFOCUS } },
+            { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 0, categories.MOBILE * categories.AIR * categories.GROUNDATTACK - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL } },
+            { UCBC, 'UnitsLessInPlatoon', { 'ACUChampionPlatoon', 3, categories.MOBILE * categories.AIR * categories.GROUNDATTACK - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL } },
         },
         BuilderType = 'Any',
     },

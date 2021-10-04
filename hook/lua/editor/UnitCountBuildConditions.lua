@@ -3,18 +3,6 @@
 local MAPBASEPOSTITIONS = {}
 local mapSizeX, mapSizeZ = GetMapSize()
 
---{ UCBC, 'ReturnTrue', {} },
-function ReturnTrue(aiBrain)
-    LOG('** true')
-    return true
-end
-
---{ UCBC, 'ReturnFalse', {} },
-function ReturnFalse(aiBrain)
-    LOG('** false')
-    return false
-end
-
 --{ UCBC, 'CanBuildCategory', { categories.RADAR * categories.TECH1 } },
 local FactionIndexToCategory = {[1] = categories.UEF, [2] = categories.AEON, [3] = categories.CYBRAN, [4] = categories.SERAPHIM, [5] = categories.NOMADS, [6] = categories.ARM, [7] = categories.CORE }
 function CanBuildCategory(aiBrain,category)
@@ -476,52 +464,3 @@ function CDRHealthLessThan(aiBrain, health)
     end
     return math.floor(( armorPercent + shieldPercent ) / 2) < health
 end
-
------------------------------------------------------------------------------------------------------------------------------------
------------------------------------------------------------------------------------------------------------------------------------
------------------------------------------------------------------------------------------------------------------------------------
------------------------------------------------------------------------------------------------------------------------------------
--- In progess, next project, not working...
------------------------------------------------------------------------------------------------------------------------------------
------------------------------------------------------------------------------------------------------------------------------------
------------------------------------------------------------------------------------------------------------------------------------
------------------------------------------------------------------------------------------------------------------------------------
--- For debug printing
-
---             { UCBC, 'HaveLessUnitsInLayer', { 'AIR' } },
-function HaveLessUnitsInLayer(aiBrain, layer)
-    local LANDSTRUCTURE = aiBrain:GetCurrentUnits(categories.LAND * categories.STRUCTURE)
-    local LANDMOBILE = aiBrain:GetCurrentUnits(categories.LAND * categories.MOBILE - categories.ENGINEER)
-    local AIRSTRUCTURE = aiBrain:GetCurrentUnits(categories.AIR * categories.STRUCTURE)
-    local AIRMOBILE = aiBrain:GetCurrentUnits(categories.AIR * categories.MOBILE - categories.SCOUT - categories.TRANSPORTFOCUS)
-    local NAVALSTRUCTURE = aiBrain:GetCurrentUnits(categories.NAVAL * categories.STRUCTURE)
-    local NAVALMOBILE = aiBrain:GetCurrentUnits(categories.NAVAL * categories.MOBILE)
-    local LAND = LANDSTRUCTURE > 0
-    local AIR = AIRSTRUCTURE > 0
-    local NAVAL = NAVALSTRUCTURE > 0
-    if layer == 'LAND' then
-        if AIR and LANDMOBILE > AIRMOBILE then
-            return false
-        end
-        if NAVAL and LANDMOBILE > NAVALMOBILE then
-            return false
-        end
-    elseif layer == 'AIR' then
-        if LAND and AIRMOBILE > LANDMOBILE then
-            return false
-        end
-        if NAVAL and AIRMOBILE > NAVALMOBILE then
-            return false
-        end
-    elseif layer == 'NAVAL' then
-        if LAND and NAVALMOBILE > LANDMOBILE then
-            return false
-        end
-        if AIR and NAVALMOBILE > AIRMOBILE then
-            return false
-        end
-    end
-    LOG('Less Units in layer: '..layer..'. Land:('..LANDMOBILE..') Air:('..AIRMOBILE..') Naval:('..NAVALMOBILE..')')
-    return true
-end
-

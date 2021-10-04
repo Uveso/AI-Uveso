@@ -38,7 +38,7 @@ PlatoonTemplate {
 
 PlatoonTemplate {
     Name = 'SACU Fight 3 7',
-    Plan = 'LandAttackAIUveso',
+    Plan = 'HeroFightPlatoon',
     GlobalSquads = {
         { categories.SUBCOMMANDER - categories.ENGINEERPRESET - categories.RASPRESET, 3, 7, 'Attack', 'None' }
     },        
@@ -48,7 +48,7 @@ PlatoonTemplate {
 
 PlatoonTemplate {
     Name = 'U3 SACU RAMBO',
-    Plan = 'LandAttackAIUveso',
+    Plan = 'HeroFightPlatoon',
     GlobalSquads = {
         { categories.RAMBOPRESET , 1, 1, 'support', 'none' }
     },
@@ -78,7 +78,7 @@ PlatoonTemplate {
 
 PlatoonTemplate {
     Name = 'U3 SACU ENGINEER',
-    Plan = 'LandAttackAIUveso',
+    Plan = 'HeroFightPlatoon',
     GlobalSquads = {
         { categories.ENGINEERPRESET , 1, 1, 'support', 'none' }
     },
@@ -108,7 +108,7 @@ PlatoonTemplate {
 
 PlatoonTemplate {
     Name = 'U3 SACU RAS',
-    Plan = 'LandAttackAIUveso',
+    Plan = 'HeroFightPlatoon',
     GlobalSquads = {
         { categories.RASPRESET , 1, 1, 'support', 'none' }
     },
@@ -135,7 +135,7 @@ PlatoonTemplate {
 
 PlatoonTemplate {
     Name = 'U3 SACU COMBAT',
-    Plan = 'LandAttackAIUveso',
+    Plan = 'HeroFightPlatoon',
     GlobalSquads = {
         { categories.COMBATPRESET , 1, 1, 'support', 'none' }
     },
@@ -159,7 +159,7 @@ PlatoonTemplate {
 
 PlatoonTemplate {
     Name = 'U3 SACU NANOCOMBAT',
-    Plan = 'LandAttackAIUveso',
+    Plan = 'HeroFightPlatoon',
     GlobalSquads = {
         { categories.NANOCOMBATPRESET , 1, 1, 'support', 'none' }
     },
@@ -180,7 +180,7 @@ PlatoonTemplate {
 
 PlatoonTemplate {
     Name = 'U3 SACU BUBBLESHIELD',
-    Plan = 'LandAttackAIUveso',
+    Plan = 'HeroFightPlatoon',
     GlobalSquads = {
         { categories.BUBBLESHIELDPRESET , 1, 1, 'support', 'none' }
     },
@@ -198,7 +198,7 @@ PlatoonTemplate {
 
 PlatoonTemplate {
     Name = 'U3 SACU INTELJAMMER',
-    Plan = 'LandAttackAIUveso',
+    Plan = 'HeroFightPlatoon',
     GlobalSquads = {
         { categories.INTELJAMMERPRESET , 1, 1, 'support', 'none' }
     },
@@ -216,7 +216,7 @@ PlatoonTemplate {
 
 PlatoonTemplate {
     Name = 'U3 SACU SIMPLECOMBAT',
-    Plan = 'LandAttackAIUveso',
+    Plan = 'HeroFightPlatoon',
     GlobalSquads = {
         { categories.SIMPLECOMBATPRESET , 1, 1, 'support', 'none' }
     },
@@ -234,7 +234,7 @@ PlatoonTemplate {
 
 PlatoonTemplate {
     Name = 'U3 SACU SHIELDCOMBAT',
-    Plan = 'LandAttackAIUveso',
+    Plan = 'HeroFightPlatoon',
     GlobalSquads = {
         { categories.SHIELDCOMBATPRESET , 1, 1, 'support', 'none' }
     },
@@ -252,7 +252,7 @@ PlatoonTemplate {
 
 PlatoonTemplate {
     Name = 'U3 SACU ANTIAIR',
-    Plan = 'LandAttackAIUveso',
+    Plan = 'HeroFightPlatoon',
     GlobalSquads = {
         { categories.ANTIAIRPRESET , 1, 1, 'support', 'none' }
     },
@@ -269,7 +269,7 @@ PlatoonTemplate {
 -- ------------------------------------------------------------------------------------------------
 PlatoonTemplate {
     Name = 'U3 SACU STEALTH',
-    Plan = 'LandAttackAIUveso',
+    Plan = 'HeroFightPlatoon',
     GlobalSquads = {
         { categories.STEALTHPRESET , 1, 1, 'support', 'none' }
     },
@@ -287,7 +287,7 @@ PlatoonTemplate {
 
 PlatoonTemplate {
     Name = 'U3 SACU CLOAK',
-    Plan = 'LandAttackAIUveso',
+    Plan = 'HeroFightPlatoon',
     GlobalSquads = {
         { categories.CLOAKPRESET , 1, 1, 'support', 'none' }
     },
@@ -304,7 +304,7 @@ PlatoonTemplate {
 -- ------------------------------------------------------------------------------------------------
 PlatoonTemplate {
     Name = 'U3 SACU MISSILE',
-    Plan = 'LandAttackAIUveso',
+    Plan = 'HeroFightPlatoon',
     GlobalSquads = {
         { categories.MISSILEPRESET , 1, 1, 'support', 'none' }
     },
@@ -322,7 +322,7 @@ PlatoonTemplate {
 
 PlatoonTemplate {
     Name = 'U3 SACU ADVANCEDCOMBAT',
-    Plan = 'LandAttackAIUveso',
+    Plan = 'HeroFightPlatoon',
     GlobalSquads = {
         { categories.ADVANCEDCOMBATPRESET , 1, 1, 'support', 'none' }
     },
@@ -340,7 +340,7 @@ PlatoonTemplate {
 
 PlatoonTemplate {
     Name = 'U3 SACU ROCKET',
-    Plan = 'LandAttackAIUveso',
+    Plan = 'HeroFightPlatoon',
     GlobalSquads = {
         { categories.ROCKETPRESET , 1, 1, 'support', 'none' }
     },
@@ -358,7 +358,7 @@ PlatoonTemplate {
 
 PlatoonTemplate {
     Name = 'U3 SACU ANTINAVAL',
-    Plan = 'LandAttackAIUveso',
+    Plan = 'HeroFightPlatoon',
     GlobalSquads = {
         { categories.ANTINAVALPRESET , 1, 1, 'support', 'none' }
     },
@@ -375,7 +375,7 @@ PlatoonTemplate {
 -- ------------------------------------------------------------------------------------------------
 PlatoonTemplate {
     Name = 'U3 SACU AMPHIBIOUS',
-    Plan = 'LandAttackAIUveso',
+    Plan = 'HeroFightPlatoon',
     GlobalSquads = {
         { categories.AMPHIBIOUSPRESET , 1, 1, 'support', 'none' }
     },
@@ -392,7 +392,7 @@ PlatoonTemplate {
 -- ------------------------------------------------------------------------------------------------
 PlatoonTemplate {
     Name = 'U3 SACU GUNSLINGER',
-    Plan = 'LandAttackAIUveso',
+    Plan = 'HeroFightPlatoon',
     GlobalSquads = {
         { categories.GUNSLINGERPRESET , 1, 1, 'support', 'none' }
     },
@@ -409,7 +409,7 @@ PlatoonTemplate {
 -- ------------------------------------------------------------------------------------------------
 PlatoonTemplate {
     Name = 'U3 SACU NATURALPRODUCER',
-    Plan = 'LandAttackAIUveso',
+    Plan = 'HeroFightPlatoon',
     GlobalSquads = {
         { categories.NATURALPRODUCERPRESET , 1, 1, 'support', 'none' }
     },
@@ -426,7 +426,7 @@ PlatoonTemplate {
 -- ------------------------------------------------------------------------------------------------
 PlatoonTemplate {
     Name = 'U3 SACU DEFAULT',
-    Plan = 'LandAttackAIUveso',
+    Plan = 'HeroFightPlatoon',
     GlobalSquads = {
         { categories.DEFAULTPRESET , 1, 1, 'support', 'none' }
     },
@@ -443,7 +443,7 @@ PlatoonTemplate {
 -- ------------------------------------------------------------------------------------------------
 PlatoonTemplate {
     Name = 'U3 SACU HEAVYTROOPER',
-    Plan = 'LandAttackAIUveso',
+    Plan = 'HeroFightPlatoon',
     GlobalSquads = {
         { categories.HEAVYTROOPERPRESET , 1, 1, 'support', 'none' }
     },
@@ -460,7 +460,7 @@ PlatoonTemplate {
 -- ------------------------------------------------------------------------------------------------
 PlatoonTemplate {
     Name = 'U3 SACU FASTCOMBAT',
-    Plan = 'LandAttackAIUveso',
+    Plan = 'HeroFightPlatoon',
     GlobalSquads = {
         { categories.FASTCOMBATPRESET , 1, 1, 'support', 'none' }
     },
@@ -501,6 +501,20 @@ PlatoonTemplate {
     Plan = 'PlatoonMerger',
     GlobalSquads = {
         { categories.MOBILE * categories.DIRECTFIRE - categories.ANTIAIR - categories.EXPERIMENTAL, 1, 1, 'support', 'none' }
+    },
+}
+PlatoonTemplate {
+    Name = 'AddArtyToACUChampionPlatoon',
+    Plan = 'PlatoonMerger',
+    GlobalSquads = {
+        { categories.MOBILE * categories.INDIRECTFIRE - categories.ANTIAIR - categories.EXPERIMENTAL, 1, 1, 'support', 'none' }
+    },
+}
+PlatoonTemplate {
+    Name = 'AddFIREToACUChampionPlatoon',
+    Plan = 'PlatoonMerger',
+    GlobalSquads = {
+        { categories.MOBILE * categories.LAND - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND - categories.SUBCOMMANDER, 1, 1, 'support', 'none' }
     },
 }
 PlatoonTemplate {

@@ -36,57 +36,6 @@ FactoryBuilderManager = Class(OldFactoryBuilderManagerClass) {
         end
     end,
 
-    BuilderParamCheck = function(self,builder,params)
-        -- Only use this with AI-Uveso
-        if 1 == 1 or not self.Brain.Uveso then
-            return OldFactoryBuilderManagerClass.BuilderParamCheck(self,builder,params)
-        end
-        local template = self:GetFactoryTemplate(builder:GetPlatoonTemplate(), params[1])
-        if not template then
-            WARN('*Factory Builder Error: Could not find template named: ' .. builder:GetPlatoonTemplate())
-            return false
-        end
-        if not template[3][1] then
-            --WARN('*Factory Builder Error: no FactionSquad for Template ' .. repr(template))
-            return false
-        end
-        local FactoryLevel = params[1].techCategory
-        local TemplateLevel = __blueprints[template[3][1]].TechCategory
-        if FactoryLevel == TemplateLevel then
-            --LOG('Factory Tech Level: ['..FactoryLevel..'] - Template Tech Level: ['..TemplateLevel..'] -  Factory is equal to Template Level, we want to continue!')
-        elseif FactoryLevel > TemplateLevel then
-            --LOG('Factory Tech Level: ['..FactoryLevel..'] - Template Tech Level: ['..TemplateLevel..'] -  Factory is higher than Template Level, stop building low tech crap!')
-            local EngineerFound
-            -- search categories for ENGINEER
-            for _, cat in __blueprints[template[3][1]].Categories do
-                -- continue withthe next categorie if its not ENGINEER
-                if cat ~= 'ENGINEER' and cat ~= 'SCOUT' then continue end
-                -- found ENGINEER category
-                --WARN('found categorie engineer')
-                EngineerFound = true
-                break
-            end
-            -- template islower than factory level and its not an engineer, then return false
-            if not EngineerFound then
---                return false
-            end
-        elseif FactoryLevel < TemplateLevel then
-            --LOG('Factory Tech Level: ['..FactoryLevel..'] - Template Tech Level: ['..TemplateLevel..'] -  Factory is lower than Template Level, we can\'t built that!')
-            return false
-        else
-            --LOG('Factory Tech Level: ['..FactoryLevel..'] - Template Tech Level: ['..TemplateLevel..'] -  if you can read this then we have messed it up :D')
-        end
-
-        -- This faction doesn't have unit of this type
-        if table.getn(template) == 2 then
-            return false
-        end
-
-        -- This function takes a table of factories to determine if it can build
-        return self.Brain:CanBuildPlatoon(template, params)
-
-    end,
-
     RallyPointMonitor = function(self)
         -- Only use this with AI-Uveso
         if not self.Brain.Uveso then

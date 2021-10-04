@@ -357,19 +357,6 @@ function EngineerGeneratePathUveso(aiBrain, startNode, endNode, threatType, thre
     return false
 end
 
-function CanGraphAreaTo_OLD(startPos, destPos, layer)
-    local startNode = GetClosestPathNodeInRadiusByLayer(startPos, 100, layer)
-    local endNode = false
-    if startNode then
-        endNode = GetClosestPathNodeInRadiusByLayer(destPos, 100, layer)
-    end
-    --WARN('* AI-Uveso: CanGraphAreaTo: Start Area: '..repr(Scenario.MasterChain._MASTERCHAIN_.Markers[startNode.name].GraphArea)..' - End Area: '..repr(Scenario.MasterChain._MASTERCHAIN_.Markers[endNode.name].GraphArea)..'')
-    if Scenario.MasterChain._MASTERCHAIN_.Markers[startNode.name].GraphArea == Scenario.MasterChain._MASTERCHAIN_.Markers[endNode.name].GraphArea then
-        return true
-    end
-    return false
-end
-
 function CanGraphAreaTo(startPos, destPos, layer)
     local graphTable = GetPathGraphs()[layer]
     local startNode, endNode, distS, distE
@@ -385,9 +372,6 @@ function CanGraphAreaTo(startPos, destPos, layer)
             if distE < bestDistE then
                 bestDistE = distE
                 endNode = markerInfo.name
-            end
-            if bestDistS == 0 and bestDistE == 0 then
-                break
             end
         end
     end

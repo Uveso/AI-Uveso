@@ -332,7 +332,7 @@ BuilderGroup {
     --    MASS    --
     -- ========== --
     Builder {
-        BuilderName = 'UD Assist Mass',
+        BuilderName = 'U1 Assist Mass',
         PlatoonTemplate = 'EngineerAssist',
         Priority = 17900,
         InstanceCount = 10,

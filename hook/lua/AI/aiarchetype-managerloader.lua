@@ -41,7 +41,6 @@ function ExecutePlan(aiBrain)
         aiBrain:ForkThread(BaseTargetManagerThread, aiBrain)        -- start after 50 seconds
         aiBrain:ForkThread(PriorityManagerThread, aiBrain)          -- start after 1 minute 10 seconds
         aiBrain:ForkThread(EcoManagerThread, aiBrain)               -- start after 4 minutes
-        --aiBrain:ForkThread(TimediletationThread, aiBrain)
     end
     if aiBrain.PBM then
         aiBrain:PBMSetEnabled(false)
@@ -49,15 +48,6 @@ function ExecutePlan(aiBrain)
 end
 
 -- Uveso AI
-
-function TimediletationThread(aiBrain)
-    local timeoffset = GetGameTimeSeconds() - GetSystemTimeSecondsOnlyForProfileUse()
-    while aiBrain.Result ~= "defeat" do
-        LOG('** Timediletation [ '..GetGameTimeSeconds() - GetSystemTimeSecondsOnlyForProfileUse() - timeoffset..']')
-        timeoffset = GetGameTimeSeconds() - GetSystemTimeSecondsOnlyForProfileUse()
-        coroutine.yield(10)
-    end
-end
 
 function EcoManagerThread(aiBrain)
     -- Start Ecomanager at game minute 4
@@ -1441,6 +1431,9 @@ function AddFactoryToClosestManager(aiBrain, factory)
         ClosestMarkerBasePos, MarkerBaseName = AIUtils.AIGetClosestMarkerLocation(aiBrain, 'Blank Marker', FactoryPos[1], FactoryPos[3], {'Expansion Area', 'Large Expansion Area'})
         layer = 'Land'
     end
+    if not ClosestMarkerBasePos then
+        WARN('* AI-Uveso: AddFactoryToClosestManager: ClosestMarkerBasePos is NIL for layer '..layer)
+    end
     --  if exist, get the distance to the closest Marker Location
     if ClosestMarkerBasePos then
         dist = VDist2(FactoryPos[1], FactoryPos[3], ClosestMarkerBasePos[1], ClosestMarkerBasePos[3])
@@ -1454,7 +1447,14 @@ function AddFactoryToClosestManager(aiBrain, factory)
         BaseRadius = 30
     end
     -- check if the distance from our factory to the closest basemanager is closeer than the managers max range and check if we are on the same land/sea
-    if dist > BaseRadius or not AIAttackUtils.CanGraphAreaTo(FactoryPos, ClosestMarkerBasePos, layer) then -- needs graph check for land and naval locations
+    if not FactoryPos then
+        WARN('FactoryPos = NIL')
+    end
+    if not ClosestMarkerBasePos then
+        WARN('ClosestMarkerBasePos = NIL')
+    end
+    
+    if dist > BaseRadius or (not ClosestMarkerBasePos) or (not AIAttackUtils.CanGraphAreaTo(FactoryPos, ClosestMarkerBasePos, layer)) then -- needs graph check for land and naval locations
         WARN('* AI-Uveso: AddFactoryToClosestManager: Found ['..MarkerBaseName..'] Baseradius('..math.floor(BaseRadius)..') but it\'s to not reachable: Distance to base: '..math.floor(dist)..' - Creating new location')
         if NavalFactory then
             MarkerBaseName = 'Naval Area '..Random(1000,5000)
@@ -1537,7 +1537,3 @@ function AddFactoryToClosestManager(aiBrain, factory)
         import('/lua/ai/AIAddBuilderTable.lua').AddGlobalBaseTemplate(aiBrain, MarkerBaseName, pick)
     end
 end
-
-
---self.Brain.BuilderManagers[self.LocationType].FactoryManager:AddFactory(finishedUnit)
---local AIUtils = import('ai/aiutilities.lua')

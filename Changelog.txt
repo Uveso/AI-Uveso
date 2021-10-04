@@ -1,4 +1,16 @@
 *************************************************************************************************************************************
+v97 (05.Oct.2021)
+
+- Fix: fixed movement in ACU platoon where support units are blocked by terrain
+- Fix: fixed a bug where lost factories where reassigned to new managers
+- Fix: experimentals should no longer join the ACU platoon as support unit
+- Fix: renamed "CDR Attack" platoon to prevent conflicts with hooked builders
+- Opt: reduced ACU targeting intervall (from 100 to 700 miliseconds)
+- Opt: added builder to upgrade the first T1 land factory when we have more than 2 tech2 massextractors
+- Opt: removed gamepatches that are already released
+- Opt: removed unused functions
+
+*************************************************************************************************************************************
 v96 (28.Jun.2021)
 
 - Opt: ACU-AI was evading from non combat units like massextractors.

@@ -2,7 +2,7 @@
 TheOldPlatoonFormManagerUveso = PlatoonFormManager
 PlatoonFormManager = Class(TheOldPlatoonFormManagerUveso) {
 
-    -- For AI Patch V9. check IsPlattonBuildDelayed for platoonformers
+    -- check IsPlattonBuildDelayed for platoonformers
     ManagerLoopBody = function(self,builder,bType)
         -- Only use this with AI-Uveso
         if not self.Brain.Uveso then
