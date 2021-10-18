@@ -242,9 +242,9 @@ end
 function HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation(aiBrain, locationType, numReq, category, constructionCat)
     local numUnits
     if constructionCat then
-        numUnits = table.getn( GetUnitsBeingBuiltLocation(aiBrain, locationType, category, category + (categories.ENGINEER * categories.MOBILE - categories.STATIONASSISTPOD) + constructionCat) or {} )
+        numUnits = table.getn( GetUnitsBeingBuiltLocation(aiBrain, locationType, category, category + (categories.ENGINEER * categories.MOBILE - categories.STATIONASSISTPOD - categories.POD) + constructionCat) or {} )
     else
-        numUnits = table.getn( GetUnitsBeingBuiltLocation(aiBrain,locationType, category, category + (categories.ENGINEER * categories.MOBILE - categories.STATIONASSISTPOD) ) or {} )
+        numUnits = table.getn( GetUnitsBeingBuiltLocation(aiBrain,locationType, category, category + (categories.ENGINEER * categories.MOBILE - categories.STATIONASSISTPOD - categories.POD) ) or {} )
     end
     if numUnits > numReq then
         return true
@@ -314,7 +314,7 @@ function GetOwnUnitsAroundLocation(aiBrain, category, location, radius)
 end
 
 function HaveLessThanIdleEngineers(aiBrain, count, tech)
-    local ENGINEER = aiBrain:GetListOfUnits(categories.ENGINEER - categories.STATIONASSISTPOD, true, false)
+    local ENGINEER = aiBrain:GetListOfUnits(categories.ENGINEER - categories.STATIONASSISTPOD - categories.POD, true, false)
     local engineers = {}
     engineers[5] = EntityCategoryFilterDown(categories.SUBCOMMANDER, ENGINEER)
     engineers[4] = EntityCategoryFilterDown(categories.TECH3 - categories.SUBCOMMANDER, ENGINEER)

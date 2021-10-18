@@ -865,7 +865,7 @@ BuilderGroup {
             --{ MIBC, 'HasNotParagon', {} },
             -- Have we the eco to build it ?
             -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 8, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD}},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 8, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD - categories.POD}},
         },
         BuilderData = {
             LocationType = 'LocationType',
@@ -890,7 +890,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'LessThanEconStorageRatio', { 0.80, 2.00}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 11, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD}},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 11, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD - categories.POD}},
         },
         BuilderData = {
             LocationType = 'LocationType',

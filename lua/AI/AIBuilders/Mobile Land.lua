@@ -31,7 +31,7 @@ BuilderGroup {
             { UCBC, 'CheckBuildPlattonDelay', { 'Scouts' }},
             -- Have we the eco to build it ?
             -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD }},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD - categories.POD }},
             -- Do we need additional conditions to build it ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.LAND * categories.SCOUT }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.AIR * categories.SCOUT }},
@@ -429,7 +429,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.12, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD } },
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD - categories.POD } },
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.LAND - categories.ENGINEER, '<=', (categories.MOBILE * categories.LAND * (categories.DIRECTFIRE + categories.INDIRECTFIRE)) } },
             -- Respect UnitCap
         },
@@ -1137,10 +1137,10 @@ BuilderGroup {
             RequireTransport = true,                                            -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100,                                            -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            TargetSearchCategory = categories.STRUCTURE + categories.ENGINEER - categories.STATIONASSISTPOD,                        -- Only find targets matching these categories.
+            TargetSearchCategory = categories.STRUCTURE + categories.ENGINEER - categories.STATIONASSISTPOD - categories.POD,                        -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.MASSEXTRACTION,
-                categories.ENGINEER - categories.STATIONASSISTPOD,
+                categories.ENGINEER - categories.STATIONASSISTPOD - categories.POD,
                 categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
                 categories.STRUCTURE * categories.ARTILLERY,
                 categories.STRUCTURE * categories.NUKE,
@@ -1280,10 +1280,10 @@ BuilderGroup {
             RequireTransport = true,                                            -- If this is true, the unit is forced to use a transport, even if it has a valid path to the destination.
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 0,                                            -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            TargetSearchCategory = categories.STRUCTURE + categories.ENGINEER - categories.STATIONASSISTPOD,                        -- Only find targets matching these categories.
+            TargetSearchCategory = categories.STRUCTURE + categories.ENGINEER - categories.STATIONASSISTPOD - categories.POD,                        -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.MASSEXTRACTION,
-                categories.ENGINEER - categories.STATIONASSISTPOD,
+                categories.ENGINEER - categories.STATIONASSISTPOD - categories.POD,
                 categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
                 categories.STRUCTURE * categories.ARTILLERY,
                 categories.STRUCTURE * categories.NUKE,

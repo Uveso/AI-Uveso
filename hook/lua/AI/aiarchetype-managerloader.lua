@@ -30,7 +30,7 @@ function ExecutePlan(aiBrain)
         local mainManagers = aiBrain.BuilderManagers.MAIN
         local pool = aiBrain:GetPlatoonUniquelyNamed('ArmyPool')
         for k,v in pool:GetPlatoonUnits() do
-            if EntityCategoryContains(categories.ENGINEER - categories.STATIONASSISTPOD, v) then
+            if EntityCategoryContains(categories.ENGINEER - categories.STATIONASSISTPOD - categories.POD, v) then
                 mainManagers.EngineerManager:AddUnit(v)
             elseif EntityCategoryContains(categories.FACTORY * categories.STRUCTURE, v) then
                 mainManagers.FactoryManager:AddFactory(v)
@@ -144,7 +144,7 @@ function EcoManagerThread(aiBrain)
         EcoUnits = {}
         bussy = false
         if aiBrain:GetEconomyStoredRatio('ENERGY') < 0.50 then
-            AllUnits = aiBrain:GetListOfUnits( (categories.FACTORY - categories.TECH1) + categories.ENGINEER + categories.RADAR + categories.OMNI + categories.OPTICS + categories.SONAR + categories.OVERLAYCOUNTERINTEL + categories.COUNTERINTELLIGENCE + categories.MASSFABRICATION + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD) + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO ) - categories.COMMAND , false, false) -- also gets unbuilded units (planed to build)
+            AllUnits = aiBrain:GetListOfUnits( (categories.FACTORY - categories.TECH1) + (categories.ENGINEER - categories.POD) + categories.RADAR + categories.OMNI + categories.OPTICS + categories.SONAR + categories.OVERLAYCOUNTERINTEL + categories.COUNTERINTELLIGENCE + categories.MASSFABRICATION + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD) + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO ) - categories.COMMAND , false, false) -- also gets unbuilded units (planed to build)
             if energyTrend < 0 then
                 --AllUnits = aiBrain:GetListOfUnits(categories.ALLUNITS - categories.COMMAND - categories.SHIELD - categories.MASSEXTRACTION, false, false) -- also gets unbuilded units (planed to build)
                 for index, unit in AllUnits do
@@ -208,7 +208,7 @@ function EcoManagerThread(aiBrain)
 --                        LOG('* AI-Uveso: ECO energyTrend < 0  ('..energyTrend..')')
                         bussy = true
                         energyTrend = energyTrend + maxEnergyConsumption
-                        if EntityCategoryContains(categories.FACTORY + categories.ENGINEER + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD) + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO), EcoUnits[maxEnergyConsumptionUnitindex]) then
+                        if EntityCategoryContains(categories.FACTORY + (categories.ENGINEER - categories.POD) + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD) + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO), EcoUnits[maxEnergyConsumptionUnitindex]) then
 --                            LOG('* AI-Uveso: ECO ['..EcoUnits[maxEnergyConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[maxEnergyConsumptionUnitindex].UnitId].Description)..') unit:SetPaused( true ) Saving ('..maxEnergyConsumption..') energy')
                             EcoUnits[maxEnergyConsumptionUnitindex]:SetPaused( true )
                             EcoUnits[maxEnergyConsumptionUnitindex].pausedEnergy = true
@@ -259,7 +259,7 @@ function EcoManagerThread(aiBrain)
         end
         EcoUnits = {}
         if aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.50 then
-            AllUnits = aiBrain:GetListOfUnits( (categories.FACTORY - categories.TECH1) + categories.ENGINEER + categories.RADAR + categories.OMNI + categories.OPTICS + categories.SONAR + categories.OVERLAYCOUNTERINTEL + categories.COUNTERINTELLIGENCE + categories.MASSFABRICATION + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD) + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO ) - categories.COMMAND , false, false) -- also gets unbuilded units (planed to build)
+            AllUnits = aiBrain:GetListOfUnits( (categories.FACTORY - categories.TECH1) + (categories.ENGINEER - categories.POD) + categories.RADAR + categories.OMNI + categories.OPTICS + categories.SONAR + categories.OVERLAYCOUNTERINTEL + categories.COUNTERINTELLIGENCE + categories.MASSFABRICATION + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD) + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO ) - categories.COMMAND , false, false) -- also gets unbuilded units (planed to build)
 --            LOG('* AI-Uveso: ECO conomyStoredRatio(ENERGY) > 0.50')
             if energyTrend > 0 then
                 --AllUnits = aiBrain:GetListOfUnits(categories.ALLUNITS - categories.COMMAND - categories.SHIELD - categories.MASSEXTRACTION, false, false) -- also gets unbuilded units (planed to build)
@@ -296,7 +296,7 @@ function EcoManagerThread(aiBrain)
 --                        LOG('* AI-Uveso: ECO energyTrend > 0  ('..energyTrend..')')
                         energyTrend = energyTrend - minEnergyConsumption
                         bussy = true
-                        if EntityCategoryContains(categories.FACTORY + categories.ENGINEER + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO)), EcoUnits[minEnergyConsumptionUnitindex]) then
+                        if EntityCategoryContains(categories.FACTORY + (categories.ENGINEER - categories.POD) + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO)), EcoUnits[minEnergyConsumptionUnitindex]) then
 --                            LOG('* AI-Uveso: ECO ['..EcoUnits[minEnergyConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[minEnergyConsumptionUnitindex].UnitId].Description)..') unit:SetPaused( false ) Consuming ('..minEnergyConsumption..') energy')
                             EcoUnits[minEnergyConsumptionUnitindex]:SetPaused( false )
                             EcoUnits[minEnergyConsumptionUnitindex].pausedEnergy = false
@@ -349,8 +349,8 @@ function EcoManagerThread(aiBrain)
         end
         EcoUnits = {}
         if aiBrain:GetEconomyStoredRatio('MASS') < 0.15 then
-            --AllUnits = aiBrain:GetListOfUnits( (categories.FACTORY - categories.TECH1) + categories.ENGINEER + categories.RADAR + categories.OMNI + categories.OPTICS + categories.SONAR + categories.OVERLAYCOUNTERINTEL + categories.COUNTERINTELLIGENCE + categories.MASSFABRICATION + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD) + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO ) - categories.COMMAND , false, false) -- also gets unbuilded units (planed to build)
-            AllUnits = aiBrain:GetListOfUnits( categories.ENGINEER + categories.RADAR + categories.OMNI + categories.OPTICS + categories.SONAR + categories.OVERLAYCOUNTERINTEL + categories.COUNTERINTELLIGENCE + categories.MASSFABRICATION + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD) + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO ) - categories.COMMAND , false, false) -- also gets unbuilded units (planed to build)
+            --AllUnits = aiBrain:GetListOfUnits( (categories.FACTORY - categories.TECH1) + (categories.ENGINEER - categories.POD) + categories.RADAR + categories.OMNI + categories.OPTICS + categories.SONAR + categories.OVERLAYCOUNTERINTEL + categories.COUNTERINTELLIGENCE + categories.MASSFABRICATION + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD) + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO ) - categories.COMMAND , false, false) -- also gets unbuilded units (planed to build)
+            AllUnits = aiBrain:GetListOfUnits( (categories.ENGINEER - categories.POD) + categories.RADAR + categories.OMNI + categories.OPTICS + categories.SONAR + categories.OVERLAYCOUNTERINTEL + categories.COUNTERINTELLIGENCE + categories.MASSFABRICATION + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD) + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO ) - categories.COMMAND , false, false) -- also gets unbuilded units (planed to build)
             if massTrend < 0 then
                 --AllUnits = aiBrain:GetListOfUnits(categories.ALLUNITS - categories.COMMAND - categories.SHIELD - categories.MASSEXTRACTION, false, false) -- also gets unbuilded units (planed to build)
                 for index, unit in AllUnits do
@@ -455,7 +455,7 @@ function EcoManagerThread(aiBrain)
         end
         EcoUnits = {}
         if aiBrain:GetEconomyStoredRatio('MASS') >= 0.15 then
-            AllUnits = aiBrain:GetListOfUnits( (categories.FACTORY - categories.TECH1) + categories.ENGINEER + categories.RADAR + categories.OMNI + categories.OPTICS + categories.SONAR + categories.OVERLAYCOUNTERINTEL + categories.COUNTERINTELLIGENCE + categories.MASSFABRICATION + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD) + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO ) - categories.COMMAND , false, false) -- also gets unbuilded units (planed to build)
+            AllUnits = aiBrain:GetListOfUnits( (categories.FACTORY - categories.TECH1) + (categories.ENGINEER - categories.POD) + categories.RADAR + categories.OMNI + categories.OPTICS + categories.SONAR + categories.OVERLAYCOUNTERINTEL + categories.COUNTERINTELLIGENCE + categories.MASSFABRICATION + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD) + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO ) - categories.COMMAND , false, false) -- also gets unbuilded units (planed to build)
             if massTrend > 0 then
                 --AllUnits = aiBrain:GetListOfUnits(categories.ALLUNITS - categories.COMMAND - categories.SHIELD - categories.MASSEXTRACTION, false, false) -- also gets unbuilded units (planed to build)
                 for index, unit in AllUnits do
@@ -492,7 +492,7 @@ function EcoManagerThread(aiBrain)
 --                        LOG('* AI-Uveso: ECO massTrend > 0  ('..massTrend..')')
                         massTrend = massTrend - minMassConsumption
                         bussy = true
-                        if EntityCategoryContains(categories.FACTORY + categories.ENGINEER + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO)), EcoUnits[minMassConsumptionUnitindex]) then
+                        if EntityCategoryContains(categories.FACTORY + (categories.ENGINEER - categories.POD) + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO)), EcoUnits[minMassConsumptionUnitindex]) then
 --                            LOG('* AI-Uveso: ECO ['..EcoUnits[minMassConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[minMassConsumptionUnitindex].UnitId].Description)..') unit:SetPaused( false ) Consuming ('..minMassConsumption..') mass')
                             EcoUnits[minMassConsumptionUnitindex]:SetPaused( false )
                             EcoUnits[minMassConsumptionUnitindex].pausedMass = false
@@ -545,14 +545,14 @@ function EcoManagerThread(aiBrain)
         end
         EcoUnits = {}
         if aiBrain:GetEconomyStoredRatio('ENERGY') >= 0.60 and aiBrain:GetEconomyStoredRatio('MASS') >= 0.20 then
-            AllUnits = aiBrain:GetListOfUnits( (categories.FACTORY - categories.TECH1) + categories.ENGINEER + categories.RADAR + categories.OMNI + categories.OPTICS + categories.SONAR + categories.OVERLAYCOUNTERINTEL + categories.COUNTERINTELLIGENCE + categories.MASSFABRICATION + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD) + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO ) - categories.COMMAND , false, false) -- also gets unbuilded units (planed to build)
+            AllUnits = aiBrain:GetListOfUnits( (categories.FACTORY - categories.TECH1) + (categories.ENGINEER - categories.POD) + categories.RADAR + categories.OMNI + categories.OPTICS + categories.SONAR + categories.OVERLAYCOUNTERINTEL + categories.COUNTERINTELLIGENCE + categories.MASSFABRICATION + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD) + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO ) - categories.COMMAND , false, false) -- also gets unbuilded units (planed to build)
             for index, unit in AllUnits do
                 if not unit.managed then
                     continue
                 end
                 -- filter units that are not finished
                 if unit:GetFractionComplete() < 1 then continue end
-                if EntityCategoryContains(categories.FACTORY + categories.ENGINEER + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO)), unit) then
+                if EntityCategoryContains(categories.FACTORY + (categories.ENGINEER - categories.POD) + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO)), unit) then
                     unit:SetPaused( false )
                     unit.pausedMass = false
                     unit.pausedEnergy = false
@@ -739,11 +739,11 @@ function LocationRangeManagerThread(aiBrain)
                 unitcounterdelayer = 0
                 local MaxCap = GetArmyUnitCap(aiBrain:GetArmyIndex())
                 LOG('  ')
-                LOG('* AI-Uveso:  05.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE * categories.ENGINEER * categories.TECH1, false, false) ) )..' -  Engineers TECH1  - ' )
-                LOG('* AI-Uveso:  05.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE * categories.ENGINEER * categories.TECH2, false, false) ) )..' -  Engineers TECH2  - ' )
-                LOG('* AI-Uveso:  05.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE * categories.ENGINEER * categories.TECH3 - categories.SUBCOMMANDER, false, false) ) )..' -  Engineers TECH3  - ' )
+                LOG('* AI-Uveso:  05.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE * (categories.ENGINEER - categories.POD) * categories.TECH1, false, false) ) )..' -  Engineers TECH1  - ' )
+                LOG('* AI-Uveso:  05.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE * (categories.ENGINEER - categories.POD) * categories.TECH2, false, false) ) )..' -  Engineers TECH2  - ' )
+                LOG('* AI-Uveso:  05.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE * (categories.ENGINEER - categories.POD) * categories.TECH3 - categories.SUBCOMMANDER, false, false) ) )..' -  Engineers TECH3  - ' )
                 LOG('* AI-Uveso:  03.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE * categories.SUBCOMMANDER, false, false) ) )..' -  SubCommander   - ' )
-                LOG('* AI-Uveso:  45.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE - (categories.ENGINEER * categories.MOBILE), false, false) ) )..' -  Mobile Attack Force  - ' )
+                LOG('* AI-Uveso:  45.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.MOBILE - ((categories.ENGINEER - categories.POD) * categories.MOBILE), false, false) ) )..' -  Mobile Attack Force  - ' )
                 LOG('* AI-Uveso:  10.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE * categories.MASSEXTRACTION, false, false) ) )..' -  Extractors    - ' )
                 LOG('* AI-Uveso:  12.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE * categories.DEFENSE, false, false) ) )..' -  Structures Defense   - ' )
                 LOG('* AI-Uveso:  12.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - (categories.STRUCTURE * categories.FACTORY), false, false) ) )..' -  Structures all   - ' )

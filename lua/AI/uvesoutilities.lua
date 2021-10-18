@@ -517,7 +517,7 @@ function FindTargetUnit(self, minRadius, maxRadius, MaxLoad)
             elseif not v:BeenDestroyed() and v:IsMoving() == false then
                 if (not AllTargets[4] or v.distance < AllTargets[4].distance) and EntityCategoryContains(categories.TECH3 * categories.MOBILE * categories.INDIRECTFIRE, v) and (not IsProtected(self,TargetPosition)) then
                     AllTargets[4] = v
-                elseif (not AllTargets[6] or v.distance < AllTargets[6].distance) and EntityCategoryContains(categories.ENGINEER - categories.STATIONASSISTPOD, v) and (not IsProtected(self,TargetPosition)) then
+                elseif (not AllTargets[6] or v.distance < AllTargets[6].distance) and EntityCategoryContains(categories.ENGINEER - categories.STATIONASSISTPOD - categories.POD, v) and (not IsProtected(self,TargetPosition)) then
                     AllTargets[6] = v
                 elseif (not AllTargets[7] or v.distance < AllTargets[7].distance) and EntityCategoryContains(categories.MOBILE, v) and (not IsProtected(self,TargetPosition)) then
                     AllTargets[7] = v

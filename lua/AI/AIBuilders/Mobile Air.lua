@@ -78,7 +78,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD } },
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD - categories.POD } },
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.BOMBER, '<=', categories.MOBILE * categories.AIR } },
             -- Respect UnitCap
         },
@@ -147,7 +147,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.11, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 15, categories.MOBILE * categories.AIR * categories.ANTIAIR * categories.BOMBER * categories.TECH2 }},
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD } },
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD - categories.POD } },
             -- Respect UnitCap
         },
         BuilderType = 'Air',
@@ -528,7 +528,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD } },
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD - categories.POD } },
             { UCBC, 'HaveUnitRatioVersusEnemy', { 1.0, categories.MOBILE * categories.AIR * categories.ANTIAIR - categories.GROUNDATTACK - categories.BOMBER, '<=', categories.MOBILE * categories.AIR } },
             -- Respect UnitCap
         },
@@ -594,7 +594,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 15, categories.MOBILE * categories.AIR * categories.ANTIAIR * categories.BOMBER * categories.TECH2 }},
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD } },
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD - categories.POD } },
             -- Respect UnitCap
         },
         BuilderType = 'Air',
@@ -986,7 +986,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 6, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD}},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 6, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD - categories.POD}},
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.LAND * categories.FACTORY * categories.TECH1 }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.TECH3 - categories.ENGINEER }},
              -- Respect UnitCap
@@ -1012,7 +1012,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.TECH3 - categories.ENGINEER }},
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.LAND * categories.FACTORY * categories.TECH1 }},
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 6, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD}},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 6, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD - categories.POD}},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 2, categories.MOBILE * categories.AIR  * categories.GROUNDATTACK }},
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioUveso', { 1.0, categories.MOBILE * categories.AIR * categories.GROUNDATTACK, '<',categories.MOBILE * categories.AIR * categories.HIGHALTAIR * categories.ANTIAIR } },
@@ -1037,7 +1037,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.MOBILE * categories.AIR * categories.TECH3 - categories.ENGINEER }},
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 6, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD}},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 6, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD - categories.POD}},
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.LAND * categories.FACTORY * categories.TECH1 }},
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 2, categories.MOBILE * categories.AIR  * categories.BOMBER }},
             { UCBC, 'HaveUnitRatioUveso', { 1.0, categories.MOBILE * categories.AIR * categories.BOMBER, '<',categories.MOBILE * categories.AIR * categories.HIGHALTAIR * categories.ANTIAIR } },
@@ -2347,7 +2347,7 @@ BuilderGroup {
                 categories.INDIRECTFIRE * categories.TECH2,
                 categories.INDIRECTFIRE * categories.TECH1,
                 categories.COMMAND,
-                categories.ENGINEER - categories.STATIONASSISTPOD,
+                categories.ENGINEER - categories.STATIONASSISTPOD - categories.POD,
                 categories.SHIELD,
                 categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
                 categories.STRUCTURE * categories.ARTILLERY,
@@ -2595,7 +2595,7 @@ BuilderGroup {
             MoveToCategories = {                                                -- Move to targets
                 categories.MASSEXTRACTION,
                 categories.OPTICS,
-                categories.ENGINEER - categories.STATIONASSISTPOD,
+                categories.ENGINEER - categories.STATIONASSISTPOD - categories.POD,
                 categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
                 categories.STRUCTURE * categories.ARTILLERY,
                 categories.STRUCTURE * categories.NUKE,
@@ -2609,7 +2609,7 @@ BuilderGroup {
             WeaponTargetCategories = {                                          -- Override weapon target priorities
                 categories.MASSEXTRACTION,
                 categories.COMMAND,
-                categories.ENGINEER - categories.STATIONASSISTPOD,
+                categories.ENGINEER - categories.STATIONASSISTPOD - categories.POD,
                 categories.SHIELD,
                 categories.ANTIAIR,
                 categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
@@ -2651,7 +2651,7 @@ BuilderGroup {
             MoveToCategories = {                                                -- Move to targets
                 categories.MASSEXTRACTION,
                 categories.OPTICS,
-                categories.ENGINEER - categories.STATIONASSISTPOD,
+                categories.ENGINEER - categories.STATIONASSISTPOD - categories.POD,
                 categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
                 categories.STRUCTURE * categories.ARTILLERY,
                 categories.STRUCTURE * categories.NUKE,
@@ -2667,7 +2667,7 @@ BuilderGroup {
                 categories.ANTIAIR,
                 categories.OPTICS,
                 categories.MASSEXTRACTION,
-                categories.ENGINEER - categories.STATIONASSISTPOD,
+                categories.ENGINEER - categories.STATIONASSISTPOD - categories.POD,
                 categories.SHIELD,
                 categories.ANTIAIR,
                 categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
@@ -2826,7 +2826,7 @@ BuilderGroup {
             MoveToCategories = {                                                -- Move to targets
                 categories.MASSEXTRACTION,
                 categories.OPTICS,
-                categories.ENGINEER - categories.STATIONASSISTPOD,
+                categories.ENGINEER - categories.STATIONASSISTPOD - categories.POD,
                 categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
                 categories.STRUCTURE * categories.ARTILLERY,
                 categories.STRUCTURE * categories.NUKE,
@@ -2912,7 +2912,7 @@ BuilderGroup {
             MoveToCategories = {                                                -- Move to targets
                 categories.OPTICS,
                 categories.MASSEXTRACTION,
-                categories.ENGINEER - categories.STATIONASSISTPOD,
+                categories.ENGINEER - categories.STATIONASSISTPOD - categories.POD,
                 categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
                 categories.STRUCTURE * categories.ARTILLERY,
                 categories.STRUCTURE * categories.NUKE,
@@ -3031,7 +3031,7 @@ BuilderGroup {
             MoveToCategories = {                                                -- Move to targets
                 categories.MASSEXTRACTION,
                 categories.OPTICS,
-                categories.ENGINEER - categories.STATIONASSISTPOD,
+                categories.ENGINEER - categories.STATIONASSISTPOD - categories.POD,
                 categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
                 categories.STRUCTURE * categories.ARTILLERY,
                 categories.STRUCTURE * categories.NUKE,
@@ -3141,12 +3141,12 @@ BuilderGroup {
             IgnorePathing = false,                                              -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = categories.ALLUNITS - categories.AIR - categories.SCOUT,      -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                categories.MOBILE * categories.ENGINEER,
+                categories.MOBILE * categories.ENGINEER - categories.POD,
                 categories.MASSEXTRACTION,
                 categories.ALLUNITS,
             },
             WeaponTargetCategories = {                                          -- Override weapon target priorities
-                categories.MOBILE * categories.ENGINEER,
+                categories.MOBILE * categories.ENGINEER - categories.POD,
                 categories.MASSEXTRACTION,
                 categories.ALLUNITS,
             },

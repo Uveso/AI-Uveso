@@ -795,7 +795,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         local platoonUnits = self:GetPlatoonUnits()
         local eng
         for k, v in platoonUnits do
-            if not v.Dead and EntityCategoryContains(categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD, v) then
+            if not v.Dead and EntityCategoryContains(categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD - categories.POD, v) then
                 eng = v
                 break
             end
@@ -3395,7 +3395,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                         if unit.CDRHome then
                             continue
                         end
-                        if EntityCategoryContains(categories.ENGINEER, unit) then
+                        if EntityCategoryContains(categories.ENGINEER - categories.POD, unit) then
                             --LOG('Engineer ASSIST ACU')
                             -- NOT working for enhancements
                             IssueGuard({unit}, cdr)
@@ -3754,7 +3754,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                 elseif EntityCategoryContains(categories.AIR, unit) then
                     -- Air units
                     DistToACU = 1
-                elseif EntityCategoryContains(categories.ENGINEER, unit) then
+                elseif EntityCategoryContains(categories.ENGINEER - categories.POD, unit) then
                     DistToACU = 10
                 else
                     -- land units -6 means the unit will stay in front of the ACU
