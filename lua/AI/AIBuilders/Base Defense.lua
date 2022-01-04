@@ -502,6 +502,7 @@ BuilderGroup {
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 2.0, 500.0}}, -- Absolut Base income 20 5000
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60*25 } },
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.NUKE * categories.STRUCTURE}},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.NUKE * (categories.TECH3 + categories.EXPERIMENTAL) }},
@@ -663,7 +664,38 @@ BuilderGroup {
     BuilderGroupName = 'U4 Strategic Missile Defense Builders',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
-        BuilderName = 'U3 SMD 1st Main',
+        BuilderName = 'U3 SMD 1st Main Eco',
+        PlatoonTemplate = 'T3EngineerBuilderNoSUB',
+        Priority = 18000,
+        BuilderConditions = {
+            { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconIncome', { 3.8, 150.0 }},                    -- Base income
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            -- When do we want to build this ?
+            { UCBC, 'GreaterThanGameTimeSeconds', { 60*25 } },
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * (categories.TECH3 + categories.EXPERIMENTAL) } },
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * (categories.TECH3 + categories.EXPERIMENTAL) } },
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            NumAssistees = 5,
+            Construction = {
+                BuildClose = false,
+                AdjacencyCategory = categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
+                AdjacencyDistance = 50,
+                AvoidCategory = categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * categories.TECH3,
+                maxUnits = 1,
+                maxRadius = 20,
+                BuildStructures = {
+                    'T3StrategicMissileDefense',
+                },
+                Location = 'LocationType',
+            }
+        }
+    },
+    Builder {
+        BuilderName = 'U3 SMD 1st Main Enemy',
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 18000,
         BuilderConditions = {

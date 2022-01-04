@@ -7,14 +7,14 @@ local LastGetMassMarker = -1
 local MassMarker = {}
 local LastMassBOOL = false
 function CanBuildOnMass(aiBrain, locationType, distance, threatMin, threatMax, threatRings, threatType, maxNum )
+    local engineerManager = aiBrain.BuilderManagers[locationType].EngineerManager
+    if not engineerManager then
+        --WARN('*AI WARNING: CanBuildOnMass: Invalid location - ' .. locationType)
+        return false
+    end
+    local position = engineerManager.Location
     if LastGetMassMarker < GetGameTimeSeconds() then
         LastGetMassMarker = GetGameTimeSeconds()+10
-        local engineerManager = aiBrain.BuilderManagers[locationType].EngineerManager
-        if not engineerManager then
-            --WARN('*AI WARNING: CanBuildOnMass: Invalid location - ' .. locationType)
-            return false
-        end
-        local position = engineerManager.Location
         MassMarker = {}
         for _, v in Scenario.MasterChain._MASTERCHAIN_.Markers do
             if v.type == 'Mass' then
@@ -22,15 +22,14 @@ function CanBuildOnMass(aiBrain, locationType, distance, threatMin, threatMax, t
                     -- mass marker is too close to border, skip it.
                     continue
                 end
-                table.insert(MassMarker, {Position = v.position, Distance = VDist2( v.position[1], v.position[3], position[1], position[3] ) })
+                table.insert(MassMarker, {Position = v.position})
             end
         end
-        table.sort(MassMarker, function(a,b) return a.Distance < b.Distance end)
     end
     LastMassBOOL = false
     for _, v in MassMarker do
-        if v.Distance > distance then
-            break
+        if VDist2( v.Position[1], v.Position[3], position[1], position[3] ) > distance then
+            continue
         end
         if aiBrain:CanBuildStructureAt('ueb1103', v.Position) then
             if threatMin and threatMax and threatRings then
@@ -54,30 +53,28 @@ local HydroMarker = {}
 local LastHydroBOOL = false
 --                { MABC, 'CanBuildOnHydro', { 'LocationType', 1000, -1000, 100, 1, 'AntiSurface', 1 }},
 function CanBuildOnHydro(aiBrain, locationType, distance, threatMin, threatMax, threatRings, threatType, maxNum)
+    local engineerManager = aiBrain.BuilderManagers[locationType].EngineerManager
+    if not engineerManager then
+        --WARN('*AI WARNING: CanBuildOnHydro: Invalid location - ' .. locationType)
+        return false
+    end
+    local position = engineerManager.Location
     if LastGetHydroMarker < GetGameTimeSeconds() then
         LastGetHydroMarker = GetGameTimeSeconds()+10
-        local engineerManager = aiBrain.BuilderManagers[locationType].EngineerManager
-        if not engineerManager then
-            --WARN('*AI WARNING: CanBuildOnHydro: Invalid location - ' .. locationType)
-            return false
-        end
-        local position = engineerManager.Location
         HydroMarker = {}
         for _, v in Scenario.MasterChain._MASTERCHAIN_.Markers do
             if v.type == 'Hydrocarbon' then
-                table.insert(HydroMarker, {Position = v.position, Distance = VDist2( v.position[1], v.position[3], position[1], position[3] ) })
+                table.insert(HydroMarker, {Position = v.position})
             end
         end
-        table.sort(HydroMarker, function(a,b) return a.Distance < b.Distance end)
-    end
-    local threatCheck = false
-    if threatMin and threatMax and threatRings then
-        threatCheck = true
     end
     LastHydroBOOL = false
     for _, v in HydroMarker do
+        if VDist2( v.Position[1], v.Position[3], position[1], position[3] ) > distance then
+            continue
+        end
         if aiBrain:CanBuildStructureAt('ueb1102', v.Position) then
-            if threatCheck then
+            if threatMin and threatMax and threatRings then
                 threat = aiBrain:GetThreatAtPosition(v.Position, threatRings, true, threatType or 'Overall')
                 if threat < threatMin or threat > threatMax then
                     continue
@@ -89,4 +86,3 @@ function CanBuildOnHydro(aiBrain, locationType, distance, threatMin, threatMax, 
     end
     return LastHydroBOOL
 end
-

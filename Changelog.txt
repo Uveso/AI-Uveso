@@ -1,3 +1,9 @@
+v99 (04.Jan.2021)
+
+- Fix: fixed a cache bug inside the mass and hydro CanBuild function.
+- Opt: Strategic missile defense will now also be build in case the AI can't see any enemy nuke launchers.
+
+*************************************************************************************************************************************
 v98 (10.Oct.2021)
 
 -- Fix: compatibility patch for insignificant units test.
