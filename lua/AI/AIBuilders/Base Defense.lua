@@ -502,8 +502,8 @@ BuilderGroup {
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 2.0, 500.0}}, -- Absolut Base income 20 5000
-            { UCBC, 'GreaterThanGameTimeSeconds', { 60*25 } },
             -- When do we want to build this ?
+            { MIBC, 'ItsTimeForGameender', {} },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.NUKE * categories.STRUCTURE}},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.NUKE * (categories.TECH3 + categories.EXPERIMENTAL) }},
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.ENERGYPRODUCTION * categories.TECH3 } },
@@ -540,6 +540,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 4.0, 1000.0}}, -- Absolut Base income 40 10000
             -- When do we want to build this ?
+            { MIBC, 'ItsTimeForGameender', {} },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 4, categories.ENERGYPRODUCTION * categories.TECH3 } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.NUKE * categories.STRUCTURE}},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.STRUCTURE * categories.NUKE * (categories.TECH3 + categories.EXPERIMENTAL) }},
@@ -577,6 +578,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 8.0, 500.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.90, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
+            { MIBC, 'ItsTimeForGameender', {} },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 4, categories.ENERGYPRODUCTION * categories.TECH3 } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.NUKE * categories.STRUCTURE}},
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.NUKE } },
@@ -615,6 +617,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             --{ MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
+            { MIBC, 'ItsTimeForGameender', {} },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.NUKE * categories.STRUCTURE}},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 25, categories.STRUCTURE * categories.NUKE * (categories.TECH3 + categories.EXPERIMENTAL) }},
             -- Respect UnitCap
@@ -649,6 +652,7 @@ BuilderGroup {
         BuilderConditions = {
             -- Have we the eco to build it ?
             -- When do we want to build this ?
+            { MIBC, 'ItsTimeForGameender', {} },
             { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 0, categories.STRUCTURE * categories.NUKE * (categories.TECH2 + categories.TECH3 + categories.EXPERIMENTAL) } },
         },
         BuilderData = {
@@ -673,7 +677,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconIncome', { 3.8, 150.0 }},                    -- Base income
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             -- When do we want to build this ?
-            { UCBC, 'GreaterThanGameTimeSeconds', { 60*25 } },
+            { MIBC, 'ItsTimeForGameender', {} },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * (categories.TECH3 + categories.EXPERIMENTAL) } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * (categories.TECH3 + categories.EXPERIMENTAL) } },
         },
@@ -913,6 +917,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 2.0, 300.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.38, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
+            { MIBC, 'ItsTimeForGameender', {} },
             -- Do we need additional conditions to build it ?
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ARTILLERY * categories.TECH3 } },
             -- Respect UnitCap
@@ -947,6 +952,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 2.0, 300.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
+            { MIBC, 'ItsTimeForGameender', {} },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ARTILLERY } },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.EXPERIMENTAL}},
             -- Respect UnitCap
@@ -981,6 +987,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { 2.0, 300.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
+            { MIBC, 'ItsTimeForGameender', {} },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ARTILLERY } },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.EXPERIMENTAL}},
         },

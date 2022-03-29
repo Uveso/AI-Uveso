@@ -28,9 +28,9 @@ BuilderGroup {
             --{ MIBC, 'HasNotParagon', {} },
             { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.99}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
+            { MIBC, 'ItsTimeForGameender', {} },
             { UCBC, 'CanBuildCategory', { categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC }},
-            { UCBC, 'GreaterThanGameTimeSeconds', { 60*20 } },
             -- Respect UnitCap
         },
         BuilderType = 'Any',
@@ -68,9 +68,9 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.99}}, -- Ratio from 0 to 1. (1=100%)
             --{ MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
+            { MIBC, 'ItsTimeForGameender', {} },
             { UCBC, 'CanBuildCategory', { categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC }},
-            { UCBC, 'GreaterThanGameTimeSeconds', { 60*35 } },
             -- Respect UnitCap
         },
         BuilderType = 'Any',
@@ -108,6 +108,7 @@ BuilderGroup {
             --{ MIBC, 'HasNotParagon', {} },
             { EBC, 'GreaterThanEconTrend', { 60.0, 900.0 } },                      -- relative income
             -- When do we want to build this ?
+            { MIBC, 'ItsTimeForGameender', {} },
             { UCBC, 'CanBuildCategory', { categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC }},
             -- Respect UnitCap
@@ -146,6 +147,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             --{ MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
+            { MIBC, 'ItsTimeForGameender', {} },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC}},
             { UCBC, 'CanBuildCategory', { categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC } },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC}},
@@ -185,6 +187,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             --{ MIBC, 'HasParagon', {} },
             -- When do we want to build this ?
+            { MIBC, 'ItsTimeForGameender', {} },
             { UCBC, 'CanBuildCategory', { categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC}},
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC}},

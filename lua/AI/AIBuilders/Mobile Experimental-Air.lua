@@ -22,6 +22,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconIncome', { 7.0, 600.0 }},                    -- Base income
             { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
+            { MIBC, 'ItsTimeForGameender', {} },
             { UCBC, 'CanBuildCategory', { categories.MOBILE * categories.AIR * categories.EXPERIMENTAL - categories.SATELLITE } },
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, categories.ENGINEER * categories.TECH3 - categories.STATIONASSISTPOD }},
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
@@ -52,6 +53,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconIncome', { 7.0, 600.0 }},                    -- Base income
             { EBC, 'GreaterThanEconStorageRatio', { 0.90, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
+            { MIBC, 'ItsTimeForGameender', {} },
             { UCBC, 'CanBuildCategory', { categories.MOBILE * categories.AIR * categories.EXPERIMENTAL - categories.SATELLITE } },
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, categories.ENGINEER * categories.TECH3 - categories.STATIONASSISTPOD }},
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},
@@ -82,6 +84,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconIncome', { 7.0, 600.0 }},                    -- Base income
             { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
+            { MIBC, 'ItsTimeForGameender', {} },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.EXPERIMENTAL }},
         },
         BuilderType = 'Any',
@@ -251,16 +254,15 @@ BuilderGroup {
             -- When do we want to form this ?
             { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 1, categories.MOBILE * categories.EXPERIMENTAL }}, -- radius, LocationType, unitCount, categoryEnemy
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, categories.EXPERIMENTAL * categories.MOBILE } },
-            { UCBC, 'GreaterThanGameTimeSeconds', { 60*30 } },
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },
     Builder {
-        BuilderName = 'U4 Suicide STRUCTURE',                                  -- Random Builder Name.
-        PlatoonTemplate = 'U4-AirSuicide 1 3',                     -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates"
+        BuilderName = 'U4 Suicide STRUCTURE',                                   -- Random Builder Name.
+        PlatoonTemplate = 'U4-AirSuicide 1 1',                                  -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates"
         --PlatoonAddPlans = {'NameUnitsSorian'},
         Priority = 70,                                                          -- Priority. 1000 is normal.
-        InstanceCount = 2,                                                      -- Number of plattons that will be formed.
+        InstanceCount = 1,                                                      -- Number of plattons that will be formed.
         FormRadius = 10000,
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush1stPhaseActive then
@@ -279,15 +281,10 @@ BuilderGroup {
             TargetHug = true,                                                   -- Tries to get as close to the target as possible
             MoveToCategories = {                                                -- Move to targets
                 categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
-                categories.STRUCTURE * categories.EXPERIMENTAL * categories.SHIELD,
-                categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
-                categories.OPTICS,
-                categories.STRUCTURE * categories.MASSEXTRACTION * categories.TECH3,
-                categories.FACTORY * categories.TECH3,
-                categories.STRUCTURE * categories.EXPERIMENTAL,
                 categories.STRUCTURE * categories.NUKE,
-                categories.STRUCTURE,
-                categories.ALLUNITS,
+                categories.STRUCTURE * categories.EXPERIMENTAL * categories.SHIELD,
+                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.OPTICS,
             },
             WeaponTargetCategories = {                                          -- Override weapon target priorities
                 categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
@@ -303,59 +300,6 @@ BuilderGroup {
             -- When do we want to form this ?
             { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 1, categories.MOBILE * categories.EXPERIMENTAL }}, -- radius, LocationType, unitCount, categoryEnemy
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.EXPERIMENTAL * categories.MOBILE } },
-            { UCBC, 'GreaterThanGameTimeSeconds', { 60*30 } },
-        },
-        BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
-    },
-    Builder {
-        BuilderName = 'U4 Suicide DEFENSE',                                  -- Random Builder Name.
-        PlatoonTemplate = 'U4-AirSuicide 1 3',                     -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates"
-        --PlatoonAddPlans = {'NameUnitsSorian'},
-        Priority = 71,                                                          -- Priority. 1000 is normal.
-        InstanceCount = 1,                                                      -- Number of plattons that will be formed.
-        FormRadius = 10000,
-        PriorityFunction = function(self, aiBrain)
-            if aiBrain.PriorityManager.NoRush1stPhaseActive then
-                return 0
-            else
-                return 70
-            end
-        end,
-        BuilderData = {
-            SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
-            GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
-            AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
-            AttackEnemyStrength = 100000,                                       -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
-            IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.STRUCTURE,                         -- Only find targets matching these categories.
-            TargetHug = true,                                                   -- Tries to get as close to the target as possible
-            MoveToCategories = {                                                -- Move to targets
-                categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
-                categories.STRUCTURE * categories.EXPERIMENTAL * categories.SHIELD,
-                categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
-                categories.OPTICS,
-                categories.STRUCTURE * categories.MASSEXTRACTION * categories.TECH3,
-                categories.FACTORY * categories.TECH3,
-                categories.STRUCTURE * categories.EXPERIMENTAL,
-                categories.STRUCTURE * categories.NUKE,
-                categories.STRUCTURE,
-                categories.ALLUNITS,
-            },
-            WeaponTargetCategories = {                                          -- Override weapon target priorities
-                categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
-                categories.STRUCTURE * categories.EXPERIMENTAL * categories.SHIELD,
-                categories.COMMAND,
-                categories.DEFENSE - categories.ANTIAIR,
-                categories.EXPERIMENTAL,
-                categories.STRUCTURE,
-                categories.ALLUNITS - categories.SCOUT,
-            },
-        },
-        BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
-            -- When do we want to form this ?
-            { UCBC, 'EnemyUnitsLessAtLocationRadius', {  BaseMilitaryZone, 'LocationType', 1, categories.MOBILE * categories.EXPERIMENTAL }}, -- radius, LocationType, unitCount, categoryEnemy
-            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.EXPERIMENTAL * categories.MOBILE } },
-            { UCBC, 'GreaterThanGameTimeSeconds', { 60*30 } },
         },
         BuilderType = 'Any',                                                    -- Build with "Land" "Air" "Sea" "Gate" or "All" Factories. - "Any" forms a Platoon.
     },

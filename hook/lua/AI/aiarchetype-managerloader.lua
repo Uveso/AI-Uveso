@@ -711,16 +711,16 @@ function LocationRangeManagerThread(aiBrain)
                     for k,v in factory.BuilderManagerData.FactoryBuildManager.FactoryList do
                         -- if we found the factory, delete it. It will assign to a new location
                         if v == factory then
+                            SPEW('* AI-Uveso: Function LocationRangeManagerThread(): naval factory is assigned to mainbase. -> removed from main')
                             factory.BuilderManagerData.FactoryBuildManager.FactoryList[k] = nil
-                            factory.BuilderManagerData = nil
-                            factory.lost = GetGameTimeSeconds() - 12
+                            factory.lost = GetGameTimeSeconds() - 12 -- we know it has no manager, no need to wait
                         end
                     end
 
                 end
             end
-            -- welcher manager ?
-            if not factory.BuilderManagerData then
+            -- no factory manager ?
+            if not factory.BuilderManagerData or factory.lost then
                 if not factory.lost then
                     factory.lost = GetGameTimeSeconds()
                 elseif factory.lost + 10 < GetGameTimeSeconds() then
@@ -730,7 +730,6 @@ function LocationRangeManagerThread(aiBrain)
             -- Debug, show the actual location where the factory is assigned to as name.
             --factory:SetCustomName(factory.BuilderManagerData.FactoryBuildManager.LocationType or 'Unknown')
         end
-
 
         if 1 == 2 then
         -- watching the unit Cap for AI balance.
@@ -1455,7 +1454,6 @@ function AddFactoryToClosestManager(aiBrain, factory)
     end
     
     if dist > BaseRadius or (not ClosestMarkerBasePos) or (not AIAttackUtils.CanGraphAreaTo(FactoryPos, ClosestMarkerBasePos, layer)) then -- needs graph check for land and naval locations
-        WARN('* AI-Uveso: AddFactoryToClosestManager: Found ['..MarkerBaseName..'] Baseradius('..math.floor(BaseRadius)..') but it\'s to not reachable: Distance to base: '..math.floor(dist)..' - Creating new location')
         if NavalFactory then
             MarkerBaseName = 'Naval Area '..Random(1000,5000)
             areatype = 'Naval Area'
@@ -1463,6 +1461,7 @@ function AddFactoryToClosestManager(aiBrain, factory)
             MarkerBaseName = 'Expansion Area '..Random(1000,5000)
             areatype = 'Expansion Area'
         end
+        WARN('* AI-Uveso: AddFactoryToClosestManager: Found ['..MarkerBaseName..'] Baseradius('..math.floor(BaseRadius)..') but it\'s to not reachable: Distance to base: '..math.floor(dist)..' - Creating new location: '..MarkerBaseName)
         -- creating a marker for the expansion or AIUtils.AIGetClosestMarkerLocation() will not find it.
         Scenario.MasterChain._MASTERCHAIN_.Markers[MarkerBaseName] = {}
         Scenario.MasterChain._MASTERCHAIN_.Markers[MarkerBaseName].color = 'fff4a460'
@@ -1497,9 +1496,10 @@ function AddFactoryToClosestManager(aiBrain, factory)
         SPEW('* AI-Uveso: AddFactoryToClosestManager: BuilderManagers for MarkerBaseName '..MarkerBaseName..' exist!')
         -- Just a failsafe, normaly we have an FactoryManager if the BuilderManagers on this location is present.
         if aiBrain.BuilderManagers[MarkerBaseName].FactoryManager then
-            SPEW('* AI-Uveso: AddFactoryToClosestManager: FactoryManager at MarkerBaseName '..MarkerBaseName..' exist! Adding Factory!')
+            SPEW('* AI-Uveso: AddFactoryToClosestManager: FactoryManager at MarkerBaseName '..MarkerBaseName..' exist! -> Adding Factory!')
             -- using AddFactory() from the factory manager to add the factory to the manager.
             aiBrain.BuilderManagers[MarkerBaseName].FactoryManager:AddFactory(factory)
+            -- Factory is no longer without an manager
             factory.lost = nil
         end
     else
@@ -1508,7 +1508,7 @@ function AddFactoryToClosestManager(aiBrain, factory)
         -- Create the new expansion on the expansion marker position with a radius of 100. 100 is only an default value, it will be changed from BaseRanger() thread
         aiBrain:AddBuilderManagers(ClosestMarkerBasePos, 100, MarkerBaseName, true)
         -- add the factory to the new manager
-        SPEW('* AI-Uveso: AddFactoryToClosestManager: FactoryManager at MarkerBaseName '..MarkerBaseName..' created! Adding Factory!')
+        SPEW('* AI-Uveso: AddFactoryToClosestManager: FactoryManager at MarkerBaseName '..MarkerBaseName..' created! -> Adding Factory!')
         aiBrain.BuilderManagers[MarkerBaseName].FactoryManager:AddFactory(factory)
         -- Factory is no longer without an manager
         factory.lost = nil

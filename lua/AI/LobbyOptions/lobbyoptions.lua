@@ -201,6 +201,54 @@ AIOpts = {
         },
     },
     {
+        default = 3,
+        label = "<LOC aisettingsUveso_0229>KI Gameender start time",
+        help = "<LOC aisettingsUveso_0230>Delay in minutes before the AI start to build gameender",
+        key = 'AIGameenderStart',
+        values = {
+            {
+                text = "10",
+                help = "10",
+                key = 10,
+            },
+            {
+                text = "15",
+                help = "15",
+                key = 15,
+            },
+            {
+                text = "20",
+                help = "20",
+                key = 20,
+            },
+            {
+                text = "25",
+                help = "25",
+                key = 25,
+            },
+            {
+                text = "30",
+                help = "30",
+                key = 30,
+            },
+            {
+                text = "35",
+                help = "35",
+                key = 35,
+            },
+            {
+                text = "40",
+                help = "40",
+                key = 40,
+            },
+            {
+                text = "45",
+                help = "45",
+                key = 45,
+            },
+        },
+    },
+    {
         default = 1,
         label = "<LOC aisettingsUveso_0167>DEBUG: AI Platoon names",
         help = "<LOC aisettingsUveso_0168>Displays Platoon and AI plan name",

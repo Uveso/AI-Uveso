@@ -105,3 +105,6 @@ aisettingsUveso_0223="Set the cheat multiplier increase for the AIx Overwhelm. T
 
 aisettingsUveso_0224="AIx Overwhelm start time"
 aisettingsUveso_0225="Set the delay in minutes before the AIx Overwhelm starts to increase the cheat multiplier"
+
+aisettingsUveso_0229="KI Gameender start time"
+aisettingsUveso_0230="Delay in minutes before the AI start to build gameender"

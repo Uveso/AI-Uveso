@@ -750,7 +750,7 @@ function UnderAttack(cdr)
         cdr.LastDamaged = GetGameTimeSeconds()
     end
     cdr.HealthOLD = CDRHealth
-    if GetGameTimeSeconds() - cdr.LastDamaged < 4 then
+    if cdr.LastDamaged and ( GetGameTimeSeconds() - cdr.LastDamaged < 4 ) then
         return true
     else
         return false

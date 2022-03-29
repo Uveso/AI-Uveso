@@ -105,3 +105,14 @@ function IsNavalExpansionsAllowed(aiBrain)
     local checkNum = tonumber(ScenarioInfo.Options.NavalExpansionsAllowed) or 2
     return checkNum > 0
 end
+
+--            { MIBC, 'ItsTimeForGameender', {} },
+function ItsTimeForGameender(aiBrain)
+    local TimeForEnder = tonumber(ScenarioInfo.Options.AIGameenderStart) or 25
+    if TimeForEnder * 60 < GetGameTimeSeconds() then
+        --LOG('* ItsTimeForGameender: TimeForEnder: '..(TimeForEnder*60)..' < '..GetGameTimeSeconds()..' TRUE')
+        return true
+    end
+    --LOG('* ItsTimeForGameender: TimeForEnder: '..(TimeForEnder*60)..' < '..GetGameTimeSeconds()..' FALSE')
+    return false
+end

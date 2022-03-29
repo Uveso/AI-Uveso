@@ -2305,6 +2305,12 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                 aiBrain:AssignUnitsToPlatoon(pool, {unit}, 'Unassigned', 'None')
                 continue
             end
+            -- remove OPERATION units from the platoon
+            if UnitBlueprint.CategoriesHash.OPERATION then
+                --SPEW('* AI-Uveso: HeroFightPlatoon: -- unit ['..repr(unit.UnitId)..'] is a OPERATION UNIT.  Removing from platoon...  - '..repr( unit:GetBlueprint().General.UnitName or "Unknown" )..' ('..repr( unit:GetBlueprint().Description or "Unknown" )..'')
+                aiBrain:AssignUnitsToPlatoon(pool, {unit}, 'Unassigned', 'None')
+                continue
+            end
             -- Seraphim Experimentals should always move close to the target
             if UnitBlueprint.CategoriesHash.EXPERIMENTAL and UnitBlueprint.CategoriesHash.SERAPHIM then
                 TargetHug = true

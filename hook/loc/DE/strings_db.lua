@@ -104,3 +104,6 @@ aisettingsUveso_0222="KIx Brecher Cheat Erhöhung"
 aisettingsUveso_0223="Stellt die Erhöhung des Cheat-Multiplikators für die KIx Brecher ein. Der Multiplikator wird mit diesem Wert jede Minute erhöht"
 aisettingsUveso_0224="KIx Brecher Erhöhungs Startzeit"
 aisettingsUveso_0225="Stellt die Verzögerung in Minuten ein, bevor die KIx Brecher beginnt, den Cheat-Multiplikator zu erhöhen"
+
+aisettingsUveso_0229="KI Spielbeender Startzeit"
+aisettingsUveso_0230="Verzögerung in Minuten bis die KI anfängt Spielbeender zu bauen"

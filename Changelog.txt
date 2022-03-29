@@ -1,7 +1,11 @@
-v99 (04.Jan.2021)
+v99 (29.Mar.2022)
 
-- Fix: fixed a cache bug inside the mass and hydro CanBuild function.
+- New: Added lobby option and buildconditions for gameender build start
 - Opt: Strategic missile defense will now also be build in case the AI can't see any enemy nuke launchers.
+- Fix: fixed a cache bug inside the mass and hydro CanBuild function.
+- Fix: fixed a bug in case the cdr.LastDamaged variable is not set
+- Fix: excluded OPERATION units from ACU platoon (uec0001 UEF Civilian Truck)
+- Fix: fixed a bug in removing a naval factory from mainbase manager and assign it to naval base manager
 
 *************************************************************************************************************************************
 v98 (10.Oct.2021)
