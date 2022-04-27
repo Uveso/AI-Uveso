@@ -1,3 +1,16 @@
+v100 (30.Mar.2022)
+
+- New: ACU will now evade from nuke blast area
+- Fix: nukes fired after 35 minutes, not respecting option for gameender
+- Fix: excluded URL0401 (Exp. Mobile Rapid-Fire Artillery) from mobile platoons
+- Fix: fixed a bug in T4 Artillery platoon that was not building Seraphim T4 Nuke
+- Opt: decrease braveness of ACU in case an experimental or T3 units are detected
+- Opt: decrease braveness of ACU for enemy air units
+- Opt: increase detection range of pointdefenses by 10
+- Opt: increase threatweight for low tech enemy land units
+- Opt: changed targets for land experimentals
+
+*************************************************************************************************************************************
 v99 (29.Mar.2022)
 
 - New: Added lobby option and buildconditions for gameender build start

@@ -1196,16 +1196,15 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                     if aiBrain.PrimaryTarget and aiBrain.PrimaryTarget ~= ClosestTarget then
                         break
                     end
-                    platoonUnits = self:GetPlatoonUnits()
-                    for _, Arty in platoonUnits do
+                    for _, Arty in self:GetPlatoonUnits() do
                         if not Arty or Arty.Dead then
                             return
                         end
                         local Target = Arty:GetTargetEntity()
                         if Target == ClosestTarget then
-                            --Arty:SetCustomName('continue '..BlueprintID)
+                            Arty:SetCustomName('continue '..BlueprintID)
                         else
-                            --Arty:SetCustomName('Attacking '..BlueprintID)
+                            Arty:SetCustomName('Attacking '..BlueprintID)
                             --IssueStop({v})
                             IssueClearCommands({Arty})
                             coroutine.yield(1)
@@ -1413,13 +1412,6 @@ Platoon = Class(CopyOfOldPlatoonClass) {
             if LauncherCount < 1 or ( table.getn(LauncherReady) < 1 and table.getn(LauncherFull) < 1 ) then
                 if NUKEDEBUG then
                      LOG('* AI-Uveso: * NukePlatoonAI: No launcher ready. Target search loop stoped')
-                end
-                continue
-            end
-            -- don't launch nukes before game minute 35
-            if GetGameTimeSeconds() < 60 * 35 then
-                if NUKEDEBUG then
-                     LOG('* AI-Uveso: * NukePlatoonAI: Nukes are not allowed before game minute 35. Target search loop stoped')
                 end
                 continue
             end
@@ -3254,16 +3246,16 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                 BraveDEBUG['EnemyACU'] = - math.floor(Threat * 5)
             end
 
-            -- We lose 6 Braveness for every T2 Point Defense nearby
-            UnitT1 = aiBrain:GetNumUnitsAroundPoint( categories.STRUCTURE * categories.DEFENSE * categories.TECH1, cdr.position, 40, 'Enemy' )
-            UnitT2 = aiBrain:GetNumUnitsAroundPoint( categories.STRUCTURE * categories.DEFENSE * categories.TECH2, cdr.position, 65, 'Enemy' )
-            UnitT3 = aiBrain:GetNumUnitsAroundPoint( categories.STRUCTURE * categories.DEFENSE * categories.TECH3, cdr.position, 85, 'Enemy' )
+            -- We lose 12 Braveness for every T2 Point Defense nearby
+            UnitT1 = aiBrain:GetNumUnitsAroundPoint( categories.STRUCTURE * categories.DEFENSE * categories.TECH1, cdr.position, 50, 'Enemy' )
+            UnitT2 = aiBrain:GetNumUnitsAroundPoint( categories.STRUCTURE * categories.DEFENSE * categories.TECH2, cdr.position, 75, 'Enemy' )
+            UnitT3 = aiBrain:GetNumUnitsAroundPoint( categories.STRUCTURE * categories.DEFENSE * categories.TECH3, cdr.position, 95, 'Enemy' )
             UnitT4 = aiBrain:GetNumUnitsAroundPoint( categories.STRUCTURE * categories.DEFENSE * categories.EXPERIMENTAL, cdr.position, 120, 'Enemy' )
             -- Tech1 ~150 dps -- Tech2 ~130 dps = 1 x T1 -- Tech3 ~260 dps = 2 x T1 -- Tech4 ~2000 dps = 80 x T1
             Threat = UnitT1 + UnitT2 * 1 + UnitT3 * 2 + UnitT4 * 13
             if Threat > 0 then
-                Braveness = Braveness - math.floor(Threat * 6)
-                BraveDEBUG['PD'] = - math.floor(Threat * 6)
+                Braveness = Braveness - math.floor(Threat * 12)
+                BraveDEBUG['PD'] = - math.floor(Threat * 12)
             end
 
             -- We lose 1 Braveness if we got damaged in the last 4 seconds --------------------------------------------------------------------------------------------------------
@@ -3290,10 +3282,28 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                 end
             end
 
-            -- We lose 10 bravness in case the enemy has more than 8 Tech2/3 bomber or gunships
-            if aiBrain.ACUChampion.numAirEnemyUnits > 8 then
+            -- We lose 10 bravness in case the enemy has T3 bomber or gunships
+            if aiBrain.ACUChampion.numAirEnemyUnits > 2 then
                 Braveness = Braveness - 10
-                BraveDEBUG['Bomber'] = 10
+                BraveDEBUG['Bomber6'] = 10
+            end
+
+            -- We lose again 10 bravness in case the enemy has more than 12 Tech2/3 bomber or gunships
+            if aiBrain.ACUChampion.numAirEnemyUnits > 5 then
+                Braveness = Braveness - 10
+                BraveDEBUG['Bomber12'] = 10
+            end
+
+            -- We lose 10 bravness in case the enemy has one experimental
+            if aiBrain.ACUChampion.numExperimentalEnemyUnits > 0 then
+                Braveness = Braveness - 10
+                BraveDEBUG['Experimentals'] = 10
+            end
+
+            -- We lose 10 bravness in case the enemy has more than 2 Tech3 units
+            if aiBrain.ACUChampion.numT3EnemyUnits > 2 then
+                Braveness = Braveness - 10
+                BraveDEBUG['T3Units'] = 10
             end
 
             -- We lose all Braveness if we have under 20% health -------------------------------------------------------------------------------------------------------------------------
@@ -3439,7 +3449,6 @@ Platoon = Class(CopyOfOldPlatoonClass) {
             --------------
             -- Movement --
             --------------
---function IsNukeBlastArea(aiBrain, TargetPosition)
 
             if not aiBrain:PlatoonExists(self) or cdr.Dead then
                 self:PlatoonDisband()
@@ -3461,9 +3470,17 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                 BraveDEBUG['Behind'] = 0
             end
             NavigatorGoal = cdr:GetNavigator():GetGoalPos()
+            -- Run away from nuke explosions
+            local InNukeBlastArea = AIUtils.IsNukeBlastArea(aiBrain, cdr.position)
+            if InNukeBlastArea then
+                alpha = math.atan2 (InNukeBlastArea[3] - cdr.position[3] ,InNukeBlastArea[1] - cdr.position[1])
+                x = InNukeBlastArea[1] - math.cos(alpha) * 50
+                y = InNukeBlastArea[3] - math.sin(alpha) * 50
+                smartPos = { x, GetTerrainHeight( x, y), y }
+                BraveDEBUG['Reason'] = 'Evade from Nuke Blast'
             -- Run away from experimentals. (move out of experimental wepon range)
             -- MKB Max distance to experimental DistBase/2 or EnemyExperimentalWepRange + 100. whatever is bigger
-            if aiBrain.ACUChampion.EnemyExperimentalPos and VDist2( cdr.position[1], cdr.position[3], aiBrain.ACUChampion.EnemyExperimentalPos[1][1], aiBrain.ACUChampion.EnemyExperimentalPos[1][3] ) < aiBrain.ACUChampion.EnemyExperimentalWepRange + 30 then
+            elseif aiBrain.ACUChampion.EnemyExperimentalPos and VDist2( cdr.position[1], cdr.position[3], aiBrain.ACUChampion.EnemyExperimentalPos[1][1], aiBrain.ACUChampion.EnemyExperimentalPos[1][3] ) < aiBrain.ACUChampion.EnemyExperimentalWepRange + 30 then
                 alpha = math.atan2 (aiBrain.ACUChampion.EnemyExperimentalPos[1][3] - cdr.position[3] ,aiBrain.ACUChampion.EnemyExperimentalPos[1][1] - cdr.position[1])
                 x = aiBrain.ACUChampion.EnemyExperimentalPos[1][1] - math.cos(alpha) * (aiBrain.ACUChampion.EnemyExperimentalWepRange + 30)
                 y = aiBrain.ACUChampion.EnemyExperimentalPos[1][3] - math.sin(alpha) * (aiBrain.ACUChampion.EnemyExperimentalWepRange + 30)
@@ -3585,8 +3602,11 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                 DebugText = DebugText..'Hitted:'..(BraveDEBUG['Hitted'] or "--")..' '
                 DebugText = DebugText..'Range:'..(BraveDEBUG['Range'] or "--")..' '         -- -0 -12
                 DebugText = DebugText..'TML:'..(BraveDEBUG['TML'] or "--")..' '
-                DebugText = DebugText..'Bomber:'..(BraveDEBUG['Bomber'] or "--")..' '
+                DebugText = DebugText..'Bomber6:'..(BraveDEBUG['Bomber6'] or "--")..' '
+                DebugText = DebugText..'Bomber12:'..(BraveDEBUG['Bomber12'] or "--")..' '
                 DebugText = DebugText..'RBase:'..(BraveDEBUG['ReachedBase'] or "--")..' '
+                DebugText = DebugText..'Exp:'..(BraveDEBUG['Experimentals'] or "--")..' '
+                DebugText = DebugText..'T3:'..(BraveDEBUG['T3Units'] or "--")..' '
                 DebugText = DebugText..'Braveness: '..Braveness..' - '
                 DebugText = DebugText..'ACTION: '..(BraveDEBUG['Reason'] or "--")..' '
                 if DebugText != LastDebugText then
@@ -4062,6 +4082,15 @@ Platoon = Class(CopyOfOldPlatoonClass) {
             -- Enemy Bomber/gunship threat
             local numAirEnemyUnits = aiBrain:GetNumUnitsAroundPoint(categories.MOBILE * categories.AIR * (categories.BOMBER + categories.GROUNDATTACK) - categories.TECH1, Vector(playablearea[3]/2,0,playablearea[4]/2), playablearea[3]+playablearea[4] , 'Enemy')
             aiBrain.ACUChampion.numAirEnemyUnits = numAirEnemyUnits
+
+            -- Enemy Experimental threat
+            local numExperimentalEnemyUnits = aiBrain:GetNumUnitsAroundPoint(categories.MOBILE * categories.EXPERIMENTAL, Vector(playablearea[3]/2,0,playablearea[4]/2), playablearea[3]+playablearea[4] , 'Enemy')
+            aiBrain.ACUChampion.numExperimentalEnemyUnits = numExperimentalEnemyUnits
+
+            -- Enemy T3 threat
+            local numT3EnemyUnits = aiBrain:GetNumUnitsAroundPoint(categories.MOBILE * categories.TECH3, Vector(playablearea[3]/2,0,playablearea[4]/2), playablearea[3]+playablearea[4] , 'Enemy')
+            aiBrain.ACUChampion.numT3EnemyUnits = numT3EnemyUnits
+
         end
     end,
 

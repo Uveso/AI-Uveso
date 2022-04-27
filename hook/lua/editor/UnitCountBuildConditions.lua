@@ -155,30 +155,6 @@ function HaveGreaterThanArmyPoolWithCategory(aiBrain, unitCount, unitCategory)
     return HavePoolUnitInArmy(aiBrain, unitCount, unitCategory, '>')
 end
 
-function ReclaimableMassInArea(aiBrain, locType)
-    local ents = AIUtils.AIGetReclaimablesAroundLocation(aiBrain, locType)
-    if ents and table.getn(ents) > 0 then
-        for _, p in ents do
-            if p.MaxMassReclaim and p.MaxMassReclaim > 1 then
-                return true
-            end
-        end
-    end
-    return false
-end
-
-function ReclaimableEnergyInArea(aiBrain, locType)
-    local ents = AIUtils.AIGetReclaimablesAroundLocation(aiBrain, locType)
-    if ents and table.getn(ents) > 0 then
-        for _, p in ents do
-            if p.MaxEnergyReclaim and p.MaxEnergyReclaim > 1 then
-                return true
-            end
-        end
-    end
-    return false
-end
-
 function HaveEnemyUnitAtLocation(aiBrain, radius, locationType, unitCount, categoryEnemy, compareType)
     if not aiBrain.BuilderManagers[locationType] then
         WARN('*AI WARNING: HaveEnemyUnitAtLocation - Invalid location - ' .. locationType)

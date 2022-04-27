@@ -902,13 +902,13 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Artillery',
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
-        Priority = 1000,
+        Priority = 1010,
         DelayEqualBuildPlattons = {'Artillery', 20},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush1stPhaseActive then
                 return 0
             else
-                return 1000
+                return 1010
             end
         end,
         BuilderConditions = {
@@ -969,7 +969,7 @@ BuilderGroup {
         }
     },
     Builder {
-        BuilderName = 'U4 Artillery',
+        BuilderName = 'U4 Artillery', -- UEF T4 Arty, Seraphim T4 Nuke
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 1000,
         DelayEqualBuildPlattons = {'Artillery', 20},
@@ -981,7 +981,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            { MIBC, 'FactionIndex', { 1 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
+            { MIBC, 'FactionIndex', { 1, 4 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             { UCBC, 'CheckBuildPlattonDelay', { 'Artillery' }},
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 2.0, 300.0 } }, -- relative income

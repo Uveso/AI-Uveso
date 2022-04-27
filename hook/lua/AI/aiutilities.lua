@@ -113,7 +113,7 @@ function IsNukeBlastArea(aiBrain, TargetPosition)
             if data.NukeTime + 50 <  GetGameTimeSeconds() then
                 table.remove(aiBrain.NukedArea, i)
             elseif VDist2(TargetPosition[1], TargetPosition[3], data.Location[1], data.Location[3]) < 40 then
-                return true
+                return data.Location
             end
         end
     end

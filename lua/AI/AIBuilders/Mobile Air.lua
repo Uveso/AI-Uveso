@@ -2824,17 +2824,9 @@ BuilderGroup {
             IgnorePathing = false,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = categories.ALLUNITS - categories.AIR - categories.SCOUT,      -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                categories.MASSEXTRACTION,
-                categories.OPTICS,
-                categories.ENGINEER - categories.STATIONASSISTPOD - categories.POD,
-                categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
-                categories.STRUCTURE * categories.ARTILLERY,
-                categories.STRUCTURE * categories.NUKE,
-                categories.STRUCTURE * categories.ENERGYPRODUCTION,
-                categories.STRUCTURE * categories.EXPERIMENTAL,
-                categories.STRUCTURE * categories.ANTIMISSILE * categories.TECH3,
-                categories.STRUCTURE * categories.DEFENSE * categories.TECH3,
-                categories.FACTORY * categories.TECH3,
+                categories.COMMAND,
+                categories.EXPERIMENTAL,
+                categories.FACTORY,
                 categories.ALLUNITS,
             },
             WeaponTargetCategories = {                                          -- Override weapon target priorities
@@ -2879,8 +2871,9 @@ BuilderGroup {
             IgnorePathing = false,                                              -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = categories.AIR - categories.SCOUT - categories.POD,      -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                categories.ANTIAIR,
+                categories.COMMAND,
                 categories.EXPERIMENTAL,
+                categories.FACTORY,
                 categories.ALLUNITS,
             },
         },
@@ -2910,17 +2903,9 @@ BuilderGroup {
             IgnorePathing = false,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = categories.ALLUNITS - categories.AIR - categories.SCOUT - categories.POD,      -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                categories.OPTICS,
-                categories.MASSEXTRACTION,
-                categories.ENGINEER - categories.STATIONASSISTPOD - categories.POD,
-                categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
-                categories.STRUCTURE * categories.ARTILLERY,
-                categories.STRUCTURE * categories.NUKE,
-                categories.STRUCTURE * categories.ENERGYPRODUCTION,
-                categories.STRUCTURE * categories.EXPERIMENTAL,
-                categories.STRUCTURE * categories.ANTIMISSILE * categories.TECH3,
-                categories.STRUCTURE * categories.DEFENSE * categories.TECH3,
-                categories.FACTORY * categories.TECH3,
+                categories.COMMAND,
+                categories.EXPERIMENTAL,
+                categories.FACTORY,
                 categories.ALLUNITS,
             },
             WeaponTargetCategories = {                                          -- Override weapon target priorities
@@ -2968,6 +2953,7 @@ BuilderGroup {
                 categories.EXPERIMENTAL * categories.AIR,
                 categories.ANTIAIR * categories.AIR,
                 categories.AIR,
+                categories.COMMAND,
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
@@ -3000,6 +2986,7 @@ BuilderGroup {
                 categories.EXPERIMENTAL * categories.AIR,
                 categories.ANTIAIR * categories.AIR,
                 categories.AIR,
+                categories.COMMAND,
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
@@ -3029,17 +3016,9 @@ BuilderGroup {
             IgnorePathing = false,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = categories.ALLUNITS - categories.SCOUT - categories.POD,      -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                categories.MASSEXTRACTION,
-                categories.OPTICS,
-                categories.ENGINEER - categories.STATIONASSISTPOD - categories.POD,
-                categories.STRUCTURE * categories.EXPERIMENTAL* categories.SHIELD,
-                categories.STRUCTURE * categories.ARTILLERY,
-                categories.STRUCTURE * categories.NUKE,
-                categories.STRUCTURE * categories.ENERGYPRODUCTION,
-                categories.STRUCTURE * categories.EXPERIMENTAL,
-                categories.STRUCTURE * categories.ANTIMISSILE * categories.TECH3,
-                categories.STRUCTURE * categories.DEFENSE * categories.TECH3,
-                categories.FACTORY * categories.TECH3,
+                categories.COMMAND,
+                categories.EXPERIMENTAL,
+                categories.FACTORY,
                 categories.ALLUNITS,
             },
             WeaponTargetCategories = {                                          -- Override weapon target priorities

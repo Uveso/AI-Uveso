@@ -787,6 +787,8 @@ BuilderGroup {
             AttackEnemyStrength = 100000000,                                    -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.MOBILE - categories.AIR,        -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
+                categories.EXPERIMENTAL * categories.NAVAL,
+                categories.MOBILE * categories.NAVAL,
                 categories.EXPERIMENTAL,
                 categories.MOBILE,
             },
@@ -822,8 +824,8 @@ BuilderGroup {
             AttackEnemyStrength = 150,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.MOBILE - categories.AIR,          -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                categories.NAVAL * categories.DEFENSE,
-                categories.MOBILE * categories.NAVAL,
+                categories.DEFENSE * categories.NAVAL,
+                categories.NAVAL,
                 categories.ALLUNITS,
             },
         },
@@ -859,8 +861,8 @@ BuilderGroup {
             AttackEnemyStrength = 200,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = (categories.NAVAL + categories.STRUCTURE) - categories.AIR,    -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                categories.STRUCTURE,
-                categories.MOBILE,
+                categories.STRUCTURE * categories.NAVAL,
+                categories.NAVAL,
                 categories.ALLUNITS,
             },
         },
@@ -888,8 +890,8 @@ BuilderGroup {
             AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.STRUCTURE * categories.NAVAL,     -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                categories.MOBILE * categories.NAVAL * categories.DEFENSE,
-                categories.STRUCTURE * categories.NAVAL,
+                categories.DEFENSE,
+                categories.ALLUNITS,
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
@@ -917,7 +919,7 @@ BuilderGroup {
             AttackEnemyStrength = 100,                                          -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             TargetSearchCategory = categories.MOBILE * categories.NAVAL,        -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
-                categories.MOBILE * categories.NAVAL,
+                categories.ALLUNITS,
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
@@ -990,4 +992,213 @@ BuilderGroup {
         },
         BuilderType = 'Any',
     },
+}
+
+
+
+
+
+
+
+BuilderGroup {
+    BuilderGroupName = 'U123 Naval Builders test',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuildersType = 'FactoryBuilder',
+    -- ============ --
+    --    TECH 1    --
+    -- ============ --
+    Builder {
+        BuilderName = 'U1N Frigate',
+        PlatoonTemplate = 'T1SeaFrigate',
+        Priority = 000,
+        InstanceCount = 2,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.FACTORY * categories.NAVAL}},
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 5, categories.FACTORY * categories.NAVAL - categories.TECH1}},
+        },
+        BuilderType = 'Sea',
+    },
+    Builder {
+        BuilderName = 'U1N Sub',
+        PlatoonTemplate = 'T1SeaSub',
+        Priority = 000,
+        InstanceCount = 3,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.FACTORY * categories.NAVAL * categories.TECH1}},
+        },
+        BuilderType = 'Sea',
+    },
+    -- ============ --
+    --    TECH 2    --
+    -- ============ --
+    Builder {
+        BuilderName = 'U2N Destroyer UEF Aeon',
+        PlatoonTemplate = 'T2SeaDestroyer',
+        Priority = 000,
+        InstanceCount = 2,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 7, categories.FACTORY * categories.NAVAL * categories.TECH3}},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.FACTORY * categories.NAVAL - categories.TECH1}},
+            { UCBC, 'HaveUnitsWithCategoryAndAlliance', { false, 3, categories.STRUCTURE * categories.DEFENSE * categories.ANTINAVY, 'Enemy'}},
+            { MIBC, 'FactionIndex', {1, 2}},
+        },
+        BuilderType = 'Sea',
+    },
+    Builder {
+        BuilderName = 'U2N Destroyer Cybran Sera',
+        PlatoonTemplate = 'T2SeaDestroyer',
+        Priority = 000,
+        InstanceCount = 2,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 7, categories.FACTORY * categories.NAVAL * categories.TECH3}},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.FACTORY * categories.NAVAL - categories.TECH1}},
+            { UCBC, 'HaveUnitsWithCategoryAndAlliance', { false, 3, categories.STRUCTURE * categories.DEFENSE * categories.ANTINAVY, 'Enemy'}},
+            { MIBC, 'FactionIndex', {3, 4}},
+        },
+        BuilderType = 'Sea',
+    },
+    Builder {
+        BuilderName = 'U2N Cruiser',
+        PlatoonTemplate = 'T2SeaCruiser',
+        Priority = 000,
+        InstanceCount = 2,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 7, categories.FACTORY * categories.NAVAL * categories.TECH3}},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.FACTORY * categories.NAVAL - categories.TECH1}},
+            { UCBC, 'HaveUnitsWithCategoryAndAlliance', { false, 3, categories.STRUCTURE * categories.DEFENSE * categories.ANTINAVY, 'Enemy'}},
+        },
+        BuilderType = 'Sea',
+    },
+    Builder {
+        BuilderName = 'U1N Sub II',
+        PlatoonTemplate = 'T1SeaSub',
+        Priority = 000,
+        InstanceCount = 3,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.FACTORY * categories.NAVAL * categories.TECH2}},
+        },
+        BuilderType = 'Sea',
+    },
+    -- ============ --
+    --    TECH 3    --
+    -- ============ --
+    Builder {
+        BuilderName = 'U1N Sub III',
+        PlatoonTemplate = 'T1SeaSub',
+        Priority = 000,
+        InstanceCount = 0,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 6, categories.FACTORY * categories.NAVAL * categories.TECH3}},
+            { EBC, 'GreaterThanEconTrend', { -1, -2}},
+        },
+        BuilderType = 'Sea',
+    },
+    Builder {
+        BuilderName = 'U3N Battleship',
+        PlatoonTemplate = 'T3SeaBattleship',
+        Priority = 000,
+        InstanceCount = 0,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 6, categories.FACTORY * categories.NAVAL * categories.TECH3}},
+            { EBC, 'GreaterThanEconTrend', { 1, 1}},
+        },
+        BuilderType = 'Sea',
+    },
+    Builder {
+        BuilderName = 'U2N Destroyer UEF, Aeon',
+        PlatoonTemplate = 'T2SeaDestroyer',
+        Priority = 000,
+        InstanceCount = 2,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 6, categories.FACTORY * categories.NAVAL * categories.TECH3}},
+            { EBC, 'GreaterThanEconTrend', { -1, -2}},
+            { MIBC, 'FactionIndex', {1, 2}},
+        },
+        BuilderType = 'Sea',
+    },
+    Builder {
+        BuilderName = 'U2N Destroyer Cybran, Sera',
+        PlatoonTemplate = 'T2SeaDestroyer',
+        Priority = 000,
+        InstanceCount = 2,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 6, categories.FACTORY * categories.NAVAL * categories.TECH3}},
+            { EBC, 'GreaterThanEconTrend', { -1, -2}},
+            { MIBC, 'FactionIndex', {3, 4}},
+        },
+        BuilderType = 'Sea',
+    },
+    Builder {
+        BuilderName = 'U2N Cruiser III ',
+        PlatoonTemplate = 'T2SeaCruiser',
+        Priority = 000,
+        InstanceCount = 2,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 6, categories.FACTORY * categories.NAVAL * categories.TECH3}},
+            { EBC, 'GreaterThanEconTrend', { -1, -2}},
+        },
+        BuilderType = 'Sea',
+    },
+    Builder {
+        BuilderName = 'U3N Battleship',
+        PlatoonTemplate = 'T3SeaBattleship',
+        Priority = 000,
+        InstanceCount = 1,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 3, categories.FACTORY * categories.NAVAL * categories.TECH3}},
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.ARTILLERY * categories.STRUCTURE * categories.TECH3}},
+            { EBC, 'GreaterThanEconTrend', { -1, -1}},
+        },
+        BuilderType = 'Sea',
+    },
+    Builder {
+        BuilderName = 'U3N Nuke Sub',
+        PlatoonTemplate = 'T3SeaNukeSub',
+        Priority = 000,
+        InstanceCount = 1,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 6, categories.FACTORY * categories.NAVAL * categories.TECH3}},
+            { EBC, 'GreaterThanEconTrend', { 5, 200}},
+        },
+        BuilderType = 'Sea',
+    },
+    Builder {
+        BuilderName = 'U3N Carrier',
+        PlatoonTemplate = 'T3SeaCarrier',
+        Priority = 000,
+        InstanceCount = 1,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 70, categories.FACTORY * categories.NAVAL * categories.TECH3}},
+            { EBC, 'GreaterThanEconTrend', { 10, 100}},
+        },
+        BuilderType = 'Sea',
+    },
+
 }

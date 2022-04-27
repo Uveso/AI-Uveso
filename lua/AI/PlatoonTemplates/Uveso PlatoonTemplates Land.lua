@@ -208,7 +208,7 @@ PlatoonTemplate {
     Name = 'T4 Interceptor Land 1 1',
     Plan = 'HeroFightPlatoon',
     GlobalSquads = {
-        { categories.EXPERIMENTAL * categories.LAND * categories.MOBILE - categories.INSIGNIFICANTUNIT, 1, 1, 'Attack', 'none' },
+        { categories.EXPERIMENTAL * categories.LAND * categories.MOBILE - categories.url0401 - categories.INSIGNIFICANTUNIT, 1, 1, 'Attack', 'none' },
         { categories.MOBILE * (categories.SHIELD + categories.STEALTHFIELD) - categories.ANTIAIR - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND - categories.SUBCOMMANDER, 0, 4, 'support', 'none' }
     },
 }
@@ -216,7 +216,7 @@ PlatoonTemplate {
     Name = 'T4ExperimentalLandUveso 1 1',
     Plan = 'HeroFightPlatoon',
     GlobalSquads = {
-        { categories.EXPERIMENTAL * categories.LAND * categories.MOBILE - categories.INSIGNIFICANTUNIT, 1, 1, 'Attack', 'none' },
+        { categories.EXPERIMENTAL * categories.LAND * categories.MOBILE - categories.url0401 - categories.INSIGNIFICANTUNIT, 1, 1, 'Attack', 'none' },
         { categories.MOBILE * (categories.SHIELD + categories.STEALTHFIELD) - categories.ANTIAIR - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND - categories.SUBCOMMANDER, 0, 4, 'support', 'none' }
     },
 }
@@ -224,7 +224,7 @@ PlatoonTemplate {
     Name = 'T4ExperimentalLandGroupUveso 2 2',
     Plan = 'HeroFightPlatoon',
     GlobalSquads = {
-        { categories.EXPERIMENTAL * categories.LAND * categories.MOBILE - categories.INSIGNIFICANTUNIT, 2, 2, 'Attack', 'none' },
+        { categories.EXPERIMENTAL * categories.LAND * categories.MOBILE - categories.url0401 - categories.INSIGNIFICANTUNIT, 2, 2, 'Attack', 'none' },
         { categories.MOBILE * (categories.SHIELD + categories.STEALTHFIELD) - categories.ANTIAIR - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND - categories.SUBCOMMANDER, 0, 4, 'support', 'none' }
     },
 }
@@ -233,7 +233,7 @@ PlatoonTemplate {
     Name = 'T4ExperimentalLandGroupUveso 3 5',
     Plan = 'HeroFightPlatoon',
     GlobalSquads = {
-        { categories.EXPERIMENTAL * categories.LAND * categories.MOBILE - categories.INSIGNIFICANTUNIT, 3, 5, 'Attack', 'none' },
+        { categories.EXPERIMENTAL * categories.LAND * categories.MOBILE - categories.url0401 - categories.INSIGNIFICANTUNIT, 3, 5, 'Attack', 'none' },
         { categories.MOBILE * (categories.SHIELD + categories.STEALTHFIELD) - categories.ANTIAIR - categories.EXPERIMENTAL - categories.ENGINEER - categories.SCOUT - categories.COMMAND - categories.SUBCOMMANDER, 0, 4, 'support', 'none' }
     },
 }

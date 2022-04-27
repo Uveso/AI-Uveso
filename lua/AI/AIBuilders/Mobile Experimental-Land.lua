@@ -198,7 +198,7 @@ BuilderGroup {
             AggressiveMove = true,                                              -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100000,                                       -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.LAND - categories.SCOUT,          -- Only find targets matching these categories.
+            TargetSearchCategory = categories.ALLUNITS - categories.AIR,        -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.COMMAND,
                 categories.EXPERIMENTAL,
@@ -238,7 +238,7 @@ BuilderGroup {
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100000,                                       -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.EXPERIMENTAL - categories.AIR,          -- Only find targets matching these categories.
+            TargetSearchCategory = categories.ALLUNITS - categories.AIR,        -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.MOBILE * categories.EXPERIMENTAL,
                 categories.STRUCTURE * categories.EXPERIMENTAL,
@@ -271,7 +271,7 @@ BuilderGroup {
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100000,                                       -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.COMMAND,                          -- Only find targets matching these categories.
+            TargetSearchCategory = categories.ALLUNITS - categories.AIR,        -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.COMMAND,
                 categories.ALLUNITS,
@@ -303,7 +303,7 @@ BuilderGroup {
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
             AttackEnemyStrength = 100000,                                       -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
-            TargetSearchCategory = categories.MOBILE - categories.AIR,          -- Only find targets matching these categories.
+            TargetSearchCategory = categories.ALLUNITS - categories.AIR,        -- Only find targets matching these categories.
             MoveToCategories = {                                                -- Move to targets
                 categories.MOBILE * categories.TECH3,
                 categories.ALLUNITS,
