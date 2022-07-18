@@ -52,7 +52,7 @@ BuilderManager = Class(TheOldBuilderManager) {
             if not DEBUGBUILDER[ScenarioInfo.Options.AIBuilderNameDebug] then
                 DEBUGBUILDER[ScenarioInfo.Options.AIBuilderNameDebug] = true
                 for k,v in self.BuilderData[bType].Builders do
-                    LOG('* '..ScenarioInfo.Options.AIBuilderNameDebug..'-AI: Builder ['..bType..']: Priority = '..v.Priority..' - possibleBuilders = '..repr(v.BuilderName))
+                    AILog('* '..ScenarioInfo.Options.AIBuilderNameDebug..'-AI: Builder ['..bType..']: Priority = '..v.Priority..' - possibleBuilders = '..repr(v.BuilderName))
                 end
             end
         end
@@ -61,7 +61,7 @@ BuilderManager = Class(TheOldBuilderManager) {
                 if not self:IsPlattonBuildDelayed(v.DelayEqualBuildPlattons) then
                     found = v.Priority
                     table.insert(possibleBuilders, k)
-                    --LOG('* AI DEBUG: GetHighestBuilder(): Priority = '..found..' - possibleBuilders = '..repr(v.BuilderName))
+                    --AILog('* AI DEBUG: GetHighestBuilder(): Priority = '..found..' - possibleBuilders = '..repr(v.BuilderName))
                 end
             elseif found and v.Priority < found then
                 break
@@ -79,7 +79,7 @@ BuilderManager = Class(TheOldBuilderManager) {
                 AntiSpamCounter = AntiSpamCounter + 1
                 if AntiSpamCounter > 20 then
                     -- Warn the programmer that something is going wrong.
-                    WARN('* AI DEBUG: GetHighestBuilder(): PlatoonBuilder is spaming. Maybe wrong Buildconditions for Builder = '..self.BuilderData[bType].Builders[ possibleBuilders[whichBuilder] ].BuilderName..' ?!?')
+                    AIWarn('* AI DEBUG: GetHighestBuilder(): PlatoonBuilder is spaming. Maybe wrong Buildconditions for Builder = '..self.BuilderData[bType].Builders[ possibleBuilders[whichBuilder] ].BuilderName..' ?!?')
                     AntiSpamCounter = 0
                     AntiSpamList[BuilderName] = true
                 end                
@@ -114,7 +114,7 @@ BuilderManager = Class(TheOldBuilderManager) {
                 if 6 > Priolen then
                     PrioText = string.rep('  ', 6 - Priolen) .. found
                 end
-                LOG(' M: ['..massBar..']  E: ['..energyBar..']  -  BuilderPriority = '..PrioText..' - SelectedBuilder = '..self.BuilderData[bType].Builders[ possibleBuilders[whichBuilder] ].BuilderName)
+                AILog(' M: ['..massBar..']  E: ['..energyBar..']  -  BuilderPriority = '..PrioText..' - SelectedBuilder = '..self.BuilderData[bType].Builders[ possibleBuilders[whichBuilder] ].BuilderName)
             end
             return self.BuilderData[bType].Builders[ possibleBuilders[whichBuilder] ]
         end
@@ -127,11 +127,11 @@ BuilderManager = Class(TheOldBuilderManager) {
             local CheckDelayTime = GetGameTimeSeconds()
             local PlatoonName = DelayEqualBuildPlattons[1]
             if not self.Brain.DelayEqualBuildPlattons[PlatoonName] or self.Brain.DelayEqualBuildPlattons[PlatoonName] < CheckDelayTime then
-                --LOG('Setting '..DelayEqualBuildPlattons[2]..' sec. delaytime for builder ['..PlatoonName..']')
+                --AILog('Setting '..DelayEqualBuildPlattons[2]..' sec. delaytime for builder ['..PlatoonName..']')
                 self.Brain.DelayEqualBuildPlattons[PlatoonName] = CheckDelayTime + DelayEqualBuildPlattons[2]
                 return false
             else
-                --LOG('Builder ['..PlatoonName..'] still delayed for '..(CheckDelayTime - self.Brain.DelayEqualBuildPlattons[PlatoonName])..' seconds.')
+                --AILog('Builder ['..PlatoonName..'] still delayed for '..(CheckDelayTime - self.Brain.DelayEqualBuildPlattons[PlatoonName])..' seconds.')
                 return true
             end
         end

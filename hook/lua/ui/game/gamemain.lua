@@ -13,7 +13,7 @@
 --end
 
 --function KeyTestFunction(value)
---    LOG('** "Ctrl-q" KeyTestFunction('..value..')')
+--    AILog('** "Ctrl-q" KeyTestFunction('..value..')')
 ----    local selection = ValidateUnitsList(GetSelectedUnits())
 --end
 
@@ -30,7 +30,7 @@ function OnFirstUpdate()
     OriginalOnFirstUpdateFunction()
     ForkThread( 
         function()
-            --LOG('* AI-Uveso: Changing path calculating budget')
+            --AILog('* AI-Uveso: Changing path calculating budget')
             coroutine.yield(50)
             -- can cause desyncs in replays if called to early
             -- thisis also triggering a player x is cheating message, i will remove this for now
@@ -43,11 +43,20 @@ function OnFirstUpdate()
             local GameOptions = Prefs.GetFromCurrentProfile('LobbyPresets')[1].GameOptions
             SPEW('* AI-Uveso: OnFirstUpdate: GameOptions '..repr(GameOptions))
             if GameOptions.AIEndlessGameLoop == 'on' then
-                ConExecute("WLD_GameSpeed 10")                          -- increase gamespeed
-                while GetGameTimeSeconds() < 30 do                      -- wait until game second 30 before setting split screen
+                while GetGameTimeSeconds() < 7 do                      -- wait until game second 30 before setting screen
                     coroutine.yield(10)
                 end
-                import("/lua/ui/game/borders.lua").SplitMapGroup(true)  -- split screen
+                local ScenarioInfo = SessionGetScenarioInfo()
+                -- set camera zoom, so we can see the whole map
+                GetCamera('WorldCamera'):SetTargetZoom(ScenarioInfo.size[2] * 2)
+                -- wait for the camera movement to zoom out
+                coroutine.yield(60)
+                -- set cam position to the middle of the map
+                local currentCamSettings = GetCamera('WorldCamera'):SaveSettings()
+                currentCamSettings.Focus = Vector (ScenarioInfo.size[1] / 2, 0, ScenarioInfo.size[2] / 2) 
+                GetCamera('WorldCamera'):RestoreSettings(currentCamSettings)
+                coroutine.yield(10)
+                ConExecute("WLD_GameSpeed 20")                          -- increase gamespeed
                 if GameOptions.OmniCheat == 'on' then                   -- If we have AI-omniview on, also enable it for players
                     ConExecute("SallyShears")                           -- Omniview for all (also players)
                 end
@@ -56,7 +65,7 @@ function OnFirstUpdate()
     )
     ForkThread( 
         function()
-            --LOG(repr(__EngineStats))
+            --AILog(repr(__EngineStats))
             coroutine.yield(30)
             local CTask, CTaskThread, CScriptObject, CLuaTask, Entity, Prop, CDecalHandle, Unit, Platoon, ReconBlip = 0,0,0,0,0,0,0,0,0,0
             local SCTask, SCTaskThread, SCScriptObject, SCLuaTask, SEntity, SProp, SCDecalHandle, SReconBlip = 0,0,0,0,0,0,0,0
@@ -167,7 +176,7 @@ function OnFirstUpdate()
                                         , hours, minutes, seconds, Unit, Platoon, fps, reserved, use, desiredrate, simrate, simspeed, timedilatation))
                     SPEW(string.format(' Entity: %05d --- Prop: %05d --- CScriptObject: %05d --- CTask: %05d --- CTaskThread: %05d --- CLuaTask: %05d --- CDecalHandle: %05d --- ReconBlip: %05d'
                                         ,Entity, Prop, CScriptObject, CTask, CTaskThread, CLuaTask, CDecalHandle, ReconBlip))
---                    LOG(string.format(' Entity: %05d --- Prop: %05d --- CScriptObject: %05d --- CTask: %05d --- CTaskThread: %05d --- CLuaTask: %05d --- CDecalHandle: %05d --- ReconBlip: %05d'
+--                    AILog(string.format(' Entity: %05d --- Prop: %05d --- CScriptObject: %05d --- CTask: %05d --- CTaskThread: %05d --- CLuaTask: %05d --- CDecalHandle: %05d --- ReconBlip: %05d'
 --                                        ,Entity-SEntity, Prop-SProp, CScriptObject-SCScriptObject, CTask-SCTask, CTaskThread-SCTaskThread, CLuaTask-SCLuaTask, CDecalHandle-SCDecalHandle, ReconBlip-SReconBlip))
                 end
                 coroutine.yield(5)

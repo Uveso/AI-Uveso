@@ -4,6 +4,10 @@ FactoryBuilderManager = Class(OldFactoryBuilderManagerClass) {
 
     -- Hook for Builder names
     AssignBuildOrder = function(self,factory,bType)
+        while self.Brain.Uveso and not self.Brain:IsOpponentAIRunning() do
+            self:ForkThread(self.DelayBuildOrder, factory, bType, 2)
+            return
+        end
         if factory.Dead then
             return
         end
@@ -15,12 +19,12 @@ FactoryBuilderManager = Class(OldFactoryBuilderManagerClass) {
                 factory:SetCustomName(builder.BuilderName)
             end
             if not template then
-                SPEW('*AI DEBUG: ARMY '..repr(self.Brain:GetArmyIndex())..': Factory Builder Manager template is nil- '..repr(builder.BuilderName))
+                AIDebug('*AI DEBUG: ARMY '..repr(self.Brain:GetArmyIndex())..': Factory Builder Manager template is nil- '..repr(builder.BuilderName))
             end
             if not factory then
-                SPEW('*AI DEBUG: ARMY '..repr(self.Brain:GetArmyIndex())..': Factory Builder Manager factory is nil- '..repr(builder.BuilderName))
+                AIDebug('*AI DEBUG: ARMY '..repr(self.Brain:GetArmyIndex())..': Factory Builder Manager factory is nil- '..repr(builder.BuilderName))
             end
-            --LOG('*AI DEBUG: ARMY '..repr(self.Brain:GetArmyIndex())..': Factory Builder Manager Building - '..repr(builder.BuilderName)..' - '..repr(template))
+            --AILog('*AI DEBUG: ARMY '..repr(self.Brain:GetArmyIndex())..': Factory Builder Manager Building - '..repr(builder.BuilderName)..' - '..repr(template))
             self.Brain:BuildPlatoon(template, {factory}, 1)
         else
             -- rename factory

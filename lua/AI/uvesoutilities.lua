@@ -51,7 +51,7 @@ function ExtractorPause(self, aiBrain, MassExtractorUnitList, ratio, techLevel)
             end
         end
     end
-    --LOG('* ExtractorPause: Idle= '..UpgradingBuildingNum..'   Upgrading= '..UpgradingBuildingNum..'   Paused= '..PausedUpgradingBuildingNum..'   Disabled= '..DisabledBuildingNum..'   techLevel= '..techLevel)
+    --AILog('* ExtractorPause: Idle= '..UpgradingBuildingNum..'   Upgrading= '..UpgradingBuildingNum..'   Paused= '..PausedUpgradingBuildingNum..'   Disabled= '..DisabledBuildingNum..'   techLevel= '..techLevel)
     -- Check for positive Mass/Upgrade ratio
     local MassRatioCheckPositive = GlobalMassUpgradeCostVsGlobalMassIncomeRatio( self, aiBrain, ratio, techLevel, '<' )
     -- Did we found a paused unit ?
@@ -60,26 +60,26 @@ function ExtractorPause(self, aiBrain, MassExtractorUnitList, ratio, techLevel)
             -- We have good Mass ratio. We can unpause an extractor
             PausedUpgradingBuilding:SetPaused( false )
             --PausedUpgradingBuilding:SetCustomName('PausedUpgradingBuilding2 unpaused')
-            --LOG('PausedUpgradingBuilding2 unpaused')
+            --AILog('PausedUpgradingBuilding2 unpaused')
             return true
         elseif not MassRatioCheckPositive and UpgradingBuildingNum < 1 and table.getn(MassExtractorUnitList) >= 6 then
             PausedUpgradingBuilding:SetPaused( false )
             --PausedUpgradingBuilding:SetCustomName('PausedUpgradingBuilding1 unpaused')
-            --LOG('PausedUpgradingBuilding1 unpaused')
+            --AILog('PausedUpgradingBuilding1 unpaused')
             return true
         end
     end
     -- Check for negative Mass/Upgrade ratio
     local MassRatioCheckNegative = GlobalMassUpgradeCostVsGlobalMassIncomeRatio( self, aiBrain, ratio, techLevel, '>=')
-    --LOG('* ExtractorPause 2 MassRatioCheckNegative >: '..repr(MassRatioCheckNegative)..' - IF this is true , we have bad eco and we should pause.')
+    --AILog('* ExtractorPause 2 MassRatioCheckNegative >: '..repr(MassRatioCheckNegative)..' - IF this is true , we have bad eco and we should pause.')
     if MassRatioCheckNegative then
         if UpgradingBuildingNum > 1 then
             -- we don't have the eco to upgrade the extractor. Pause it!
             if aiBrain:GetEconomyTrend('MASS') <= 0 and aiBrain:GetEconomyStored('MASS') <= 0.80  then
                 UpgradingBuilding:SetPaused( true )
                 --UpgradingBuilding:SetCustomName('UpgradingBuilding paused')
-                --LOG('UpgradingBuilding paused')
-                --LOG('* ExtractorPause: Pausing upgrading extractor')
+                --AILog('UpgradingBuilding paused')
+                --AILog('* ExtractorPause: Pausing upgrading extractor')
                 return true
             end
         end
@@ -89,8 +89,8 @@ function ExtractorPause(self, aiBrain, MassExtractorUnitList, ratio, techLevel)
                 IssueClearCommands({PausedUpgradingBuilding})
                 PausedUpgradingBuilding:SetPaused( false )
                 --PausedUpgradingBuilding:SetCustomName('Upgrade canceled')
-                --LOG('Upgrade canceled')
-                --LOG('* ExtractorPause: Cancel upgrading extractor')
+                --AILog('Upgrade canceled')
+                --AILog('* ExtractorPause: Cancel upgrading extractor')
                 return true
             end 
         end
@@ -141,17 +141,17 @@ function ExtractorUpgrade(self, aiBrain, MassExtractorUnitList, ratio, techLevel
             if EntityCategoryContains(categories.MOBILE, v) then
                 TempID = aiBrain:FindUpgradeBP(v:GetUnitId(), UnitUpgradeTemplates[UnitBeingUpgradeFactionIndex])
                 if not TempID then
-                    WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *ExtractorUpgrade ERROR: Can\'t find UnitUpgradeTemplate for mobile unit: ' .. repr(v:GetUnitId()) )
+                    AIWarn('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *ExtractorUpgrade ERROR: Can\'t find UnitUpgradeTemplate for mobile unit: ' .. repr(v:GetUnitId()) )
                 end
             else
                 TempID = aiBrain:FindUpgradeBP(v:GetUnitId(), StructureUpgradeTemplates[UnitBeingUpgradeFactionIndex])
                 if not TempID then
-                    WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *ExtractorUpgrade ERROR: Can\'t find StructureUpgradeTemplate for structure: ' .. repr(v:GetUnitId()) )
+                    AIWarn('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *ExtractorUpgrade ERROR: Can\'t find StructureUpgradeTemplate for structure: ' .. repr(v:GetUnitId()) )
                 end
             end 
             -- Check if we can build the upgrade
             if TempID and EntityCategoryContains(categories.STRUCTURE, v) and not v:CanBuild(TempID) then
-                WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *ExtractorUpgrade ERROR: Can\'t upgrade structure with StructureUpgradeTemplate: ' .. repr(v:GetUnitId()) )
+                AIWarn('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *ExtractorUpgrade ERROR: Can\'t upgrade structure with StructureUpgradeTemplate: ' .. repr(v:GetUnitId()) )
             elseif TempID then
                 upgradeID = TempID
                 upgradeBuilding = v
@@ -171,7 +171,7 @@ function ExtractorUpgrade(self, aiBrain, MassExtractorUnitList, ratio, techLevel
     end
     -- Have we found a unit that can upgrade ?
     if upgradeID and upgradeBuilding then
-        --LOG('* ExtractorUpgrade: Upgrading Building in DistanceToBase '..(LowestDistanceToBase or 'Unknown ???')..' '..techLevel..' - UnitId '..upgradeBuilding:GetUnitId()..' - upgradeID '..upgradeID..' - GlobalUpgrading '..techLevel..': '..(UpgradingBuilding + 1) )
+        --AILog('* ExtractorUpgrade: Upgrading Building in DistanceToBase '..(LowestDistanceToBase or 'Unknown ???')..' '..techLevel..' - UnitId '..upgradeBuilding:GetUnitId()..' - upgradeID '..upgradeID..' - GlobalUpgrading '..techLevel..': '..(UpgradingBuilding + 1) )
         if self.Brain[ScenarioInfo.Options.AIPLatoonNameDebug] or ScenarioInfo.Options.AIPLatoonNameDebug == 'all' then
             upgradeBuilding:SetCustomName('Upgrading BaseDist: '..(LowestDistanceToBase or 'Unknown ???'))
         end
@@ -231,7 +231,7 @@ end
 function HaveUnitRatio(aiBrain, ratio, categoryOne, compareType, categoryTwo)
     local numOne = aiBrain:GetCurrentUnits(categoryOne)
     local numTwo = aiBrain:GetCurrentUnits(categoryTwo)
-    --LOG(aiBrain:GetArmyIndex()..' CompareBody {World} ( '..numOne..' '..compareType..' '..numTwo..' ) -- ['..ratio..'] -- return '..repr(CompareBody(numOne / numTwo, ratio, compareType)))
+    --AILog(aiBrain:GetArmyIndex()..' CompareBody {World} ( '..numOne..' '..compareType..' '..numTwo..' ) -- ['..ratio..'] -- return '..repr(CompareBody(numOne / numTwo, ratio, compareType)))
     return CompareBody(numOne / numTwo, ratio, compareType)
 end
 
@@ -274,12 +274,15 @@ function ReclaimAIThread(platoon,self,aiBrain)
     local EnergyStorageRatio
     local SelfPos
     while aiBrain:PlatoonExists(platoon) and self and not self.Dead do
+        while not aiBrain:IsOpponentAIRunning() do
+            coroutine.yield(10)
+        end
         SelfPos = self:GetPosition()
         MassStorageRatio = aiBrain:GetEconomyStoredRatio('MASS')
         EnergyStorageRatio = aiBrain:GetEconomyStoredRatio('ENERGY')
         -- 1==1 is always true, i use this to clean up the base from wreckages even if we have full eco.
         if (MassStorageRatio < 1.00 or EnergyStorageRatio < 1.00) and not aiBrain.PriorityManager.HasParagon then
-            --LOG('Searching for reclaimables')
+            --AILog('Searching for reclaimables')
             local x1 = SelfPos[1]-scanrange
             local y1 = SelfPos[3]-scanrange
             local x2 = SelfPos[1]+scanrange
@@ -288,7 +291,7 @@ function ReclaimAIThread(platoon,self,aiBrain)
             if y1 < playablearea[2]+6 then y1 = playablearea[2]+6 end
             if x2 > playablearea[3]-6 then x2 = playablearea[3]-6 end
             if y2 > playablearea[4]-6 then y2 = playablearea[4]-6 end
-            --LOG('GetReclaimablesInRect from x1='..math.floor(x1)..' - x2='..math.floor(x2)..' - y1='..math.floor(y1)..' - y2='..math.floor(y2)..' - scanrange='..scanrange..'')
+            --AILog('GetReclaimablesInRect from x1='..math.floor(x1)..' - x2='..math.floor(x2)..' - y1='..math.floor(y1)..' - y2='..math.floor(y2)..' - scanrange='..scanrange..'')
             local props = GetReclaimablesInRect(Rect(x1, y1, x2, y2))
             local NearestWreckDist = -1
             local NearestWreckPos = {}
@@ -313,23 +316,23 @@ function ReclaimAIThread(platoon,self,aiBrain)
                     end
                     -- reclaim mass if mass is lower than energy and reclaim energy if energy is lower than mass and gametime is higher then 4 minutes.
                     if (MassStorageRatio <= EnergyStorageRatio and p.MaxMassReclaim and p.MaxMassReclaim > 1) or (GetGameTimeSeconds() > 240 and MassStorageRatio > EnergyStorageRatio and p.MaxEnergyReclaim and p.MaxEnergyReclaim > 1) then
-                        --LOG('Found Wreckage no.('..WrackCount..') from '..BPID..'. - Distance:'..WreckDist..' - NearestWreckDist:'..NearestWreckDist..' '..repr(MassStorageRatio < EnergyStorageRatio)..' '..repr(p.MaxMassReclaim)..' '..repr(p.MaxEnergyReclaim))
+                        --AILog('Found Wreckage no.('..WrackCount..') from '..BPID..'. - Distance:'..WreckDist..' - NearestWreckDist:'..NearestWreckDist..' '..repr(MassStorageRatio < EnergyStorageRatio)..' '..repr(p.MaxMassReclaim)..' '..repr(p.MaxEnergyReclaim))
                         WreckDist = VDist2(SelfPos[1], SelfPos[3], WreckPos[1], WreckPos[3])
                         WrackCount = WrackCount + 1
                         if WreckDist < NearestWreckDist or NearestWreckDist == -1 then
                             NearestWreckDist = WreckDist
                             NearestWreckPos = WreckPos
-                            --LOG('Found Wreckage no.('..WrackCount..') from '..BPID..'. - Distance:'..WreckDist..' - NearestWreckDist:'..NearestWreckDist..'')
+                            --AILog('Found Wreckage no.('..WrackCount..') from '..BPID..'. - Distance:'..WreckDist..' - NearestWreckDist:'..NearestWreckDist..'')
                         end
                         if NearestWreckDist < 20 then
-                            --LOG('Found Wreckage nearer then 20. break!')
+                            --AILog('Found Wreckage nearer then 20. break!')
                             break
                         end
                     end
                 end
             end
             if self.Dead then
-				--LOG('* ReclaimAIThread: Unit Dead')
+				--AILog('* ReclaimAIThread: Unit Dead')
                 return
             end
             if NearestWreckDist == -1 then
@@ -339,22 +342,22 @@ function ReclaimAIThread(platoon,self,aiBrain)
                     scanrange = 25
                     local HomeDist = VDist2(SelfPos[1], SelfPos[3], basePosition[1], basePosition[3])
                     if HomeDist > 50 then
-                        --LOG('noop returning home')
+                        --AILog('noop returning home')
                         StartMoveDestination(self, {basePosition[1], basePosition[2], basePosition[3]})
                     end
                     PropBlacklist = {}
                 end
-                --LOG('No Wreckage, expanding scanrange:'..scanrange..'.')
+                --AILog('No Wreckage, expanding scanrange:'..scanrange..'.')
             elseif math.floor(NearestWreckDist) < scanrange then
                 scanrange = math.floor(NearestWreckDist)
                 if scanrange < 25 then
                     scanrange = 25
                 end
-                --LOG('Adapting scanrange to nearest Object:'..scanrange..'.')
+                --AILog('Adapting scanrange to nearest Object:'..scanrange..'.')
             end
             scanKM = math.floor(10000/512*NearestWreckDist)
             if NearestWreckDist > 20 and not self.Dead then
-                --LOG('NearestWreck is > 20 away Distance:'..NearestWreckDist..'. Moving to Wreckage!')
+                --AILog('NearestWreck is > 20 away Distance:'..NearestWreckDist..'. Moving to Wreckage!')
                 -- We don't need to go too close to the mapborder for reclaim, we have reclaimdrones with a flightradius of 25!
                 if NearestWreckPos[1] < playablearea[1]+21 then
                     NearestWreckPos[1] = playablearea[1]+21
@@ -383,7 +386,7 @@ function ReclaimAIThread(platoon,self,aiBrain)
             end 
             coroutine.yield(10)
             if not self.Dead and self:IsUnitState("Moving") then
-                --LOG('Moving to Wreckage.')
+                --AILog('Moving to Wreckage.')
                 while self and not self.Dead and self:IsUnitState("Moving") do
                     coroutine.yield(10)
                 end
@@ -393,10 +396,10 @@ function ReclaimAIThread(platoon,self,aiBrain)
             IssuePatrol({self}, self:GetPosition())
             IssuePatrol({self}, self:GetPosition())
         else
-            --LOG('Storage Full')
+            --AILog('Storage Full')
             local HomeDist = VDist2(SelfPos[1], SelfPos[3], basePosition[1], basePosition[3])
             if HomeDist > 36 then
-                --LOG('full, moving home')
+                --AILog('full, moving home')
                 StartMoveDestination(self, {basePosition[1], basePosition[2], basePosition[3]})
                 coroutine.yield(10)
                 if not self.Dead and self:IsUnitState("Moving") then
@@ -410,7 +413,7 @@ function ReclaimAIThread(platoon,self,aiBrain)
                     scanrange = 25
                 end
             else
-                --LOG('* ReclaimAIThread: Storrage are full, and we are home.')
+                --AILog('* ReclaimAIThread: Storrage are full, and we are home.')
                 return
             end
         end
@@ -420,10 +423,10 @@ end
 
 function StartMoveDestination(self,destination)
     local NowPosition = self:GetPosition()
-    local x, z, y = unpack(self:GetPosition())
+    local x, y, z = self:GetPositionXYZ()
     local count = 0
     IssueClearCommands({self})
-    while x == NowPosition[1] and y == NowPosition[3] and count < 20 do
+    while x == NowPosition[1] and z == NowPosition[3] and count < 20 do
         count = count + 1
         IssueClearCommands({self})
         IssueMove( {self}, destination )
@@ -443,6 +446,9 @@ function TMLAIThread(platoon,self,aiBrain)
     local MaxLoad = weapon.MaxProjectileStorage or 4
     self:SetAutoMode(true)
     while aiBrain:PlatoonExists(platoon) and self and not self.Dead do
+        while not aiBrain:IsOpponentAIRunning() do
+            coroutine.yield(10)
+        end
         local target = false
         while self and not self.Dead and self:GetTacticalSiloAmmoCount() < 2 do
             coroutine.yield(10)
@@ -803,33 +809,4 @@ function RandomizePositionTML(position)
         Y = GetSurfaceHeight(X, Z)
     end
     return {X, Y, Z}
-end
-
--- Please don't change any range here!!!
--- Called from AIBuilders/*.*, simInit.lua, aiarchetype-managerloader.lua
-function GetDangerZoneRadii(bool)
-    -- Playable area
-    local playablearea
-    if  ScenarioInfo.MapData.PlayableRect then
-        playablearea = ScenarioInfo.MapData.PlayableRect
-    else
-        playablearea = {0, 0, ScenarioInfo.size[1], ScenarioInfo.size[2]}
-    end
-    -- Military zone is the half the map size (10x10map) or maximal 250.
-    local BaseMilitaryZone = math.max( playablearea[3], playablearea[4] ) / 2
-    BaseMilitaryZone = math.min( 250, BaseMilitaryZone )
-    -- Panic Zone is half the BaseMilitaryZone. That's 1/4 of a 10x10 map
-    local BasePanicZone = BaseMilitaryZone / 2
-    -- Make sure the Panic Zone is not smaller than 60 or greater than 120
-    BasePanicZone = math.max( 60, BasePanicZone )
-    BasePanicZone = math.min( 120, BasePanicZone )
-    -- The rest of the map is enemy zone
-    local BaseEnemyZone = math.max( playablearea[3], playablearea[4] ) * 1.5
-    -- "bool" is only true if called from "AIBuilders/Mobile Land.lua", so we only print this once.
-    if bool then
-        LOG('* AI-Uveso: BasePanicZone= '..math.floor( BasePanicZone * 0.01953125 ) ..' Km - ('..BasePanicZone..' units)' )
-        LOG('* AI-Uveso: BaseMilitaryZone= '..math.floor( BaseMilitaryZone * 0.01953125 )..' Km - ('..BaseMilitaryZone..' units)' )
-        LOG('* AI-Uveso: BaseEnemyZone= '..math.floor( BaseEnemyZone * 0.01953125 )..' Km - ('..BaseEnemyZone..' units)' )
-    end
-    return BasePanicZone, BaseMilitaryZone, BaseEnemyZone
 end

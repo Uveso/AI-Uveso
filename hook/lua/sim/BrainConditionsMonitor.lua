@@ -42,14 +42,14 @@ BrainConditionsMonitor = Class {
         if self.ResultTable[conditionKey] != nil then
             return self.ResultTable[conditionKey]:GetStatus()
         end
-        WARN('*WARNING: No Condition found with condition key: ' .. conditionKey)
+        AIWarn('*WARNING: No Condition found with condition key: ' .. conditionKey)
         return false
     end,
 
     -- Checks the condition and returns the result
     CheckConditionTable = function(self, cFilename, cFunctionName, cData)
         if not cData or not type(cData) == 'table' then
-            WARN('*WARNING: Invalid argumetns for build condition: ' .. cFilename .. '[' .. cFunctionName .. ']')
+            AIWarn('*WARNING: Invalid argumetns for build condition: ' .. cFilename .. '[' .. cFunctionName .. ']')
             return false
         end
         return import(cFilename)[cFunctionName](self.Brain, unpack(cData))
@@ -174,7 +174,7 @@ BrainConditionsMonitor = Class {
                 end
             end
 --            local numPerTick = 20
---            LOG('*AI DEBUG: '.. self.Brain.Nickname ..' ConditionMonitorThread: Conditions checked: '..numResults..' - numPerTick '..numPerTick..' = 1 loop every '..((numResults/numPerTick)/10)..' seconds. ('..numInstant..' InstantConditions not checked)')
+--            AILog('*AI DEBUG: '.. self.Brain.Nickname ..' ConditionMonitorThread: Conditions checked: '..numResults..' - numPerTick '..numPerTick..' = 1 loop every '..((numResults/numPerTick)/10)..' seconds. ('..numInstant..' InstantConditions not checked)')
             checks = 0
         end
     end,

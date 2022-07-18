@@ -113,7 +113,7 @@ function GeneratePathUveso(aiBrain, startNode, endNode, threatType, threatWeight
                 for ThreatWeight, PathNodes in ThreatWeightedPaths do
                     -- check if the path is older then 30 seconds.
                     if GameTime - 30 > PathNodes.settime then
-                        --LOG('* AI-Uveso: GeneratePathUveso() Found old path: storetime: '..PathNodes.settime..' store+60sec: '..(PathNodes.settime + 30)..' actual time: '..GameTime..' timediff= '..(PathNodes.settime + 30 - GameTime) )
+                        --AILog('* AI-Uveso: GeneratePathUveso() Found old path: storetime: '..PathNodes.settime..' store+60sec: '..(PathNodes.settime + 30)..' actual time: '..GameTime..' timediff= '..(PathNodes.settime + 30 - GameTime) )
                         -- delete the old path from the cache.
                         aiBrain.PathCache[StartNodeName][EndNodeName][ThreatWeight] = nil
                     end
@@ -159,6 +159,9 @@ function GeneratePathUveso(aiBrain, startNode, endNode, threatType, threatWeight
         path = {startNode},
         }
     }
+    local table = table
+    local unpack = unpack
+    local GetThreatFromHeatMap = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').GetThreatFromHeatMap
     -- Now loop over all path's that are stored in queue. If we start, only the startNode is inside the queue
     -- (We are using here the "A*(Star) search algorithm". An extension of "Edsger Dijkstra's" pathfinding algorithm used by "Shakey the Robot" in 1959)
     while aiBrain.Result ~= "defeat" do
@@ -186,7 +189,7 @@ function GeneratePathUveso(aiBrain, startNode, endNode, threatType, threatWeight
                     -- get distance from new node to destination node
                     dist = VDist2(newNode.position[1], newNode.position[3], endNode.position[1], endNode.position[3])
                     -- get threat from current node to adjacent node
-                    threat = Scenario.MasterChain._MASTERCHAIN_.Markers[newNode.name][armyIndex] or 0
+                    threat = GetThreatFromHeatMap(armyIndex, newNode.position, startNode.layer)
                     -- add as cost for the path the distance and threat to the overall cost from the whole path
                     fork.cost = fork.cost + dist + (threat * 1) * threatWeight
                     -- add the newNode at the end of the path
@@ -247,7 +250,7 @@ function EngineerGeneratePathUveso(aiBrain, startNode, endNode, threatType, thre
                 for ThreatWeight, PathNodes in ThreatWeightedPaths do
                     -- check if the path is older then 30 seconds.
                     if GameTime - 30 > PathNodes.settime then
-                        --LOG('* AI-Uveso: GeneratePathUveso() Found old path: storetime: '..PathNodes.settime..' store+60sec: '..(PathNodes.settime + 30)..' actual time: '..GameTime..' timediff= '..(PathNodes.settime + 30 - GameTime) )
+                        --AILog('* AI-Uveso: GeneratePathUveso() Found old path: storetime: '..PathNodes.settime..' store+60sec: '..(PathNodes.settime + 30)..' actual time: '..GameTime..' timediff= '..(PathNodes.settime + 30 - GameTime) )
                         -- delete the old path from the cache.
                         aiBrain.PathCache[StartNodeName][EndNodeName][ThreatWeight] = nil
                     end
@@ -293,6 +296,9 @@ function EngineerGeneratePathUveso(aiBrain, startNode, endNode, threatType, thre
         path = {startNode},
         }
     }
+    local table = table
+    local unpack = unpack
+    local GetThreatFromHeatMap = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').GetThreatFromHeatMap
     -- Now loop over all path's that are stored in queue. If we start, only the startNode is inside the queue
     -- (We are using here the "A*(Star) search algorithm". An extension of "Edsger Dijkstra's" pathfinding algorithm used by "Shakey the Robot" in 1959)
     while aiBrain.Result ~= "defeat" do
@@ -320,7 +326,7 @@ function EngineerGeneratePathUveso(aiBrain, startNode, endNode, threatType, thre
                     -- get distance from new node to destination node
                     dist = VDist2(newNode.position[1], newNode.position[3], lastNode.position[1], lastNode.position[3])
                     -- get threat from current node to adjacent node
-                    threat = Scenario.MasterChain._MASTERCHAIN_.Markers[newNode.name][armyIndex] or 0
+                    threat = GetThreatFromHeatMap(armyIndex, newNode.position, startNode.layer)
                     -- add as cost for the path the path distance and threat to the overall cost from the whole path
                     fork.cost = fork.cost + dist + (threat * 1) * threatWeight
                     -- add the newNode at the end of the path
@@ -358,27 +364,42 @@ function EngineerGeneratePathUveso(aiBrain, startNode, endNode, threatType, thre
 end
 
 function CanGraphAreaTo(startPos, destPos, layer)
+    if layer == 'Air' then
+        return true
+    end
     local graphTable = GetPathGraphs()[layer]
+    --AILog('* AI-Uveso: CanGraphAreaTo: graphTable['..layer..']')
+    --AILog('* AI-Uveso: CanGraphAreaTo: startPos = '..repr(startPos))
+    --AILog('* AI-Uveso: CanGraphAreaTo: destPos = '..repr(destPos))
     local startNode, endNode, distS, distE
-    local bestDistS, bestDistE = 100, 100 -- will only find markers that are closer than 100 map units
+    local bestDistS, bestDistE = 1000000, 1000000 -- will only find markers that are closer than 1000 map units
     if graphTable then
         for mn, markerInfo in graphTable['Default'..layer] do
             distS = VDist2Sq(startPos[1], startPos[3], markerInfo.position[1], markerInfo.position[3])
             distE = VDist2Sq(destPos[1], destPos[3], markerInfo.position[1], markerInfo.position[3])
             if distS < bestDistS then
+                --DrawLinePop(startPos, markerInfo.position, 'ffFF0000')
+                --AILog('* AI-Uveso: CanGraphAreaTo: distS('..math.sqrt(distS)..')')
+                --AILog('* AI-Uveso: CanGraphAreaTo: markerInfo.name('..markerInfo.name..')')
                 bestDistS = distS
                 startNode = markerInfo.name
             end
             if distE < bestDistE then
+                --DrawLinePop(destPos, markerInfo.position, 'ff0000FF')
+                --AILog('* AI-Uveso: CanGraphAreaTo: distE('..math.sqrt(distE)..')')
+                --AILog('* AI-Uveso: CanGraphAreaTo: markerInfo.name('..markerInfo.name..')')
                 bestDistE = distE
                 endNode = markerInfo.name
             end
         end
     end
-    --WARN('* AI-Uveso: CanGraphAreaTo: Start Area: '..repr(Scenario.MasterChain._MASTERCHAIN_.Markers[startNode.name].GraphArea)..' - End Area: '..repr(Scenario.MasterChain._MASTERCHAIN_.Markers[endNode.name].GraphArea)..'')
+    --AILog('* AI-Uveso: CanGraphAreaTo: startNode: '..repr(startNode)..' - endNode: '..repr(endNode)..'')
+    --AILog('* AI-Uveso: CanGraphAreaTo: Start Area: '..repr(Scenario.MasterChain._MASTERCHAIN_.Markers[startNode].GraphArea)..' - End Area: '..repr(Scenario.MasterChain._MASTERCHAIN_.Markers[endNode].GraphArea)..'')
     if startNode and endNode and Scenario.MasterChain._MASTERCHAIN_.Markers[startNode].GraphArea == Scenario.MasterChain._MASTERCHAIN_.Markers[endNode].GraphArea then
+        --AILog('* AI-Uveso: CanGraphAreaTo: startNode: '..repr(startNode)..' - endNode: '..repr(endNode)..' TRUE')
         return true
     end
+    --AIWarn('* AI-Uveso: CanGraphAreaTo: startNode: '..repr(startNode)..' - endNode: '..repr(endNode)..' FALSE')
     return false
 end
 
@@ -407,7 +428,7 @@ end
 --        TimeCOUNT = TimeCOUNT + 1
 --        if not TimeAVERAGE or TimeAVERAGE < TimeSUM/TimeCOUNT then
 --            TimeAVERAGE = TimeSUM/TimeCOUNT
---            LOG('- Pathing Highest:'..(TimeHIGHEST)..' - Pathing Average:'..(TimeSUM/TimeCOUNT)..' - Pathing Actual:'..(DIV))
+--            AILog('- Pathing Highest:'..(TimeHIGHEST)..' - Pathing Average:'..(TimeSUM/TimeCOUNT)..' - Pathing Actual:'..(DIV))
 --        end
 --    end
 --    return PATHs

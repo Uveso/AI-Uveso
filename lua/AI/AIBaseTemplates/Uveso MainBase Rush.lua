@@ -26,12 +26,15 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== SCU ==== --
         -----------------------------------------------------------------------------
+        -- Build SubComander
+        'U3 SACU Builder',
+        'U3 SACU Teleport Formers',
 
         -----------------------------------------------------------------------------
         -- ==== Engineer ==== --
         -----------------------------------------------------------------------------
-        -- Build Engineers Tech 1,2,3 and SACU
-        'U123 Engineer Builders',            -- Priority = 900
+        -- Build Engineers Tech 1,2,3
+        'U123 Engineer Builders',
         -- Assistees
         'UC123 Assistees',
         -- Reclaim mass
@@ -41,11 +44,11 @@ BaseBuilderTemplate {
         -- ==== Mass ==== --
         -----------------------------------------------------------------------------
         -- Build MassExtractors / Creators
-        'U1 MassBuilders',                           -- Priority = 1100
+        'U1 MassBuilders',
         -- Upgrade MassExtractors from Tech 1 to 2 AND from Tech 2 to 3
-        'U123 ExtractorUpgrades',                      -- Priority = 1100
+        'U123 ExtractorUpgrades',
         -- Build Mass Storage (Adjacency)
-        'U1 MassStorage Builder',                     -- Priority = 1100
+        'U1 MassStorage Builder',
 
         -----------------------------------------------------------------------------
         -- ==== Energy ==== --
@@ -78,7 +81,6 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         'U123 Land Builders Panic',
         'U123 Land Builders RUSH',
-
         -----------------------------------------------------------------------------
         -- ==== Land Units FORMER==== --
         -----------------------------------------------------------------------------
@@ -115,7 +117,7 @@ BaseBuilderTemplate {
         'U123 Air Builders RUSH',
         'U123 Air Builders Anti-Experimental',
         -- Build Air Transporter
-        'U123 Air Transport Builders',
+--        'U123 Air Transport Builders',
 
         -----------------------------------------------------------------------------
         -- ==== Air Units FORMER==== --
@@ -125,20 +127,6 @@ BaseBuilderTemplate {
         'U123 Air Formers EnemyZone',
         'U123 Air Formers Trasher',
         'U123 TorpedoBomber Formers',
-
-        -----------------------------------------------------------------------------
-        -- ==== Sea Units BUILDER ==== --
-        -----------------------------------------------------------------------------
-        -- Build Naval Units
-        'U123 Naval Builders RUSH',
-
-        -----------------------------------------------------------------------------
-        -- ==== Sea Units FORMER ==== --
-        -----------------------------------------------------------------------------
-        'U123 Naval Formers PanicZone',
-        'U123 Naval Formers MilitaryZone',
-        'U123 Naval Formers EnemyZone',
-        'U123 Naval Formers Trasher',
 
         -----------------------------------------------------------------------------
         -- ==== EXPERIMENTALS BUILDER ==== --
@@ -168,7 +156,7 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         'U23 Shields Builder',
         'U23 Shields Upgrader',
-        'U234 Repair Shields Former',                                     
+        'U234 Repair Shields Former',
 
         -----------------------------------------------------------------------------
         -- ==== Defenses BUILDER ==== --
@@ -179,10 +167,11 @@ BaseBuilderTemplate {
         'U2 Tactical Missile Defenses Builder',
         'U3 Strategic Missile Launcher Builder',
         'U4 Strategic Missile Launcher NukeAI',
-        'U4 Strategic Missile Defense Builders',
+        'U4 Strategic Missile Defense Builders MAIN',
         'U4 Strategic Missile Defense Anti-NukeAI',
         'U234 Artillery Builders',
-        'U4 Artillery Formers', -- also needed for UEF SATELLITE
+        'U34 Artillery Formers',
+        'U4 Satellite Formers',
         -- Build Anti Air near AirFactories
         'U123 Defense Anti Air Builders',
         -- Ground Defense Builder
@@ -192,11 +181,6 @@ BaseBuilderTemplate {
         -- ==== FireBase BUILDER ==== --
         -----------------------------------------------------------------------------
         --'U1 FirebaseBuilders',
-
-        -----------------------------------------------------------------------------
-        -- ==== Sniper Former ==== --
-        -----------------------------------------------------------------------------
-        'U3 SACU Teleport Formers',
 
         -- We need this even if we have Omni View to get target informations for experimentals attack.
         -----------------------------------------------------------------------------
@@ -221,7 +205,7 @@ BaseBuilderTemplate {
 
         'CounterIntelBuilders',
 
---        'AeonOptics',
+--        'AeonOptics', -- need testing
         'CybranOptics',
 
         -----------------------------------------------------------------------------

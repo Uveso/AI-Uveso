@@ -8,7 +8,7 @@ for index, moddata in __active_mods do
     if moddata.name == 'Total Mayhem' then
         -- only works for TM v1.37
         if moddata.uid == "62e2j64a-TOMA-3652-01370-146as555a8u3" then
-            LOG('* AI-Uveso: Total Mayhem is installed. Adding BuilderGroups')
+            AILog('* AI-Uveso: Total Mayhem is installed. Adding BuilderGroups')
             LoadModBuilder = true
             break
         end

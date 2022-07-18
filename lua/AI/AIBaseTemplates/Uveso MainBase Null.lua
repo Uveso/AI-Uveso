@@ -9,46 +9,167 @@
 
 BaseBuilderTemplate {
     BaseTemplateName = 'uvesonull',
-    Builders = {
-        'UC ACU Attack Former',
-        'UC ACU Support Platoon',
-
-        'N1 Factory Builders',
-        'U123 Factory Upgrader Rush',
-
-
-        'N1 Engineer Builders',
-
-        'N1 Energy Builders',
-        'N1 Hydro Energy Builders',
-        'N1 Hydro UP',
---        'U123 EnergyStorage Builders',
-
-        'N1 MassBuilders', 
-        'U123 ExtractorUpgrades',
-        'U1 MassStorage Builder',
-
+--        'N1 Factory Builders',
+--        'N1 Engineer Builders',
+--        'N1 Energy Builders',
+--        'N1 Hydro Energy Builders',
+--        'N1 Hydro UP',
+--        'N1 MassBuilders', 
 --        'N1 Land Builders',
 --        'N2 Land Builders',
 --        'N3 Land Builders',
-
---        'U1 Land Radar Builders',
---        'U1 Land Radar Upgrader',
-
---        'U1 Land Scout Builders',
---        'U1 Land Scout Formers',
---        'U1 Air Scout Builders',
---        'U13 Air Scout Formers', 
-
-
---        'U123 Factory Upgrader Rush',
 --        'N1 Transporter',
---        'U1 Land Scout Builders',
-        
 --        'N2 Land Builders',
 --        'N3 Land Builders',
---        'U123 Land Builders Panic',
 --        'N123 Land Formers',
+    Builders = {
+        -----------------------------------------------------------------------------
+        -- ==== ACU ==== --
+        -----------------------------------------------------------------------------
+        -- Build Main Base (only once). Land/Air factory and basic Energy
+--        'UC ACU Attack Former',
+--        'UC ACU Support Platoon',
+
+
+        -----------------------------------------------------------------------------
+        -- ==== SCU ==== --
+        -----------------------------------------------------------------------------
+
+        -----------------------------------------------------------------------------
+        -- ==== Engineer ==== --
+        -----------------------------------------------------------------------------
+        -- Build Engineers Tech 1,2,3 and SACU
+--        'U123 Engineer Builders',
+--        'U2 Hive+Kennel',
+--        'U23 Hive+Kennel Upgrade',
+        -- Assistees
+        'UC123 Assistees',
+        -- Reclaim mass
+        'U1 Engineer Reclaim',
+
+        -----------------------------------------------------------------------------
+        -- ==== Mass ==== --
+        -----------------------------------------------------------------------------
+        -- Build MassExtractors / Creators
+        'U1 MassBuilders',
+        -- Upgrade MassExtractors from Tech 1 to 2 AND from Tech 2 to 3
+        'U123 ExtractorUpgrades',
+        -- Build Mass Storage (Adjacency)
+        'U1 MassStorage Builder',
+
+        -----------------------------------------------------------------------------
+        -- ==== Energy ==== --
+        -----------------------------------------------------------------------------
+        -- Build Power Tech 1,2,3
+        'U123 Energy Builders',
+        'U123 Energy Builders Recover',
+        'U123 EnergyStorage Builders',
+        'U123 Reclaim Energy Buildings',
+
+        -----------------------------------------------------------------------------
+        -- ==== Factory ==== --
+        -----------------------------------------------------------------------------
+        -- Build Land/Air Factories
+--        'U1 Factory Builders 1st',
+--        'U1 Gate Builders',
+        -- Upgrade Factories TECH1->TECH2 and TECH2->TECH3
+        'U123 Factory Upgrader Rush',
+        -- Build Air Staging Platform to refill and repair air units.
+--        'U2 Air Staging Platform Builders',
+        -- Build Naval Factories
+--        'U1 Factory Builders Naval',
+        -- Upgrade Naval Factories TECH1->TECH2 and TECH2->TECH3
+        'U123 Factory Upgrader Naval',
+
+        -----------------------------------------------------------------------------
+        -- ==== Land Units BUILDER ==== --
+        -----------------------------------------------------------------------------
+        'U3 SACU Builder',
+
+        -----------------------------------------------------------------------------
+        -- ==== EXPERIMENTALS BUILDER ==== --
+        -----------------------------------------------------------------------------
+        'U4 Land Experimental Builders',
+        'U4 Air Experimental Builders',
+        'U4 Economic Experimental Builders',
+        'Paragon Turbo Experimentals', -- land, air and naval experimentals
+        'Paragon Turbo FactoryUpgrader',
+        'Paragon Turbo Air', -- T3 scouts, Fighter, Gunships, Bomber
+        'Paragon Turbo Land',
+
+        -----------------------------------------------------------------------------
+        -- ==== EXPERIMENTALS FORMER ==== --
+        -----------------------------------------------------------------------------
+        'U4 Land Experimental Formers PanicZone',
+        'U4 Land Experimental Formers MilitaryZone',
+        'U4 Land Experimental Formers EnemyZone',
+        'U4 Land Experimental Formers Trasher',
+        'U4 Air Experimental Formers PanicZone',
+        'U4 Air Experimental Formers MilitaryZone',
+        'U4 Air Experimental Formers EnemyZone',
+        'U4 Air Experimental Formers Trasher',
+
+        -----------------------------------------------------------------------------
+        -- ==== Structure Shield BUILDER ==== --
+        -----------------------------------------------------------------------------
+        'U23 Shields Builder',
+        'U23 Shields Upgrader',
+        'U234 Repair Shields Former',
+
+        -----------------------------------------------------------------------------
+        -- ==== Defenses BUILDER ==== --
+        -----------------------------------------------------------------------------
+        'U2 Tactical Missile Launcher minimum',
+        'U2 Tactical Missile Launcher maximum',
+        'U2 Tactical Missile Launcher Builder',
+        'U2 Tactical Missile Defenses Builder',
+        'U3 Strategic Missile Launcher Builder',
+        'U4 Strategic Missile Launcher NukeAI',
+        'U4 Strategic Missile Defense Builders MAIN',
+        'U4 Strategic Missile Defense Anti-NukeAI',
+        'U234 Artillery Builders',
+        'U34 Artillery Formers',
+        'U4 Satellite Formers',
+
+        -- Build Anti Air near AirFactories
+        'U123 Defense Anti Air Builders',
+        -- Ground Defense Builder
+        'U123 Defense Anti Ground Builders',
+
+        -----------------------------------------------------------------------------
+        -- ==== FireBase BUILDER ==== --
+        -----------------------------------------------------------------------------
+
+        -----------------------------------------------------------------------------
+        -- ==== Sniper Former ==== --
+        -----------------------------------------------------------------------------
+
+        -- We need this even if we have Omni View to get target informations for experimentals attack.
+        -----------------------------------------------------------------------------
+        -- ==== Scout BUILDER ==== --
+        -----------------------------------------------------------------------------
+        'U1 Land Scout Builders',
+        'U1 Air Scout Builders',
+
+        -----------------------------------------------------------------------------
+        -- ==== Scout FORMER ==== --
+        -----------------------------------------------------------------------------
+        'U1 Land Scout Formers',
+        'U13 Air Scout Formers', 
+
+        -----------------------------------------------------------------------------
+        -- ==== Intel/CounterIntel BUILDER ==== --
+        -----------------------------------------------------------------------------
+        'U1 Land Radar Builders',
+        'U1 Land Radar Upgrader',
+        'U1 Sonar Builders',
+        'U1 Sonar Upgraders', 
+
+        'CounterIntelBuilders',
+
+--        'AeonOptics',
+        'CybranOptics',
+
 
     },
     -- Not used by Uveso's AI. We always need intel in case the commander is dead.

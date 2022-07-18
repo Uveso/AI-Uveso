@@ -8,6 +8,9 @@ PlatoonFormManager = Class(TheOldPlatoonFormManagerUveso) {
         if not self.Brain.Uveso then
             return TheOldPlatoonFormManagerUveso.ManagerLoopBody(self,builder,bType)
         end
+        while not self.Brain:IsOpponentAIRunning() do
+            coroutine.yield(10)
+        end
         BuilderManager.ManagerLoopBody(self,builder,bType)
         -- Try to form all builders that pass
         if self.Brain.BuilderManagers[self.LocationType] and builder.Priority >= 1 and builder:CheckInstanceCount() then
@@ -19,24 +22,24 @@ PlatoonFormManager = Class(TheOldPlatoonFormManagerUveso) {
             if builder:GetFormRadius() then radius = builder:GetFormRadius() end
             if not template or not self.Location or not radius then
                 if type(template) != 'table' or type(template[1]) != 'string' or type(template[2]) != 'string' then
-                    WARN('*Platoon Form: Could not find template named: ' .. builder:GetPlatoonTemplate())
+                    AIWarn('*Platoon Form: Could not find template named: ' .. builder:GetPlatoonTemplate())
                     return
                 end
-                WARN('*Platoon Form: Could not find template named: ' .. builder:GetPlatoonTemplate())
+                AIWarn('*Platoon Form: Could not find template named: ' .. builder:GetPlatoonTemplate())
                 return
             end
             local formIt = poolPlatoon:CanFormPlatoon(template, personality:GetPlatoonSize(), self.Location, radius)
             if formIt and builder:GetBuilderStatus() then
 
                 if self:IsPlattonBuildDelayed(builder.DelayEqualBuildPlattons) then
-                    --WARN('*AI DEBUG: ARMY ', repr(self.Brain:GetArmyIndex()),': Platoon Form Manager IsPlattonBuildDelayed TRUE - ',repr(builder.BuilderName),': Location = ',self.LocationType)
+                    --AIWarn('*AI DEBUG: ARMY ', repr(self.Brain:GetArmyIndex()),': Platoon Form Manager IsPlattonBuildDelayed TRUE - ',repr(builder.BuilderName),': Location = ',self.LocationType)
                     return
                 end
 
                 local hndl = poolPlatoon:FormPlatoon(template, personality:GetPlatoonSize(), self.Location, radius)
 
-                --LOG('*AI DEBUG: ARMY ', repr(self.Brain:GetArmyIndex()),': Platoon Form Manager Forming - ',repr(builder.BuilderName),': Location = ',self.LocationType)
-                --LOG('*AI DEBUG: ARMY ', repr(self.Brain:GetArmyIndex()),': Platoon Form Manager - Platoon Size = ', table.getn(hndl:GetPlatoonUnits()))
+                --AILog('*AI DEBUG: ARMY ', repr(self.Brain:GetArmyIndex()),': Platoon Form Manager Forming - ',repr(builder.BuilderName),': Location = ',self.LocationType)
+                --AILog('*AI DEBUG: ARMY ', repr(self.Brain:GetArmyIndex()),': Platoon Form Manager - Platoon Size = ', table.getn(hndl:GetPlatoonUnits()))
                 hndl.PlanName = template[2]
 
                 --If we have specific AI, fork that AI thread

@@ -2,7 +2,6 @@ local categories = categories
 local EBC = '/lua/editor/EconomyBuildConditions.lua'
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 local MIBC = '/lua/editor/MiscBuildConditions.lua'
-local SBC = '/lua/editor/SorianBuildConditions.lua'
 
 local MaxDefense = 0.12 -- 12% of all units can be defenses (categories.STRUCTURE * categories.DEFENSE)
 local MaxAttackForce = 0.45                                                     -- 45% of all units can be attacking units (categories.MOBILE - categories.ENGINEER)
@@ -27,6 +26,7 @@ BuilderGroup {
         end,
         BuilderConditions = {
             -- Have we the eco to build it ?
+            { MIBC, 'ItsTimeForGameender', {} },
             --{ MIBC, 'HasParagon', {} },
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
@@ -64,6 +64,7 @@ BuilderGroup {
         end,
         BuilderConditions = {
             -- Have we the eco to build it ?
+            { MIBC, 'ItsTimeForGameender', {} },
             --{ MIBC, 'HasParagon', {} },
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
@@ -102,6 +103,7 @@ BuilderGroup {
         end,
         BuilderConditions = {
             -- Have we the eco to build it ?
+            { MIBC, 'ItsTimeForGameender', {} },
             --{ MIBC, 'HasParagon', {} },
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
@@ -137,6 +139,7 @@ BuilderGroup {
         end,
         BuilderConditions = {
             -- Have we the eco to build it ?
+            { MIBC, 'ItsTimeForGameender', {} },
             --{ MIBC, 'HasParagon', {} },
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
@@ -214,6 +217,7 @@ BuilderGroup {
         end,
         BuilderConditions = {
             -- Have we the eco to build it ?
+            { MIBC, 'ItsTimeForGameender', {} },
             --{ MIBC, 'HasParagon', {} },
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
@@ -249,6 +253,7 @@ BuilderGroup {
         end,
         BuilderConditions = {
             -- Have we the eco to build it ?
+            { MIBC, 'ItsTimeForGameender', {} },
             --{ MIBC, 'HasParagon', {} },
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
@@ -284,6 +289,7 @@ BuilderGroup {
         end,
         BuilderConditions = {
             -- Have we the eco to build it ?
+            { MIBC, 'ItsTimeForGameender', {} },
             --{ MIBC, 'HasParagon', {} },
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
@@ -319,6 +325,7 @@ BuilderGroup {
         BuilderConditions = {
             { MIBC, 'FactionIndex', { 1 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             --{ MIBC, 'HasParagon', {} },
+            { MIBC, 'ItsTimeForGameender', {} },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.50}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?

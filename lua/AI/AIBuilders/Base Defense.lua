@@ -46,7 +46,7 @@ BuilderGroup {
                 BuildClose = true,
                 AdjacencyCategory = (categories.ENERGYPRODUCTION * categories.TECH3) + (categories.ENERGYPRODUCTION * categories.EXPERIMENTAL) + (categories.STRUCTURE * categories.FACTORY),
                 AvoidCategory = categories.STRUCTURE * categories.SHIELD,
-                maxUnits = 1,
+                maxUnits = 0,
                 maxRadius = 20,
                 LocationType = 'LocationType',
                 BuildStructures = {
@@ -88,7 +88,7 @@ BuilderGroup {
                 BuildClose = false,
                 AdjacencyCategory = (categories.ENERGYPRODUCTION * categories.TECH3) + (categories.ENERGYPRODUCTION * categories.EXPERIMENTAL) + (categories.STRUCTURE * categories.FACTORY),
                 AvoidCategory = categories.STRUCTURE * categories.SHIELD,
-                maxUnits = 1,
+                maxUnits = 0,
                 maxRadius = 20,
                 LocationType = 'LocationType',
                 BuildStructures = {
@@ -302,7 +302,7 @@ BuilderGroup {
                 AdjacencyCategory = 'STRUCTURE SHIELD, STRUCTURE ENERGYPRODUCTION',
                 AdjacencyDistance = 50,
                 AvoidCategory = categories.FACTORY,
-                maxUnits = 1,
+                maxUnits = 0,
                 maxRadius = 10,
                 BuildClose = false,
                 BuildStructures = {
@@ -382,7 +382,7 @@ BuilderGroup {
         PlatoonTemplate = 'T2EngineerBuilder',
         Priority = 10000,
         BuilderConditions = {
-            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 2, categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * categories.TECH2 }},
+            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 3, categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * categories.TECH2 }},
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  280, 'LocationType', 0, categories.TACTICALMISSILEPLATFORM }}, -- radius, LocationType, unitCount, categoryEnemy
         },
         BuilderType = 'Any',
@@ -392,7 +392,7 @@ BuilderGroup {
                 AdjacencyCategory = categories.STRUCTURE * (categories.MASSEXTRACTION + categories.FACTORY),
                 AdjacencyDistance = 50,
                 AvoidCategory = categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * categories.TECH2,
-                maxUnits = 1,
+                maxUnits = 0,
                 maxRadius = 10,
                 BuildClose = false,
                 BuildStructures = {
@@ -408,7 +408,7 @@ BuilderGroup {
         Priority = 10000,
         BuilderConditions = {
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 6, categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * categories.TECH2 }},
-            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  280, 'LocationType', 3, categories.TACTICALMISSILEPLATFORM }}, -- radius, LocationType, unitCount, categoryEnemy
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  280, 'LocationType', 1, categories.TACTICALMISSILEPLATFORM }}, -- radius, LocationType, unitCount, categoryEnemy
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<', categories.STRUCTURE * categories.DEFENSE } },
         },
@@ -419,7 +419,7 @@ BuilderGroup {
                 AdjacencyCategory = categories.STRUCTURE * (categories.MASSEXTRACTION + categories.FACTORY),
                 AdjacencyDistance = 50,
                 AvoidCategory = categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * categories.TECH2,
-                maxUnits = 1,
+                maxUnits = 0,
                 maxRadius = 10,
                 BuildClose = false,
                 BuildStructures = {
@@ -434,8 +434,8 @@ BuilderGroup {
         PlatoonTemplate = 'T2EngineerBuilder',
         Priority = 10000,
         BuilderConditions = {
-            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 20, categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * categories.TECH2 }},
-            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  280, 'LocationType', 6, categories.TACTICALMISSILEPLATFORM }}, -- radius, LocationType, unitCount, categoryEnemy
+            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 9, categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * categories.TECH2 }},
+            { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  280, 'LocationType', 2, categories.TACTICALMISSILEPLATFORM }}, -- radius, LocationType, unitCount, categoryEnemy
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<', categories.STRUCTURE * categories.DEFENSE } },
         },
@@ -446,7 +446,7 @@ BuilderGroup {
                 AdjacencyCategory = categories.STRUCTURE * (categories.MASSEXTRACTION + categories.FACTORY),
                 AdjacencyDistance = 50,
                 AvoidCategory = categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * categories.TECH2,
-                maxUnits = 1,
+                maxUnits = 0,
                 maxRadius = 10,
                 BuildClose = false,
                 BuildStructures = {
@@ -478,7 +478,7 @@ BuilderGroup {
                 AdjacencyCategory = categories.STRUCTURE * (categories.MASSEXTRACTION + categories.FACTORY),
                 AdjacencyDistance = 50,
                 AvoidCategory = categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * categories.TECH2,
-                maxUnits = 1,
+                maxUnits = 0,
                 maxRadius = 10,
                 BuildClose = false,
                 BuildStructures = {
@@ -516,7 +516,7 @@ BuilderGroup {
                 BuildClose = false,
                 AdjacencyCategory = categories.STRUCTURE * categories.SHIELD,
                 AvoidCategory = categories.STRUCTURE * categories.NUKE,
-                maxUnits = 1,
+                maxUnits = 0,
                 maxRadius = 20,
                 LocationType = 'LocationType',
                 BuildStructures = {
@@ -538,6 +538,7 @@ BuilderGroup {
         end,
         BuilderConditions = {
             -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconIncome',  { 4.0, 1000.0}}, -- Absolut Base income 40 10000
             -- When do we want to build this ?
             { MIBC, 'ItsTimeForGameender', {} },
@@ -553,7 +554,7 @@ BuilderGroup {
                 BuildClose = false,
                 AdjacencyCategory = categories.STRUCTURE * categories.SHIELD,
                 AvoidCategory = categories.STRUCTURE * categories.NUKE,
-                maxUnits = 1,
+                maxUnits = 0,
                 maxRadius = 20,
                 LocationType = 'LocationType',
                 BuildStructures = {
@@ -575,8 +576,8 @@ BuilderGroup {
         end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 8.0, 500.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.90, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconIncome',  { 4.0, 1000.0}}, -- Absolut Base income 40 10000
             -- When do we want to build this ?
             { MIBC, 'ItsTimeForGameender', {} },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 4, categories.ENERGYPRODUCTION * categories.TECH3 } },
@@ -592,7 +593,7 @@ BuilderGroup {
                 BuildClose = false,
                 AdjacencyCategory = categories.STRUCTURE * categories.SHIELD,
                 AvoidCategory = categories.STRUCTURE * categories.NUKE,
-                maxUnits = 1,
+                maxUnits = 0,
                 maxRadius = 20,
                 LocationType = 'LocationType',
                 BuildStructures = {
@@ -629,7 +630,7 @@ BuilderGroup {
                 BuildClose = false,
                 AdjacencyCategory = categories.STRUCTURE * categories.SHIELD,
                 AvoidCategory = categories.STRUCTURE * categories.NUKE,
-                maxUnits = 1,
+                maxUnits = 0,
                 maxRadius = 20,
                 LocationType = 'LocationType',
                 BuildStructures = {
@@ -665,7 +666,7 @@ BuilderGroup {
 -- ==                                    T3 Strategic Missile Defense                                        == --
 -- ===================================================-======================================================== --
 BuilderGroup {
-    BuilderGroupName = 'U4 Strategic Missile Defense Builders',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U4 Strategic Missile Defense Builders MAIN',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'EngineerBuilder',
     Builder {
         BuilderName = 'U3 SMD 1st Main Eco',
@@ -689,7 +690,7 @@ BuilderGroup {
                 AdjacencyCategory = categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
                 AdjacencyDistance = 50,
                 AvoidCategory = categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * categories.TECH3,
-                maxUnits = 1,
+                maxUnits = 0,
                 maxRadius = 20,
                 BuildStructures = {
                     'T3StrategicMissileDefense',
@@ -718,7 +719,7 @@ BuilderGroup {
                 AdjacencyCategory = categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
                 AdjacencyDistance = 50,
                 AvoidCategory = categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * categories.TECH3,
-                maxUnits = 1,
+                maxUnits = 0,
                 maxRadius = 20,
                 BuildStructures = {
                     'T3StrategicMissileDefense',
@@ -735,7 +736,7 @@ BuilderGroup {
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             -- When do we want to build this ?
-            { UCBC, 'HaveUnitRatioAtLocationRadiusVersusEnemy', { 0.80, 'LocationType', 180, categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * categories.TECH3, '<', categories.SILO * categories.NUKE * (categories.TECH3 + categories.EXPERIMENTAL) } },
+            { UCBC, 'HaveUnitRatioAtLocationRadiusVersusEnemy', { 1.00, 'LocationType', 180, categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * categories.TECH3, '<', categories.SILO * categories.NUKE * (categories.TECH3 + categories.EXPERIMENTAL) } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * (categories.TECH3 + categories.EXPERIMENTAL) } },
         },
         BuilderType = 'Any',
@@ -746,7 +747,7 @@ BuilderGroup {
                 AdjacencyCategory = categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
                 AdjacencyDistance = 50,
                 AvoidCategory = categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * categories.TECH3,
-                maxUnits = 1,
+                maxUnits = 0,
                 maxRadius = 20,
                 BuildStructures = {
                     'T3StrategicMissileDefense',
@@ -762,8 +763,6 @@ BuilderGroup {
         BuilderConditions = {
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.00, 0.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioAtLocationRadiusVersusEnemy', { 3.00, 'LocationType', 180, categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * categories.TECH3, '<', categories.SILO * categories.NUKE * categories.EXPERIMENTAL * categories.SERAPHIM } },
         },
@@ -775,7 +774,7 @@ BuilderGroup {
                 AdjacencyCategory = categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
                 AdjacencyDistance = 50,
                 AvoidCategory = categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * categories.TECH3,
-                maxUnits = 1,
+                maxUnits = 0,
                 maxRadius = 20,
                 BuildStructures = {
                     'T3StrategicMissileDefense',
@@ -789,9 +788,8 @@ BuilderGroup {
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 18000,
         BuilderConditions = {
+            { UCBC, 'BuildNotOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.00, 0.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveUnitRatioAtLocationRadiusVersusEnemy', { 0.50, 'LocationType', 180, categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * categories.TECH3, '<', categories.NUKESUB } },
         },
@@ -812,13 +810,11 @@ BuilderGroup {
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 18000,
         BuilderConditions = {
-            { UCBC, 'BuildNotOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.75, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * (categories.TECH3 + categories.EXPERIMENTAL) } },
-            { UCBC, 'HaveUnitRatioAtLocationRadiusVersusEnemy', { 0.50, 'LocationType', 90, categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * categories.TECH3, '<',categories.SILO * categories.NUKE * (categories.TECH3 + categories.EXPERIMENTAL) } },
+            { UCBC, 'HaveUnitRatioAtLocationRadiusVersusEnemy', { 0.80, 'LocationType', 90, categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * categories.TECH3, '<',categories.SILO * categories.NUKE * (categories.TECH3 + categories.EXPERIMENTAL) } },
             { UCBC, 'HaveUnitRatioVersusCap', { MaxDefense, '<', categories.STRUCTURE * categories.DEFENSE } },
         },
         BuilderType = 'Any',
@@ -829,7 +825,42 @@ BuilderGroup {
                 AdjacencyCategory = categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
                 AdjacencyDistance = 50,
                 AvoidCategory = categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * categories.TECH3,
-                maxUnits = 1,
+                maxUnits = 0,
+                maxRadius = 20,
+                BuildStructures = {
+                    'T3StrategicMissileDefense',
+                },
+                Location = 'LocationType',
+            }
+        }
+    },
+}
+BuilderGroup {
+    BuilderGroupName = 'U4 Strategic Missile Defense Builders Naval',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuildersType = 'EngineerBuilder',
+    Builder {
+        BuilderName = 'U3 SMD 1st Naval',
+        PlatoonTemplate = 'T3EngineerBuilderNoSUB',
+        Priority = 18000,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            -- When do we want to build this ?
+            { MIBC, 'ItsTimeForGameender', {} },
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * (categories.TECH3 + categories.EXPERIMENTAL) } },
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * (categories.TECH3 + categories.EXPERIMENTAL) } },
+            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 1, categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * (categories.TECH3 + categories.EXPERIMENTAL) } },
+
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            NumAssistees = 5,
+            Construction = {
+                BuildClose = false,
+                AdjacencyCategory = categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
+                AdjacencyDistance = 50,
+                AvoidCategory = categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * categories.TECH3,
+                maxUnits = 0,
                 maxRadius = 20,
                 BuildStructures = {
                     'T3StrategicMissileDefense',
@@ -878,9 +909,9 @@ BuilderGroup {
         end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.50, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
-            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 6, categories.STRUCTURE * categories.ARTILLERY * categories.TECH2 }},
+            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 8, categories.STRUCTURE * categories.ARTILLERY * categories.TECH2 }},
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapStructure , '<', categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - categories.FACTORY } },
         },
@@ -890,7 +921,7 @@ BuilderGroup {
                 BuildClose = false,
                 AdjacencyCategory = (categories.ENERGYPRODUCTION * categories.EXPERIMENTAL) + (categories.STRUCTURE * categories.FACTORY),
                 AvoidCategory = categories.STRUCTURE * categories.ARTILLERY * categories.TECH2,
-                maxUnits = 1,
+                maxUnits = 0,
                 maxRadius = 35,
                 BuildStructures = {
                     'T2Artillery',
@@ -914,8 +945,8 @@ BuilderGroup {
         BuilderConditions = {
             { UCBC, 'CheckBuildPlattonDelay', { 'Artillery' }},
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 2.0, 300.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.38, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconIncome',  { 4.0, 1000.0}}, -- Absolut Base income 40 10000
             -- When do we want to build this ?
             { MIBC, 'ItsTimeForGameender', {} },
             -- Do we need additional conditions to build it ?
@@ -949,8 +980,8 @@ BuilderGroup {
             { MIBC, 'FactionIndex', { 2 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             { UCBC, 'CheckBuildPlattonDelay', { 'Artillery' }},
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 2.0, 300.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconIncome',  { 4.0, 1000.0}}, -- Absolut Base income 40 10000
             -- When do we want to build this ?
             { MIBC, 'ItsTimeForGameender', {} },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ARTILLERY } },
@@ -984,8 +1015,8 @@ BuilderGroup {
             { MIBC, 'FactionIndex', { 1, 4 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             { UCBC, 'CheckBuildPlattonDelay', { 'Artillery' }},
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 2.0, 300.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconIncome',  { 4.0, 1000.0}}, -- Absolut Base income 40 10000
             -- When do we want to build this ?
             { MIBC, 'ItsTimeForGameender', {} },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ARTILLERY } },
@@ -1002,10 +1033,39 @@ BuilderGroup {
             }
         }
     },
+    Builder {
+        BuilderName = 'U4 Satellite',
+        PlatoonTemplate = 'T3EngineerBuilderNoSUB',
+        Priority = 875,
+        InstanceCount = 2,
+        DelayEqualBuildPlattons = {'MobileExperimental', 10},
+        BuilderConditions = {
+            { MIBC, 'FactionIndex', { 1 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
+            { UCBC, 'CheckBuildPlattonDelay', { 'MobileExperimental' }},
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconIncome',  { 4.0, 1000.0}}, -- Absolut Base income 40 10000
+            -- When do we want to build this ?
+            { MIBC, 'ItsTimeForGameender', {} },
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.SATELLITE * categories.EXPERIMENTAL } },
+        },
+        BuilderType = 'Any',
+        BuilderData = {
+            Construction = {
+                DesiresAssist = true,
+                NumAssistees = 10,
+                BuildClose = true,
+                BuildStructures = {
+                    'T4SatelliteExperimental',
+                },
+                Location = 'LocationType',
+            }
+        }
+    },
 }
 BuilderGroup {
     -- Add all Artilleries to a single platton
-    BuilderGroupName = 'U4 Artillery Formers',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuilderGroupName = 'U34 Artillery Formers',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
     BuildersType = 'PlatoonFormBuilder',
     Builder {
         BuilderName = 'U34ArtilleryAI',
@@ -1016,10 +1076,31 @@ BuilderGroup {
         BuilderConditions = {
             -- Have we the eco to build it ?
             -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 0, (categories.STRUCTURE * categories.ARTILLERY * ( categories.TECH3 + categories.EXPERIMENTAL )) + categories.SATELLITE } },
+            { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 0, categories.STRUCTURE * categories.ARTILLERY * ( categories.TECH3 + categories.EXPERIMENTAL ) } },
         },
         BuilderData = {
             AIPlan = 'U34ArtilleryAI',
+        },
+        BuilderType = 'Any',
+    },
+}
+BuilderGroup {
+    -- Add all Satellites to a single platton
+    BuilderGroupName = 'U4 Satellite Formers',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuildersType = 'PlatoonFormBuilder',
+    Builder {
+        BuilderName = 'U3SatelliteAI',
+        PlatoonTemplate = 'AddToSatellitePlatoon',
+        Priority = 4000,
+        InstanceCount = 1,
+        FormRadius = 10000,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 0, categories.MOBILE * categories.SATELLITE * categories.EXPERIMENTAL } },
+        },
+        BuilderData = {
+            AIPlan = 'U4SatelliteAI',
         },
         BuilderType = 'Any',
     },
@@ -1053,7 +1134,7 @@ BuilderGroup {
                 BuildClose = false,
                 AdjacencyCategory = (categories.ENERGYPRODUCTION * categories.EXPERIMENTAL) + (categories.STRUCTURE * categories.FACTORY),
                 AvoidCategory = categories.STRUCTURE * categories.DEFENSE - categories.ANTIAIR,
-                maxUnits = 1,
+                maxUnits = 0,
                 maxRadius = 35,
                 BuildStructures = {
                     'T1GroundDefense',
@@ -1084,7 +1165,7 @@ BuilderGroup {
                 BuildClose = false,
                 AdjacencyCategory = (categories.ENERGYPRODUCTION * categories.EXPERIMENTAL) + (categories.STRUCTURE * categories.FACTORY),
                 AvoidCategory = categories.STRUCTURE * categories.DEFENSE - categories.ANTIAIR,
-                maxUnits = 1,
+                maxUnits = 0,
                 maxRadius = 10,
                 BuildStructures = {
                     'T2GroundDefense',
@@ -1117,7 +1198,7 @@ BuilderGroup {
                 BuildClose = false,
                 AdjacencyCategory = (categories.ENERGYPRODUCTION * categories.EXPERIMENTAL) + (categories.STRUCTURE * categories.FACTORY),
                 AvoidCategory = categories.STRUCTURE * categories.DEFENSE - categories.ANTIAIR,
-                maxUnits = 1,
+                maxUnits = 0,
                 maxRadius = 35,
                 BuildStructures = {
                     'T3GroundDefense',
@@ -1156,7 +1237,7 @@ BuilderGroup {
                 BuildClose = false,
                 AdjacencyCategory = (categories.ENERGYPRODUCTION * categories.EXPERIMENTAL) + (categories.STRUCTURE * categories.FACTORY),
                 AvoidCategory = categories.STRUCTURE * categories.DEFENSE - categories.ANTIAIR,
-                maxUnits = 1,
+                maxUnits = 0,
                 maxRadius = 35,
                 BuildStructures = {
                     'T3GroundDefense',
@@ -1222,7 +1303,7 @@ BuilderGroup {
                 AdjacencyCategory = categories.STRUCTURE * categories.FACTORY,
                 AdjacencyDistance = 50,
                 AvoidCategory = categories.STRUCTURE * categories.ANTIAIR * categories.TECH1,
-                maxUnits = 1,
+                maxUnits = 0,
                 maxRadius = 10,
                 BuildClose = false,
                 BuildStructures = {
@@ -1255,7 +1336,7 @@ BuilderGroup {
                 AdjacencyCategory = categories.STRUCTURE * categories.FACTORY,
                 AdjacencyDistance = 50,
                 AvoidCategory = categories.STRUCTURE * categories.ANTIAIR * categories.TECH2,
-                maxUnits = 1,
+                maxUnits = 0,
                 maxRadius = 10,
                 BuildClose = false,
                 BuildStructures = {
@@ -1287,7 +1368,7 @@ BuilderGroup {
                 AdjacencyCategory = categories.STRUCTURE * categories.FACTORY,
                 AdjacencyDistance = 50,
                 AvoidCategory = categories.STRUCTURE * categories.ANTIAIR * categories.TECH3,
-                maxUnits = 1,
+                maxUnits = 0,
                 maxRadius = 8,
                 BuildClose = false,
                 BuildStructures = {
@@ -1319,7 +1400,7 @@ BuilderGroup {
                 AdjacencyCategory = categories.STRUCTURE * categories.FACTORY,
                 AdjacencyDistance = 50,
                 AvoidCategory = categories.STRUCTURE * categories.ANTIAIR * categories.TECH3,
-                maxUnits = 1,
+                maxUnits = 0,
                 maxRadius = 8,
                 BuildClose = false,
                 BuildStructures = {
@@ -1351,7 +1432,7 @@ BuilderGroup {
                 AdjacencyCategory = categories.STRUCTURE * categories.FACTORY,
                 AdjacencyDistance = 50,
                 AvoidCategory = categories.STRUCTURE * categories.ANTIAIR * categories.TECH3,
-                maxUnits = 1,
+                maxUnits = 0,
                 maxRadius = 8,
                 BuildClose = false,
                 BuildStructures = {

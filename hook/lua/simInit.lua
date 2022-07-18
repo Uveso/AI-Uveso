@@ -1,6 +1,9 @@
---WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] * AI-Uveso: offset simInit.lua' )
---429
+local UvesoOffsetSimInitLUA = debug.getinfo(1).currentline - 1
+WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..UvesoOffsetSimInitLUA..'] * AI-Uveso: offset simInit.lua')
+--457
+
 local AIAttackUtils = import('/lua/ai/aiattackutilities.lua')
+local TimeConvert = import('/lua/AI/sorianutilities.lua').TimeConvert
 
 -- This function can be called from all SIM state lua files
 function DebugArray(Table)
@@ -13,6 +16,64 @@ function DebugArray(Table)
             LOG('Index['..Index..'] is type('..type(Array)..'). "', repr(Array),'".')
         end
     end
+end
+
+function AILog(data, bool, offset)
+    if bool == false then return end
+    -- visual indicator for offset line numbers - 1234 = normal line number, ^1234 linenumber with offset
+    if not offset then offset = 0 end
+    if offset > 0 then off = "^" else off = "" end
+    -- print to the debuglog filename and linenumber from this log call
+    local text = tostring( TimeConvert(GetGameTimeSeconds()).." ["..string.gsub(debug.getinfo(2).source, ".*\\(.*.lua)", "%1")..":"..off..(debug.getinfo(2).currentline - offset).."] " )
+    -- check datatype and print the data to the logfile
+    if type(data) == "boolean" then
+        _ALERT(text..tostring(data))
+    elseif type(data) == "number" then
+        _ALERT(text..tostring(data))
+    elseif type(data) == "string" then
+        _ALERT(text..data)
+    elseif type(data) == "function" then
+        _ALERT(text.."arg is type("..type(data).."): ["..tostring(data).."]")
+    elseif type(data) == "table" then
+        _ALERT(text.."printing root of table:")
+        _ALERT(text.."{")
+        for index, array in pairs(data) do
+            if type(array) == "boolean" then
+                _ALERT(text.."    Index["..tostring(index).."] is type("..type(array).."): ["..tostring(array).."]")
+            elseif type(array) == "number" then
+                _ALERT(text.."    Index["..tostring(index).."] is type("..type(array).."): ["..tostring(array).."]")
+            elseif type(array) == "string" then
+                _ALERT(text.."    Index["..tostring(index).."] is type("..type(array).."): ["..array.."]")
+            elseif type(array) == "table" then
+                _ALERT(text.."    Index["..tostring(index).."] is type("..type(array)..") with #"..(table.getn(array)).." indexes. I won\'t print that!")
+            elseif type(array) == "function" then
+                _ALERT(text.."    Index["..tostring(index).."] is type("..type(array).."): ["..tostring(array).."]")
+            else
+                _ALERT(text.."    * AILog: Unknow data type: ("..type(array).."). I won\'t print that!")
+            end
+        end
+        _ALERT(text.."}")
+    else
+        _ALERT(text.."* AILog: Unknow data type: ("..type(data).."). I won\'t print that!")
+    end
+end
+
+function AIDebug(data, bool, offset)
+    if bool == false then return end
+    -- visual indicator for offset line numbers - 1234 = normal line number, ^1234 linenumber with offset
+    if not offset then offset = 0 end
+    if offset > 0 then off = "^" else off = "" end
+    -- print to the debuglog filename and linenumber from this log call
+    SPEW(tostring( TimeConvert(GetGameTimeSeconds()).." ["..string.gsub(debug.getinfo(2).source, ".*\\(.*.lua)", "%1")..":"..off..(debug.getinfo(2).currentline - offset).."] " )..data)
+end
+
+function AIWarn(data, bool, offset)
+    if bool == false then return end
+    -- visual indicator for offset line numbers - 1234 = normal line number, ^1234 linenumber with offset
+    if not offset then offset = 0 end
+    if offset > 0 then off = "^" else off = "" end
+    -- print to the debuglog filename and linenumber from this log call
+    WARN(tostring( TimeConvert(GetGameTimeSeconds()).." ["..string.gsub(debug.getinfo(2).source, ".*\\(.*.lua)", "%1")..":"..off..(debug.getinfo(2).currentline - offset).."] " )..data)
 end
 
 -- hooks for map validation on game start and debugstuff for pathfinding and base ranger.
@@ -45,24 +106,21 @@ function BeginSession()
     end
     -- show the marker grid and expansions
     ForkThread(RenderMarkerCreatorThread)
-    -- start the reclaim cleaner thread
-    ForkThread(ReclaimCleaner)
-    
     -- Debug ACUChampion platoon function
-    ForkThread(DrawACUChampion)
-
-
+--    ForkThread(DrawACUChampion)
+    -- Debug HeatMap
+--    ForkThread(DrawHeatMap)
     -- In case we are debugging with linedraw and waits we need to fork this function
     if DebugValidMarkerPosition then
-        LOG('* AI-Uveso: Debug: ForkThread(CreateAIMarkers) DEEPTRACE')
+        AILog('* AI-Uveso: Debug: ForkThread(CreateAIMarkers) DEEPTRACE', true, UvesoOffsetSimInitLUA)
         ForkThread(CreateAIMarkers)
     -- Fist calculate markers, then continue with the game start sequence.
     else
-        LOG('* AI-Uveso: Function CreateAIMarkers() started!')
+        AILog('* AI-Uveso: Function CreateAIMarkers() started!', true, UvesoOffsetSimInitLUA)
         local START = GetSystemTimeSecondsOnlyForProfileUse()
         CreateAIMarkers()
         local END = GetSystemTimeSecondsOnlyForProfileUse()
-        LOG(string.format('* AI-Uveso: Function CreateAIMarkers() finished, runtime: %.2f seconds.', END - START  ))
+        AILog(string.format('* AI-Uveso: Function CreateAIMarkers() finished, runtime: %.2f seconds.', END - START  ), true, UvesoOffsetSimInitLUA)
     end
     CreateMassCount()
     ValidateMapAndMarkers()
@@ -75,7 +133,7 @@ function OnCreateArmyBrain(index, brain, name, nickname)
     if brain.BrainType == 'AI' and nickname ~= 'civilian' then
         -- check if we need to set a new unitcap for the AI. (0 = we are using the player unit cap)
         if tonumber(ScenarioInfo.Options.AIUnitCap) > 0 then
-            LOG('* AI-Uveso: Function OnCreateArmyBrain(): Setting AI unit cap to '..ScenarioInfo.Options.AIUnitCap..' ('..nickname..')')
+            AILog('* AI-Uveso: Function OnCreateArmyBrain(): Setting AI unit cap to '..ScenarioInfo.Options.AIUnitCap..' ('..nickname..')', true, UvesoOffsetSimInitLUA)
             SetArmyUnitCap(index,tonumber(ScenarioInfo.Options.AIUnitCap))
         end
     end
@@ -156,13 +214,13 @@ function ValidateMapAndMarkers()
     -- Check norushradius
     if ScenarioInfo.norushradius and ScenarioInfo.norushradius > 0 then
         if ScenarioInfo.norushradius < 10 then
-            WARN('* AI-Uveso: ValidateMapAndMarkers: norushradius is too smal ('..ScenarioInfo.norushradius..')! Set radius to minimum (15).')
+            AIWarn('* AI-Uveso: ValidateMapAndMarkers: norushradius is too smal ('..ScenarioInfo.norushradius..')! Set radius to minimum (15).')
             ScenarioInfo.norushradius = 15
         else
-            LOG('* AI-Uveso: ValidateMapAndMarkers: norushradius is OK. ('..ScenarioInfo.norushradius..')')
+            AILog('* AI-Uveso: ValidateMapAndMarkers: norushradius is OK. ('..ScenarioInfo.norushradius..')', true, UvesoOffsetSimInitLUA)
         end
     else
-        WARN('* AI-Uveso: ValidateMapAndMarkers: norushradius is missing! Set radius to default (20).')
+        AIWarn('* AI-Uveso: ValidateMapAndMarkers: norushradius is missing! Set radius to default (20).', true, UvesoOffsetSimInitLUA)
         ScenarioInfo.norushradius = 20
     end
 
@@ -170,34 +228,35 @@ function ValidateMapAndMarkers()
     local TEMP = {}
     local UNKNOWNMARKER = {}
     local dist
+    local adjancents
     for k, v in Scenario.MasterChain._MASTERCHAIN_.Markers do
         -- Check if the marker is known. If not, send a debug message
         if not KnownMarkerTypes[v.type] then
             if not UNKNOWNMARKER[v.type] then
-                LOG('* AI-Uveso: ValidateMapAndMarkers: Unknown MarkerType: [\''..v.type..'\']=true,')
+                AILog('* AI-Uveso: ValidateMapAndMarkers: Unknown MarkerType: [\''..v.type..'\']=true,', true, UvesoOffsetSimInitLUA)
                 UNKNOWNMARKER[v.type] = true
             end
         end
         -- Check Index Name
         if v.type == 'Naval Area' then
             if string.find(k, 'NavalArea') then
-                WARN('* AI-Uveso: ValidateMapAndMarkers: MarkerType: [\''..v.type..'\'] Has wrong Index Name ['..k..']. (Should be [Naval Area xx] )')
+                AIWarn('* AI-Uveso: ValidateMapAndMarkers: MarkerType: [\''..v.type..'\'] Has wrong Index Name ['..k..']. (Should be [Naval Area xx] )')
             elseif not string.find(k, 'Naval Area') then
-                WARN('* AI-Uveso: ValidateMapAndMarkers: MarkerType: [\''..v.type..'\'] Has wrong Index Name ['..k..']. (Should be [Naval Area xx] )')
+                AIWarn('* AI-Uveso: ValidateMapAndMarkers: MarkerType: [\''..v.type..'\'] Has wrong Index Name ['..k..']. (Should be [Naval Area xx] )')
             end
         end
         if v.type == 'Expansion Area' then
             if string.find(k, 'ExpansionArea') then
-                WARN('* AI-Uveso: ValidateMapAndMarkers: MarkerType: [\''..v.type..'\'] Has wrong Index Name ['..k..']. (Should be [Expansion Area xx] )')
+                AIWarn('* AI-Uveso: ValidateMapAndMarkers: MarkerType: [\''..v.type..'\'] Has wrong Index Name ['..k..']. (Should be [Expansion Area xx] )')
             elseif not string.find(k, 'Expansion Area') then
-                WARN('* AI-Uveso: ValidateMapAndMarkers: MarkerType: [\''..v.type..'\'] Has wrong Index Name ['..k..']. (Should be [Expansion Area xx] )')
+                AIWarn('* AI-Uveso: ValidateMapAndMarkers: MarkerType: [\''..v.type..'\'] Has wrong Index Name ['..k..']. (Should be [Expansion Area xx] )')
             end
         end
         if v.type == 'Large Expansion' then
             if string.find(k, 'LargeExpansion') then
-                WARN('* AI-Uveso: ValidateMapAndMarkers: MarkerType: [\''..v.type..'\'] Has wrong Index Name ['..k..']. (Should be [Large Expansion xx] )')
+                AIWarn('* AI-Uveso: ValidateMapAndMarkers: MarkerType: [\''..v.type..'\'] Has wrong Index Name ['..k..']. (Should be [Large Expansion xx] )')
             elseif not string.find(k, 'Large Expansion') then
-                WARN('* AI-Uveso: ValidateMapAndMarkers: MarkerType: [\''..v.type..'\'] Has wrong Index Name ['..k..']. (Should be [Large Expansion xx] )')
+                AIWarn('* AI-Uveso: ValidateMapAndMarkers: MarkerType: [\''..v.type..'\'] Has wrong Index Name ['..k..']. (Should be [Large Expansion xx] )')
             end
         end
         --'ARMY_'
@@ -205,53 +264,53 @@ function ValidateMapAndMarkers()
         -- Check Mass Marker
         if v.type == 'Mass' then
             if v.position[1] <= 8 or v.position[1] >= ScenarioInfo.size[1] - 8 or v.position[3] <= 8 or v.position[3] >= ScenarioInfo.size[2] - 8 then
-                WARN('* AI-Uveso: ValidateMapAndMarkers: MarkerType: [\''..v.type..'\'] is too close to map border. IndexName = ['..k..']. (Mass marker deleted!!!)')
+                AIWarn('* AI-Uveso: ValidateMapAndMarkers: MarkerType: [\''..v.type..'\'] is too close to map border. IndexName = ['..k..']. (Mass marker deleted!!!)')
                 Scenario.MasterChain._MASTERCHAIN_.Markers[k] = nil
             end
         end
         -- Check Waypoint Marker
         if MarkerDefaults[v.type] then
             if v.adjacentTo then
-                local adjancents = STR_GetTokens(v.adjacentTo or '', ' ')
+                adjancents = STR_GetTokens(v.adjacentTo or '', ' ')
                 if adjancents[0] then
                     for i, node in adjancents do
                         --local otherMarker = Scenario.MasterChain._MASTERCHAIN_.Markers[node]
                         if not Scenario.MasterChain._MASTERCHAIN_.Markers[node] then
-                            WARN('* AI-Uveso: ValidateMapAndMarkers: adjacentTo is wrong in marker ['..k..'] - MarkerType: [\''..v.type..'\']. - Adjacent marker ['..node..'] is missing.')
+                            AIWarn('* AI-Uveso: ValidateMapAndMarkers: adjacentTo is wrong in marker ['..k..'] - MarkerType: [\''..v.type..'\']. - Adjacent marker ['..node..'] is missing.')
                         end
                     end
                 else
-                    WARN('* AI-Uveso: ValidateMapAndMarkers: adjacentTo is empty in marker ['..k..'] - MarkerType: [\''..v.type..'\']. - Pathmarker must have an adjacent marker for pathing.')
+                    AIWarn('* AI-Uveso: ValidateMapAndMarkers: adjacentTo is empty in marker ['..k..'] - MarkerType: [\''..v.type..'\']. - Pathmarker must have an adjacent marker for pathing.')
                 end
             else
-                WARN('* AI-Uveso: ValidateMapAndMarkers: adjacentTo is missing in marker ['..k..'] - MarkerType: [\''..v.type..'\']. - Pathmarker must have an adjacent marker for pathing.')
+                AIWarn('* AI-Uveso: ValidateMapAndMarkers: adjacentTo is missing in marker ['..k..'] - MarkerType: [\''..v.type..'\']. - Pathmarker must have an adjacent marker for pathing.')
             end
             -- Checking marker type/graph
 --            if MarkerDefaults[v.type]['graph'] ~= v.graph then
---                WARN('* AI-Uveso: ValidateMapAndMarkers: graph missmatch in marker ['..k..'] - MarkerType: [\''..v.type..'\']. - marker.type is ('..repr(v.graph)..'), but should be ('..MarkerDefaults[v.type]['graph']..').')
+--                AIWarn('* AI-Uveso: ValidateMapAndMarkers: graph missmatch in marker ['..k..'] - MarkerType: [\''..v.type..'\']. - marker.type is ('..repr(v.graph)..'), but should be ('..MarkerDefaults[v.type]['graph']..').')
                 -- save the correct graph type
 --                v.graph = MarkerDefaults[v.type]['graph']
 --            end
             -- Checking colors (for debug)
             if MarkerDefaults[v.type]['color'] ~= v.color then
                 -- we actual don't print a debugmessage here. This message is for debuging a debug function :)
-                --LOG('* AI-Uveso: ValidateMapAndMarkers: color missmatch in marker ['..k..'] - MarkerType: [\''..v.type..'\']. marker.color is ('..repr(v.color)..'), but should be ('..MarkerDefaults[v.type]['color']..').')
+                --AILog('* AI-Uveso: ValidateMapAndMarkers: color missmatch in marker ['..k..'] - MarkerType: [\''..v.type..'\']. marker.color is ('..repr(v.color)..'), but should be ('..MarkerDefaults[v.type]['color']..').')
                 v.color = MarkerDefaults[v.type]['color']
             end
         -- Check BaseLocations distances to other locations
         elseif BaseLocations[v.type] then
             for k2, v2 in Scenario.MasterChain._MASTERCHAIN_.Markers do
                 if BaseLocations[v2.type] and v ~= v2 then
-                    local dist = VDist2( v.position[1], v.position[3], v2.position[1], v2.position[3] )
+                    dist = VDist2( v.position[1], v.position[3], v2.position[1], v2.position[3] )
                     -- Are we checking a Start location, and another marker is nearer then 80 units ?
                     if v.type == 'Blank Marker' and v2.type ~= 'Blank Marker' and dist < 80 then
-                        LOG('* AI-Uveso: ValidateMapAndMarkers: Marker [\''..k2..'\'] is to close to Start Location [\''..k..'\']. Distance= '..math.floor(dist)..' (under 80).')
+                        AILog('* AI-Uveso: ValidateMapAndMarkers: Marker [\''..k2..'\'] is to close to Start Location [\''..k..'\']. Distance= '..math.floor(dist)..' (under 80).', true, UvesoOffsetSimInitLUA)
                         --Scenario.MasterChain._MASTERCHAIN_.Markers[k2] = nil
                     -- Check if we have other locations that have a low distance (under 60)
                     elseif v.type ~= 'Blank Marker' and v2.type ~= 'Blank Marker' and dist < 60 then
                         -- Check priority from small locations up to main base.
                         if BaseLocations[v.type].priority >= BaseLocations[v2.type].priority then
-                            LOG('* AI-Uveso: ValidateMapAndMarkers: Marker [\''..k2..'\'] is to close to Marker [\''..k..'\']. Distance= '..math.floor(dist)..' (under 60).')
+                            AILog('* AI-Uveso: ValidateMapAndMarkers: Marker [\''..k2..'\'] is to close to Marker [\''..k..'\']. Distance= '..math.floor(dist)..' (under 60).', true, UvesoOffsetSimInitLUA)
                             -- Not used at the moment, but we can delete the location with the lower priority here.
                             -- This is used for debuging the locationmanager, so we can be sure that locations are not overlapping.
                             --Scenario.MasterChain._MASTERCHAIN_.Markers[k2] = nil
@@ -266,9 +325,9 @@ end
 function GraphRenderThread()
     -- wait 10 seconds at gamestart before we start debuging
     coroutine.yield(100)
-    SPEW('* AI-Uveso: Function GraphRenderThread() started.')
+    AIDebug('* AI-Uveso: Function GraphRenderThread() started.', true, UvesoOffsetSimInitLUA)
     while true do
-        --LOG('* AI-Uveso: Function GraphRenderThread() beat.')
+        --AILog('* AI-Uveso: Function GraphRenderThread() beat.')
         -- draw all paths with location radius and AI Pathfinding
         if ScenarioInfo.Options.AIPathingDebug == 'pathlocation'
         or ScenarioInfo.Options.AIPathingDebug == 'path'
@@ -299,9 +358,6 @@ function GraphRenderThread()
             -- Draw the radius of each base(manager)
             if ScenarioInfo.Options.AIPathingDebug == 'pathlocation' then
                 DrawBaseRanger()
-            -- Draw the Marker threat
-            elseif ScenarioInfo.Options.AIPathingDebug == 'paththreats' then
-                DrawMarkerThreats()
             -- Draw the IMAP threat
             elseif ScenarioInfo.Options.AIPathingDebug == 'imapthreats' then
                 DrawIMAPThreats()
@@ -393,7 +449,7 @@ function DrawACUChampion()
             -- Draw a circle for free areas
             if aiBrain.ACUChampion.AreaTable then
                 for index, pos in aiBrain.ACUChampion.AreaTable do
-                --LOG('index='..index..' - pos='..repr(pos)..'')
+                --AILog('index='..index..' - pos='..repr(pos)..'')
                     DrawCircle({pos[1], pos[2], pos[3]}, 25, 'c0000000')
                     DrawCircle({pos[1], pos[2], pos[3]}, math.min( 26, pos[4] ) , 'ffFF6060')
                 end
@@ -412,7 +468,7 @@ end
 
 function DrawBaseRanger()
     -- get the range of combat zones
-    local BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua').GetDangerZoneRadii()
+    local BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').GetDangerZoneRadii()
     local FocussedArmy = GetFocusArmy()
     -- Render the radius of any base and expansion location
     if Scenario.MasterChain._MASTERCHAIN_.BaseRanger then
@@ -440,7 +496,7 @@ function DrawPathGraph(DrawOnly,Blink)
         colors['counter'] = colors['counter'] + 1
         if colors['counter'] > colors['countermax'] then
             colors['counter'] = 0
-            --LOG('lastcolorindex:'..colors['lastcolorindex']..' - table.getn(colors)'..table.getn(colors))
+            --AILog('lastcolorindex:'..colors['lastcolorindex']..' - table.getn(colors)'..table.getn(colors))
             if colors['lastcolorindex'] >= (table.getn(colors)) then
                 colors['lastcolorindex'] = 1
             else
@@ -454,6 +510,7 @@ function DrawPathGraph(DrawOnly,Blink)
     local MarkerPosition = {0,0,0}
     local Marker2Position = {0,0,0}
     -- Render the connection between the path nodes for the specific graph
+    local otherMarker
     for Layer, LayerMarkers in AIAttackUtils.GetPathGraphs() do
         for graph, GraphMarkers in LayerMarkers do
             for nodename, markerInfo in GraphMarkers do
@@ -467,7 +524,7 @@ function DrawPathGraph(DrawOnly,Blink)
                 DrawCircle(MarkerPosition, 5, Offsets[markerInfo.graphName]['color'] or colors[colors['lastcolorindex']] )
                 -- Draw the connecting lines to its adjacent nodes
                 for i, node in markerInfo.adjacent do
-                    local otherMarker = Scenario.MasterChain._MASTERCHAIN_.Markers[node]
+                    otherMarker = Scenario.MasterChain._MASTERCHAIN_.Markers[node]
                     if otherMarker then
                         Marker2Position[1] = otherMarker.position[1] + Offsets[otherMarker.graph][1]
                         Marker2Position[2] = otherMarker.position[2] + Offsets[otherMarker.graph][2]
@@ -503,34 +560,9 @@ function DrawPathGraph(DrawOnly,Blink)
     end
 end
 
-local treatScale = {Land=1, Amphibious=1, Water=1, Air=1}
-local highestTreat = {Land=1, Amphibious=1, Water=1, Air=1}
+local threatScale = {Land=1, Amphibious=1, Water=1, Air=1}
+local highestThreat = {Land=1, Amphibious=1, Water=1, Air=1}
 
-function DrawMarkerThreats()
-    local FocussedArmy = GetFocusArmy()
-    local MarkerPosition = {0,0,0}
-    -- Render the threat on each marker
-    local DistanceBetweenMarkers = ScenarioInfo.size[1] / ( 30 )
-    for Layer, LayerMarkers in AIAttackUtils.GetPathGraphs() do
-        highestTreat[Layer] = 0
-        --LOG('Layer: '..repr(Layer)..' - treatScale[Layer]: '..repr(treatScale[Layer]))
-        for graph, GraphMarkers in LayerMarkers do
-            for nodename, markerInfo in GraphMarkers do
-                -- Draw Threat
-                if Scenario.MasterChain._MASTERCHAIN_.Markers[nodename][FocussedArmy] then
-                    MarkerPosition[1] = markerInfo.position[1] + (Offsets[markerInfo.graphName][1])
-                    MarkerPosition[2] = markerInfo.position[2] + (Offsets[markerInfo.graphName][2])
-                    MarkerPosition[3] = markerInfo.position[3] + (Offsets[markerInfo.graphName][3])
-                    DrawCircle(MarkerPosition, (Scenario.MasterChain._MASTERCHAIN_.Markers[nodename][FocussedArmy] * treatScale[Layer]) + 0.1, Offsets[markerInfo.graphName]['color'] )
-                end
-                if highestTreat[Layer] < Scenario.MasterChain._MASTERCHAIN_.Markers[nodename][FocussedArmy] then
-                    highestTreat[Layer] = Scenario.MasterChain._MASTERCHAIN_.Markers[nodename][FocussedArmy]
-                end
-            end
-        end
-        treatScale[Layer] = DistanceBetweenMarkers / 2 / highestTreat[Layer]
-    end
-end
 function DrawIMAPThreats()
     local MCountX = 48
     local MCountY = 48
@@ -538,13 +570,14 @@ function DrawIMAPThreats()
     local PosY
     local enemyThreat
     local FocussedArmy = GetFocusArmy()
+    local DistanceBetweenMarkers
     for ArmyIndex, aiBrain in ArmyBrains do
         -- only draw the pathcache from the focussed army
         if FocussedArmy ~= ArmyIndex then
             continue
         end
-        local DistanceBetweenMarkers = ScenarioInfo.size[1] / ( MCountX )
-        highestTreat = {Land=1, Amphibious=1, Water=1, Air=1}
+        DistanceBetweenMarkers = ScenarioInfo.size[1] / ( MCountX )
+        highestThreat = {Land=1, Amphibious=1, Water=1, Air=1}
         for Y = 0, MCountY - 1 do
             for X = 0, MCountX - 1 do
                 PosX = X * DistanceBetweenMarkers + DistanceBetweenMarkers / 2
@@ -552,36 +585,38 @@ function DrawIMAPThreats()
                 PosZ = GetTerrainHeight( PosX, PosY )
                 -- -------------------------------------------------------------------------------- --
                 enemyThreat = aiBrain:GetThreatAtPosition({PosX, PosZ, PosY}, 0, true, 'Overall')
-                if highestTreat['Land'] < enemyThreat then
-                    highestTreat['Land'] = enemyThreat
+                if highestThreat["Land"] < enemyThreat then
+                    highestThreat["Land"] = enemyThreat
                 end
-                DrawCircle({PosX, PosZ, PosY}, (enemyThreat * treatScale['Land']) + 0.1, 'fff4a460' )
+                DrawCircle({PosX, PosZ, PosY}, (enemyThreat * threatScale["Land"]) + 0.1, 'fff4a460' )
                 -- -------------------------------------------------------------------------------- --
                 enemyThreat = aiBrain:GetThreatAtPosition({PosX+0.5, PosZ, PosY}, 0, true, 'AntiAir')
-                if highestTreat['Air'] < enemyThreat then
-                    highestTreat['Air'] = enemyThreat
+                if highestThreat["Air"] < enemyThreat then
+                    highestThreat["Air"] = enemyThreat
                 end
-                DrawCircle({PosX, PosZ, PosY}, (enemyThreat * treatScale['Air']) + 0.1, 'ffffffff' )
+                DrawCircle({PosX, PosZ, PosY}, (enemyThreat * threatScale["Air"]) + 0.1, 'ffffffff' )
                 -- -------------------------------------------------------------------------------- --
                 enemyThreat = aiBrain:GetThreatAtPosition({PosX, PosZ, PosY+0.5}, 0, true, 'AntiSurface')
                 enemyThreat = enemyThreat + aiBrain:GetThreatAtPosition({PosX, PosZ, PosY}, 0, true, 'AntiSurface')
-                if highestTreat['Amphibious'] < enemyThreat then
-                    highestTreat['Amphibious'] = enemyThreat
+                if highestThreat["Amphibious"] < enemyThreat then
+                    highestThreat["Amphibious"] = enemyThreat
                 end
-                DrawCircle({PosX, PosZ, PosY}, (enemyThreat * treatScale['Amphibious']) + 0.1, 'ff27408b' )
+                DrawCircle({PosX, PosZ, PosY}, (enemyThreat * threatScale["Amphibious"]) + 0.1, 'ff27408b' )
                 -- -------------------------------------------------------------------------------- --
             end
         end
         -- max radius for a circle is DistanceBetweenMarkers / 2
-        treatScale['Land'] = DistanceBetweenMarkers / 2 / highestTreat['Land']
-        treatScale['Air'] = DistanceBetweenMarkers / 2 / highestTreat['Air']
-        treatScale['Amphibious'] = DistanceBetweenMarkers / 2 / highestTreat['Amphibious']
+        threatScale["Land"] = DistanceBetweenMarkers / 2 / highestThreat["Land"]
+        threatScale["Air"] = DistanceBetweenMarkers / 2 / highestThreat["Air"]
+        threatScale["Amphibious"] = DistanceBetweenMarkers / 2 / highestThreat["Amphibious"]
     end
 end
 
 function DrawAIPathCache(DrawOnly)
     -- loop over all players in the game
     local FocussedArmy = GetFocusArmy()
+    local LineCountOffset
+    local LastNode
 
     for ArmyIndex, aiBrain in ArmyBrains do
         -- only draw the pathcache from the focussed army
@@ -590,9 +625,6 @@ function DrawAIPathCache(DrawOnly)
         end
         -- is the player an AI-Uveso ?
         if aiBrain.PathCache then
-            local LineCountOffset = 0
-            local Pos1 = {}
-            local Pos2 = {}
             -- Loop over all paths that starts from "StartNode"
             for StartNode, EndNodeCache in aiBrain.PathCache do
                 LineCountOffset = 0
@@ -602,7 +634,7 @@ function DrawAIPathCache(DrawOnly)
                     for threatWeight, PathNodes in Path do
                         -- Display only valid paths
                         if PathNodes.path ~= 'bad' then
-                            local LastNode = false
+                            LastNode = false
                             if not PathNodes.path.path then
                                 continue
                             end
@@ -641,15 +673,17 @@ end
 
 
 function RenderMarkerCreatorThread()
-    SPEW('* AI-Uveso: Function RenderMarkerCreatorThread() started.')
+    AIDebug('* AI-Uveso: Function RenderMarkerCreatorThread() started.', true, UvesoOffsetSimInitLUA)
     local MarkerPosition = {}
     local Marker2Position = {}
+    local adjancents
+    local otherMarker
     while GetGameTimeSeconds() < 5 do
         coroutine.yield(10)
     end
     while true do
         if GetGameTimeSeconds() > 8 then
-            --LOG('* AI-Uveso: Function RenderMarkerCreatorThread() beat.')
+            --AILog('* AI-Uveso: Function RenderMarkerCreatorThread() beat.')
             for nodename, markerInfo in CREATEDMARKERS or {} do
                 MarkerPosition[1] = markerInfo.position[1]
                 MarkerPosition[2] = markerInfo.position[2]
@@ -658,10 +692,10 @@ function RenderMarkerCreatorThread()
                 DrawCircle(MarkerPosition, 4, Offsets[markerInfo.graph]['color'] or 'ff000000' )
                 -- Draw the connecting lines to its adjacent nodes
                 if markerInfo.adjacentTo then
-                    local adjancents = STR_GetTokens(markerInfo.adjacentTo or '', ' ')
+                    adjancents = STR_GetTokens(markerInfo.adjacentTo or '', ' ')
                     if adjancents[0] then
                         for i, node in adjancents do
-                            local otherMarker = CREATEDMARKERS[node]
+                            otherMarker = CREATEDMARKERS[node]
                             if otherMarker then
                                 if markerInfo.graph == 'DefaultLand' and otherMarker.graph == 'DefaultLand' then
                                     Color = Offsets['DefaultLand']['color']
@@ -719,7 +753,7 @@ end
 
 function CreateAIMarkers()
     if ScenarioInfo.Options.AIMapMarker == 'off' then
-        LOG('* AI-Uveso: Running without markers, deleting map marker.')
+        AILog('* AI-Uveso: Running without markers, deleting map marker.', true, UvesoOffsetSimInitLUA)
         CREATEDMARKERS = {}
         CopyMarkerToMASTERCHAIN('Land')
         CopyMarkerToMASTERCHAIN('Water')
@@ -727,12 +761,12 @@ function CreateAIMarkers()
         CopyMarkerToMASTERCHAIN('Air')
         return
     elseif ScenarioInfo.Options.AIMapMarker == 'map' then
-        LOG('* AI-Uveso: Using the original marker from the map.')
+        AILog('* AI-Uveso: Using the original marker from the map.', true, UvesoOffsetSimInitLUA)
         -- Build Graphs like LAND1 LAND2 WATER1 WATER2
         BuildGraphAreas()
         return
     elseif ScenarioInfo.DoNotAllowMarkerGenerator == true then
-        WARN('* AI-Uveso: Map does not allow automated marker creation, using the original marker from the map.')
+        AIWarn('* AI-Uveso: Map does not allow automated marker creation, using the original marker from the map.')
         -- Build Graphs like LAND1 LAND2 WATER1 WATER2
         BuildGraphAreas()
         return
@@ -744,13 +778,13 @@ function CreateAIMarkers()
             end
         end
         if count > 1 then
-            LOG('* AI-Uveso: No autogenerating. Map has '..count..' marker.')
+            AILog('* AI-Uveso: No autogenerating. Map has '..count..' marker.', true, UvesoOffsetSimInitLUA)
             return
         else
-            LOG('* AI-Uveso: Map has no markers; Generating marker, please wait...')
+            AILog('* AI-Uveso: Map has no markers; Generating marker, please wait...', true, UvesoOffsetSimInitLUA)
         end
     elseif ScenarioInfo.Options.AIMapMarker == 'all' then
-        LOG('* AI-Uveso: Generating marker, please wait...')
+        AILog('* AI-Uveso: Generating marker, please wait...', true, UvesoOffsetSimInitLUA)
     end
     -- Map size like 20x10 and 10x20
     if ScenarioInfo.size[1] > ScenarioInfo.size[2] then
@@ -765,14 +799,16 @@ function CreateAIMarkers()
     else
         playablearea = {0, 0, ScenarioInfo.size[1], ScenarioInfo.size[2]}
     end
-    --LOG('* AI-Uveso: playable area coordinates are ' .. repr(playablearea))
+    --AILog('* AI-Uveso: playable area coordinates are ' .. repr(playablearea))
     -- Create Air Marker
     CREATEDMARKERS = {}
     local DistanceBetweenMarkers = ScenarioInfo.size[1] / ( MarkerCountX/2 )
+    local PosX
+    local PosY
     for Y = 0, MarkerCountY/2 - 1 do
         for X = 0, MarkerCountX/2 - 1 do
-            local PosX = X * DistanceBetweenMarkers + DistanceBetweenMarkers / 2
-            local PosY = Y * DistanceBetweenMarkers + DistanceBetweenMarkers / 2
+            PosX = X * DistanceBetweenMarkers + DistanceBetweenMarkers / 2
+            PosY = Y * DistanceBetweenMarkers + DistanceBetweenMarkers / 2
                 CREATEDMARKERS['Marker'..X..'-'..Y] = {
                     ['position'] = VECTOR3( PosX, GetSurfaceHeight(PosX,PosY), PosY ),
                     ['graph'] = 'DefaultAir',
@@ -795,22 +831,24 @@ function CreateAIMarkers()
 
     -- create Land/Water/Amphibious marker grid
     CREATEDMARKERS = {}
-    local DistanceBetweenMarkers = ScenarioInfo.size[1] / ( MarkerCountX )
+    DistanceBetweenMarkers = ScenarioInfo.size[1] / ( MarkerCountX )
     for Y = 0, MarkerCountY - 1 do
         for X = 0, MarkerCountX - 1 do
-            local PosX = X * DistanceBetweenMarkers + DistanceBetweenMarkers / 2
-            local PosY = Y * DistanceBetweenMarkers + DistanceBetweenMarkers / 2
+            PosX = X * DistanceBetweenMarkers + DistanceBetweenMarkers / 2
+            PosY = Y * DistanceBetweenMarkers + DistanceBetweenMarkers / 2
                 CREATEDMARKERS['Marker'..X..'-'..Y] = {
                     ['position'] = VECTOR3( PosX, GetSurfaceHeight(PosX,PosY), PosY ),
                 }
         end
     end
     -- define marker as land, amp, water
+    local ReturnGraph
+    local MarkerIndex
+    local MarkerPosition
     for Y = 0, MarkerCountY - 1 do
         for X = 0, MarkerCountX - 1 do
-            local ReturnGraph
-            local MarkerIndex = 'Marker'..X..'-'..Y
-            local MarkerPosition = CREATEDMARKERS[MarkerIndex].position
+            MarkerIndex = 'Marker'..X..'-'..Y
+            MarkerPosition = CREATEDMARKERS[MarkerIndex].position
             if MarkerPosition[1] > playablearea[1] and MarkerPosition[1] < playablearea[3] and MarkerPosition[3] > playablearea[2] and MarkerPosition[3] < playablearea[4] then
                 ReturnGraph = CheckValidMarkerPosition(MarkerIndex)
             else
@@ -819,7 +857,7 @@ function CreateAIMarkers()
 --            if DebugMarker == MarkerIndex then
 --                ReturnGraph = 'DefaultAir'
 --            end
-            --LOG('Marker '..'Marker '..X..'-'..Y..' TerrainType = '..ReturnGraph)
+            --AILog('Marker '..'Marker '..X..'-'..Y..' TerrainType = '..ReturnGraph)
             CREATEDMARKERS[MarkerIndex].graph = ReturnGraph
         end
     end
@@ -847,7 +885,7 @@ function CreateAIMarkers()
 
 
     if ScenarioInfo.Options.AIMapMarker == 'print' then
-        LOG('map: Printing markers to game.log')
+        AILog('map: Printing markers to game.log', true, UvesoOffsetSimInitLUA)
         PrintMASTERCHAIN()
     end
 
@@ -856,27 +894,30 @@ function CreateAIMarkers()
 end
 
 function CleanMarkersInMASTERCHAIN(layer)
+    local adjancents
+    local adjancentsD
+    local NewadjacentTo
     for Y = 0, MarkerCountY - 1 do
         for X = 0, MarkerCountX - 1 do
             if Scenario.MasterChain._MASTERCHAIN_.Markers[layer..X..'-'..Y] then
-                --LOG('Cleaning marker '..layer..X..'-'..Y)
+                --AILog('Cleaning marker '..layer..X..'-'..Y)
                 -- check if we have 8 adjacentTo. If yes, delete this Marker
-                local adjancents = STR_GetTokens(Scenario.MasterChain._MASTERCHAIN_.Markers[layer..X..'-'..Y].adjacentTo or '', ' ')
+                adjancents = STR_GetTokens(Scenario.MasterChain._MASTERCHAIN_.Markers[layer..X..'-'..Y].adjacentTo or '', ' ')
                 -- disabled for chp2001, it's also not really needed.
                 -- if adjancents[7] then -- pruning markers with 8 adjancents
                 if adjancents[8] then
-                    LOG('markers has 8 adjacentTo: '..Scenario.MasterChain._MASTERCHAIN_.Markers[layer..X..'-'..Y].adjacentTo)
+                    AILog('markers has 8 adjacentTo: '..Scenario.MasterChain._MASTERCHAIN_.Markers[layer..X..'-'..Y].adjacentTo, true, UvesoOffsetSimInitLUA)
                     Scenario.MasterChain._MASTERCHAIN_.Markers[layer..X..'-'..Y] = nil
                     -- delete adjacentTo from near markers
                     for YD = -1, 1 do
                         for XD = -1, 1 do
-                            --LOG('XD '..XD..' - YD '..YD..'')
+                            --AILog('XD '..XD..' - YD '..YD..'')
                             if Scenario.MasterChain._MASTERCHAIN_.Markers[layer..(X+XD)..'-'..(Y+YD)] then
-                                local adjancentsD = STR_GetTokens(Scenario.MasterChain._MASTERCHAIN_.Markers[layer..(X+XD)..'-'..(Y+YD)].adjacentTo or '', ' ')
-                                local NewadjacentTo = nil
+                                adjancentsD = STR_GetTokens(Scenario.MasterChain._MASTERCHAIN_.Markers[layer..(X+XD)..'-'..(Y+YD)].adjacentTo or '', ' ')
+                                NewadjacentTo = nil
                                 for i, node in adjancentsD do
                                     if node ~= layer..X..'-'..Y then
-                                        --LOG('adding node '..node..' this is never'..layer..X..'-'..Y)
+                                        --AILog('adding node '..node..' this is never'..layer..X..'-'..Y)
                                         if not NewadjacentTo then
                                             NewadjacentTo = node
                                         else
@@ -884,21 +925,21 @@ function CleanMarkersInMASTERCHAIN(layer)
                                         end
                                     end
                                 end
-                                --LOG('Set new adjacent to marker : '..layer..(X+XD)..'-'..(Y+YD) )
+                                --AILog('Set new adjacent to marker : '..layer..(X+XD)..'-'..(Y+YD) )
                                 Scenario.MasterChain._MASTERCHAIN_.Markers[layer..(X+XD)..'-'..(Y+YD)].adjacentTo = NewadjacentTo
-                                --LOG('validate: '..repr(Scenario.MasterChain._MASTERCHAIN_.Markers[layer..(X+XD)..'-'..(Y+YD)].adjacentTo))
+                                --AILog('validate: '..repr(Scenario.MasterChain._MASTERCHAIN_.Markers[layer..(X+XD)..'-'..(Y+YD)].adjacentTo))
                             end
                         end
                     end
                 elseif Scenario.MasterChain._MASTERCHAIN_.Markers[layer..X..'-'..Y].adjacentTo then
-                    local adjancents = STR_GetTokens(Scenario.MasterChain._MASTERCHAIN_.Markers[layer..X..'-'..Y].adjacentTo or '', ' ')
+                    adjancents = STR_GetTokens(Scenario.MasterChain._MASTERCHAIN_.Markers[layer..X..'-'..Y].adjacentTo or '', ' ')
                     if not adjancents[0] then
-                        --LOG('* AI-Uveso: adjacentTo table is empty, deleting node '..X..' '..Y..'')
+                        --AILog('* AI-Uveso: adjacentTo table is empty, deleting node '..X..' '..Y..'')
                         Scenario.MasterChain._MASTERCHAIN_.Markers[layer..X..'-'..Y] = nil
                         CREATEDMARKERS['Marker'..X..'-'..Y] = nil
                     end
                 else
-                    --LOG('* AI-Uveso: no adjacentTo table found, deleting node '..X..' '..Y..'')
+                    --AILog('* AI-Uveso: no adjacentTo table found, deleting node '..X..' '..Y..'')
                     Scenario.MasterChain._MASTERCHAIN_.Markers[layer..X..'-'..Y] = nil
                     CREATEDMARKERS['Marker'..X..'-'..Y] = nil
                 end
@@ -908,27 +949,30 @@ function CleanMarkersInMASTERCHAIN(layer)
 end
 
 function CopyMarkerToMASTERCHAIN(layer)
-    --LOG('Delete original marker from MASTERCHAIN for Layer: '..layer)
+    --AILog('Delete original marker from MASTERCHAIN for Layer: '..layer)
     -- Deleting all previous markers from MASTERCHAIN
     for nodename, markerInfo in Scenario.MasterChain._MASTERCHAIN_.Markers or {} do
         if markerInfo['graph'] == 'Default'..layer then
             Scenario.MasterChain._MASTERCHAIN_.Markers[nodename] = nil
-            --LOG('Removed from Masterchain: '..nodename)
+            --AILog('Removed from Masterchain: '..nodename)
         elseif markerInfo['type'] == layer..' Path Node' then
             Scenario.MasterChain._MASTERCHAIN_.Markers[nodename] = nil
-            --LOG('Removed from Masterchain: '..nodename)
+            --AILog('Removed from Masterchain: '..nodename)
         end
     end
     -- Copy marker
-    --LOG('Copy new marker to MASTERCHAIN for Layer: '..layer)
+    --AILog('Copy new marker to MASTERCHAIN for Layer: '..layer)
+    local NewNodeName
+    local NewadjacentTo
+    local adjancents
     for nodename, markerInfo in CREATEDMARKERS do
         -- check if we have the right layer
         if markerInfo['graph'] == 'Default'..layer or layer == 'Amphibious' then
-            local NewNodeName = string.gsub(nodename, 'Marker', layer)
+            NewNodeName = string.gsub(nodename, 'Marker', layer)
             Scenario.MasterChain._MASTERCHAIN_.Markers[NewNodeName] = table.copy(markerInfo)
             -- Validate adjacentTo
-            local NewadjacentTo = nil
-            local adjancents = STR_GetTokens(Scenario.MasterChain._MASTERCHAIN_.Markers[NewNodeName].adjacentTo or '', ' ')
+            NewadjacentTo = nil
+            adjancents = STR_GetTokens(Scenario.MasterChain._MASTERCHAIN_.Markers[NewNodeName].adjacentTo or '', ' ')
             if adjancents[0] then
                 for i, node in adjancents do
                     -- Does the node on this layer exist ?
@@ -966,12 +1010,13 @@ function CheckValidMarkerPosition(MarkerIndex)
     if GetTerrainHeight(CREATEDMARKERS[MarkerIndex].position[1], CREATEDMARKERS[MarkerIndex].position[3]) < GetSurfaceHeight(CREATEDMARKERS[MarkerIndex].position[1], CREATEDMARKERS[MarkerIndex].position[3]) then
         MarkerLayer = 'DefaultWater'
     end
-    local UHigh, DHigh, LHigh, RHigh = 0,0,0,0
+    local High, UHigh, DHigh, LHigh, RHigh = 0,0,0,0,0
     local LUHigh, RUHigh, LDHigh, RDHigh = 0,0,0,0
     local FAILLINE = 0
     local FAILSUMM = 0
     local MaxFails = 8 * 1/ScanResolution
     local MarkerPos = CREATEDMARKERS[MarkerIndex].position
+    local Block, THigh
 --    local ASCIIGFX = ''
     ------------------
     -- Check X Axis --
@@ -985,7 +1030,7 @@ function CheckValidMarkerPosition(MarkerIndex)
 --                --DrawLine( {MarkerPos[1] -4, MarkerPos[2], MarkerPos[3] + Y}, {MarkerPos[1] + X, MarkerPos[2], MarkerPos[3] + Y}, 'ffFFE0E0' )
 --                --coroutine.yield(1)
 --            end
-            local Block = false
+            Block = false
                 -- Check a square with FootprintSize if it has less then MaxSlope and MaxAngle
             High = GetSurfaceHeight( MarkerPos[1] + X, MarkerPos[3] + Y )
             UHigh = High - GetSurfaceHeight( MarkerPos[1] + X, MarkerPos[3] + Y-FootprintSize )
@@ -997,17 +1042,17 @@ function CheckValidMarkerPosition(MarkerIndex)
             LDHigh = High - GetSurfaceHeight( MarkerPos[1] + X-FootprintSize*0.8, MarkerPos[3] + Y+FootprintSize*0.8 )
             RDHigh = High - GetSurfaceHeight( MarkerPos[1] + X+FootprintSize*0.8, MarkerPos[3] + Y+FootprintSize*0.8 )
 --            if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
---              LOG('*ConnectMarker slope  : '..string.format("slope:  %.3f  %.3f  %.3f  %.3f   angle:  %.3f  %.3f  %.3f  %.3f ... %.3f  %.3f  %.3f  %.3f", math.abs(UHigh - DHigh), math.abs(LHigh - RHigh), math.abs(LUHigh - RDHigh), math.abs(RUHigh - LDHigh), math.abs(UHigh), math.abs(DHigh), math.abs(LHigh), math.abs(RHigh), math.abs(LUHigh), math.abs(RUHigh), math.abs(LDHigh), math.abs(RDHigh) ) )
+--              AILog('*ConnectMarker slope  : '..string.format("slope:  %.3f  %.3f  %.3f  %.3f   angle:  %.3f  %.3f  %.3f  %.3f ... %.3f  %.3f  %.3f  %.3f", math.abs(UHigh - DHigh), math.abs(LHigh - RHigh), math.abs(LUHigh - RDHigh), math.abs(RUHigh - LDHigh), math.abs(UHigh), math.abs(DHigh), math.abs(LHigh), math.abs(RHigh), math.abs(LUHigh), math.abs(RUHigh), math.abs(LDHigh), math.abs(RDHigh) ) )
 --            end
             if math.abs(UHigh + DHigh) > MaxSlope or math.abs(LHigh + RHigh) > MaxSlope or math.abs(LUHigh + RDHigh) > MaxSlope or math.abs(RUHigh + LDHigh) > MaxSlope then
 --                if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceSouthWest then
---                    WARN('*ConnectMarker slope  : '..string.format("%.2f %.2f %.2f %.2f", math.abs(UHigh - DHigh), math.abs(LHigh - RHigh), math.abs(LUHigh - RDHigh), math.abs(RUHigh - LDHigh) ) )
+--                    AIWarn('*ConnectMarker slope  : '..string.format("%.2f %.2f %.2f %.2f", math.abs(UHigh - DHigh), math.abs(LHigh - RHigh), math.abs(LUHigh - RDHigh), math.abs(RUHigh - LDHigh) ) )
 --                end
                 Block = true
             end
             if math.abs(UHigh) > MaxAngle or math.abs(DHigh) > MaxAngle or math.abs(LHigh) > MaxAngle or math.abs(RHigh) > MaxAngle or math.abs(LUHigh) > MaxAngle or math.abs(RUHigh) > MaxAngle or math.abs(LDHigh) > MaxAngle or math.abs(RDHigh) > MaxAngle then
 --                if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceSouthWest then
---                    WARN('*ConnectMarker angle  : '..string.format("%.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f", math.abs(UHigh), math.abs(DHigh), math.abs(LHigh), math.abs(RHigh), math.abs(LUHigh), math.abs(RUHigh), math.abs(LDHigh), math.abs(RDHigh) ) )
+--                    AIWarn('*ConnectMarker angle  : '..string.format("%.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f", math.abs(UHigh), math.abs(DHigh), math.abs(LHigh), math.abs(RHigh), math.abs(LUHigh), math.abs(RUHigh), math.abs(LDHigh), math.abs(RDHigh) ) )
 --                end
                 Block = true
             end
@@ -1023,14 +1068,14 @@ function CheckValidMarkerPosition(MarkerIndex)
                 if THigh < High then
                     if MarkerLayer ~= 'DefaultWater' then
 --                        if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
---                            WARN('*CheckValidMarkerPosition Land / Water passage!!!')
+--                            AIWarn('*CheckValidMarkerPosition Land / Water passage!!!')
 --                        end
                         MarkerLayer = 'DefaultAmphibious'
                     end
                 else
                     if MarkerLayer == 'DefaultWater' then
 --                        if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
---                            WARN('*CheckValidMarkerPosition Land / Water passage!!!')
+--                            AIWarn('*CheckValidMarkerPosition Land / Water passage!!!')
 --                        end
                         MarkerLayer = 'DefaultAmphibious'
                     end
@@ -1038,11 +1083,11 @@ function CheckValidMarkerPosition(MarkerIndex)
             end
         end
 --        if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
---            LOG(ASCIIGFX)
+--            AILog(ASCIIGFX)
 --        end
         if FAILLINE >= MaxFails then
 --            if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
---                WARN('*CheckValidMarkerPosition X Axis ('..FAILLINE..'/'..MaxFails..') LINE Failed')
+--                AIWarn('*CheckValidMarkerPosition X Axis ('..FAILLINE..'/'..MaxFails..') LINE Failed')
 --            end
             return 'Blocked'
         end
@@ -1050,17 +1095,17 @@ function CheckValidMarkerPosition(MarkerIndex)
             FAILSUMM = FAILSUMM + 1
         end
 --        if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
---            LOG('*CheckValidMarkerPosition X Axis FAILLINE ('..FAILLINE..'/'..MaxFails..')')
+--            AILog('*CheckValidMarkerPosition X Axis FAILLINE ('..FAILLINE..'/'..MaxFails..')')
 --        end
     end
     if FAILSUMM >= MaxFails then
 --        if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
---            WARN('*CheckValidMarkerPosition X Axis FAILSUMM ('..FAILSUMM..'/'..MaxFails..') SUMM Failed')
+--            AIWarn('*CheckValidMarkerPosition X Axis FAILSUMM ('..FAILSUMM..'/'..MaxFails..') SUMM Failed')
 --        end
         return 'Blocked'
     end
 --    if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
---        LOG('*CheckValidMarkerPosition X Axis FAILSUMM ('..FAILSUMM..'/'..MaxFails..')')
+--        AILog('*CheckValidMarkerPosition X Axis FAILSUMM ('..FAILSUMM..'/'..MaxFails..')')
 --    end
     ------------------
     -- Check Y Axis --
@@ -1074,7 +1119,7 @@ function CheckValidMarkerPosition(MarkerIndex)
 --                --DrawLine( {MarkerPos[1] + X , MarkerPos[2], MarkerPos[3] -4}, {MarkerPos[1] + X, MarkerPos[2], MarkerPos[3] + Y}, 'ffFFE0E0' )
 --                --coroutine.yield(1)
 --            end
-            local Block = false
+            Block = false
                 -- Check a square with FootprintSize if it has less then MaxSlope and MaxAngle
             High = GetSurfaceHeight( MarkerPos[1] + X, MarkerPos[3] + Y )
             UHigh = High - GetSurfaceHeight( MarkerPos[1] + X, MarkerPos[3] + Y-FootprintSize )
@@ -1086,17 +1131,17 @@ function CheckValidMarkerPosition(MarkerIndex)
             LDHigh = High - GetSurfaceHeight( MarkerPos[1] + X-FootprintSize*0.8, MarkerPos[3] + Y+FootprintSize*0.8 )
             RDHigh = High - GetSurfaceHeight( MarkerPos[1] + X+FootprintSize*0.8, MarkerPos[3] + Y+FootprintSize*0.8 )
 --            if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
---              LOG('*ConnectMarker slope  : '..string.format("slope:  %.3f  %.3f  %.3f  %.3f   angle:  %.3f  %.3f  %.3f  %.3f ... %.3f  %.3f  %.3f  %.3f", math.abs(UHigh - DHigh), math.abs(LHigh - RHigh), math.abs(LUHigh - RDHigh), math.abs(RUHigh - LDHigh), math.abs(UHigh), math.abs(DHigh), math.abs(LHigh), math.abs(RHigh), math.abs(LUHigh), math.abs(RUHigh), math.abs(LDHigh), math.abs(RDHigh) ) )
+--              AILog('*ConnectMarker slope  : '..string.format("slope:  %.3f  %.3f  %.3f  %.3f   angle:  %.3f  %.3f  %.3f  %.3f ... %.3f  %.3f  %.3f  %.3f", math.abs(UHigh - DHigh), math.abs(LHigh - RHigh), math.abs(LUHigh - RDHigh), math.abs(RUHigh - LDHigh), math.abs(UHigh), math.abs(DHigh), math.abs(LHigh), math.abs(RHigh), math.abs(LUHigh), math.abs(RUHigh), math.abs(LDHigh), math.abs(RDHigh) ) )
 --            end
             if math.abs(UHigh + DHigh) > MaxSlope or math.abs(LHigh + RHigh) > MaxSlope or math.abs(LUHigh + RDHigh) > MaxSlope or math.abs(RUHigh + LDHigh) > MaxSlope then
 --                if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceSouthWest then
---                    WARN('*ConnectMarker slope  : '..string.format("%.2f %.2f %.2f %.2f", math.abs(UHigh - DHigh), math.abs(LHigh - RHigh), math.abs(LUHigh - RDHigh), math.abs(RUHigh - LDHigh) ) )
+--                    AIWarn('*ConnectMarker slope  : '..string.format("%.2f %.2f %.2f %.2f", math.abs(UHigh - DHigh), math.abs(LHigh - RHigh), math.abs(LUHigh - RDHigh), math.abs(RUHigh - LDHigh) ) )
 --                end
                 Block = true
             end
             if math.abs(UHigh) > MaxAngle or math.abs(DHigh) > MaxAngle or math.abs(LHigh) > MaxAngle or math.abs(RHigh) > MaxAngle or math.abs(LUHigh) > MaxAngle or math.abs(RUHigh) > MaxAngle or math.abs(LDHigh) > MaxAngle or math.abs(RDHigh) > MaxAngle then
 --                if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceSouthWest then
---                    WARN('*ConnectMarker angle  : '..string.format("%.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f", math.abs(UHigh), math.abs(DHigh), math.abs(LHigh), math.abs(RHigh), math.abs(LUHigh), math.abs(RUHigh), math.abs(LDHigh), math.abs(RDHigh) ) )
+--                    AIWarn('*ConnectMarker angle  : '..string.format("%.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f", math.abs(UHigh), math.abs(DHigh), math.abs(LHigh), math.abs(RHigh), math.abs(LUHigh), math.abs(RUHigh), math.abs(LDHigh), math.abs(RDHigh) ) )
 --                end
                 Block = true
             end
@@ -1112,14 +1157,14 @@ function CheckValidMarkerPosition(MarkerIndex)
                 if THigh < High then
                     if MarkerLayer ~= 'DefaultWater' then
 --                        if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
---                            WARN('*CheckValidMarkerPosition Land / Water passage!!!')
+--                            AIWarn('*CheckValidMarkerPosition Land / Water passage!!!')
 --                        end
                         MarkerLayer = 'DefaultAmphibious'
                     end
                 else
                     if MarkerLayer == 'DefaultWater' then
 --                        if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
---                            WARN('*CheckValidMarkerPosition Land / Water passage!!!')
+--                            AIWarn('*CheckValidMarkerPosition Land / Water passage!!!')
 --                        end
                         MarkerLayer = 'DefaultAmphibious'
                     end
@@ -1127,11 +1172,11 @@ function CheckValidMarkerPosition(MarkerIndex)
             end
         end
 --        if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
---            LOG(ASCIIGFX)
+--            AILog(ASCIIGFX)
 --        end
         if FAILLINE >= MaxFails then
 --            if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
---                WARN('*CheckValidMarkerPosition Y Axis ('..FAILLINE..'/'..MaxFails..') LINE Failed')
+--                AIWarn('*CheckValidMarkerPosition Y Axis ('..FAILLINE..'/'..MaxFails..') LINE Failed')
 --            end
             return 'Blocked'
         end
@@ -1139,17 +1184,17 @@ function CheckValidMarkerPosition(MarkerIndex)
             FAILSUMM = FAILSUMM + 1
         end
 --        if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
---            LOG('*CheckValidMarkerPosition Y Axis FAILLINE ('..FAILLINE..'/'..MaxFails..')')
+--            AILog('*CheckValidMarkerPosition Y Axis FAILLINE ('..FAILLINE..'/'..MaxFails..')')
 --        end
     end
     if FAILSUMM >= MaxFails then
 --        if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
---            WARN('*CheckValidMarkerPosition Y Axis FAILSUMM ('..FAILSUMM..'/'..MaxFails..') SUMM Failed')
+--            AIWarn('*CheckValidMarkerPosition Y Axis FAILSUMM ('..FAILSUMM..'/'..MaxFails..') SUMM Failed')
 --        end
         return 'Blocked'
     end
 --    if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
---        LOG('*CheckValidMarkerPosition Y Axis FAILSUMM ('..FAILSUMM..'/'..MaxFails..')')
+--        AILog('*CheckValidMarkerPosition Y Axis FAILSUMM ('..FAILSUMM..'/'..MaxFails..')')
 --    end
     return MarkerLayer
 end
@@ -1164,10 +1209,11 @@ function ConnectMarker(X,Y)
     end
     -- First check a path to East Marker
     local MaxFails = 9
-    local UHigh, DHigh, LHigh, RHigh = 0,0,0,0
+    local High, UHigh, DHigh, LHigh, RHigh = 0,0,0,0,0
     local LUHigh, RUHigh, LDHigh, RDHigh = 0,0,0,0
     local LUHigh, RUHigh, LDHigh, RDHigh = 0,0,0,0
     local MarkerPos = CREATEDMARKERS[MarkerIndex].position
+    local Block
 --    local ASCIIGFX = ''
     -----------------------------------------
     -- Search for a connection to E (East) --
@@ -1182,7 +1228,7 @@ function ConnectMarker(X,Y)
 --                    DrawLine( {MarkerPos[1], MarkerPos[2], MarkerPos[3] + Y}, { X, MarkerPos[2], MarkerPos[3] + Y}, 'ffFFE0E0' )
 --                    coroutine.yield(1)
 --                end
-                local Block = false
+                Block = false
                 -- Check a square with FootprintSize if it has less then MaxSlope/MaxAngle ((circle 16:20  1:20*16 = 0.8))
                 High = GetSurfaceHeight( X, MarkerPos[3] + Y )
                 UHigh = High - GetSurfaceHeight( X, MarkerPos[3] + Y-FootprintSize )
@@ -1196,21 +1242,21 @@ function ConnectMarker(X,Y)
 
 -- TypeCode 9 an 230 is blocking terrain type (Did not find a map that is using it)
 --if GetTerrainType(X,  MarkerPos[3] + Y).Blocking then
---    WARN('############ Blocking ############')
+--    AIWarn('############ Blocking ############')
 --end
 
 --                if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceEast then
---                    LOG('*ConnectMarker slope  : '..string.format("slope:  %.3f  %.3f  %.3f  %.3f   angle:  %.3f  %.3f  %.3f  %.3f ... %.3f  %.3f  %.3f  %.3f", math.abs(UHigh - DHigh), math.abs(LHigh - RHigh), math.abs(LUHigh - RDHigh), math.abs(RUHigh - LDHigh), math.abs(UHigh), math.abs(DHigh), math.abs(LHigh), math.abs(RHigh), math.abs(LUHigh), math.abs(RUHigh), math.abs(LDHigh), math.abs(RDHigh) ) )
+--                    AILog('*ConnectMarker slope  : '..string.format("slope:  %.3f  %.3f  %.3f  %.3f   angle:  %.3f  %.3f  %.3f  %.3f ... %.3f  %.3f  %.3f  %.3f", math.abs(UHigh - DHigh), math.abs(LHigh - RHigh), math.abs(LUHigh - RDHigh), math.abs(RUHigh - LDHigh), math.abs(UHigh), math.abs(DHigh), math.abs(LHigh), math.abs(RHigh), math.abs(LUHigh), math.abs(RUHigh), math.abs(LDHigh), math.abs(RDHigh) ) )
 --                end
                 if math.abs(UHigh + DHigh) > MaxSlope or math.abs(LHigh + RHigh) > MaxSlope or math.abs(LUHigh + RDHigh) > MaxSlope or math.abs(RUHigh + LDHigh) > MaxSlope then
 --                    if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceSouth then
---                        WARN('*ConnectMarker slope  : '..string.format("%.2f %.2f %.2f %.2f", math.abs(UHigh - DHigh), math.abs(LHigh - RHigh), math.abs(LUHigh - RDHigh), math.abs(RUHigh - LDHigh) ) )
+--                        AIWarn('*ConnectMarker slope  : '..string.format("%.2f %.2f %.2f %.2f", math.abs(UHigh - DHigh), math.abs(LHigh - RHigh), math.abs(LUHigh - RDHigh), math.abs(RUHigh - LDHigh) ) )
 --                    end
                     Block = true
                 end
                 if math.abs(UHigh) > MaxAngle or math.abs(DHigh) > MaxAngle or math.abs(LHigh) > MaxAngle or math.abs(RHigh) > MaxAngle or math.abs(LUHigh) > MaxAngle or math.abs(RUHigh) > MaxAngle or math.abs(LDHigh) > MaxAngle or math.abs(RDHigh) > MaxAngle then
 --                    if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceSouth then
---                        WARN('*ConnectMarker angle  : '..string.format("%.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f", math.abs(UHigh), math.abs(DHigh), math.abs(LHigh), math.abs(RHigh), math.abs(LUHigh), math.abs(RUHigh), math.abs(LDHigh), math.abs(RDHigh) ) )
+--                        AIWarn('*ConnectMarker angle  : '..string.format("%.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f", math.abs(UHigh), math.abs(DHigh), math.abs(LHigh), math.abs(RHigh), math.abs(LUHigh), math.abs(RUHigh), math.abs(LDHigh), math.abs(RDHigh) ) )
 --                    end
                     Block = true
                 end
@@ -1223,14 +1269,14 @@ function ConnectMarker(X,Y)
                 end
             end
 --            if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
---                LOG(ASCIIGFX)
+--                AILog(ASCIIGFX)
 --            end
         end
     else
         FAIL = MaxFails
     end
 --    if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
---        WARN('*CheckValidMarkerPosition East ('..FAIL..') Fails')
+--        AIWarn('*CheckValidMarkerPosition East ('..FAIL..') Fails')
 --    end
     -- Check if we have failed to find pathable Terrain
     if FAIL < MaxFails or CREATEDMARKERS[MarkerIndex]['graph'] == 'DefaultAir' then
@@ -1251,11 +1297,11 @@ function ConnectMarker(X,Y)
             end
         end
 --        if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
---            LOG('*ConnectMarker Terrain Free -> Connecting ('..MarkerIndex..') with ('..EastMarkerIndex..')')
+--            AILog('*ConnectMarker Terrain Free -> Connecting ('..MarkerIndex..') with ('..EastMarkerIndex..')')
 --        end
     else
 --        if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
---            WARN('*ConnectMarker Terrain Blocked. Cant connect ('..MarkerIndex..') with ('..EastMarkerIndex..')')
+--            AIWarn('*ConnectMarker Terrain Blocked. Cant connect ('..MarkerIndex..') with ('..EastMarkerIndex..')')
 --        end
     end
     ------------------------------------------
@@ -1271,7 +1317,7 @@ function ConnectMarker(X,Y)
 --                    DrawLine( {MarkerPos[1] + X, MarkerPos[2], MarkerPos[3]}, { MarkerPos[1] + X, MarkerPos[2], Y}, 'ffFFE0E0' )
 --                    coroutine.yield(1)
 --                end
-                local Block = false
+                Block = false
                 -- Check a square with FootprintSize if it has less then MaxSlope/MaxAngle ((circle 16:20  1:20*16 = 0.8))
                 High = GetSurfaceHeight( MarkerPos[1] + X, Y )
                 UHigh = High - GetSurfaceHeight( MarkerPos[1] + X, Y-FootprintSize )
@@ -1283,18 +1329,18 @@ function ConnectMarker(X,Y)
                 LDHigh = High - GetSurfaceHeight( MarkerPos[1] + X-FootprintSize*0.6, Y+FootprintSize*0.6 )
                 RDHigh = High - GetSurfaceHeight( MarkerPos[1] + X+FootprintSize*0.6, Y+FootprintSize*0.6 )
 --                if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceSouth then
---                    LOG('*ConnectMarker slope  : '..string.format("slope:  %.3f  %.3f  %.3f  %.3f   angle:  %.3f  %.3f  %.3f  %.3f ... %.3f  %.3f  %.3f  %.3f", math.abs(UHigh - DHigh), math.abs(LHigh - RHigh), math.abs(LUHigh - RDHigh), math.abs(RUHigh - LDHigh), math.abs(UHigh), math.abs(DHigh), math.abs(LHigh), math.abs(RHigh), math.abs(LUHigh), math.abs(RUHigh), math.abs(LDHigh), math.abs(RDHigh) ) )
+--                    AILog('*ConnectMarker slope  : '..string.format("slope:  %.3f  %.3f  %.3f  %.3f   angle:  %.3f  %.3f  %.3f  %.3f ... %.3f  %.3f  %.3f  %.3f", math.abs(UHigh - DHigh), math.abs(LHigh - RHigh), math.abs(LUHigh - RDHigh), math.abs(RUHigh - LDHigh), math.abs(UHigh), math.abs(DHigh), math.abs(LHigh), math.abs(RHigh), math.abs(LUHigh), math.abs(RUHigh), math.abs(LDHigh), math.abs(RDHigh) ) )
 --                end
                 if math.abs(UHigh + DHigh) > MaxSlope or math.abs(LHigh + RHigh) > MaxSlope or math.abs(LUHigh + RDHigh) > MaxSlope or math.abs(RUHigh + LDHigh) > MaxSlope then
 --                    if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceSouth then
---                        WARN('*ConnectMarker slope  : '..string.format("%.2f %.2f %.2f %.2f", math.abs(UHigh - DHigh), math.abs(LHigh - RHigh), math.abs(LUHigh - RDHigh), math.abs(RUHigh - LDHigh) ) )
+--                        AIWarn('*ConnectMarker slope  : '..string.format("%.2f %.2f %.2f %.2f", math.abs(UHigh - DHigh), math.abs(LHigh - RHigh), math.abs(LUHigh - RDHigh), math.abs(RUHigh - LDHigh) ) )
 --                    end
                     Block = true
                 end
                 
                 if math.abs(UHigh) > MaxAngle or math.abs(DHigh) > MaxAngle or math.abs(LHigh) > MaxAngle or math.abs(RHigh) > MaxAngle or math.abs(LUHigh) > MaxAngle or math.abs(RUHigh) > MaxAngle or math.abs(LDHigh) > MaxAngle or math.abs(RDHigh) > MaxAngle then
 --                    if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceSouth then
---                        WARN('*ConnectMarker angle  : '..string.format("%.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f", math.abs(UHigh), math.abs(DHigh), math.abs(LHigh), math.abs(RHigh), math.abs(LUHigh), math.abs(RUHigh), math.abs(LDHigh), math.abs(RDHigh) ) )
+--                        AIWarn('*ConnectMarker angle  : '..string.format("%.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f", math.abs(UHigh), math.abs(DHigh), math.abs(LHigh), math.abs(RHigh), math.abs(LUHigh), math.abs(RUHigh), math.abs(LDHigh), math.abs(RDHigh) ) )
 --                    end
                     Block = true
                 end
@@ -1307,14 +1353,14 @@ function ConnectMarker(X,Y)
                 end
             end
 --            if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
---                LOG(ASCIIGFX)
+--                AILog(ASCIIGFX)
 --            end
         end
     else
         FAIL = MaxFails
     end
 --    if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
---        WARN('*ConnectMarker South ('..FAIL..') Fails. - MaxSlope:'..maxS..' - MaxAngle:'..maxA)
+--        AIWarn('*ConnectMarker South ('..FAIL..') Fails. - MaxSlope:'..maxS..' - MaxAngle:'..maxA)
 --    end
     -- Check if we have failed to find pathable Terrain
     if FAIL < MaxFails or CREATEDMARKERS[MarkerIndex]['graph'] == 'DefaultAir' then
@@ -1335,11 +1381,11 @@ function ConnectMarker(X,Y)
             end
         end
 --        if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
---            LOG('*ConnectMarker Terrain Free -> Connecting ('..MarkerIndex..') with ('..SouthMarkerIndex..')')
+--            AILog('*ConnectMarker Terrain Free -> Connecting ('..MarkerIndex..') with ('..SouthMarkerIndex..')')
 --        end
     else
 --        if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
---            WARN('*ConnectMarker Terrain Blocked. Cant connect ('..MarkerIndex..') with ('..SouthMarkerIndex..')')
+--            AIWarn('*ConnectMarker Terrain Blocked. Cant connect ('..MarkerIndex..') with ('..SouthMarkerIndex..')')
 --        end
     end
 
@@ -1356,7 +1402,7 @@ function ConnectMarker(X,Y)
 --                    DrawLine( {MarkerPos[1] + X, MarkerPos[2], MarkerPos[3] - X}, { MarkerPos[1] + X+XY, MarkerPos[2], MarkerPos[3] + XY - X}, 'ffFFE0E0' )
 --                    coroutine.yield(1)
 --                end
-                local Block = false
+                Block = false
                 -- Check a square with FootprintSize if it has less then MaxSlope and MaxAngle
                 High = GetSurfaceHeight( MarkerPos[1] + X+XY, MarkerPos[3] + XY-X )
                 UHigh = High - GetSurfaceHeight( MarkerPos[1] + X+XY, MarkerPos[3] + XY-X-FootprintSize )
@@ -1368,17 +1414,17 @@ function ConnectMarker(X,Y)
                 LDHigh = High - GetSurfaceHeight( MarkerPos[1] + X+XY-FootprintSize*0.8, MarkerPos[3] + XY-X+FootprintSize*0.8 )
                 RDHigh = High - GetSurfaceHeight( MarkerPos[1] + X+XY+FootprintSize*0.8, MarkerPos[3] + XY-X+FootprintSize*0.8 )
 --                if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceSouthEast then
---                    LOG('*ConnectMarker slope  : '..string.format("slope:  %.3f  %.3f  %.3f  %.3f   angle:  %.3f  %.3f  %.3f  %.3f ... %.3f  %.3f  %.3f  %.3f", math.abs(UHigh - DHigh), math.abs(LHigh - RHigh), math.abs(LUHigh - RDHigh), math.abs(RUHigh - LDHigh), math.abs(UHigh), math.abs(DHigh), math.abs(LHigh), math.abs(RHigh), math.abs(LUHigh), math.abs(RUHigh), math.abs(LDHigh), math.abs(RDHigh) ) )
+--                    AILog('*ConnectMarker slope  : '..string.format("slope:  %.3f  %.3f  %.3f  %.3f   angle:  %.3f  %.3f  %.3f  %.3f ... %.3f  %.3f  %.3f  %.3f", math.abs(UHigh - DHigh), math.abs(LHigh - RHigh), math.abs(LUHigh - RDHigh), math.abs(RUHigh - LDHigh), math.abs(UHigh), math.abs(DHigh), math.abs(LHigh), math.abs(RHigh), math.abs(LUHigh), math.abs(RUHigh), math.abs(LDHigh), math.abs(RDHigh) ) )
 --                end
                 if math.abs(UHigh + DHigh) > MaxSlope or math.abs(LHigh + RHigh) > MaxSlope or math.abs(LUHigh + RDHigh) > MaxSlope or math.abs(RUHigh + LDHigh) > MaxSlope then
 --                    if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceSouthEast then
---                       WARN('*ConnectMarker slope  : '..string.format("%.2f %.2f %.2f %.2f", math.abs(UHigh - DHigh), math.abs(LHigh - RHigh), math.abs(LUHigh - RDHigh), math.abs(RUHigh - LDHigh) ) )
+--                       AIWarn('*ConnectMarker slope  : '..string.format("%.2f %.2f %.2f %.2f", math.abs(UHigh - DHigh), math.abs(LHigh - RHigh), math.abs(LUHigh - RDHigh), math.abs(RUHigh - LDHigh) ) )
 --                    end
                     Block = true
                 end
                 if math.abs(UHigh) > MaxAngle or math.abs(DHigh) > MaxAngle or math.abs(LHigh) > MaxAngle or math.abs(RHigh) > MaxAngle or math.abs(LUHigh) > MaxAngle or math.abs(RUHigh) > MaxAngle or math.abs(LDHigh) > MaxAngle or math.abs(RDHigh) > MaxAngle then
 --                    if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceSouthEast then
---                        WARN('*ConnectMarker angle  : '..string.format("%.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f", math.abs(UHigh), math.abs(DHigh), math.abs(LHigh), math.abs(RHigh), math.abs(LUHigh), math.abs(RUHigh), math.abs(LDHigh), math.abs(RDHigh) ) )
+--                        AIWarn('*ConnectMarker angle  : '..string.format("%.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f", math.abs(UHigh), math.abs(DHigh), math.abs(LHigh), math.abs(RHigh), math.abs(LUHigh), math.abs(RUHigh), math.abs(LDHigh), math.abs(RDHigh) ) )
 --                    end
                     Block = true
                 end
@@ -1391,14 +1437,14 @@ function ConnectMarker(X,Y)
                 end
             end
 --            if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
---                LOG(ASCIIGFX)
+--                AILog(ASCIIGFX)
 --            end
         end
     else
         FAIL = MaxFails
     end
 --    if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
---       WARN('*CheckValidMarkerPosition South-East ('..FAIL..') Fails')
+--       AIWarn('*CheckValidMarkerPosition South-East ('..FAIL..') Fails')
 --    end
     -- Check if we have failed to find pathable Terrain
     if FAIL < MaxFails or CREATEDMARKERS[MarkerIndex]['graph'] == 'DefaultAir' then
@@ -1419,11 +1465,11 @@ function ConnectMarker(X,Y)
             end
         end
 --        if DebugMarker == MarkerIndex then
---            LOG('*ConnectMarker Terrain Free -> Connecting ('..MarkerIndex..') with ('..SouthEastMarkerIndex..')')
+--            AILog('*ConnectMarker Terrain Free -> Connecting ('..MarkerIndex..') with ('..SouthEastMarkerIndex..')')
 --        end
     else
 --        if DebugMarker == MarkerIndex then
---            WARN('*ConnectMarker Terrain Blocked. Cant connect ('..MarkerIndex..') with ('..SouthEastMarkerIndex..')')
+--            AIWarn('*ConnectMarker Terrain Blocked. Cant connect ('..MarkerIndex..') with ('..SouthEastMarkerIndex..')')
 --        end
     end
     ------------------------------------------------
@@ -1439,7 +1485,7 @@ function ConnectMarker(X,Y)
 --                    DrawLine( {MarkerPos[1] + X, MarkerPos[2], MarkerPos[3] + X}, { MarkerPos[1] + X-XY, MarkerPos[2], MarkerPos[3] + XY + X}, 'ffFFE0E0' )
 --                    coroutine.yield(1)
 --                end
-                local Block = false
+                Block = false
                 -- Check a square with FootprintSize if it has less then MaxSlope and MaxAngle
                 High = GetSurfaceHeight( MarkerPos[1] + X-XY, MarkerPos[3] + XY+X )
                 UHigh = High - GetSurfaceHeight( MarkerPos[1] + X-XY, MarkerPos[3] + XY+X-FootprintSize )
@@ -1451,17 +1497,17 @@ function ConnectMarker(X,Y)
                 LDHigh = High - GetSurfaceHeight( MarkerPos[1] + X-XY-FootprintSize*0.8, MarkerPos[3] + XY+X+FootprintSize*0.8 )
                 RDHigh = High - GetSurfaceHeight( MarkerPos[1] + X-XY+FootprintSize*0.8, MarkerPos[3] + XY+X+FootprintSize*0.8 )
 --                if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceSouthWest then
---                    LOG('*ConnectMarker slope  : '..string.format("slope:  %.3f  %.3f  %.3f  %.3f   angle:  %.3f  %.3f  %.3f  %.3f ... %.3f  %.3f  %.3f  %.3f", math.abs(UHigh - DHigh), math.abs(LHigh - RHigh), math.abs(LUHigh - RDHigh), math.abs(RUHigh - LDHigh), math.abs(UHigh), math.abs(DHigh), math.abs(LHigh), math.abs(RHigh), math.abs(LUHigh), math.abs(RUHigh), math.abs(LDHigh), math.abs(RDHigh) ) )
+--                    AILog('*ConnectMarker slope  : '..string.format("slope:  %.3f  %.3f  %.3f  %.3f   angle:  %.3f  %.3f  %.3f  %.3f ... %.3f  %.3f  %.3f  %.3f", math.abs(UHigh - DHigh), math.abs(LHigh - RHigh), math.abs(LUHigh - RDHigh), math.abs(RUHigh - LDHigh), math.abs(UHigh), math.abs(DHigh), math.abs(LHigh), math.abs(RHigh), math.abs(LUHigh), math.abs(RUHigh), math.abs(LDHigh), math.abs(RDHigh) ) )
 --                end
                 if math.abs(UHigh + DHigh) > MaxSlope or math.abs(LHigh + RHigh) > MaxSlope or math.abs(LUHigh + RDHigh) > MaxSlope or math.abs(RUHigh + LDHigh) > MaxSlope then
 --                    if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceSouthWest then
---                        WARN('*ConnectMarker slope  : '..string.format("%.2f %.2f %.2f %.2f", math.abs(UHigh - DHigh), math.abs(LHigh - RHigh), math.abs(LUHigh - RDHigh), math.abs(RUHigh - LDHigh) ) )
+--                        AIWarn('*ConnectMarker slope  : '..string.format("%.2f %.2f %.2f %.2f", math.abs(UHigh - DHigh), math.abs(LHigh - RHigh), math.abs(LUHigh - RDHigh), math.abs(RUHigh - LDHigh) ) )
 --                    end
                     Block = true
                 end
                 if math.abs(UHigh) > MaxAngle or math.abs(DHigh) > MaxAngle or math.abs(LHigh) > MaxAngle or math.abs(RHigh) > MaxAngle or math.abs(LUHigh) > MaxAngle or math.abs(RUHigh) > MaxAngle or math.abs(LDHigh) > MaxAngle or math.abs(RDHigh) > MaxAngle then
 --                    if DebugMarker == MarkerIndex and DebugValidMarkerPosition and TraceSouthWest then
---                        WARN('*ConnectMarker angle  : '..string.format("%.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f", math.abs(UHigh), math.abs(DHigh), math.abs(LHigh), math.abs(RHigh), math.abs(LUHigh), math.abs(RUHigh), math.abs(LDHigh), math.abs(RDHigh) ) )
+--                        AIWarn('*ConnectMarker angle  : '..string.format("%.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f", math.abs(UHigh), math.abs(DHigh), math.abs(LHigh), math.abs(RHigh), math.abs(LUHigh), math.abs(RUHigh), math.abs(LDHigh), math.abs(RDHigh) ) )
 --                    end
                     Block = true
                 end
@@ -1474,14 +1520,14 @@ function ConnectMarker(X,Y)
                 end
             end
 --            if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
---                LOG(ASCIIGFX)
+--                AILog(ASCIIGFX)
 --            end
         end
     else
         FAIL = MaxFails
     end
 --    if DebugMarker == MarkerIndex and DebugValidMarkerPosition then
---        WARN('*CheckValidMarkerPosition South-West ('..FAIL..') Fails')
+--        AIWarn('*CheckValidMarkerPosition South-West ('..FAIL..') Fails')
 --    end
     -- Check if we have failed to find pathable Terrain
     if FAIL < MaxFails or CREATEDMARKERS[MarkerIndex]['graph'] == 'DefaultAir' then
@@ -1502,11 +1548,11 @@ function ConnectMarker(X,Y)
             end
         end
 --        if DebugMarker == MarkerIndex then
---            LOG('*ConnectMarker Terrain Free -> Connecting ('..MarkerIndex..') with ('..SouthWestMarkerIndex..')')
+--            AILog('*ConnectMarker Terrain Free -> Connecting ('..MarkerIndex..') with ('..SouthWestMarkerIndex..')')
 --        end
     else
 --        if DebugMarker == MarkerIndex then
---            WARN('*ConnectMarker Terrain Blocked. Cant connect ('..MarkerIndex..') with ('..SouthWestMarkerIndex..')')
+--            AIWarn('*ConnectMarker Terrain Blocked. Cant connect ('..MarkerIndex..') with ('..SouthWestMarkerIndex..')')
 --        end
     end
 
@@ -1524,6 +1570,8 @@ function CreateNavalExpansions()
             Scenario.MasterChain._MASTERCHAIN_.Markers[nodename] = nil
         end
     end
+    local adjancents
+    local dist
     -- Search for naval areas
     for Y = 0, MarkerCountY - 1 do
         for X = 0, MarkerCountX - 1 do
@@ -1551,7 +1599,7 @@ function CreateNavalExpansions()
                     if (YD == -2 or YD == 2) or (XD == -2 or XD == 2) then
                         if Scenario.MasterChain._MASTERCHAIN_.Markers['Land'..(X+XD)..'-'..(Y+YD)] then
                             -- check if we have an amphibious way from his land node to water
-                            local adjancents = STR_GetTokens(Scenario.MasterChain._MASTERCHAIN_.Markers['Amphibious'..(X+XD)..'-'..(Y+YD)].adjacentTo or '', ' ')
+                            adjancents = STR_GetTokens(Scenario.MasterChain._MASTERCHAIN_.Markers['Amphibious'..(X+XD)..'-'..(Y+YD)].adjacentTo or '', ' ')
                             if adjancents[0] then
                                 for i, node in adjancents do
                                     -- checking node, if it has a conection to our naval marker
@@ -1574,7 +1622,7 @@ function CreateNavalExpansions()
             end
             -- check if we have a naval marker close to this area
             for index, NAVALpostition in NavalMarker do
-                local dist = VDist2( markerInfo['position'][1], markerInfo['position'][3], NAVALpostition[1], NAVALpostition[3])
+                dist = VDist2( markerInfo['position'][1], markerInfo['position'][3], NAVALpostition[1], NAVALpostition[3])
                 -- is this marker farther away than 60
                 if dist < 60 then
                     Blocked = true
@@ -1629,10 +1677,11 @@ function CreateLandExpansions()
         end
     end
     -- search for areas with mex in range
+    local MarkerPosition
     for Y = 0, MarkerCountY - 1 do
         for X = 0, MarkerCountX - 1 do
             if Scenario.MasterChain._MASTERCHAIN_.Markers['Land'..X..'-'..Y] then
-                local MarkerPosition = Scenario.MasterChain._MASTERCHAIN_.Markers['Land'..X..'-'..Y].position
+                MarkerPosition = Scenario.MasterChain._MASTERCHAIN_.Markers['Land'..X..'-'..Y].position
                 -- check how many masspoints are located near the marker
                 for k, v in MassMarker do
                     if VDist2(MarkerPosition[1], MarkerPosition[3], v.Position[1], v.Position[3]) > 30 then
@@ -1785,7 +1834,7 @@ function CreateMassCount()
         end        
         -- insert mexcount into marker
         Scenario.MasterChain._MASTERCHAIN_.Markers[v.Name].MassSpotsInRange = masscount
-        SPEW('* AI-Uveso: CreateMassCount: Node: '..v.Name..' - MassSpotsInRange: '..Scenario.MasterChain._MASTERCHAIN_.Markers[v.Name].MassSpotsInRange)
+        AIDebug('* AI-Uveso: CreateMassCount: Node: '..v.Name..' - MassSpotsInRange: '..Scenario.MasterChain._MASTERCHAIN_.Markers[v.Name].MassSpotsInRange, true, UvesoOffsetSimInitLUA)
     end
 end
 
@@ -1961,7 +2010,7 @@ function PrintMASTERCHAIN()
                 ArrayCount = ArrayCount + 1
             end
             if count ~= ArrayCount then
-                WARN('Missing value in marker '..k..' -> '..repr(v))
+                AIWarn('Missing value in marker '..k..' -> '..repr(v))
             end
         end
     LOG('      },')
@@ -1974,46 +2023,6 @@ function PrintMASTERCHAIN()
 
 end
 
--- Destroy reclaimables after 10 minutes for better game performance
-function ReclaimCleaner()
-    local InitialWrecks
-    while true do
-        --local count = 0
-        for _, reclaim in GetReclaimablesInRect(Rect(1, 1, ScenarioInfo.size[1], ScenarioInfo.size[2])) or {} do
-            if reclaim.IsWreckage then
-                -- for debug. removing reclaim so we can better count entities
-                --reclaim:Kill()
-                --count = count + 1
-                if not InitialWrecks then
-                    reclaim.expirationTime = GetGameTimeSeconds() + 60*25
-                elseif not reclaim.expirationTime then
-                    reclaim.expirationTime = GetGameTimeSeconds() + 60*10
-                elseif GetGameTimeSeconds() > reclaim.expirationTime then
-                    --LOG('# RECLAIM: Wreck is older then 10 minutes ('..math.floor((GetGameTimeSeconds() - (reclaim.expirationTime - 60*10))/60)..' min.). Deleting it!')
-                    --count = count - 1
-                    reclaim:Kill()
-                end
-            elseif reclaim.TimeReclaim then
-                if not InitialWrecks then
-                    reclaim.expirationTime = GetGameTimeSeconds() + 60*25
-                elseif not reclaim.expirationTime then
-                    reclaim.expirationTime = GetGameTimeSeconds() + 60*10
-                elseif GetGameTimeSeconds() > reclaim.expirationTime then
-                    --LOG('# RECLAIM: Tree is older then 10 minutes ('..math.floor((GetGameTimeSeconds() - (reclaim.expirationTime - 60*10))/60)..' min.). Deleting it!')
-                    --count = count - 1
-                    reclaim:Kill()
-                end
---            elseif not reclaim.Dead or reclaim.Dead == false then
-                -- normal unit
-            end
-        end
-        -- Set initial wrecks to true after the first pass
-        InitialWrecks = true
-        --LOG('reclaim count:'..count)
-        coroutine.yield(50)
-    end
-end
-
 function BuildGraphAreas()
     local GraphIndex = {
         ['Land Path Node'] = 0,
@@ -2022,6 +2031,7 @@ function BuildGraphAreas()
         ['Air Path Node'] = 0,
     }
     local old
+    local adjancents
     for k, v in Scenario.MasterChain._MASTERCHAIN_.Markers do
         -- only check waypoint markers
         if MarkerDefaults[v.type] then
@@ -2029,28 +2039,28 @@ function BuildGraphAreas()
             if not v.GraphArea then
                 GraphIndex[v.type] = GraphIndex[v.type] + 1
                 Scenario.MasterChain._MASTERCHAIN_.Markers[k].GraphArea = GraphIndex[v.type]
-                --LOG('*BuildGraphAreas: Marker '..k..' has no Graph index, set it to '..GraphArea[v.type])
+                --AILog('*BuildGraphAreas: Marker '..k..' has no Graph index, set it to '..GraphArea[v.type])
             end
             -- check adjancents
             if v.adjacentTo then
-                local adjancents = STR_GetTokens(v.adjacentTo or '', ' ')
+                adjancents = STR_GetTokens(v.adjacentTo or '', ' ')
                 if adjancents[0] then
                     for i, node in adjancents do
                         -- check if the new node has not a GraphIndex 
                         if not Scenario.MasterChain._MASTERCHAIN_.Markers[node].GraphArea then
-                            --LOG('*BuildGraphAreas: adjacentTo '..node..' has no Graph index, set it to '..Scenario.MasterChain._MASTERCHAIN_.Markers[k].GraphArea)
+                            --AILog('*BuildGraphAreas: adjacentTo '..node..' has no Graph index, set it to '..Scenario.MasterChain._MASTERCHAIN_.Markers[k].GraphArea)
                             Scenario.MasterChain._MASTERCHAIN_.Markers[node].GraphArea = Scenario.MasterChain._MASTERCHAIN_.Markers[k].GraphArea
                         -- the node has already a graph index. Overwrite all nodes connected to this node with the new index
                         elseif Scenario.MasterChain._MASTERCHAIN_.Markers[node].GraphArea ~= Scenario.MasterChain._MASTERCHAIN_.Markers[k].GraphArea then
                             -- save the old index here, we will overwrite Markers[node].GraphArea
                             old = Scenario.MasterChain._MASTERCHAIN_.Markers[node].GraphArea
-                            --LOG('*BuildGraphAreas: adjacentTo '..node..' has Graph index '..old..' overwriting it with '..Scenario.MasterChain._MASTERCHAIN_.Markers[k].GraphArea)
+                            --AILog('*BuildGraphAreas: adjacentTo '..node..' has Graph index '..old..' overwriting it with '..Scenario.MasterChain._MASTERCHAIN_.Markers[k].GraphArea)
                             for k2, v2 in Scenario.MasterChain._MASTERCHAIN_.Markers do
                                 -- Has the adjacent the same type than the marker
                                 if v.type == v2.type then
                                     -- has this node the same index then our main marker ?
                                     if Scenario.MasterChain._MASTERCHAIN_.Markers[k2].GraphArea == old then
-                                        --LOG('*BuildGraphAreas: adjacentTo '..k2..' has Graph index '..old..' overwriting it with '..Scenario.MasterChain._MASTERCHAIN_.Markers[k].GraphArea)
+                                        --AILog('*BuildGraphAreas: adjacentTo '..k2..' has Graph index '..old..' overwriting it with '..Scenario.MasterChain._MASTERCHAIN_.Markers[k].GraphArea)
                                         Scenario.MasterChain._MASTERCHAIN_.Markers[k2].GraphArea = Scenario.MasterChain._MASTERCHAIN_.Markers[k].GraphArea
                                     end
                                 end
@@ -2084,58 +2094,230 @@ function BuildGraphAreas()
             GraphCountIndex[v.type][v.GraphArea] = GraphCountIndex[v.type][v.GraphArea] + 1
         end
     end
-    SPEW('* AI-Uveso: BuildGraphAreas(): '..repr(GraphCountIndex))
+    AIDebug('* AI-Uveso: BuildGraphAreas(): '..repr(GraphCountIndex), true, UvesoOffsetSimInitLUA)
+end
+
+function DrawHeatMap()
+    coroutine.yield(10)
+    local GetHeatMapGridPositionFromIndex = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').GetHeatMapGridPositionFromIndex
+    local HeatMapGridSizeX, HeatMapGridSizeZ = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').GetHeatMapGridSizeXZ()
+    local PlayableMapSizeX, PlayableMapSizeZ = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').GetPlayableMapSizeXZ()
+    local mapXGridCount = math.floor( PlayableMapSizeX / HeatMapGridSizeX )
+    local mapYGridCount = math.floor( PlayableMapSizeZ / HeatMapGridSizeZ )
+    local playableArea = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').GetPlayableArea()
+    local OffsetX = playableArea[1]
+    local OffsetZ = playableArea[2]
+    local px, py, pz = 0,1000,0
+    local threatScale = { Land = 1, Air = 1, Water = 1, Amphibious = 1, ecoValue = 1}
+    local highestThreat = { Land = 1, Air = 1, Water = 1, Amphibious = 1, Mass = 1}
+    local FocussedArmy
+    local heatMap
+    local enemyMainForce
+    local pr = {}
+    while true do
+        coroutine.yield(2)
+        FocussedArmy = GetFocusArmy()
+        if FocussedArmy > 0 then
+            heatMap = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').GetHeatMapForArmy(FocussedArmy)
+            if not heatMap then 
+                continue 
+            end
+
+
+            -- draw debug
+            for x = 0, mapXGridCount - 1 do
+                for z = 0, mapYGridCount - 1 do
+                    GridCenterPos = GetHeatMapGridPositionFromIndex(x, z)
+                    px = GridCenterPos[1]
+                    pz = GridCenterPos[3]
+--                    if py > GetTerrainHeight( px, pz ) then
+                        py = GetTerrainHeight( px, pz )
+--                    end
+                    -- draw heatmap box
+                    DrawLine({px-HeatMapGridSizeX/2, py, pz-HeatMapGridSizeZ/2}, {px+HeatMapGridSizeX/2, py, pz-HeatMapGridSizeZ/2}, 'ff707070') -- U
+--                    DrawLine({px-HeatMapGridSizeX/2, py, pz+HeatMapGridSizeZ/2}, {px+HeatMapGridSizeX/2, py, pz+HeatMapGridSizeZ/2}, 'ff707070') -- D
+                    DrawLine({px-HeatMapGridSizeX/2, py, pz-HeatMapGridSizeZ/2}, {px-HeatMapGridSizeX/2, py, pz+HeatMapGridSizeZ/2}, 'ff707070') -- L
+--                    DrawLine({px+HeatMapGridSizeX/2, py, pz-HeatMapGridSizeZ/2}, {px+HeatMapGridSizeX/2, py, pz+HeatMapGridSizeZ/2}, 'ff707070') -- R
+
+
+                    -- ****
+                    -- LAND
+                    -- ****
+                    -- draw threatRings
+                    pr["Land"] = heatMap[x][z].threatRing["Land"] * threatScale["Land"]
+                    DrawCircle( { px, py, pz }, pr["Land"] , '80f4a460' )
+                    -- get the highest value to scale all circles
+                    if heatMap[x][z].threatRing["Land"] > highestThreat["Land"] then
+                        highestThreat["Land"] = heatMap[x][z].threatRing["Land"]
+                    end
+                    -- draw box with highest threats
+                    for _, threats in pairs(ArmyBrains[FocussedArmy].highestEnemyThreat["Land"]) do
+                        if threats.gridPos[1] == x and threats.gridPos[2] == z then
+                            DrawLine({ 2 + px-HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, {-2 + px+HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, 'fff4a460') -- U
+                            DrawLine({ 2 + px-HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, {-2 + px+HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, 'fff4a460') -- D
+                            DrawLine({ 2 + px-HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, { 2 + px-HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, 'fff4a460') -- L
+                            DrawLine({-2 + px+HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, {-2 + px+HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, 'fff4a460') -- R
+                        end
+                    end
+--[[
+                    -- ****
+                    -- AIR
+                    -- ****
+                    -- draw threatRings
+                    pr["Air"] = heatMap[x][z].threatRing["Air"] * threatScale["Air"]
+                    DrawCircle( { px, py, pz }, pr["Air"] , '80FFFFFF' )
+                    -- get the highest value to scale all circles
+                    if heatMap[x][z].threatRing["Air"] > highestThreat["Air"] then
+                        highestThreat["Air"] = heatMap[x][z].threatRing["Air"]
+                    end
+                    -- draw box with highest threats
+                    for _, threats in pairs(ArmyBrains[FocussedArmy].highestEnemyThreat["Air"]) do
+                        if threats.gridPos[1] == x and threats.gridPos[2] == z then
+                            DrawLine({ 2 + px-HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, {-2 + px+HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, 'ffFFFFFF') -- U
+                            DrawLine({ 2 + px-HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, {-2 + px+HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, 'ffFFFFFF') -- D
+                            DrawLine({ 2 + px-HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, { 2 + px-HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, 'ffFFFFFF') -- L
+                            DrawLine({-2 + px+HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, {-2 + px+HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, 'ffFFFFFF') -- R
+                        end
+                    end
+                    -- ****
+                    -- WATER
+                    -- ****
+                    -- draw threatRings
+                    pr["Water"] = heatMap[x][z].threatRing["Water"] * threatScale["Water"]
+                    DrawCircle( { px, py, pz }, pr["Water"] , '8027408b' )
+                    -- get the highest value to scale all circles
+                    if heatMap[x][z].threatRing["Water"] > highestThreat["Water"] then
+                        highestThreat["Water"] = heatMap[x][z].threatRing["Water"]
+                    end
+                    -- draw box with highest threats
+                    for _, threats in pairs(ArmyBrains[FocussedArmy].highestEnemyThreat["Water"]) do
+                        if threats.gridPos[1] == x and threats.gridPos[2] == z then
+                            DrawLine({ 2 + px-HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, {-2 + px+HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, 'ff27408b') -- U
+                            DrawLine({ 2 + px-HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, {-2 + px+HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, 'ff27408b') -- D
+                            DrawLine({ 2 + px-HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, { 2 + px-HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, 'ff27408b') -- L
+                            DrawLine({-2 + px+HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, {-2 + px+HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, 'ff27408b') -- R
+                        end
+                    end
+                    -- ****
+                    -- AMPHIBIOUS
+                    -- ****
+                    -- draw threatRings
+                    pr["Amphibious"] = heatMap[x][z].threatRing["Amphibious"] * threatScale["Amphibious"]
+                    DrawCircle( { px, py, pz }, pr["Amphibious"] , '801e90ff' )
+                    -- get the highest value to scale all circles
+                    if heatMap[x][z].threatRing["Amphibious"] > highestThreat["Amphibious"] then
+                        highestThreat["Amphibious"] = heatMap[x][z].threatRing["Amphibious"]
+                    end
+                    -- draw box with highest threats
+                    for _, threats in pairs(ArmyBrains[FocussedArmy].highestEnemyThreat["Amphibious"]) do
+                        if threats.gridPos[1] == x and threats.gridPos[2] == z then
+                            DrawLine({ 2 + px-HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, {-2 + px+HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, 'ff1e90ff') -- U
+                            DrawLine({ 2 + px-HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, {-2 + px+HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, 'ff1e90ff') -- D
+                            DrawLine({ 2 + px-HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, { 2 + px-HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, 'ff1e90ff') -- L
+                            DrawLine({-2 + px+HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, {-2 + px+HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, 'ff1e90ff') -- R
+                        end
+                    end
+--]]
+
+                    -- ****
+                    -- ECO
+                    -- ****
+                    -- draw ecoValue
+                    pr["ecoValue"] = heatMap[x][z].highestEnemyEcoValue["All"] * threatScale["ecoValue"]
+                    DrawCircle( { px, py, pz }, pr["ecoValue"] , '80FFFFFF' )
+                    -- get the highest value to scale all circles
+                    if heatMap[x][z].highestEnemyEcoValue["All"] > highestThreat["ecoValue"] then
+                        highestThreat["ecoValue"] = heatMap[x][z].highestEnemyEcoValue["All"]
+                    end
+                    -- draw box with highest ecoValue
+                    for _, ecoValue in pairs(ArmyBrains[FocussedArmy].highestEnemyEcoValue["All"]) do
+                        if ecoValue.gridPos[1] == x and ecoValue.gridPos[2] == z then
+                            DrawLine({ 2 + px-HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, {-2 + px+HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, 'ffFFFFFF') -- U
+                            DrawLine({ 2 + px-HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, {-2 + px+HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, 'ffFFFFFF') -- D
+                            DrawLine({ 2 + px-HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, { 2 + px-HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, 'ffFFFFFF') -- L
+                            DrawLine({-2 + px+HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, {-2 + px+HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, 'ffFFFFFF') -- R
+                        end
+                    end
+
+                end
+            end
+            threatScale["Land"] = (math.min( HeatMapGridSizeX, HeatMapGridSizeZ ) - 1) / 2 / highestThreat["Land"]
+            threatScale["Air"] = (math.min( HeatMapGridSizeX, HeatMapGridSizeZ ) - 1) / 2 / highestThreat["Air"]
+            threatScale["Water"] = (math.min( HeatMapGridSizeX, HeatMapGridSizeZ ) - 1) / 2 / highestThreat["Water"]
+            threatScale["Amphibious"] = (math.min( HeatMapGridSizeX, HeatMapGridSizeZ ) - 1) / 2 / highestThreat["Amphibious"]
+            threatScale["ecoValue"] = (math.min( HeatMapGridSizeX, HeatMapGridSizeZ ) - 1) / 2 / highestThreat["ecoValue"]
+            highestThreat["Land"] = 0
+            highestThreat["Air"] = 0
+            highestThreat["Water"] = 0
+            highestThreat["Amphibious"] = 0
+            highestThreat["ecoValue"] = 0
+        end -- if FocussedArmy > 0 then
+    end
 end
 
 function ValidateModFilesUveso()
-    local ModName = '* '..'AI-Uveso'
-    local ModDirectory = 'AI-Uveso'
+    local ModName = 'AI-Uveso'
     local Files = 87
-    local Bytes = 1931183
-    LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Running from: '..debug.getinfo(1).source..'.')
-    LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Checking directory /mods/ for '..ModDirectory..'...')
+    local Bytes = 2032736
+    local modlocation = ""
+    for i, mod in __active_mods do
+        if mod.name == ModName then
+            AILog('* '..ModName..': Mod "'..ModName..'" version ('..mod.version..') is active.', true, UvesoOffsetSimInitLUA)
+            modlocation = mod.location
+        end
+    end
+    AILog('* '..ModName..': Running from: '..debug.getinfo(1).source..'.', true, UvesoOffsetSimInitLUA)
+    AILog('* '..ModName..': Checking directory /mods/ for "'..ModName..'"...', true, UvesoOffsetSimInitLUA)
     local FilesInFolder = DiskFindFiles('/mods/', '*.*')
     local modfoundcount = 0
+    local modfilepath = ""
     for _, FilepathAndName in FilesInFolder do
+        -- FilepathAndName = /mods/ai-uveso/mod_info.lua
         if string.find(FilepathAndName, 'mod_info.lua') then
-            if string.gsub(FilepathAndName, ".*/(.*)/.*", "%1") == string.lower(ModDirectory) then
+            if string.gsub(FilepathAndName, ".*/(.*)/.*", "%1") == string.lower(ModName) then
+                modfilepath = string.gsub(FilepathAndName, "(.*/.*)/.*", "%1")
                 modfoundcount = modfoundcount + 1
-                LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Found directory: '..FilepathAndName..'.')
+                if modlocation == modfilepath then
+                    AILog('* '..ModName..': Found mod in correct directory: '..FilepathAndName..'.', true, UvesoOffsetSimInitLUA)
+                else
+                    AILog('* '..ModName..': Found mod in wrong directory: '..FilepathAndName..'.', true, UvesoOffsetSimInitLUA)
+                end
             end
         end
     end
     if modfoundcount == 1 then
-        LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Check OK. Found '..modfoundcount..' '..ModDirectory..' directory.')
+        AILog('* '..ModName..': Check OK. Found '..modfoundcount..' "'..ModName..'" directory.', true, UvesoOffsetSimInitLUA)
     else
-        LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Check FAILED! Found '..modfoundcount..' '..ModDirectory..' directories.')
+        AILog('* '..ModName..': Check FAILED! Found '..modfoundcount..' "'..ModName..'" directories.', true, UvesoOffsetSimInitLUA)
     end
-    LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Checking files and filesize for '..ModDirectory..'...')
-    local FilesInFolder = DiskFindFiles('/mods/'..ModDirectory..'/', '*.*')
+    AILog('* '..ModName..': Checking files and filesize for "'..ModName..'"...', true, UvesoOffsetSimInitLUA)
+    local FilesInFolder = DiskFindFiles('/mods/'..ModName..'/', '*.*')
     local filecount = 0
     local bytecount = 0
+    local fileinfo
     for _, FilepathAndName in FilesInFolder do
         if not string.find(FilepathAndName, '.git') then
             filecount = filecount + 1
-            local fileinfo = DiskGetFileInfo(FilepathAndName)
+            fileinfo = DiskGetFileInfo(FilepathAndName)
             bytecount = bytecount + fileinfo.SizeBytes
         end
     end
     local FAIL = false
     if filecount < Files then
-        LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Check FAILED! Directory: '..ModDirectory..' - Missing '..(Files - filecount)..' files! ('..filecount..'/'..Files..')')
+        AILog('* '..ModName..': Check FAILED! Directory: "'..ModName..'" - Missing '..(Files - filecount)..' files! ('..filecount..'/'..Files..')', true, UvesoOffsetSimInitLUA)
         FAIL = true
     elseif filecount > Files then
-        LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Check FAILED! Directory: '..ModDirectory..' - Found '..(filecount - Files)..' odd files! ('..filecount..'/'..Files..')')
+        AILog('* '..ModName..': Check FAILED! Directory: "'..ModName..'" - Found '..(filecount - Files)..' odd files! ('..filecount..'/'..Files..')', true, UvesoOffsetSimInitLUA)
         FAIL = true
     end
     if bytecount < Bytes then
-        LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Check FAILED! Directory: '..ModDirectory..' - Missing '..(Bytes - bytecount)..' bytes! ('..bytecount..'/'..Bytes..')')
+        AILog('* '..ModName..': Check FAILED! Directory: "'..ModName..'" - Missing '..(Bytes - bytecount)..' bytes! ('..bytecount..'/'..Bytes..')', true, UvesoOffsetSimInitLUA)
         FAIL = true
     elseif bytecount > Bytes then
-        LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Check FAILED! Directory: '..ModDirectory..' - Found '..(bytecount - Bytes)..' odd bytes! ('..bytecount..'/'..Bytes..')')
+        AILog('* '..ModName..': Check FAILED! Directory: "'..ModName..'" - Found '..(bytecount - Bytes)..' odd bytes! ('..bytecount..'/'..Bytes..')', true, UvesoOffsetSimInitLUA)
         FAIL = true
     end
     if not FAIL then
-        LOG(''..ModName..': ['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] - Check OK! files: '..filecount..', bytecount: '..bytecount..'.')
+        AILog('* '..ModName..': Check OK! files: '..filecount..', bytecount: '..bytecount..'.', true, UvesoOffsetSimInitLUA)
     end
 end

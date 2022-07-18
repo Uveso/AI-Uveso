@@ -33,7 +33,7 @@ BuilderGroup {
                 AdjacencyCategory = categories.FACTORY,
                 BuildClose = true,
                 AvoidCategory = categories.STATIONASSISTPOD,
-                maxUnits = 1,
+                maxUnits = 0,
                 maxRadius = 35,
                 BuildStructures = {
                     'T2EngineerSupport',

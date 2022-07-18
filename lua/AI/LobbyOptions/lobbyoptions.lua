@@ -71,11 +71,6 @@ AIOpts = {
                 help = "<LOC aisettingsUveso_0158>Show pathfinding and location radii",
                 key = 'pathlocation',
             },
-            {
-                text = "<LOC aisettingsUveso_0204>Pathfinding and marker threat",
-                help = "<LOC aisettingsUveso_0205>Show pathfinding and threats saved in AI markers",
-                key = 'paththreats',
-            },
 
             {
                 text = "<LOC aisettingsUveso_0209>Pathfinding and IMap threat",
@@ -201,7 +196,7 @@ AIOpts = {
         },
     },
     {
-        default = 3,
+        default = 1,
         label = "<LOC aisettingsUveso_0229>KI Gameender start time",
         help = "<LOC aisettingsUveso_0230>Delay in minutes before the AI start to build gameender",
         key = 'AIGameenderStart',

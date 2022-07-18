@@ -9,7 +9,7 @@ local LastMassBOOL = false
 function CanBuildOnMass(aiBrain, locationType, distance, threatMin, threatMax, threatRings, threatType, maxNum )
     local engineerManager = aiBrain.BuilderManagers[locationType].EngineerManager
     if not engineerManager then
-        --WARN('*AI WARNING: CanBuildOnMass: Invalid location - ' .. locationType)
+        --AIWarn('*AI WARNING: CanBuildOnMass: Invalid location - ' .. locationType)
         return false
     end
     local position = engineerManager.Location
@@ -34,7 +34,7 @@ function CanBuildOnMass(aiBrain, locationType, distance, threatMin, threatMax, t
         if aiBrain:CanBuildStructureAt('ueb1103', v.Position) then
             if threatMin and threatMax and threatRings then
                 threat = aiBrain:GetThreatAtPosition(v.Position, threatRings, true, threatType or 'Overall')
-                --LOG(_..' Checking marker with max distance ['..distance..']. Actual marker has distance: ('..(v.Distance)..'). threat '..threat)
+                --AILog(_..' Checking marker with max distance ['..distance..']. Actual marker has distance: ('..(v.Distance)..'). threat '..threat)
                 if threat < threatMin or threat > threatMax then
                     continue
                 end
@@ -43,7 +43,7 @@ function CanBuildOnMass(aiBrain, locationType, distance, threatMin, threatMax, t
             break
         end
     end
-    --LOG('*AI WARNING: CanBuildOnMass: for distance ('..distance..')returned - ' .. repr(LastMassBOOL))
+    --AILog('*AI WARNING: CanBuildOnMass: for distance ('..distance..')returned - ' .. repr(LastMassBOOL))
 
     return LastMassBOOL
 end
@@ -55,7 +55,7 @@ local LastHydroBOOL = false
 function CanBuildOnHydro(aiBrain, locationType, distance, threatMin, threatMax, threatRings, threatType, maxNum)
     local engineerManager = aiBrain.BuilderManagers[locationType].EngineerManager
     if not engineerManager then
-        --WARN('*AI WARNING: CanBuildOnHydro: Invalid location - ' .. locationType)
+        --AIWarn('*AI WARNING: CanBuildOnHydro: Invalid location - ' .. locationType)
         return false
     end
     local position = engineerManager.Location

@@ -31,7 +31,7 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- Build Naval Units
         'U123 Naval Builders',
-
+        'U123 Naval Builders withPath',
         -----------------------------------------------------------------------------
         -- ==== Sea Units FORMER ==== --
         -----------------------------------------------------------------------------
@@ -62,6 +62,7 @@ BaseBuilderTemplate {
         -- ==== Defenses BUILDER ==== --
         -----------------------------------------------------------------------------
         'U2 Tactical Missile Defenses Builder',
+        'U4 Strategic Missile Defense Builders Naval',
 
         -----------------------------------------------------------------------------
         -- ==== Intel/CounterIntel BUILDER ==== --

@@ -2,7 +2,7 @@ local categories = categories
 local EBC = '/lua/editor/EconomyBuildConditions.lua'
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 local MIBC = '/lua/editor/MiscBuildConditions.lua'
-local BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua').GetDangerZoneRadii()
+local BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').GetDangerZoneRadii()
 
 -- ===================================================-======================================================== --
 -- ==                                      Mobile Experimental Air                                           == --
@@ -67,34 +67,6 @@ BuilderGroup {
                 AdjacencyCategory = categories.STRUCTURE * categories.SHIELD,
                 BuildStructures = {
                     'T4AirExperimental1',
-                },
-                Location = 'LocationType',
-            }
-        }
-    },
-    Builder {
-        BuilderName = 'U4 Satellite',
-        PlatoonTemplate = 'T3EngineerBuilderNoSUB',
-        Priority = 875,
-        DelayEqualBuildPlattons = {'MobileExperimental', 10},
-        BuilderConditions = {
-            { MIBC, 'FactionIndex', { 1 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
-            { UCBC, 'CheckBuildPlattonDelay', { 'MobileExperimental' }},
-            -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconIncome', { 7.0, 600.0 }},                    -- Base income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.40, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
-            -- When do we want to build this ?
-            { MIBC, 'ItsTimeForGameender', {} },
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.EXPERIMENTAL }},
-        },
-        BuilderType = 'Any',
-        BuilderData = {
-            Construction = {
-                DesiresAssist = true,
-                NumAssistees = 10,
-                BuildClose = true,
-                BuildStructures = {
-                    'T4SatelliteExperimental',
                 },
                 Location = 'LocationType',
             }
@@ -224,7 +196,7 @@ BuilderGroup {
             SearchRadius = BaseEnemyZone,                                       -- Searchradius for new target.
             GetTargetsFromBase = false,                                         -- Get targets from base position (true) or platoon position (false)
             AggressiveMove = false,                                             -- If true, the unit will attack everything while moving to the target.
-            AttackEnemyStrength = 0,                                            -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
+            AttackEnemyStrength = 25,                                            -- Compare platoon to enemy strenght. 100 will attack equal, 50 weaker and 150 stronger enemies.
             IgnorePathing = true,                                               -- If true, the platoon will not use AI pathmarkers and move directly to the target
             TargetSearchCategory = categories.STRUCTURE,                                 -- Only find targets matching these categories.
             TargetHug = true,                                                   -- Tries to get as close to the target as possible
@@ -233,10 +205,10 @@ BuilderGroup {
                 categories.STRUCTURE * categories.EXPERIMENTAL * categories.SHIELD,
                 categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
                 categories.OPTICS,
-                categories.STRUCTURE * categories.MASSEXTRACTION * categories.TECH3,
-                categories.FACTORY * categories.TECH3,
                 categories.STRUCTURE * categories.EXPERIMENTAL,
                 categories.STRUCTURE * categories.NUKE,
+                categories.FACTORY * categories.TECH3,
+                categories.STRUCTURE * categories.MASSEXTRACTION * categories.TECH3,
                 categories.STRUCTURE,
                 categories.ALLUNITS,
             },
@@ -244,10 +216,11 @@ BuilderGroup {
                 categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
                 categories.STRUCTURE * categories.EXPERIMENTAL * categories.SHIELD,
                 categories.COMMAND,
-                categories.DEFENSE - categories.ANTIAIR,
+                categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
+                categories.DEFENSE * categories.ANTIAIR,
                 categories.EXPERIMENTAL,
                 categories.STRUCTURE,
-                categories.ALLUNITS - categories.SCOUT,
+                categories.ALLUNITS,
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
@@ -281,19 +254,25 @@ BuilderGroup {
             TargetHug = true,                                                   -- Tries to get as close to the target as possible
             MoveToCategories = {                                                -- Move to targets
                 categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
-                categories.STRUCTURE * categories.NUKE,
                 categories.STRUCTURE * categories.EXPERIMENTAL * categories.SHIELD,
-                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
                 categories.OPTICS,
+                categories.STRUCTURE * categories.EXPERIMENTAL,
+                categories.STRUCTURE * categories.NUKE,
+                categories.FACTORY * categories.TECH3,
+                categories.STRUCTURE * categories.MASSEXTRACTION * categories.TECH3,
+                categories.STRUCTURE,
+                categories.ALLUNITS,
             },
             WeaponTargetCategories = {                                          -- Override weapon target priorities
                 categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
                 categories.STRUCTURE * categories.EXPERIMENTAL * categories.SHIELD,
                 categories.COMMAND,
-                categories.DEFENSE - categories.ANTIAIR,
+                categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
+                categories.DEFENSE * categories.ANTIAIR,
                 categories.EXPERIMENTAL,
                 categories.STRUCTURE,
-                categories.ALLUNITS - categories.SCOUT,
+                categories.ALLUNITS,
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true
@@ -340,10 +319,10 @@ BuilderGroup {
                 categories.STRUCTURE * categories.EXPERIMENTAL * categories.SHIELD,
                 categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
                 categories.OPTICS,
-                categories.STRUCTURE * categories.MASSEXTRACTION * categories.TECH3,
-                categories.FACTORY * categories.TECH3,
                 categories.STRUCTURE * categories.EXPERIMENTAL,
                 categories.STRUCTURE * categories.NUKE,
+                categories.FACTORY * categories.TECH3,
+                categories.STRUCTURE * categories.MASSEXTRACTION * categories.TECH3,
                 categories.STRUCTURE,
                 categories.ALLUNITS,
             },
@@ -351,10 +330,11 @@ BuilderGroup {
                 categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC,
                 categories.STRUCTURE * categories.EXPERIMENTAL * categories.SHIELD,
                 categories.COMMAND,
-                categories.DEFENSE - categories.ANTIAIR,
+                categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3,
+                categories.DEFENSE * categories.ANTIAIR,
                 categories.EXPERIMENTAL,
                 categories.STRUCTURE,
-                categories.ALLUNITS - categories.SCOUT,
+                categories.ALLUNITS,
             },
         },
         BuilderConditions = {                                                   -- platoon will be formed if all conditions are true

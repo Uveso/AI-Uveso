@@ -24,7 +24,14 @@ PlatoonTemplate {
     Name = 'AddToArtilleryPlatoon',
     Plan = 'PlatoonMerger',
     GlobalSquads = {
-        { (categories.STRUCTURE * categories.ARTILLERY * ( categories.TECH3 + categories.EXPERIMENTAL )) + categories.SATELLITE , 1, 300, 'support', 'none' }
+        { categories.STRUCTURE * categories.ARTILLERY * ( categories.TECH3 + categories.EXPERIMENTAL ) , 1, 300, 'support', 'none' }
+    },
+}
+PlatoonTemplate {
+    Name = 'AddToSatellitePlatoon',
+    Plan = 'PlatoonMerger',
+    GlobalSquads = {
+        { categories.MOBILE * categories.SATELLITE * categories.EXPERIMENTAL , 1, 300, 'support', 'none' }
     },
 }
 PlatoonTemplate {
@@ -91,7 +98,7 @@ PlatoonTemplate {
         UEF = {
             { 'ueb4202', 1, 1, 'Attack', 'None' }
         },
-        -- We can't upgrade Aeon shields jet
+        -- We can't upgrade Aeon shields
         --Aeon = {
         --    { 'uab4202', 1, 1, 'Attack', 'None' }
         --},

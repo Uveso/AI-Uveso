@@ -239,7 +239,7 @@ AIBrain = Class(UvesoAIBrainClass) {
                 elseif shareOption == 'Defectors' then
                     TransferUnitsToHighestBrain(BrainCategories.Enemies)
                 else -- Something went wrong in settings. Act like share until death to avoid abuse
-                    WARN('Invalid share condition was used for this game. Defaulting to killing all units')
+                    AIWarn('Invalid share condition was used for this game. Defaulting to killing all units')
                     KillSharedUnits(self:GetArmyIndex()) -- Kill things I gave away
                     ReturnBorrowedUnits() -- Give back things I was given by other
                 end
@@ -318,7 +318,7 @@ AIBrain = Class(UvesoAIBrainClass) {
         UvesoAIBrainClass.OnCreateAI(self, planName)
         local per = ScenarioInfo.ArmySetup[self.Name].AIPersonality
         if string.find(per, 'uveso') then
-            LOG('* AI-Uveso: OnCreateAI() found AI-Uveso  Name: ('..self.Name..') - personality: ('..per..') ')
+            AILog('* AI-Uveso: OnCreateAI() found AI-Uveso  Name: ('..self.Name..') - personality: ('..per..') ')
             self.Uveso = true
         end
     end,

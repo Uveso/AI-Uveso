@@ -26,11 +26,14 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== SCU ==== --
         -----------------------------------------------------------------------------
+        -- Build SubComander
+        'U3 SACU Builder',
+        'U3 SACU Teleport Formers',
 
         -----------------------------------------------------------------------------
         -- ==== Engineer ==== --
         -----------------------------------------------------------------------------
-        -- Build Engineers Tech 1,2,3 and SACU
+        -- Build Engineers Tech 1,2,3
         'U123 Engineer Builders',
         'U2 Hive+Kennel',
         'U23 Hive+Kennel Upgrade',
@@ -80,7 +83,6 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         'U123 Land Builders Panic',
         'U123 Land Builders ADAPTIVE',
-        'U3 SACU Builder',
 
         -----------------------------------------------------------------------------
         -- ==== Land Units FORMER==== --
@@ -134,6 +136,7 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- Build Naval Units
         'U123 Naval Builders',
+        'U123 Naval Builders withPath',
 
         -----------------------------------------------------------------------------
         -- ==== Sea Units FORMER ==== --
@@ -182,10 +185,11 @@ BaseBuilderTemplate {
         'U2 Tactical Missile Defenses Builder',
         'U3 Strategic Missile Launcher Builder',
         'U4 Strategic Missile Launcher NukeAI',
-        'U4 Strategic Missile Defense Builders',
+        'U4 Strategic Missile Defense Builders MAIN',
         'U4 Strategic Missile Defense Anti-NukeAI',
         'U234 Artillery Builders',
-        'U4 Artillery Formers', -- also needed for UEF SATELLITE
+        'U34 Artillery Formers',
+        'U4 Satellite Formers',
         -- Build Anti Air near AirFactories
         'U123 Defense Anti Air Builders',
         -- Ground Defense Builder
@@ -195,11 +199,6 @@ BaseBuilderTemplate {
         -- ==== FireBase BUILDER ==== --
         -----------------------------------------------------------------------------
         'U1 FirebaseBuilders',
-
-        -----------------------------------------------------------------------------
-        -- ==== Sniper Former ==== --
-        -----------------------------------------------------------------------------
-        'U3 SACU Teleport Formers',
 
         -- We need this even if we have Omni View to get target informations for experimentals attack.
         -----------------------------------------------------------------------------

@@ -1,4 +1,4 @@
---WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] * AI-Uveso: offset MiscBuildConditions.lua' )
+--AIWarn('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] * AI-Uveso: offset MiscBuildConditions.lua' )
 
 -- Uveso AI. Function to see if we are on a water map and/or can't send Land units to the enemy
 local CanPathToEnemy = {}
@@ -42,28 +42,28 @@ function CanPathToCurrentEnemy(aiBrain, bool, LocationType)
     local path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, 'Land', {startX,0,startZ}, {enemyX,0,enemyZ}, 1000)
     -- if we have a path generated with AI path markers then....
     if path then
-        LOG('* AI-Uveso: CanPathToCurrentEnemy: Land path from '..LocationType..' to the enemy found! LAND map! - '..Nickname..' vs '..EnemyIndex..'')
+        AILog('* AI-Uveso: CanPathToCurrentEnemy: Land path from '..LocationType..' to the enemy found! LAND map! - '..Nickname..' vs '..EnemyIndex..'')
         CanPathToEnemy[Nickname][LocationType][EnemyIndex] = 'LAND'
         return true == bool
     -- if we not have a path
     else
         -- "NoPath" means we have AI markers but can't find a path to the enemy - There is no path!
         if reason == 'NoPath' then
-            LOG('* AI-Uveso: CanPathToCurrentEnemy: No land path from '..LocationType..' to the enemy found! WATER map! - '..Nickname..' vs '..EnemyIndex..'')
+            AILog('* AI-Uveso: CanPathToCurrentEnemy: No land path from '..LocationType..' to the enemy found! WATER map! - '..Nickname..' vs '..EnemyIndex..'')
             CanPathToEnemy[Nickname][LocationType][EnemyIndex] = 'WATER'
             return false == bool
         -- "NoGraph" means we have no AI markers and cant graph to the enemy. We can't search for a path - No markers
         elseif reason == 'NoGraph' then
-            LOG('* AI-Uveso: CanPathToCurrentEnemy: No AI markers found! Using land/water ratio instead')
+            AILog('* AI-Uveso: CanPathToCurrentEnemy: No AI markers found! Using land/water ratio instead')
             -- Check if we have less then 50% water on the map
             if aiBrain:GetMapWaterRatio() < 0.50 then
                 --lets asume we can move on land to the enemy
-                LOG(string.format('* AI-Uveso: CanPathToCurrentEnemy: Water on map: %0.2f%%. Assuming LAND map! - '..Nickname..' vs '..EnemyIndex..'',aiBrain:GetMapWaterRatio()*100 ))
+                AILog(string.format('* AI-Uveso: CanPathToCurrentEnemy: Water on map: %0.2f%%. Assuming LAND map! - '..Nickname..' vs '..EnemyIndex..'',aiBrain:GetMapWaterRatio()*100 ))
                 CanPathToEnemy[Nickname][LocationType][EnemyIndex] = 'LAND'
                 return true == bool
             else
                 -- we have more then 50% water on this map. Ity maybe a water map..
-                LOG(string.format('* AI-Uveso: CanPathToCurrentEnemy: Water on map: %0.2f%%. Assuming WATER map! - '..Nickname..' vs '..EnemyIndex..'',aiBrain:GetMapWaterRatio()*100 ))
+                AILog(string.format('* AI-Uveso: CanPathToCurrentEnemy: Water on map: %0.2f%%. Assuming WATER map! - '..Nickname..' vs '..EnemyIndex..'',aiBrain:GetMapWaterRatio()*100 ))
                 CanPathToEnemy[Nickname][LocationType][EnemyIndex] = 'WATER'
                 return false == bool
             end
@@ -75,10 +75,10 @@ end
 function IsBrainPersonality(aiBrain, neededPersonality, bool)
     local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
     if personality == neededPersonality and bool then
-        --LOG('personality = '..personality..' = true')
+        --AILog('personality = '..personality..' = true')
         return true
     elseif personality ~= neededPersonality and not bool then
-        --LOG('personality not '..neededPersonality..' = true')
+        --AILog('personality not '..neededPersonality..' = true')
         return true
     end
     return false
@@ -110,9 +110,9 @@ end
 function ItsTimeForGameender(aiBrain)
     local TimeForEnder = tonumber(ScenarioInfo.Options.AIGameenderStart) or 25
     if TimeForEnder * 60 < GetGameTimeSeconds() then
-        --LOG('* ItsTimeForGameender: TimeForEnder: '..(TimeForEnder*60)..' < '..GetGameTimeSeconds()..' TRUE')
+        --AILog('* ItsTimeForGameender: TimeForEnder: '..(TimeForEnder*60)..' < '..GetGameTimeSeconds()..' TRUE')
         return true
     end
-    --LOG('* ItsTimeForGameender: TimeForEnder: '..(TimeForEnder*60)..' < '..GetGameTimeSeconds()..' FALSE')
+    --AILog('* ItsTimeForGameender: TimeForEnder: '..(TimeForEnder*60)..' < '..GetGameTimeSeconds()..' FALSE')
     return false
 end

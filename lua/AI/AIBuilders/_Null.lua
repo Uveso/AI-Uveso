@@ -3,7 +3,7 @@ local EBC = '/lua/editor/EconomyBuildConditions.lua'
 local UCBC = '/lua/editor/UnitCountBuildConditions.lua'
 local MABC = '/lua/editor/MarkerBuildConditions.lua'
 
-local BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua').GetDangerZoneRadii()
+local BasePanicZone, BaseMilitaryZone, BaseEnemyZone = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').GetDangerZoneRadii()
 
 local MaxCapEngineers = 0.15 -- 15% of all units can be Engineers (categories.MOBILE * categories.ENGINEER)
 local MaxCapFactory = 0.024 -- 2.4% of all units can be factories (STRUCTURE * FACTORY)
@@ -241,7 +241,7 @@ BuilderGroup {
                 BuildClose = false,
                 AdjacencyCategory = (categories.STRUCTURE * categories.SHIELD) + (categories.FACTORY * (categories.TECH3 + categories.TECH2 + categories.TECH1)),
                 AvoidCategory = categories.ENERGYPRODUCTION * categories.TECH2,
-                maxUnits = 1,
+                maxUnits = 0,
                 maxRadius = 10,
                 LocationType = 'LocationType',
                 BuildStructures = {
@@ -279,7 +279,7 @@ BuilderGroup {
                 BuildClose = false,
                 AdjacencyCategory = (categories.STRUCTURE * categories.SHIELD) + (categories.FACTORY * (categories.TECH3 + categories.TECH2 + categories.TECH1)),
                 AvoidCategory = categories.ENERGYPRODUCTION * categories.TECH3,
-                maxUnits = 1,
+                maxUnits = 0,
                 maxRadius = 15,
                 LocationType = 'LocationType',
                 BuildStructures = {

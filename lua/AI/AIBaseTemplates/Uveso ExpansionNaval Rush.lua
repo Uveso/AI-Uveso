@@ -31,6 +31,7 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- Build Naval Units
         'U123 Naval Builders RUSH',
+        'U123 Naval Builders withPath',
 
         -----------------------------------------------------------------------------
         -- ==== Sea Units FORMER ==== --

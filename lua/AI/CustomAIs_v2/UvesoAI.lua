@@ -41,10 +41,6 @@ AI = {
             name = "<LOC Uveso_0017>AIx: Uveso Overwhelm",
         },
 --        {
---            key = 'uvesoduellcheat',
---            name = "AIx: Uveso Duell",
---        },
---        {
 --            key = 'uvesonullcheat',
 --            name = "AIx: Uveso Null",
 --        },

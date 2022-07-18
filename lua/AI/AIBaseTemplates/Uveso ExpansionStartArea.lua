@@ -139,7 +139,7 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         'U2 Tactical Missile Defenses Builder',
         'U3 Strategic Missile Launcher Builder',
-        'U4 Strategic Missile Defense Builders',
+        'U4 Strategic Missile Defense Builders MAIN',
 
         -----------------------------------------------------------------------------
         -- ==== FireBase BUILDER ==== --

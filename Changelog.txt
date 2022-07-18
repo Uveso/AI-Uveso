@@ -1,3 +1,54 @@
+v101 (17.Jul.2022)
+
+- New: pressing [ALT]+[a] (Toggles opponent AI) suspends all AI functions (also sets all units to hold fire).
+- New: AI is now aware of allies capturing friendly structures and will report abuse when this happens
+- New: added function to shorten a path when units are stopped on a path and try to continue the path to the previous destination
+- New: MoveToLocationInclTransport is now using the path from the target function instead of creating its own
+- New: naval units now return to the closest naval base not to the base where they where build
+- New: naval units that have no special target will now attack all units (on water)
+- New: UEF satellite now has its own targeting priorities and attack function.
+- Fix: disabled the function TransferUnfinishedUnitsAfterDeath again. Crashed the game too often.
+- Fix: fixed bug in aibuildstructures.lua with restricted units
+- Fix: unit count buildcondition "NavalBaseWithLeastUnits" no longer takes MAIN base into account
+- Fix: fixed bug in platoon.lua that caused some functions to lose target
+- Fix: ACU sniper platoon now works with gunship, bomber and fighterbomber
+- Fix: Fatboy and other long range experimentals will now fight at their optimal weaponrange
+- Fix: fixed several issues where buildings are build to close to each other
+- Fix: switched some variables inside target function from global to local
+- Fix: added extra T2 Energy builder to prevent energy stall with Black Ops upgradeable hydrocarbon power plants
+- Fix: removed the old BaseTargetManagerThread and replaced it with a new target manager
+- Fix: naval factory builders will now check for at least 20% water on the map
+- Fix: naval factories will now be build with a bit more space between each other
+- Fix: fixed bug in UnitCountBuildConditions.lua that broke the naval unit build
+- Fix: added assister for building UEF satellite structure
+- Fix: base panic builder no longer only spam T1 units
+- Fix: removed unessisary overload with aiBrain table for some forked functions in ExecuteAIPlan
+- Opt: pathing will now get enemy threat from the new heatmap data
+- Opt: engineer will continue to cap mass spots even on energy/mass stall
+- Opt: increased buildrate for T3/T4 artillery and UEF satellite
+- Opt: changed artillery and nuke behavior and target priorities
+- Opt: increased number of nuke/nuke defense ratio from 0.80 to 1.00
+- Opt: added an early air factory and transporter for water maps
+- Opt: changed targets for air experimentals
+- Opt: optimized Base Ranger, moved locals to function start
+- Opt: optimized Eco Manager, moved locals to function start
+- Opt: assister that help building a paragon will now be paused on low energy
+- Opt: expansions are now also building missile defense systems (anti nuke)
+- Opt: AI Rush: increased build priority for T3 engineers
+- Opt: AI Rush: added builder to create more energy structures
+- Opt: AI Rush: now aggressively eco up
+- Opt: AI Rush: will no longer pause factories with unit production due energy/mass stall
+- Opt: target function: added more search range rings, caching already checked targets
+- Opt: target function: increased targeting speed by rearranging search parameters
+- Opt: target function: new system to determine platoon and enemy strength
+- Opt: optimized placing of local variables for performance
+- Opt: removed reclaim cleaner function. (was removing wrecks/reclaim after 15 minutes)
+- Opt: CanPathNavalBaseToNavalTargets is now using CanGraphAreaTo instead of pathing
+- DEV: endless game option does no longer use the splitscreen. It's now zooming out to see the full map
+- DEV: removed function to debug threat inside waypoint markers. AI has now a new threat system.
+- DEV: Log and debug print will now show gametime, Lua file and line number in game.log
+
+*************************************************************************************************************************************
 v100 (30.Mar.2022)
 
 - New: ACU will now evade from nuke blast area

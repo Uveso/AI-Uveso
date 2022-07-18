@@ -13,7 +13,7 @@ BuilderGroup {
         BuilderName = 'U4 Paragon 1st mass40',
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 2000,
-        DelayEqualBuildPlattons = {'Paragon', 60},
+        DelayEqualBuildPlattons = {'Paragon', 120},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.HasParagon then
                 return 0
@@ -39,7 +39,7 @@ BuilderGroup {
                 AdjacencyCategory = categories.STRUCTURE * categories.SHIELD,
                 AdjacencyDistance = 120,
                 AvoidCategory = categories.ENERGYPRODUCTION * categories.EXPERIMENTAL,
-                maxUnits = 1,
+                maxUnits = 0,
                 maxRadius = 40,
                 BuildClose = false,
                 BuildStructures = {
@@ -53,7 +53,7 @@ BuilderGroup {
         BuilderName = 'U4 Paragon 1st 35min',
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 2000,
-        DelayEqualBuildPlattons = {'Paragon', 60},
+        DelayEqualBuildPlattons = {'Paragon', 120},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.HasParagon then
                 return 0
@@ -79,7 +79,7 @@ BuilderGroup {
                 AdjacencyCategory = categories.STRUCTURE * categories.SHIELD,
                 AdjacencyDistance = 120,
                 AvoidCategory = categories.ENERGYPRODUCTION * categories.EXPERIMENTAL,
-                maxUnits = 1,
+                maxUnits = 0,
                 maxRadius = 40,
                 BuildClose = false,
                 BuildStructures = {
@@ -93,7 +93,7 @@ BuilderGroup {
         BuilderName = 'U4 Paragon 1st HighTrend',
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
         Priority = 2000,
-        DelayEqualBuildPlattons = {'Paragon', 60},
+        DelayEqualBuildPlattons = {'Paragon', 120},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.HasParagon then
                 return 0
@@ -119,7 +119,7 @@ BuilderGroup {
                 AdjacencyCategory = categories.STRUCTURE * categories.SHIELD,
                 AdjacencyDistance = 120,
                 AvoidCategory = categories.ENERGYPRODUCTION * categories.EXPERIMENTAL,
-                maxUnits = 1,
+                maxUnits = 0,
                 maxRadius = 40,
                 BuildClose = false,
                 BuildStructures = {
@@ -133,7 +133,7 @@ BuilderGroup {
         BuilderName = 'U4 Paragon 2nd',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 2000,
-        DelayEqualBuildPlattons = {'Paragon', 60},
+        DelayEqualBuildPlattons = {'Paragon', 120},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.HasParagon then
                 return 2000
@@ -160,7 +160,7 @@ BuilderGroup {
                 AdjacencyCategory = categories.STRUCTURE * categories.SHIELD,
                 AdjacencyDistance = 120,
                 AvoidCategory = categories.ENERGYPRODUCTION * categories.EXPERIMENTAL,
-                maxUnits = 1,
+                maxUnits = 0,
                 maxRadius = 40,
                 BuildClose = false,
                 BuildStructures = {
@@ -174,7 +174,7 @@ BuilderGroup {
         BuilderName = 'U4 Paragon 3nd',
         PlatoonTemplate = 'T3EngineerBuilder',
         Priority = 2000,
-        DelayEqualBuildPlattons = {'Paragon', 60},
+        DelayEqualBuildPlattons = {'Paragon', 120},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.HasParagon then
                 return 2000
@@ -200,7 +200,7 @@ BuilderGroup {
                 AdjacencyCategory = categories.STRUCTURE * categories.SHIELD,
                 AdjacencyDistance = 200,
                 AvoidCategory = categories.ENERGYPRODUCTION * categories.EXPERIMENTAL,
-                maxUnits = 1,
+                maxUnits = 0,
                 maxRadius = 40,
                 BuildClose = false,
                 BuildStructures = {

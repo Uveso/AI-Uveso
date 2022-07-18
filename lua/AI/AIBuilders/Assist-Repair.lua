@@ -501,7 +501,7 @@ BuilderGroup {
         InstanceCount = 50,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.80}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 1.00}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD } },
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.EXPERIMENTAL }},
@@ -526,7 +526,7 @@ BuilderGroup {
         InstanceCount = 50,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.80}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.30, 1.00}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 1, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH2 - categories.STATIONASSISTPOD } },
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.EXPERIMENTAL * (categories.ECONOMIC + categories.SHIELD + categories.MOBILE ) }},
@@ -551,7 +551,7 @@ BuilderGroup {
         InstanceCount = 15,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.80}}, -- Ratio from 0 to 1. (1=100%)
+            { EBC, 'GreaterThanEconStorageRatio', { 0.40, 1.00}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 2, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH3 - categories.STATIONASSISTPOD } },
             { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.EXPERIMENTAL * (categories.ECONOMIC + categories.SHIELD + categories.MOBILE ) }},
@@ -574,7 +574,7 @@ BuilderGroup {
     --    Artillery     --
     -- ================ --
     Builder {
-        BuilderName = 'U1 Assist Arty',
+        BuilderName = 'U1 Assist Arty Satellite',
         PlatoonTemplate = 'EngineerAssist',
         Priority = 200,
         InstanceCount = 10,
@@ -584,13 +584,13 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.25, 0.80}}, -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.MOBILE * categories.LAND * categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD } },
-            { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, categories.STRUCTURE * categories.ARTILLERY }},
+            { UCBC, 'HaveGreaterThanUnitsInCategoryBeingBuiltAtLocation', { 'LocationType', 0, (categories.STRUCTURE * categories.ARTILLERY) + categories.xeb2402}},
         },
         BuilderType = 'Any',
         BuilderData = {
             Assist = {
                 AssistLocation = 'LocationType',
-                BeingBuiltCategories = {'STRUCTURE ARTILLERY'},                    -- Unitcategories must be type string
+                BeingBuiltCategories = {'STRUCTURE ARTILLERY, ORBITALSYSTEM'},                    -- Unitcategories must be type string
                 AssisteeType = 'Structure',
                 AssistRange = 100,
                 AssistClosestUnit = true,                                       -- Assist the closest unit instead unit with the least number of assisters
@@ -705,7 +705,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Finisher',
         PlatoonTemplate = 'EngineerBuilder',
-        PlatoonAIPlan = 'FinisherAI',
+        PlatoonAIPlan = 'FinisherAIUveso',
         Priority = 17900,
         InstanceCount = 4,
         BuilderConditions = {
@@ -722,7 +722,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U2 Finisher',
         PlatoonTemplate = 'T2EngineerBuilder',
-        PlatoonAIPlan = 'FinisherAI',
+        PlatoonAIPlan = 'FinisherAIUveso',
         Priority = 17900,
         InstanceCount = 4,
         BuilderConditions = {
@@ -739,7 +739,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Finisher',
         PlatoonTemplate = 'T3EngineerBuilder',
-        PlatoonAIPlan = 'FinisherAI',
+        PlatoonAIPlan = 'FinisherAIUveso',
         Priority = 17900,
         InstanceCount = 2,
         BuilderConditions = {

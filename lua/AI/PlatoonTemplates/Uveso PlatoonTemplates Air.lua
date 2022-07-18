@@ -89,6 +89,13 @@ PlatoonTemplate {
     }
 }
 PlatoonTemplate {
+    Name = 'U123-Gunship-Intercept 13 15',
+    Plan = 'HeroFightPlatoon',
+    GlobalSquads = {
+        { categories.MOBILE * categories.AIR * categories.GROUNDATTACK - categories.HIGHALTAIR - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL - categories.ANTINAVY , 13, 15, 'Attack', 'none' }
+    }
+}
+PlatoonTemplate {
     Name = 'U123-Gunship-Intercept 1 50',
     Plan = 'HeroFightPlatoon',
     GlobalSquads = {
@@ -132,7 +139,6 @@ PlatoonTemplate {
     Plan = 'HeroFightPlatoon',
     GlobalSquads = {
         { categories.MOBILE * categories.AIR * categories.BOMBER * (categories.TECH1 + categories.TECH2) - categories.ANTIAIR - categories.ANTINAVY, 3, 5, 'Attack', 'none' },
-        { categories.AIR * categories.SCOUT, 1, 1, 'scout', 'None' }
     }
 }
 PlatoonTemplate {
@@ -140,7 +146,13 @@ PlatoonTemplate {
     Plan = 'HeroFightPlatoon',
     GlobalSquads = {
         { categories.MOBILE * categories.AIR * categories.BOMBER - categories.ANTIAIR - categories.EXPERIMENTAL - categories.ANTINAVY, 3, 5, 'Attack', 'none' },
-        { categories.AIR * categories.SCOUT, 1, 1, 'scout', 'None' }
+    }
+}
+PlatoonTemplate {
+    Name = 'U123-Bomber 13 15', 
+    Plan = 'HeroFightPlatoon',
+    GlobalSquads = {
+        { categories.MOBILE * categories.AIR * categories.BOMBER - categories.ANTIAIR - categories.EXPERIMENTAL - categories.ANTINAVY, 13, 15, 'Attack', 'none' },
     }
 }
 PlatoonTemplate {
@@ -148,7 +160,6 @@ PlatoonTemplate {
     Plan = 'HeroFightPlatoon',
     GlobalSquads = {
         { categories.MOBILE * categories.AIR * categories.BOMBER - categories.ANTIAIR - categories.EXPERIMENTAL - categories.ANTINAVY, 15, 20, 'Attack', 'none' },
-        { categories.AIR * categories.SCOUT, 1, 1, 'scout', 'None' }
     }
 }
 PlatoonTemplate {
@@ -156,7 +167,6 @@ PlatoonTemplate {
     Plan = 'HeroFightPlatoon',
     GlobalSquads = {
         { categories.MOBILE * categories.AIR * categories.BOMBER - categories.ANTIAIR - categories.EXPERIMENTAL - categories.ANTINAVY, 1, 50, 'Attack', 'none' },
-        { categories.AIR * categories.SCOUT, 1, 1, 'scout', 'None' }
     }
 }
 PlatoonTemplate {
@@ -310,7 +320,6 @@ PlatoonTemplate {
     Plan = 'HeroFightPlatoon',
     GlobalSquads = {
         { categories.MOBILE * categories.AIR * categories.GROUNDATTACK - categories.HIGHALTAIR - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL - categories.ANTINAVY , 3, 20, 'Attack', 'none' },
-        { categories.AIR * categories.SCOUT, 1, 1, 'scout', 'None' }
     }
 }
 
@@ -320,7 +329,6 @@ PlatoonTemplate {
     Plan = 'HeroFightPlatoon',
     GlobalSquads = {
         { categories.MOBILE * categories.AIR * categories.BOMBER - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL - categories.ANTINAVY, 3, 100, 'Attack', 'AttackFormation' },
-        { categories.AIR * categories.SCOUT, 1, 1, 'scout', 'None' }
     }
 }
 PlatoonTemplate {
@@ -357,7 +365,6 @@ PlatoonTemplate {
     Plan = 'HeroFightPlatoon',
     GlobalSquads = {
         { categories.MOBILE * categories.AIR * categories.GROUNDATTACK - categories.HIGHALTAIR - categories.TRANSPORTFOCUS - categories.EXPERIMENTAL - categories.ANTINAVY , 3, 100, 'Attack', 'AttackFormation' },
-        { categories.AIR * categories.SCOUT, 1, 1, 'scout', 'None' }
     }
 }
 PlatoonTemplate {
