@@ -330,72 +330,60 @@ function SetTargets(armyIndex, basePosition)
             unitCat = __blueprints[unit.UnitId].CategoriesHash
             unitPosition = unit:GetPosition()
             distToBase = VDist2(basePosition[1], basePosition[3], unitPosition[1], unitPosition[3])
-            if distToBase < BaseMilitaryZone then
-                -- mobile experimantals in BaseMilitaryZone
-                if unitCat.MOBILE and unitCat.EXPERIMENTAL and not unitCat.AIR and not unitCat.INSIGNIFICANTUNIT then
-                    table.insert(enemyTargets.experimentalMilitaryZone,{ name = "experimentalMilitaryZone", priority = 200, pos = unitPosition, distToBase = distToBase, categories = categories.MOBILE * categories.EXPERIMENTAL - categories.AIR } )
-                end 
-            end
             -- commander
             if unitCat.COMMAND then
                 table.insert(enemyTargets.commander,{ name = "commander", priority = 100, pos = unitPosition, distToBase = distToBase, categories = categories.COMMAND } )
-            end
             -- shields experimantal
-            if unitCat.STRUCTURE and unitCat.SHIELD and unitCat.EXPERIMENTAL then
+            elseif unitCat.STRUCTURE and unitCat.SHIELD and unitCat.EXPERIMENTAL then
                 if not unit.shieldSize then
                     unit.shieldSize = unit.MyShield.Size or __blueprints[unit.UnitId].Defense.Shield.ShieldSize
                     unit.nukeProtectRadius = unit.shieldSize / 2
                 end
                 table.insert(enemyDefense.shieldExperimental,{ name = "shieldExperimental", priority = 95, pos = unitPosition, distToBase = distToBase, shieldRadius = unit.shieldSize/2, nukeProtectRadius = unit.nukeProtectRadius, categories = categories.STRUCTURE * categories.SHIELD * categories.EXPERIMENTAL } )
-            end
             -- shields
-            if unitCat.STRUCTURE and unitCat.SHIELD and not unitCat.EXPERIMENTAL then
+            elseif unitCat.STRUCTURE and unitCat.SHIELD and not unitCat.EXPERIMENTAL then
                 if not unit.shieldSize then
                     unit.shieldSize = unit.MyShield.Size or __blueprints[unit.UnitId].Defense.Shield.ShieldSize
                 end
                 table.insert(enemyDefense.shield,{ name = "shield", priority = 90, pos = unitPosition, distToBase = distToBase, shieldRadius = unit.shieldSize/2, categories = categories.STRUCTURE * categories.SHIELD - categories.EXPERIMENTAL } )
-            end
             -- experimental resource generator
-            if unitCat.STRUCTURE and unitCat.ECONOMIC and unitCat.ENERGYPRODUCTION and unitCat.MASSPRODUCTION and unitCat.EXPERIMENTAL then
+            elseif unitCat.STRUCTURE and unitCat.ECONOMIC and unitCat.ENERGYPRODUCTION and unitCat.MASSPRODUCTION and unitCat.EXPERIMENTAL then
                 table.insert(enemyEco.expgen,{ name = "expgen", priority = 85, pos = unitPosition, distToBase = distToBase, categories = categories.STRUCTURE * categories.ECONOMIC * categories.ENERGYPRODUCTION * categories.MASSPRODUCTION * categories.EXPERIMENTAL } )
-            end
             -- artillery
-            if unitCat.STRUCTURE and unitCat.ARTILLERY and (unitCat.TECH3 or unitCat.EXPERIMENTAL) then
+            elseif unitCat.STRUCTURE and unitCat.ARTILLERY and (unitCat.TECH3 or unitCat.EXPERIMENTAL) then
                 table.insert(enemyTargets.artillery,{ name = "artillery", priority = 80, pos = unitPosition, distToBase = distToBase, categories = categories.STRUCTURE * categories.ARTILLERY * (categories.TECH3 + categories.EXPERIMENTAL) } )
-            end
             -- satellite station
-            if unitCat.STRUCTURE and unitCat.ORBITALSYSTEM then
+            elseif unitCat.STRUCTURE and unitCat.ORBITALSYSTEM then
                 table.insert(enemyTargets.satellite,{ name = "satellite", priority = 80, pos = unitPosition, distToBase = distToBase, categories = categories.STRUCTURE * categories.ORBITALSYSTEM } )
-            end
             -- strategic missile defense
-            if unitCat.STRUCTURE and unitCat.DEFENSE and unitCat.ANTIMISSILE and (unitCat.TECH3 or unitCat.EXPERIMENTAL) then
+            elseif unitCat.STRUCTURE and unitCat.DEFENSE and unitCat.ANTIMISSILE and (unitCat.TECH3 or unitCat.EXPERIMENTAL) then
                 if not unit.nukeProtectRadius then
                     unit.nukeProtectRadius = __blueprints[unit.UnitId].Weapon[1].MaxRadius
                 end
                 table.insert(enemyDefense.smd,{ name = "smd", priority = 70, pos = unitPosition, distToBase = distToBase, nukeProtectRadius = unit.nukeProtectRadius, categories = categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * ( categories.TECH3 + categories.EXPERIMENTAL ) } )
-            end
             -- nukes
-            if unitCat.STRUCTURE and unitCat.NUKE then
+            elseif unitCat.STRUCTURE and unitCat.NUKE then
                 table.insert(enemyTargets.nuke,{ name = "nuke", priority = 60, pos = unitPosition, distToBase = distToBase, categories = categories.STRUCTURE * categories.NUKE } )
-            end
             -- experimentals
-            if unitCat.MOBILE and unitCat.EXPERIMENTAL and not unitCat.AIR and not unitCat.INSIGNIFICANTUNIT then
-                table.insert(enemyTargets.experimental,{ name = "experimental", priority = 50, pos = unitPosition, distToBase = distToBase, categories = categories.MOBILE * categories.EXPERIMENTAL - categories.AIR } )
-            end 
+            elseif unitCat.MOBILE and unitCat.EXPERIMENTAL and not unitCat.AIR and not unitCat.INSIGNIFICANTUNIT then
+                if distToBase < BaseMilitaryZone then
+                    -- mobile experimantals in BaseMilitaryZone
+                    table.insert(enemyTargets.experimentalMilitaryZone,{ name = "experimentalMilitaryZone", priority = 200, pos = unitPosition, distToBase = distToBase, categories = categories.MOBILE * categories.EXPERIMENTAL - categories.AIR } )
+                else
+                    -- mobile experimantals in EnemyZone
+                    table.insert(enemyTargets.experimental,{ name = "experimental", priority = 50, pos = unitPosition, distToBase = distToBase, categories = categories.MOBILE * categories.EXPERIMENTAL - categories.AIR } )
+                end
             -- engineer
-            if unitCat.MOBILE and unitCat.ENGINEER and not unitCat.COMMAND and not unitCat.STATIONASSISTPOD then
+            elseif unitCat.MOBILE and unitCat.ENGINEER and not unitCat.COMMAND and not unitCat.STATIONASSISTPOD then
                 table.insert(enemyTargets.engineer,{ name = "engineer", priority = 40, pos = unitPosition, distToBase = distToBase, techCategory = unit.techCategory, categories = categories.MOBILE * categories.ENGINEER - categories.COMMAND - categories.STATIONASSISTPOD  } )
-            end
             -- extractors
-            if unitCat.STRUCTURE and unitCat.MASSEXTRACTION then
+            elseif unitCat.STRUCTURE and unitCat.MASSEXTRACTION then
                 table.insert(enemyEco.mass,{ name = "mass", priority = 40, pos = unitPosition, distToBase = distToBase, techCategory = unit.techCategory, categories = categories.STRUCTURE * categories.MASSEXTRACTION } )
-            end
             -- energy
-            if unitCat.STRUCTURE and unitCat.ENERGYPRODUCTION then
+            elseif unitCat.STRUCTURE and unitCat.ENERGYPRODUCTION then
                 table.insert(enemyEco.energy,{ name = "energy", priority = 40, pos = unitPosition, distToBase = distToBase, techCategory = unit.techCategory, categories = categories.STRUCTURE * categories.ENERGYPRODUCTION } )
-            end
             -- factories
-            if unitCat.STRUCTURE and unitCat.FACTORY then
+            elseif unitCat.STRUCTURE and unitCat.FACTORY then
                 table.insert(enemyTargets.factory,{ name = "factory", priority = 30, pos = unitPosition, distToBase = distToBase, techCategory = unit.techCategory, categories = categories.STRUCTURE * categories.FACTORY } )
             end
         end
@@ -773,9 +761,9 @@ function GetDangerZoneRadii(bool)
     -- "bool" is only true if called from "AIBuilders/Mobile Land.lua", so we only print this once.
     if bool then
         AILog('* AI-Uveso: playableArea= ('..playableArea[1]..', '..playableArea[2]..' - '..playableArea[3]..', '..playableArea[4]..')' )
-        AILog('* AI-Uveso: BasePanicZone= '..math.floor( BasePanicZone * 0.01953125 ) ..' Km - ('..BasePanicZone..' units)' )
-        AILog('* AI-Uveso: BaseMilitaryZone= '..math.floor( BaseMilitaryZone * 0.01953125 )..' Km - ('..BaseMilitaryZone..' units)' )
-        AILog('* AI-Uveso: BaseEnemyZone= '..math.floor( BaseEnemyZone * 0.01953125 )..' Km - ('..BaseEnemyZone..' units)' )
+        AILog('* AI-Uveso: BasePanicZone= '..math.floor( BasePanicZone * 0.01953125 ) ..' Km - ('..math.floor( BasePanicZone )..' units)' )
+        AILog('* AI-Uveso: BaseMilitaryZone= '..math.floor( BaseMilitaryZone * 0.01953125 )..' Km - ('..math.floor( BaseMilitaryZone )..' units)' )
+        AILog('* AI-Uveso: BaseEnemyZone= '..math.floor( BaseEnemyZone * 0.01953125 )..' Km - ('..math.floor( BaseEnemyZone )..' units)' )
     end
     return BasePanicZone, BaseMilitaryZone, BaseEnemyZone
 end

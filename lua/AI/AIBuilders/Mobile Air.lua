@@ -164,6 +164,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
+            { MIBC, 'FactionIndex', { 2, 3, 4, 5 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads (exclude unit uea0203)
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.11, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
@@ -631,6 +632,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
+            { MIBC, 'FactionIndex', { 2, 3, 4, 5 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads (exclude unit uea0203)
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
@@ -1102,6 +1104,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
+            { MIBC, 'FactionIndex', { 2, 3, 4, 5 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads (exclude unit uea0203)
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.12, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
@@ -1371,6 +1374,7 @@ BuilderGroup {
         PlatoonTemplate = 'T2AirGunship',
         Priority = 370,
         BuilderConditions = {
+            { MIBC, 'FactionIndex', { 2, 3, 4, 5 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads (exclude unit uea0203)
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.10, 0.95 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?

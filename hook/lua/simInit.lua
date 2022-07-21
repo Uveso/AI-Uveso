@@ -1,9 +1,9 @@
 local UvesoOffsetSimInitLUA = debug.getinfo(1).currentline - 1
 WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..UvesoOffsetSimInitLUA..'] * AI-Uveso: offset simInit.lua')
---457
+--445
 
 local AIAttackUtils = import('/lua/ai/aiattackutilities.lua')
-local TimeConvert = import('/lua/AI/sorianutilities.lua').TimeConvert
+local FormatGameTimeSeconds = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua').FormatGameTimeSeconds
 
 -- This function can be called from all SIM state lua files
 function DebugArray(Table)
@@ -18,13 +18,14 @@ function DebugArray(Table)
     end
 end
 
+-- This function can be called from all SIM state lua files
 function AILog(data, bool, offset)
     if bool == false then return end
     -- visual indicator for offset line numbers - 1234 = normal line number, ^1234 linenumber with offset
     if not offset then offset = 0 end
     if offset > 0 then off = "^" else off = "" end
     -- print to the debuglog filename and linenumber from this log call
-    local text = tostring( TimeConvert(GetGameTimeSeconds()).." ["..string.gsub(debug.getinfo(2).source, ".*\\(.*.lua)", "%1")..":"..off..(debug.getinfo(2).currentline - offset).."] " )
+    local text = FormatGameTimeSeconds(GetGameTimeSeconds()).." ["..string.gsub(debug.getinfo(2).source, ".*\\(.*.lua)", "%1")..":"..off..(debug.getinfo(2).currentline - offset).."] "
     -- check datatype and print the data to the logfile
     if type(data) == "boolean" then
         _ALERT(text..tostring(data))
@@ -58,22 +59,24 @@ function AILog(data, bool, offset)
     end
 end
 
+-- This function can be called from all SIM state lua files
 function AIDebug(data, bool, offset)
     if bool == false then return end
     -- visual indicator for offset line numbers - 1234 = normal line number, ^1234 linenumber with offset
     if not offset then offset = 0 end
     if offset > 0 then off = "^" else off = "" end
     -- print to the debuglog filename and linenumber from this log call
-    SPEW(tostring( TimeConvert(GetGameTimeSeconds()).." ["..string.gsub(debug.getinfo(2).source, ".*\\(.*.lua)", "%1")..":"..off..(debug.getinfo(2).currentline - offset).."] " )..data)
+    SPEW( FormatGameTimeSeconds(GetGameTimeSeconds()).." ["..string.gsub(debug.getinfo(2).source, ".*\\(.*.lua)", "%1")..":"..off..(debug.getinfo(2).currentline - offset).."] "..data)
 end
 
+-- This function can be called from all SIM state lua files
 function AIWarn(data, bool, offset)
     if bool == false then return end
     -- visual indicator for offset line numbers - 1234 = normal line number, ^1234 linenumber with offset
     if not offset then offset = 0 end
     if offset > 0 then off = "^" else off = "" end
     -- print to the debuglog filename and linenumber from this log call
-    WARN(tostring( TimeConvert(GetGameTimeSeconds()).." ["..string.gsub(debug.getinfo(2).source, ".*\\(.*.lua)", "%1")..":"..off..(debug.getinfo(2).currentline - offset).."] " )..data)
+    WARN( FormatGameTimeSeconds(GetGameTimeSeconds()).." ["..string.gsub(debug.getinfo(2).source, ".*\\(.*.lua)", "%1")..":"..off..(debug.getinfo(2).currentline - offset).."] "..data)
 end
 
 -- hooks for map validation on game start and debugstuff for pathfinding and base ranger.
@@ -2257,8 +2260,8 @@ end
 
 function ValidateModFilesUveso()
     local ModName = 'AI-Uveso'
-    local Files = 87
-    local Bytes = 2032736
+    local Files = 86
+    local Bytes = 2021625
     local modlocation = ""
     for i, mod in __active_mods do
         if mod.name == ModName then

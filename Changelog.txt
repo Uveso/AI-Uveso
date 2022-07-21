@@ -1,3 +1,13 @@
+v102 (21.Jul.2022)
+
+- Opt: rebuild nuke function to sync targets with artillery and satellite.
+- Opt: added better calculation for nuke missile flight time (lead target)
+- Opt: increased calculation speed for target manager
+- DEV: added function to convert gameTimeSeconds to hour:minute:second (FormatGameTimeSeconds(GTS))
+- DEV: removed hook for BrainConditionsMonitor
+- DEV: temporarily disabled unit uea0203 - UEF T2 Air Gunship. (could cause game freeze)
+
+*************************************************************************************************************************************
 v101 (17.Jul.2022)
 
 - New: pressing [ALT]+[a] (Toggles opponent AI) suspends all AI functions (also sets all units to hold fire).

@@ -810,3 +810,10 @@ function RandomizePositionTML(position)
     end
     return {X, Y, Z}
 end
+
+function FormatGameTimeSeconds(GTS)
+    local hours   = math.floor(GTS / 3600)
+    local minutes = math.floor((GTS - (hours * 3600)) / 60)
+    local seconds = GTS - (hours * 3600) - (minutes * 60)
+    return string.format('%02d:%02d:%02d ', hours, minutes, seconds)
+end

@@ -1,6 +1,6 @@
 local UvesoOffsetPlatoonLUA = debug.getinfo(1).currentline - 1
 WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..UvesoOffsetPlatoonLUA..'] * AI-Uveso: offset platoon.lua' )
---6860
+--6842
 
 local UUtils = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua')
 local HERODEBUG = false
@@ -1357,9 +1357,9 @@ Platoon = Class(CopyOfOldPlatoonClass) {
             end
             coroutine.yield(20)
             -- loop over every satellite and check if we need a new target, then attack it
---AILog("* AI-Uveso: U4SatelliteAI(): *****************************************************************************************************")
+            --AILog("* AI-Uveso: U4SatelliteAI(): *****************************************************************************************************")
             for satIndex, sat in pairs(self:GetPlatoonUnits()) do
---AILog("* AI-Uveso: U4SatelliteAI(): [S:"..satIndex.."] search targets for sat "..satIndex)
+                --AILog("* AI-Uveso: U4SatelliteAI(): [S:"..satIndex.."] search targets for sat "..satIndex)
                 satPos = sat:GetPosition()
                 -- is the satellite free for a new target? or retarget after 60 seconds.
                 if not sat.actualTarget or sat.actualTarget.Dead or GetGameTimeSeconds() - sat.lastTargetting > 60 then
@@ -1375,7 +1375,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                                 if satTarget.protectedByShield < 1 or satTarget.priority < 50 then 
                                     for _, s in pairs(self:GetPlatoonUnits()) do
                                         if realSatTargetUnit == s.actualTarget then
---AILog("* AI-Uveso: U4SatelliteAI(): [S:"..satIndex.."] unprotected target is already attacked by another satellite")
+                                            --AILog("* AI-Uveso: U4SatelliteAI(): [S:"..satIndex.."] unprotected target is already attacked by another satellite")
                                             targetAvailable = false
                                             break -- break for for i, s in pairs(self:GetPlatoonUnits()) do
                                         end
@@ -1386,12 +1386,12 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                                 if targetAvailable then
                                     -- if the target is protected by shields or if the target has high priority, attack it.
                                     if satTarget.protectedByShield >= 1 or satTarget.priority >= 50  then
---AILog("* AI-Uveso: U4SatelliteAI(): [S:"..satIndex.."] protected target: priority: "..satTarget.priority.." - protectedByShield:"..satTarget.protectedByShield.." - shieldRadius: "..repr(satTarget.shieldRadius or 0).." - techCategory: "..repr(satTarget.techCategory or 0).." - distToBase: "..math.floor(satTarget.distToBase).." - name: "..satTarget.name.."" )
+                                        --AILog("* AI-Uveso: U4SatelliteAI(): [S:"..satIndex.."] protected target: priority: "..satTarget.priority.." - protectedByShield:"..satTarget.protectedByShield.." - shieldRadius: "..repr(satTarget.shieldRadius or 0).." - techCategory: "..repr(satTarget.techCategory or 0).." - distToBase: "..math.floor(satTarget.distToBase).." - name: "..satTarget.name.."" )
                                         closestTarget = realSatTargetUnit
                                     else
                                         -- find the closest target for the satellite
                                         actualPriority = satTarget.priority
---AILog("* AI-Uveso: U4SatelliteAI(): [S:"..satIndex.."] search for targets with the same actualPriority "..actualPriority)
+                                        --AILog("* AI-Uveso: U4SatelliteAI(): [S:"..satIndex.."] search for targets with the same actualPriority "..actualPriority)
                                         closestTargetDist = false
                                         for cI, cTarget in pairs(aiBrain.targets.satelliteTargets) do
                                             if not cTarget.underWater and cTarget.protectedByShield < 1 then
@@ -1406,13 +1406,13 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                                                             targetAvailable = true
                                                             for _, s in pairs(self:GetPlatoonUnits()) do
                                                                 if realSatTargetUnit == s.actualTarget then
---AILog("* AI-Uveso: U4SatelliteAI(): [S:"..satIndex.."] actualPriority target is already attacked by another satellite")
+                                                                    --AILog("* AI-Uveso: U4SatelliteAI(): [S:"..satIndex.."] actualPriority target is already attacked by another satellite")
                                                                     targetAvailable = false
                                                                     break -- break for _, s in pairs(self:GetPlatoonUnits()) do
                                                                 end
                                                             end
                                                             if targetAvailable then
---AILog("* AI-Uveso: U4SatelliteAI(): [S:"..satIndex.."] possible target: priority: "..cTarget.priority.." - protectedByShield:"..cTarget.protectedByShield.." - shieldRadius: "..repr(cTarget.shieldRadius or 0).." - techCategory: "..repr(cTarget.techCategory or 0).." - distToSat: "..math.floor(dist).." - name: "..cTarget.name.."" )
+                                                                --AILog("* AI-Uveso: U4SatelliteAI(): [S:"..satIndex.."] possible target: priority: "..cTarget.priority.." - protectedByShield:"..cTarget.protectedByShield.." - shieldRadius: "..repr(cTarget.shieldRadius or 0).." - techCategory: "..repr(cTarget.techCategory or 0).." - distToSat: "..math.floor(dist).." - name: "..cTarget.name.."" )
                                                                 closestTarget = realSatTargetUnit
                                                                 closestTargetDist = dist
                                                             end
@@ -1423,9 +1423,9 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                                         end -- for cI, cTarget in pairs(aiBrain.targets.satelliteTargets) do
                                     end
                                 end
---AILog("* AI-Uveso: U4SatelliteAI(): [S:"..satIndex.."] end searching for priority targets, actualPriority: "..actualPriority.." - dist:"..repr(closestTargetDist) )
+                                --AILog("* AI-Uveso: U4SatelliteAI(): [S:"..satIndex.."] end searching for priority targets, actualPriority: "..actualPriority.." - dist:"..repr(closestTargetDist) )
                                 if closestTarget then
---AILog("* AI-Uveso: U4SatelliteAI(): [S:"..satIndex.."] attacking target:" )
+                                    --AILog("* AI-Uveso: U4SatelliteAI(): [S:"..satIndex.."] attacking target:" )
                                     -- attack closestTarget
                                     IssueStop({sat})
                                     IssueClearCommands({sat})
@@ -1438,10 +1438,10 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                         end
                     end -- for targetIndex, satTarget in pairs(aiBrain.targets.satelliteTargets) do
                 else
---AILog("* AI-Uveso: U4SatelliteAI(): [S:"..satIndex.."] Sat has already a target!")
+                    --AILog("* AI-Uveso: U4SatelliteAI(): [S:"..satIndex.."] Sat has already a target!")
                 end -- if not sat.actualTarget
             end -- for satIndex, sat in pairs(self:GetPlatoonUnits()) do
---AILog("* AI-Uveso: U4SatelliteAI(): -----------------------------------------------------------------------------------------------------")
+            --AILog("* AI-Uveso: U4SatelliteAI(): -----------------------------------------------------------------------------------------------------")
         end
     end,
 
@@ -1582,6 +1582,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         local TargetPosition
         local realnukeTargetUnit
         local TargetPos
+        local ToClose
 
         while aiBrain:PlatoonExists(self) do
             coroutine.yield(1)
@@ -1620,7 +1621,8 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                 local bp = Launcher:GetBlueprint()
                 local weapon = bp.Weapon[1]
                 local MaxLoad = weapon.MaxProjectileStorage or 5
-                AILog('* AI-Uveso: * NukePlatoonAI: launcher '.._..' can load '..MaxLoad..' missiles ( loaded: '..NukeSiloAmmoCount..' )', NUKEDEBUG, UvesoOffsetPlatoonLUA)
+                local WorkProgress = math.floor(Launcher:GetWorkProgress() * 100)
+                AILog('* AI-Uveso: * NukePlatoonAI: launcher '.._..' can load '..MaxLoad..' missiles ( loaded: '..NukeSiloAmmoCount..' ) ( constructing: '..WorkProgress..'% )', NUKEDEBUG, UvesoOffsetPlatoonLUA)
                 if NukeSiloAmmoCount >= MaxLoad then
                     AILog('* AI-Uveso: * NukePlatoonAI: launcher can load '..MaxLoad..' missiles and has '..NukeSiloAmmoCount..' = FULL ', NUKEDEBUG, UvesoOffsetPlatoonLUA)
                     table.insert(LauncherFull, Launcher)
@@ -1641,186 +1643,117 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                 continue
             end
             ---------------------------------------------------------------------------------------------------
-            -- PrimaryTarget, launch a single nuke on primary targets.
+            -- Unprotected Target, launch a single nuke on primary targets.
             ---------------------------------------------------------------------------------------------------
-            AILog('* AI-Uveso: * NukePlatoonAI: (Unprotected) PrimaryTarget ', NUKEDEBUG, UvesoOffsetPlatoonLUA)
+            AILog('* AI-Uveso: * NukePlatoonAI: Unprotected Target ', NUKEDEBUG, UvesoOffsetPlatoonLUA)
             if aiBrain.targets.nukeTargets and table.getn(LauncherReady) > 0 then
-AILog("* AI-Uveso: NukePlatoonAI(): LauncherReady > 0", NUKEDEBUG, UvesoOffsetPlatoonLUA)
+                AILog("* AI-Uveso: * NukePlatoonAI(): LauncherReady > 0", NUKEDEBUG, UvesoOffsetPlatoonLUA)
                 for _, nukeTarget in pairs(aiBrain.targets.nukeTargets) do
-AILog("* AI-Uveso: NukePlatoonAI(): nuke targets: priority: "..nukeTarget.priority.." - protectedBySMD:"..nukeTarget.protectedBySMD.." - shieldRadius: "..repr(nukeTarget.shieldRadius or 0).." - name: "..nukeTarget.name.."", NUKEDEBUG, UvesoOffsetPlatoonLUA )
-                    if nukeTarget.name ~= "EcoValue" then
-                        realnukeTargetUnit = aiBrain:GetUnitsAroundPoint(nukeTarget.categories, nukeTarget.pos, 1, 'Enemy')[1]
-                    end
-                    if (realnukeTargetUnit and not realnukeTargetUnit.Dead) or nukeTarget.name == "EcoValue" then
-AILog("* AI-Uveso: NukePlatoonAI(): Found a real target ", NUKEDEBUG, UvesoOffsetPlatoonLUA)
-                        -- Only shoot if the target is not protected by antimissile or experimental shields
-                        if nukeTarget.name ~= "EcoValue" and EntityCategoryContains(categories.MOBILE * categories.EXPERIMENTAL, realnukeTargetUnit) then
-                            -- Lead target function for moving units
-AILog("* AI-Uveso: NukePlatoonAI():["..nukeTarget.name.."] LeadNukeTarget", NUKEDEBUG, UvesoOffsetPlatoonLUA)
-                            TargetPos = self:LeadNukeTarget(realnukeTargetUnit)
+                    if nukeTarget.protectedBySMD == 0 then
+                        AILog("* AI-Uveso: * NukePlatoonAI():["..nukeTarget.name.."] nuke targets: priority: "..nukeTarget.priority.." - protectedBySMD:"..nukeTarget.protectedBySMD.." - shieldRadius: "..repr(nukeTarget.shieldRadius or 0).." - name: "..nukeTarget.name.."", NUKEDEBUG, UvesoOffsetPlatoonLUA )
+                        if nukeTarget.name ~= "EcoValue" then
+                            realnukeTargetUnit = aiBrain:GetUnitsAroundPoint(nukeTarget.categories, nukeTarget.pos, 1, 'Enemy')[1]
                         else
-AILog("* AI-Uveso: NukePlatoonAI():["..nukeTarget.name.."] Unleaded NukeTarget", NUKEDEBUG, UvesoOffsetPlatoonLUA)
-                            TargetPos = nukeTarget.pos
+                            realnukeTargetUnit = false
                         end
-AILog("* AI-Uveso: NukePlatoonAI():["..nukeTarget.name.."] TargetPos: "..repr(TargetPos), NUKEDEBUG, UvesoOffsetPlatoonLUA)
-                        if TargetPos then
-                            -- Only shoot if we are not damaging our own structures
-                            if aiBrain:GetNumUnitsAroundPoint(categories.STRUCTURE - categories.TECH1, TargetPos, 32 , 'Ally') <= 3 then
-AILog("* AI-Uveso: NukePlatoonAI():["..nukeTarget.name.."] no friendly units in range.", NUKEDEBUG, UvesoOffsetPlatoonLUA)
-                                if not self:NukeSingleAttack(HighMissileCountLauncherReady, TargetPos) then
-                                    if self:NukeSingleAttack(LauncherReady, TargetPos) then
-                                        AILog('* AI-Uveso: * NukePlatoonAI: (aiBrain.targets.nukeTargets) FIRE LauncherReady!', NUKEDEBUG, UvesoOffsetPlatoonLUA)
+                        if (realnukeTargetUnit and not realnukeTargetUnit.Dead) or nukeTarget.name == "EcoValue" then
+                            AILog("* AI-Uveso: * NukePlatoonAI():["..nukeTarget.name.."] Found a real target ("..repr(realnukeTargetUnit ~= nil)..") or EcoValue ("..repr(nukeTarget.name == "EcoValue")..")", NUKEDEBUG, UvesoOffsetPlatoonLUA)
+                            -- Only shoot if the target is not protected by antimissile or experimental shields
+                            if nukeTarget.name ~= "EcoValue" and EntityCategoryContains(categories.MOBILE * categories.EXPERIMENTAL, realnukeTargetUnit) then
+                                -- Lead target function for moving units
+                                AILog("* AI-Uveso: * NukePlatoonAI():["..nukeTarget.name.."] LeadNukeTarget", NUKEDEBUG, UvesoOffsetPlatoonLUA)
+                                TargetPos = self:LeadNukeTarget(realnukeTargetUnit)
+                            else
+                                AILog("* AI-Uveso: * NukePlatoonAI():["..nukeTarget.name.."] Unleaded NukeTarget", NUKEDEBUG, UvesoOffsetPlatoonLUA)
+                                TargetPos = nukeTarget.pos
+                            end
+                            if TargetPos then
+                                AILog("* AI-Uveso: * NukePlatoonAI():["..nukeTarget.name.."] TargetPos: ("..TargetPos[1]..", "..TargetPos[3]..")", NUKEDEBUG, UvesoOffsetPlatoonLUA)
+                                -- Only shoot if we are not damaging our own structures
+                                if aiBrain:GetNumUnitsAroundPoint(categories.STRUCTURE - categories.TECH1, TargetPos, 32 , 'Ally') <= 3 then
+                                    AILog("* AI-Uveso: * NukePlatoonAI():["..nukeTarget.name.."] no friendly units in range.", NUKEDEBUG, UvesoOffsetPlatoonLUA)
+                                    if self:NukeSingleAttack(HighMissileCountLauncherReady, TargetPos) then
                                         NukeLaunched = true
-AILog("* AI-Uveso: NukePlatoonAI():["..nukeTarget.name.."] FIRE LauncherReady: priority: "..nukeTarget.priority.." - name: "..nukeTarget.name.."", NUKEDEBUG, UvesoOffsetPlatoonLUA )
+                                        AILog("* AI-Uveso: * NukePlatoonAI():["..nukeTarget.name.."] FIRE HighMissileCountLauncherReady: priority: "..nukeTarget.priority.." - name: "..nukeTarget.name.."" , NUKEDEBUG, UvesoOffsetPlatoonLUA)
+                                    elseif self:NukeSingleAttack(LauncherReady, TargetPos) then
+                                        NukeLaunched = true
+                                        AILog("* AI-Uveso: * NukePlatoonAI():["..nukeTarget.name.."] FIRE LauncherReady: priority: "..nukeTarget.priority.." - name: "..nukeTarget.name.."", NUKEDEBUG, UvesoOffsetPlatoonLUA )
+                                    else
+                                        AILog("* AI-Uveso: * NukePlatoonAI():["..nukeTarget.name.."] Fn NukeSingleAttack did not fire! priority: "..nukeTarget.priority.." - name: "..nukeTarget.name.."", NUKEDEBUG, UvesoOffsetPlatoonLUA )
                                     end
                                 else
-                                    AILog('* AI-Uveso: * NukePlatoonAI: (aiBrain.targets.nukeTargets) FIRE HighMissileCountLauncherReady!', NUKEDEBUG, UvesoOffsetPlatoonLUA)
-                                    NukeLaunched = true
-AILog("* AI-Uveso: NukePlatoonAI():["..nukeTarget.name.."] FIRE HighMissileCountLauncherReady: priority: "..nukeTarget.priority.." - name: "..nukeTarget.name.."" , NUKEDEBUG, UvesoOffsetPlatoonLUA)
+                                    AILog("* AI-Uveso: * NukePlatoonAI():["..nukeTarget.name.."] Launcher cant fire; friendly units in range! cout: "..aiBrain:GetNumUnitsAroundPoint(categories.STRUCTURE - categories.TECH1, TargetPos, 32 , 'Ally'), NUKEDEBUG, UvesoOffsetPlatoonLUA)
                                 end
                             else
-AILog("* AI-Uveso: NukePlatoonAI():["..nukeTarget.name.."] friendly units in range! cout: "..aiBrain:GetNumUnitsAroundPoint(categories.STRUCTURE - categories.TECH1, TargetPos, 32 , 'Ally'), NUKEDEBUG, UvesoOffsetPlatoonLUA)
+                                AILog("* AI-Uveso: * NukePlatoonAI():["..nukeTarget.name.."] no TargetPos!", NUKEDEBUG, UvesoOffsetPlatoonLUA)
                             end
+                        else
+                            AIWarn("* AI-Uveso: * NukePlatoonAI():["..nukeTarget.name.."] No real target found", NUKEDEBUG, UvesoOffsetPlatoonLUA)
+                        end
+                        if NukeLaunched then
+                            break
                         end
                     else
-AILog("* AI-Uveso: NukePlatoonAI(): No real target found", NUKEDEBUG, UvesoOffsetPlatoonLUA)
-                    end
-                    if NukeLaunched then
+                        AILog("* AI-Uveso: * NukePlatoonAI():["..nukeTarget.name.."] is protected by SMD!", NUKEDEBUG, UvesoOffsetPlatoonLUA)
+                        -- targets are sorted with unprotected targets first. If we get the first protected target then we don't need to continue
                         break
                     end
                 end
             else
-AILog("* AI-Uveso: NukePlatoonAI(): nukeTargets = 0", NUKEDEBUG, UvesoOffsetPlatoonLUA)
+                AILog("* AI-Uveso: * NukePlatoonAI(): aiBrain.targets.nukeTargets = 0 or no launcher ready", NUKEDEBUG, UvesoOffsetPlatoonLUA)
             end
             ---------------------------------------------------------------------------------------------------
-            -- Jericho! Check if we can attack all targets at the same time
+            -- Jericho! Check if we can attack multiple targets at the same time
             ---------------------------------------------------------------------------------------------------
-            EnemyUnits = aiBrain:GetUnitsAroundPoint(categories.STRUCTURE - categories.MASSEXTRACTION - categories.TECH1 - categories.TECH2 , Vector(mapSizeX/2,0,mapSizeZ/2), mapSizeX+mapSizeZ, 'Enemy')
-            EnemyTargetPositions = {}
-            AILog('* AI-Uveso: * NukePlatoonAI: (Jericho) Searching for EnemyTargetPositions', NUKEDEBUG, UvesoOffsetPlatoonLUA)
-            for _, EnemyTarget in EnemyUnits do
-                -- get position of the possible next target
-                local EnemyTargetPos = EnemyTarget:GetPosition() or nil
-                if not EnemyTargetPos then continue end
-                local ToClose = false
-                -- loop over all already attacked targets
-                for _, ETargetPosition in EnemyTargetPositions do
-                    -- Check if the target is closer then 40 to an already attacked target
-                    if VDist2(EnemyTargetPos[1],EnemyTargetPos[3],ETargetPosition[1],ETargetPosition[3]) < 40 then
-                        ToClose = true
-                        break -- break out of the EnemyTargetPositions loop
-                    end
-                end
-                if ToClose then
-                    continue -- Skip this enemytarget and check the next
-                end
-                table.insert(EnemyTargetPositions, EnemyTargetPos)
-            end
-            ---------------------------------------------------------------------------------------------------
-            -- Now, if we have more launchers ready then targets start Jericho bombardment
-            ---------------------------------------------------------------------------------------------------
-            if NUKEDEBUG then
-                AILog('* AI-Uveso: * NukePlatoonAI: (Jericho) Checking for Launcher:('..LauncherCount..') Ready:('..table.getn(LauncherReady)..') Full:('..table.getn(LauncherFull)..') - Missiles:('..MissileCount..') - Enemy Targets:('..table.getn(EnemyTargetPositions)..')')
-            end
-            if 1 == 1 and table.getn(LauncherReady) >= table.getn(EnemyTargetPositions) and table.getn(EnemyTargetPositions) > 0 and table.getn(LauncherFull) > 0 then
-                if NUKEDEBUG then
-                    AILog('* AI-Uveso: * NukePlatoonAI: Jericho!')
-                end
-                -- loopß over all targets
-                self:NukeJerichoAttack(aiBrain, LauncherReady, EnemyTargetPositions, false)
-                NukeLaunched = true
-            end
-            ---------------------------------------------------------------------------------------------------
-            -- If we have an launcher with 5 missiles fire one.
-            ---------------------------------------------------------------------------------------------------
-            if NUKEDEBUG then
-                AILog('* AI-Uveso: * NukePlatoonAI: (Launcher Full) Checking for Full Launchers. Launcher:('..LauncherCount..') Ready:('..table.getn(LauncherReady)..') Full:('..table.getn(LauncherFull)..') - Missiles:('..MissileCount..')')
-            end
-            if 1 == 1 and table.getn(LauncherFull) > 0 then
-                if NUKEDEBUG then
-                    AILog('* AI-Uveso: * NukePlatoonAI: (Launcher Full) - Launcher is full!')
-                end
-                EnemyUnits = aiBrain:GetUnitsAroundPoint(categories.STRUCTURE * categories.EXPERIMENTAL, Vector(mapSizeX/2,0,mapSizeZ/2), mapSizeX+mapSizeZ, 'Enemy')
-                if table.getn(EnemyUnits) > 0 then
-                    if NUKEDEBUG then
-                        AILog('* AI-Uveso: * NukePlatoonAI: (Launcher Full) Enemy Experimental Buildings: ('..table.getn(EnemyUnits)..')')
-                    end
-                end
-                if table.getn(EnemyUnits) <= 0 then
-                    EnemyUnits = aiBrain:GetUnitsAroundPoint(categories.STRUCTURE * categories.TECH3 , Vector(mapSizeX/2,0,mapSizeZ/2), mapSizeX+mapSizeZ, 'Enemy')
-                    if NUKEDEBUG then
-                        AILog('* AI-Uveso: * NukePlatoonAI: (Launcher Full) Enemy TECH3 Buildings: ('..table.getn(EnemyUnits)..')')
-                    end
-                end
-                if table.getn(EnemyUnits) <= 0 then
-                    EnemyUnits = aiBrain:GetUnitsAroundPoint(categories.MOBILE * categories.EXPERIMENTAL - categories.AIR, Vector(mapSizeX/2,0,mapSizeZ/2), mapSizeX+mapSizeZ, 'Enemy')
-                    if NUKEDEBUG then
-                        AILog('* AI-Uveso: * NukePlatoonAI: (Launcher Full) Enemy Experimental Units: ('..table.getn(EnemyUnits)..')')
-                    end
-                end
-                if table.getn(EnemyUnits) <= 0 then
-                    EnemyUnits = aiBrain:GetUnitsAroundPoint(categories.STRUCTURE , Vector(mapSizeX/2,0,mapSizeZ/2), mapSizeX+mapSizeZ, 'Enemy')
-                    if NUKEDEBUG then
-                        AILog('* AI-Uveso: * NukePlatoonAI: (Launcher Full) Enemy Buildings: ('..table.getn(EnemyUnits)..')')
-                    end
-                end
-                if table.getn(EnemyUnits) <= 0 then
-                    EnemyUnits = aiBrain:GetUnitsAroundPoint(categories.MOBILE - categories.AIR, Vector(mapSizeX/2,0,mapSizeZ/2), mapSizeX+mapSizeZ, 'Enemy')
-                    if NUKEDEBUG then
-                        AILog('* AI-Uveso: * NukePlatoonAI: (Launcher Full) Enemy Mobile Units: ('..table.getn(EnemyUnits)..')')
-                    end
-                end
-                if table.getn(EnemyUnits) > 0 then
-                    if NUKEDEBUG then
-                        AILog('* AI-Uveso: * NukePlatoonAI: (Launcher Full) MissileCount ('..MissileCount..') > EnemyUnits ('..table.getn(EnemyUnits)..')')
-                    end
-                    EnemyTargetPositions = {}
-                    -- get enemy target positions
-                    for _, EnemyTarget in EnemyUnits do
-                        -- get position of the possible next target
-                        local EnemyTargetPos = EnemyTarget:GetPosition() or nil
-                        if not EnemyTargetPos then continue end
-                        local ToClose = false
-                        -- loop over all already attacked targets
-                        for _, ETargetPosition in EnemyTargetPositions do
-                            -- Check if the target is closeer then 40 to an already attacked target
-                            if VDist2(EnemyTargetPos[1],EnemyTargetPos[3],ETargetPosition[1],ETargetPosition[3]) < 40 then
-                                ToClose = true
-                                break -- break out of the EnemyTargetPositions loop
-                            end
+            AILog('* AI-Uveso: * NukePlatoonAI: Jericho ', NUKEDEBUG, UvesoOffsetPlatoonLUA)
+            if not NukeLaunched and aiBrain.targets.nukeTargets and table.getn(LauncherReady) > 0 then
+                EnemyTargetPositions = {}
+                AILog('* AI-Uveso: * NukePlatoonAI: (Jericho) Searching for EnemyTargetPositions', NUKEDEBUG, UvesoOffsetPlatoonLUA)
+                for _, nukeTarget in pairs(aiBrain.targets.nukeTargets) do
+                    -- get position of the possible next target
+                    ToClose = false
+                    -- loop over all already attacked targets
+                    for _, ETargetPosition in EnemyTargetPositions do
+                        -- Check if the target is closer then 40 to an already attacked target
+                        if VDist2(nukeTarget.pos[1],nukeTarget.pos[3],ETargetPosition[1],ETargetPosition[3]) < 40 then
+                            ToClose = true
+                            break -- break out of the EnemyTargetPositions loop
                         end
-                        if ToClose then
-                            continue -- Skip this enemytarget and check the next
-                        end
-                        table.insert(EnemyTargetPositions, EnemyTargetPos)
+                    end
+                    if not ToClose then
+                        AILog('* AI-Uveso: * NukePlatoonAI: (Jericho) Adding Target "'..nukeTarget.name..'" to target list', NUKEDEBUG, UvesoOffsetPlatoonLUA)
+                        table.insert(EnemyTargetPositions, nukeTarget.pos)
+                    else
+                        AILog('* AI-Uveso: * NukePlatoonAI: (Jericho) Target to close to other target in list "'..nukeTarget.name..'"', NUKEDEBUG, UvesoOffsetPlatoonLUA)
+                    end
+                end
+                ---------------------------------------------------------------------------------------------------
+                -- Now, if we have targets start Jericho bombardment
+                ---------------------------------------------------------------------------------------------------
+                AILog('* AI-Uveso: * NukePlatoonAI: (Jericho) Checking for Launcher:('..LauncherCount..') Ready:('..table.getn(LauncherReady)..') Full:('..table.getn(LauncherFull)..') - Missiles:('..MissileCount..') - Enemy Targets:('..table.getn(EnemyTargetPositions)..')', NUKEDEBUG, UvesoOffsetPlatoonLUA)
+                if EnemyTargetPositions[1] then
+                    AILog('* AI-Uveso: * NukePlatoonAI: Jericho!', NUKEDEBUG, UvesoOffsetPlatoonLUA)
+                    -- loop over all targets
+                    if self:NukeJerichoAttack(aiBrain, LauncherReady, EnemyTargetPositions) then
+                        NukeLaunched = true
                     end
                 end
             end
             ---------------------------------------------------------------------------------------------------
-            -- Now, if we have targets, shot at it
+            -- Wait some seconds before we start the next missile
             ---------------------------------------------------------------------------------------------------
-            if NUKEDEBUG then
-                AILog('* AI-Uveso: * NukePlatoonAI: (Launcher Full) Attack only with full Launchers. Launcher:('..LauncherCount..') Ready:('..table.getn(LauncherReady)..') Full:('..table.getn(LauncherFull)..') - Missiles:('..MissileCount..') - Enemy Targets:('..table.getn(EnemyTargetPositions)..')')
-            end
-            if 1 == 1 and table.getn(EnemyTargetPositions) > 0 and table.getn(LauncherFull) > 0 then
-                self:NukeJerichoAttack(aiBrain, LauncherFull, EnemyTargetPositions, true)
-                NukeLaunched = true
-            end
-            if NUKEDEBUG then
-                AILog('* AI-Uveso: * NukePlatoonAI: END. Launcher:('..LauncherCount..') Ready:('..table.getn(LauncherReady)..') Full:'..table.getn(LauncherFull)..' - Missiles:('..MissileCount..')')
-            end
             if NukeLaunched == true then
-                --AILog('* AI-Uveso: Fired nuke(s), waiting...')
+                AIWarn('* AI-Uveso: * NukePlatoonAI: nuke launched, waiting for impact...', NUKEDEBUG, UvesoOffsetPlatoonLUA)
                 coroutine.yield(450)-- wait 45 seconds for the missile flight, then get new targets
+                AIWarn('* AI-Uveso: * NukePlatoonAI: nuke should have reached the tearget, next loop.', NUKEDEBUG, UvesoOffsetPlatoonLUA)
             end
         end -- while aiBrain:PlatoonExists(self) do
-        if NUKEDEBUG then
-            AIWarn('* AI-Uveso: * NukePlatoonAI: Function END. Launcher:('..LauncherCount..') Ready:('..table.getn(LauncherReady)..') Full:'..table.getn(LauncherFull)..' - Missiles:('..MissileCount..')')
-        end
+        AIWarn('* AI-Uveso: * NukePlatoonAI: Function END', NUKEDEBUG, UvesoOffsetPlatoonLUA)
     end,
     
     LeadNukeTarget = function(self, target)
         local aiBrain = self:GetBrain()
+        local LauncherPos = self:GetPlatoonPosition()
         local TargetPos
         -- Get target position in 1 second intervals.
         -- This allows us to get speed and direction from the target
@@ -1835,9 +1768,9 @@ AILog("* AI-Uveso: NukePlatoonAI(): nukeTargets = 0", NUKEDEBUG, UvesoOffsetPlat
         -- If x/y and xcheck/ycheck are equal, we can be sure the target is moving straight
         -- in one direction. At least for the last 2 seconds.
         local LoopSaveGuard = 0
-        AILog("* AI-Uveso: LeadNukeTarget(): START Loop", NUKEDEBUG, UvesoOffsetPlatoonLUA)
+        AILog("* AI-Uveso: ** LeadNukeTarget(): START Loop", NUKEDEBUG, UvesoOffsetPlatoonLUA)
         while target and not target.Dead and (XmovePerSec ~= XmovePerSecCheck or YmovePerSec ~= YmovePerSecCheck) and LoopSaveGuard < 10 and aiBrain:PlatoonExists(self) do
-            AILog("* AI-Uveso: LeadNukeTarget(): START Loop no:"..repr(LoopSaveGuard), NUKEDEBUG, UvesoOffsetPlatoonLUA)
+            AILog("* AI-Uveso: ** LeadNukeTarget(): START Loop no:"..repr(LoopSaveGuard), NUKEDEBUG, UvesoOffsetPlatoonLUA)
             if not target or target.Dead then return false end
             -- 1st position of target
             TargetPos = target:GetPosition()
@@ -1859,26 +1792,29 @@ AILog("* AI-Uveso: NukePlatoonAI(): nukeTargets = 0", NUKEDEBUG, UvesoOffsetPlat
             LoopSaveGuard = LoopSaveGuard + 1
         end
         if not target or target.Dead then
-            AILog("* AI-Uveso: LeadNukeTarget(): not target or target.Dead", NUKEDEBUG, UvesoOffsetPlatoonLUA)
+            AILog("* AI-Uveso: ** LeadNukeTarget(): not target or target.Dead", NUKEDEBUG, UvesoOffsetPlatoonLUA)
             return false
         end
-        --ToDO: make real time calculation
-        local MissileImpactTime = 25
+        local NukeStart = 10
+        local NukeLand = 5
+        local FlightDistance = VDist2(LauncherPos[1], LauncherPos[3], TargetPos[1], TargetPos[3])
+        local MissileImpactTime = NukeStart + NukeLand + FlightDistance / 30
+        AILog("* AI-Uveso: ** LeadNukeTarget(): MissileImpactTime: "..MissileImpactTime, NUKEDEBUG, UvesoOffsetPlatoonLUA)
         -- Create missile impact corrdinates based on movePerSec * MissileImpactTime
         local MissileImpactX = Target2SecPos[1] - (XmovePerSec * MissileImpactTime)
         local MissileImpactY = Target2SecPos[3] - (YmovePerSec * MissileImpactTime)
         if LoopSaveGuard >=9 and TargetPos then
-            AILog("* AI-Uveso: LeadNukeTarget(): LoopSaveGuard: "..repr(LoopSaveGuard), NUKEDEBUG, UvesoOffsetPlatoonLUA)
+            AILog("* AI-Uveso: ** LeadNukeTarget(): LoopSaveGuard: "..repr(LoopSaveGuard), NUKEDEBUG, UvesoOffsetPlatoonLUA)
             return TargetPos
         end
-        AILog("* AI-Uveso: LeadNukeTarget(): TargetPos: "..repr({MissileImpactX, Target2SecPos[2], MissileImpactY}), NUKEDEBUG, UvesoOffsetPlatoonLUA)
+        AILog('* AI-Uveso: ** LeadNukeTarget: TargetPos: ('..MissileImpactX..', '..MissileImpactY..')', NUKEDEBUG, UvesoOffsetPlatoonLUA)
         return {MissileImpactX, Target2SecPos[2], MissileImpactY}
     end,
 
     NukeSingleAttack = function(self, Launchers, EnemyTargetPosition)
-        AILog('* AI-Uveso: ** NukeSingleAttack: Launcher count: '..table.getn(Launchers))
+        AILog('* AI-Uveso: ** NukeSingleAttack: Launcher count: '..table.getn(Launchers), NUKEDEBUG, UvesoOffsetPlatoonLUA)
         if table.getn(Launchers) <= 0 then
-            AILog('* AI-Uveso: ** NukeSingleAttack: No Launcher ready.')
+            AILog('* AI-Uveso: ** NukeSingleAttack: No Launcher ready.', NUKEDEBUG, UvesoOffsetPlatoonLUA)
             return false
         end
         -- loop over all nuke launcher
@@ -1886,46 +1822,47 @@ AILog("* AI-Uveso: NukePlatoonAI(): nukeTargets = 0", NUKEDEBUG, UvesoOffsetPlat
             if not Launcher or Launcher.Dead or Launcher:BeenDestroyed() then
                 -- We found a dead unit inside this platoon. Disband the platton; It will be reformed
                 -- needs PlatoonDisbandNoAssign, or launcher will stop building nukes if the platton is disbanded
-                AILog('* AI-Uveso: ** NukeSingleAttack: Found destroyed launcher inside platoon. Disbanding...')
+                AILog('* AI-Uveso: ** NukeSingleAttack: Found destroyed launcher inside platoon. Disbanding...', NUKEDEBUG, UvesoOffsetPlatoonLUA)
                 self:PlatoonDisbandNoAssign()
                 return
             end
             -- check if the target is closer then 20000
             LauncherPos = Launcher:GetPosition() or nil
             if not LauncherPos then
-                AILog('* AI-Uveso: ** NukeSingleAttack: no Launcher Pos. Skiped')
+                AILog('* AI-Uveso: ** NukeSingleAttack: no Launcher Pos. Skiped', NUKEDEBUG, UvesoOffsetPlatoonLUA)
                 continue
             end
             if not EnemyTargetPosition then
-                AILog('* AI-Uveso: ** NukeSingleAttack: no Target Pos. Skiped')
+                AILog('* AI-Uveso: ** NukeSingleAttack: no Target Pos. Skiped', NUKEDEBUG, UvesoOffsetPlatoonLUA)
                 continue
             end
             if VDist2(LauncherPos[1],LauncherPos[3],EnemyTargetPosition[1],EnemyTargetPosition[3]) > 20000 then
-                AILog('* AI-Uveso: ** NukeSingleAttack: Target out of range. Skiped')
+                AILog('* AI-Uveso: ** NukeSingleAttack: Target out of range. Skiped', NUKEDEBUG, UvesoOffsetPlatoonLUA)
                 -- Target is out of range, skip this launcher
                 continue
             end
             -- Attack the target
-            AILog('* AI-Uveso: ** NukeSingleAttack: Attacking Enemy Position!')
+            AILog('* AI-Uveso: ** NukeSingleAttack: Attacking Enemy Position! ('..EnemyTargetPosition[1]..', '..EnemyTargetPosition[3]..')', NUKEDEBUG, UvesoOffsetPlatoonLUA)
             IssueNuke({Launcher}, EnemyTargetPosition)
             -- stop seraching for available launchers and check the next target
             return true
         end
     end,
 
-    NukeJerichoAttack = function(self, aiBrain, Launchers, EnemyTargetPositions, LaunchAll)
-        --AILog('* AI-Uveso: * NukeJerichoAttack: Launcher: '..table.getn(Launchers))
+    NukeJerichoAttack = function(self, aiBrain, Launchers, EnemyTargetPositions)
+        AILog('* AI-Uveso: ** NukeJerichoAttack: Launcher: '..table.getn(Launchers), NUKEDEBUG, UvesoOffsetPlatoonLUA)
         if table.getn(Launchers) <= 0 then
-            --AILog('* AI-Uveso: * NukeSingleAttack: Launcher empty')
+            AILog('* AI-Uveso: ** NukeSingleAttack: Launcher empty', NUKEDEBUG, UvesoOffsetPlatoonLUA)
             return false
         end
+        local NukeLaunched = false
         for _, ActualTargetPos in EnemyTargetPositions do
             -- loop over all nuke launcher
             for k, Launcher in Launchers do
                 if not Launcher or Launcher.Dead or Launcher:BeenDestroyed() then
                     -- We found a dead unit inside this platoon. Disband the platton; It will be reformed
                     -- needs PlatoonDisbandNoAssign, or launcher will stop building nukes if the platton is disbanded
-                    --AILog('* AI-Uveso: * NukeJerichoAttack: Found destroyed launcher inside platoon. Disbanding...')
+                    AILog('* AI-Uveso: ** NukeJerichoAttack: Found destroyed launcher inside platoon. Disbanding...', NUKEDEBUG, UvesoOffsetPlatoonLUA)
                     if aiBrain:PlatoonExists(self) then
                         self:PlatoonDisbandNoAssign()
                     end
@@ -1934,36 +1871,35 @@ AILog("* AI-Uveso: NukePlatoonAI(): nukeTargets = 0", NUKEDEBUG, UvesoOffsetPlat
                 -- check if the target is closer then 20000
                 LauncherPos = Launcher:GetPosition() or nil
                 if not LauncherPos then
-                    --AILog('* AI-Uveso: * NukeJerichoAttack: no Launcher Pos. Skiped')
+                    AILog('* AI-Uveso: ** NukeJerichoAttack: no Launcher Pos. Skiped', NUKEDEBUG, UvesoOffsetPlatoonLUA)
                     continue
                 end
                 if not ActualTargetPos then
-                    --AILog('* AI-Uveso: * NukeJerichoAttack: no Target Pos. Skiped')
+                    AILog('* AI-Uveso: ** NukeJerichoAttack: no Target Pos. Skiped', NUKEDEBUG, UvesoOffsetPlatoonLUA)
                     continue
                 end
                 if VDist2(LauncherPos[1],LauncherPos[3],ActualTargetPos[1],ActualTargetPos[3]) > 20000 then
-                    --AILog('* AI-Uveso: * NukeJerichoAttack: Target out of range. Skiped')
+                    AILog('* AI-Uveso: ** NukeJerichoAttack: Target out of range. Skiped', NUKEDEBUG, UvesoOffsetPlatoonLUA)
                     -- Target is out of range, skip this launcher
                     continue
                 end
                 -- Attack the target
-                --AILog('* AI-Uveso: * NukeJerichoAttack: Attacking Enemy Position!')
+                AILog('* AI-Uveso: ** NukeJerichoAttack: Attacking Enemy Position!', NUKEDEBUG, UvesoOffsetPlatoonLUA)
                 IssueNuke({Launcher}, ActualTargetPos)
+                NukeLaunched = true
                 -- remove the launcher from the table, so it can't be used for the next target
                 table.remove(Launchers, k)
                 -- stop seraching for available launchers and check the next target
                 break -- for k, Launcher in Launcher do
             end
-            --AILog('* AI-Uveso: * NukeJerichoAttack: Launcher after shoot: '..table.getn(Launchers))
+            AILog('* AI-Uveso: ** NukeJerichoAttack: Launcher after shoot: '..table.getn(Launchers), NUKEDEBUG, UvesoOffsetPlatoonLUA)
             if table.getn(Launchers) < 1 then
-                --AILog('* AI-Uveso: * NukeJerichoAttack: All Launchers are bussy! Break!')
+                AILog('* AI-Uveso: ** NukeJerichoAttack: All Launchers are bussy! Break!', NUKEDEBUG, UvesoOffsetPlatoonLUA)
                 -- stop seraching for targets, we don't hava a launcher ready.
                 break -- for _, ActualTargetPos in EnemyTargetPositions do
             end
         end
-        if table.getn(Launchers) > 0 and LaunchAll == true then
-            self:NukeJerichoAttack(aiBrain, Launchers, EnemyTargetPositions, true)
-        end
+        return NukeLaunched
     end,
 
     IsTargetNukeProtected = function(self, Target, EnemyAntiMissile)
