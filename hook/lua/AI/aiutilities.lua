@@ -1,6 +1,6 @@
 local UvesoOffsetAiutilitiesLUA = debug.getinfo(1).currentline - 1
---AIWarn('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..UvesoOffsetAiutilitiesLUA..'] * AI-Uveso: offset aiutilities.lua' )
--- 2964
+SPEW('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..UvesoOffsetAiutilitiesLUA..'] * AI-Uveso: offset aiutilities.lua')
+--2964
 
 -- Hook For AI-Uveso.
 UvesoEngineerMoveWithSafePath = EngineerMoveWithSafePath
@@ -30,10 +30,10 @@ function EngineerMoveWithSafePath(aiBrain, unit, destination)
         elseif reason == 'NoPath' then
             --AILog('* AI-Uveso: EngineerMoveWithSafePath(): No path found ('..math.floor(pos[1])..'/'..math.floor(pos[3])..') to ('..math.floor(destination[1])..'/'..math.floor(destination[3])..')')
         elseif VDist2(pos[1], pos[3], destination[1], destination[3]) < 200 then
-            AIDebug('* AI-Uveso: EngineerMoveWithSafePath(): EngineerGenerateSafePathTo returned: ('..repr(reason)..') -> executing c-engine function CanPathTo().')
+            AIDebug('* AI-Uveso: EngineerMoveWithSafePath(): EngineerGenerateSafePathTo returned: ('..repr(reason)..') -> executing c-engine function CanPathTo().', true, UvesoOffsetAiutilitiesLUA)
             -- be really sure we don't try a pathing with a destroyed c-object
             if unit.Dead or unit:BeenDestroyed() or IsDestroyed(unit) then
-                AIDebug('* AI-Uveso: Unit is death before calling CanPathTo()')
+                AIDebug('* AI-Uveso: Unit is death before calling CanPathTo()', true, UvesoOffsetAiutilitiesLUA)
                 return false
             end
             result, bestPos = unit:CanPathTo(destination)
@@ -222,15 +222,15 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
         elseif unitCat.COMMAND then
             PlatoonStrength = PlatoonStrength + 20
         else
-            AIWarn('* AIFindNearestCategoryTargetInRange: cant identify a unit for PlatoonStrength '..repr(unit.UnitId))
+            AIWarn('* AIFindNearestCategoryTargetInRange: cant identify a unit for PlatoonStrength '..repr(unit.UnitId), true, UvesoOffsetAiutilitiesLUA)
         end
     end
     if PlatoonStrength <= 0 then
-        AIWarn('* AIFindNearestCategoryTargetInRange: no PlatoonStrength ???'..repr(platoon:GetPlatoonUnits()))
+        AIWarn('* AIFindNearestCategoryTargetInRange: no PlatoonStrength ???'..repr(platoon:GetPlatoonUnits()), true, UvesoOffsetAiutilitiesLUA)
     end
     local AttackEnemyStrength = platoon.PlatoonData.AttackEnemyStrength or 100
     if AttackEnemyStrength <= 0 then
-        AIWarn('* AIFindNearestCategoryTargetInRange: no AttackEnemyStrength for platoon '..platoon.BuilderName..' ??? ')
+        AIWarn('* AIFindNearestCategoryTargetInRange: no AttackEnemyStrength for platoon '..platoon.BuilderName..' ??? ', true, UvesoOffsetAiutilitiesLUA)
     end
     for _, range in RangeList do
         TargetsInRange = aiBrain:GetUnitsAroundPoint(TargetSearchCategory, position, range, 'Enemy')
@@ -308,14 +308,14 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
             end
             count = count + 1
             if count > 300 then -- 300
-                --AIWarn('* AIFindNearestCategoryTargetInRange: count: '..count..'  ')
+                --AIWarn('* AIFindNearestCategoryTargetInRange: count: '..count..'  ', true, UvesoOffsetAiutilitiesLUA)
                 coroutine.yield(1)
                 count = 0
             end
             if UnitWithPath then
                 path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, platoon.MovementLayer, position, TargetPosition, platoon.PlatoonData.NodeWeight or 10 )
                 if reason ~= "PathOK" then
-                    AIWarn('* AIFindNearestCategoryTargetInRange: CanGraphAreaTo = true but PlatoonGenerateSafePathTo = false - reason '..reason..'  ')
+                    AIWarn('* AIFindNearestCategoryTargetInRange: CanGraphAreaTo = true but PlatoonGenerateSafePathTo = false - reason '..reason..'  ', true, UvesoOffsetAiutilitiesLUA)
                 end
                 return UnitWithPath, false, path, ReturnReason
             end
@@ -413,15 +413,15 @@ function AIFindNearestCategoryTargetInRangeOLD(aiBrain, platoon, squad, position
         elseif unitCat.COMMAND then
             PlatoonStrength = PlatoonStrength + 20
         else
-            AIWarn('* AIFindNearestCategoryTargetInRange: cant identify a unit for PlatoonStrength '..repr(unit.UnitId))
+            AIWarn('* AIFindNearestCategoryTargetInRange: cant identify a unit for PlatoonStrength '..repr(unit.UnitId), true, UvesoOffsetAiutilitiesLUA)
         end
     end
     if PlatoonStrength <= 0 then
-        AIWarn('* AIFindNearestCategoryTargetInRange: no PlatoonStrength ???'..repr(platoon:GetPlatoonUnits()))
+        AIWarn('* AIFindNearestCategoryTargetInRange: no PlatoonStrength ???'..repr(platoon:GetPlatoonUnits()), true, UvesoOffsetAiutilitiesLUA)
     end
     local AttackEnemyStrength = platoon.PlatoonData.AttackEnemyStrength or 100
     if AttackEnemyStrength <= 0 then
-        AIWarn('* AIFindNearestCategoryTargetInRange: no AttackEnemyStrength for platoon '..platoon.BuilderName..' ??? ')
+        AIWarn('* AIFindNearestCategoryTargetInRange: no AttackEnemyStrength for platoon '..platoon.BuilderName..' ??? ', true, UvesoOffsetAiutilitiesLUA)
     end
     for _, range in RangeList do
         TargetsInRange = aiBrain:GetUnitsAroundPoint(TargetSearchCategory, position, range, 'Enemy')
@@ -523,7 +523,7 @@ function AIFindNearestCategoryTargetInRangeOLD(aiBrain, platoon, squad, position
             end
             count = count + 1
             if count > 300 then -- 300
-                --AIWarn('* AIFindNearestCategoryTargetInRange: count: '..count..'  ')
+                --AIWarn('* AIFindNearestCategoryTargetInRange: count: '..count..'  ', true, UvesoOffsetAiutilitiesLUA)
                 coroutine.yield(1)
                 count = 0
             end

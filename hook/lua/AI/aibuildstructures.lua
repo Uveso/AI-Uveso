@@ -1,3 +1,6 @@
+local UvesoOffsetaibuildstructuresLUA = debug.getinfo(1).currentline - 1
+SPEW('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..UvesoOffsetaibuildstructuresLUA..'] * AI-Uveso: offset aibuildstructures.lua')
+--2964
 
 
 -- AI-Uveso: Hook for Replace factory buildtemplate to find a better buildplace not too close to the center of the base
@@ -17,15 +20,15 @@ function AIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder,
         if AntiSpamList[buildingType] then
             return false
         end
-        AIDebug('* AI-Uveso: AIExecuteBuildStructure: c-function DecideWhatToBuild() failed! - AI-faction: index('..factionIndex..') '..AIFactionName..', Building Type: '..repr(buildingType)..', engineer-faction: '..repr(builder.factionCategory))
+        AIDebug('* AI-Uveso: AIExecuteBuildStructure: c-function DecideWhatToBuild() failed! - AI-faction: index('..factionIndex..') '..AIFactionName..', Building Type: '..repr(buildingType)..', engineer-faction: '..repr(builder.factionCategory), true, UvesoOffsetaibuildstructuresLUA)
         -- Get the UnitId for the actual buildingType
         if not buildingTemplate then
-            AIWarn('* AI-Uveso: AIExecuteBuildStructure: Function was called without a buildingTemplate!')
+            AIWarn('* AI-Uveso: AIExecuteBuildStructure: Function was called without a buildingTemplate!', true, UvesoOffsetaibuildstructuresLUA)
         end
         local BuildUnitWithID
         for Key, Data in buildingTemplate do
             if Data[1] and Data[2] and Data[1] == buildingType then
-                AIDebug('* AI-Uveso: AIExecuteBuildStructure: Found template: '..repr(Data[1])..' - Using UnitID: '..repr(Data[2]))
+                AIDebug('* AI-Uveso: AIExecuteBuildStructure: Found template: '..repr(Data[1])..' - Using UnitID: '..repr(Data[2]), true, UvesoOffsetaibuildstructuresLUA)
                 BuildUnitWithID = Data[2]
                 break
             end
@@ -33,7 +36,7 @@ function AIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder,
         -- If we can't find a template, then return
         if not BuildUnitWithID then
             AntiSpamList[buildingType] = true
-            AIWarn('* AI-Uveso: AIExecuteBuildStructure: No '..repr(builder.factionCategory)..' unit found for template: '..repr(buildingType)..'! ')
+            AIWarn('* AI-Uveso: AIExecuteBuildStructure: No '..repr(builder.factionCategory)..' unit found for template: '..repr(buildingType)..'! ', true, UvesoOffsetaibuildstructuresLUA)
             return false
         end
         -- get the needed tech level to build buildingType
@@ -46,16 +49,16 @@ function AIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder,
         elseif BBC.BUILTBYTIER3COMMANDER or BBC.BUILTBYTIER3ENGINEER then
             NeedTech = 3
         elseif BBC.BUILTBYTIER1FACTORY or BBC.BUILTBYTIER2FACTORY or BBC.BUILTBYTIER3FACTORY  or BBC.BUILTBYQUANTUMGATE then
-            AIWarn('* AI-Uveso: AIExecuteBuildStructure: Unit is buildable by factory !!! BuildUnitWithID:'..repr(BuildUnitWithID))
+            AIWarn('* AI-Uveso: AIExecuteBuildStructure: Unit is buildable by factory !!! BuildUnitWithID:'..repr(BuildUnitWithID), true, UvesoOffsetaibuildstructuresLUA)
         else 
-            AIWarn('* AI-Uveso: AIExecuteBuildStructure: Unknown builder category for BuildUnitWithID:'..repr(BuildUnitWithID))
+            AIWarn('* AI-Uveso: AIExecuteBuildStructure: Unknown builder category for BuildUnitWithID:'..repr(BuildUnitWithID), true, UvesoOffsetaibuildstructuresLUA)
         end
         -- If we can't find a techlevel for the building we want to build, then return
         if not NeedTech then
-            AIWarn('* AI-Uveso: AIExecuteBuildStructure: Can\'t find engineer techlevel for BuildUnitWithID: '..repr(BuildUnitWithID))
+            AIWarn('* AI-Uveso: AIExecuteBuildStructure: Can\'t find engineer techlevel for BuildUnitWithID: '..repr(BuildUnitWithID), true, UvesoOffsetaibuildstructuresLUA)
             return false
         else
-            AIDebug('* AI-Uveso: AIExecuteBuildStructure: Need engineer with Techlevel ('..NeedTech..') for BuildUnitWithID: '..repr(BuildUnitWithID))
+            AIDebug('* AI-Uveso: AIExecuteBuildStructure: Need engineer with Techlevel ('..NeedTech..') for BuildUnitWithID: '..repr(BuildUnitWithID), true, UvesoOffsetaibuildstructuresLUA)
         end
         -- get the actual tech level from the builder
         local BC = builder:GetBlueprint().CategoriesHash
@@ -68,38 +71,38 @@ function AIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder,
         end
         -- If we can't find a techlevel for the building we  want to build, return
         if not HasTech then
-            AIWarn('* AI-Uveso: AIExecuteBuildStructure: Can\'t find techlevel for engineer: '..repr(builder:GetBlueprint().BlueprintId))
+            AIWarn('* AI-Uveso: AIExecuteBuildStructure: Can\'t find techlevel for engineer: '..repr(builder:GetBlueprint().BlueprintId), true, UvesoOffsetaibuildstructuresLUA)
             return false
         else
-            AIDebug('* AI-Uveso: AIExecuteBuildStructure: Engineer ('..repr(builder:GetBlueprint().BlueprintId)..') has Techlevel ('..HasTech..')')
+            AIDebug('* AI-Uveso: AIExecuteBuildStructure: Engineer ('..repr(builder:GetBlueprint().BlueprintId)..') has Techlevel ('..HasTech..')', true, UvesoOffsetaibuildstructuresLUA)
         end
 
         if HasTech < NeedTech then
-            AIWarn('* AI-Uveso: AIExecuteBuildStructure: TECH'..HasTech..' Unit "'..BuildUnitWithID..'" is assigned to build TECH'..NeedTech..' buildplatoon! ('..repr(buildingType)..')')
+            AIWarn('* AI-Uveso: AIExecuteBuildStructure: TECH'..HasTech..' Unit "'..BuildUnitWithID..'" is assigned to build TECH'..NeedTech..' buildplatoon! ('..repr(buildingType)..')', true, UvesoOffsetaibuildstructuresLUA)
             return false
         else
-            AIDebug('* AI-Uveso: AIExecuteBuildStructure: Engineer with Techlevel ('..HasTech..') can build TECH'..NeedTech..' BuildUnitWithID: '..repr(BuildUnitWithID))
+            AIDebug('* AI-Uveso: AIExecuteBuildStructure: Engineer with Techlevel ('..HasTech..') can build TECH'..NeedTech..' BuildUnitWithID: '..repr(BuildUnitWithID), true, UvesoOffsetaibuildstructuresLUA)
         end
       
         HasFaction = builder.factionCategory
         NeedFaction = string.upper(__blueprints[string.lower(BuildUnitWithID)].General.FactionName)
         if HasFaction ~= NeedFaction then
-            AIWarn('* AI-Uveso: AIExecuteBuildStructure: AI-faction: '..AIFactionName..', ('..HasFaction..') engineers can\'t build ('..NeedFaction..') structures!')
+            AIWarn('* AI-Uveso: AIExecuteBuildStructure: AI-faction: '..AIFactionName..', ('..HasFaction..') engineers can\'t build ('..NeedFaction..') structures!', true, UvesoOffsetaibuildstructuresLUA)
             return false
         else
-            AIDebug('* AI-Uveso: AIExecuteBuildStructure: AI-faction: '..AIFactionName..', Engineer with faction ('..HasFaction..') can build faction ('..NeedFaction..') - BuildUnitWithID: '..repr(BuildUnitWithID))
+            AIDebug('* AI-Uveso: AIExecuteBuildStructure: AI-faction: '..AIFactionName..', Engineer with faction ('..HasFaction..') can build faction ('..NeedFaction..') - BuildUnitWithID: '..repr(BuildUnitWithID), true, UvesoOffsetaibuildstructuresLUA)
         end
        
         local IsRestricted = import('/lua/game.lua').IsRestricted
         if IsRestricted(BuildUnitWithID, aiBrain:GetArmyIndex()) then
-            AIWarn('* AI-Uveso: AIExecuteBuildStructure: Unit is Restricted!!! Building Type: '..repr(buildingType)..', faction: '..repr(builder.factionCategory)..' - Unit:'..BuildUnitWithID)
+            AIWarn('* AI-Uveso: AIExecuteBuildStructure: Unit is Restricted!!! Building Type: '..repr(buildingType)..', faction: '..repr(builder.factionCategory)..' - Unit:'..BuildUnitWithID, true, UvesoOffsetaibuildstructuresLUA)
             AntiSpamList[buildingType] = true
             return false
         else
-            AIDebug('* AI-Uveso: AIExecuteBuildStructure: Unit is not restricted. Building Type: '..repr(buildingType)..', faction: '..repr(builder.factionCategory)..' - Unit:'..BuildUnitWithID)
+            AIDebug('* AI-Uveso: AIExecuteBuildStructure: Unit is not restricted. Building Type: '..repr(buildingType)..', faction: '..repr(builder.factionCategory)..' - Unit:'..BuildUnitWithID, true, UvesoOffsetaibuildstructuresLUA)
         end
 
-        AIWarn('* AI-Uveso: AIExecuteBuildStructure: All checks passed, forcing enginner TECH'..HasTech..' '..HasFaction..' '..builder:GetBlueprint().BlueprintId..' to build TECH'..NeedTech..' '..buildingType..' '..BuildUnitWithID..'')
+        AIWarn('* AI-Uveso: AIExecuteBuildStructure: All checks passed, forcing enginner TECH'..HasTech..' '..HasFaction..' '..builder:GetBlueprint().BlueprintId..' to build TECH'..NeedTech..' '..buildingType..' '..BuildUnitWithID..'', true, UvesoOffsetaibuildstructuresLUA)
         whatToBuild = BuildUnitWithID
         --return false
     else
@@ -108,7 +111,7 @@ function AIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder,
         for Key, Data in buildingTemplate do
             if Data[1] and Data[2] and Data[1] == buildingType then
                 if whatToBuild ~= Data[2] then
-                    AIWarn('* AI-Uveso: AIExecuteBuildStructure: Missmatch whatToBuild: '..whatToBuild..' ~= buildingTemplate.Data[2]: '..repr(Data[2]))
+                    AIWarn('* AI-Uveso: AIExecuteBuildStructure: Missmatch whatToBuild: '..whatToBuild..' ~= buildingTemplate.Data[2]: '..repr(Data[2]), true, UvesoOffsetaibuildstructuresLUA)
                     whatToBuild = Data[2]
                 end
                 break
@@ -220,6 +223,6 @@ function AIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder,
         return true
     end
     -- At this point we're out of options, so move on to the next thing
-    AIWarn('* AI-Uveso: AIExecuteBuildStructure: c-function FindPlaceToBuild() failed! AI-faction: index('..factionIndex..') '..repr(AIFactionName)..', Building Type: '..repr(buildingType)..', engineer-faction: '..repr(builder.factionCategory).." - Builder: ["..repr(builder.PlatoonHandle.BuilderName).."]")
+    AIWarn('* AI-Uveso: AIExecuteBuildStructure: c-function FindPlaceToBuild() failed! AI-faction: index('..factionIndex..') '..repr(AIFactionName)..', Building Type: '..repr(buildingType)..', engineer-faction: '..repr(builder.factionCategory).." - Builder: ["..repr(builder.PlatoonHandle.BuilderName).."]", true, UvesoOffsetaibuildstructuresLUA)
     return false
 end

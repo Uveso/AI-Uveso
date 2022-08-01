@@ -452,7 +452,7 @@ function SetTargets(armyIndex, basePosition)
     -- check if the target is under water, artilleries can't fire at it
     weaponTargets = checkIsUnderWater(weaponTargets)
     -- sort table first by priority, then shield count, then by range to base
-    weaponTargets = SortTableForSatellite(weaponTargets)
+    weaponTargets = SortTableForArtillery(weaponTargets)
     -- store the list into the brain
     ArmyBrains[armyIndex].targets.artilleryTargets = weaponTargets
 

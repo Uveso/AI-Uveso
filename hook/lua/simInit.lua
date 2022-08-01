@@ -1,5 +1,5 @@
 local UvesoOffsetSimInitLUA = debug.getinfo(1).currentline - 1
-WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..UvesoOffsetSimInitLUA..'] * AI-Uveso: offset simInit.lua')
+SPEW('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..UvesoOffsetSimInitLUA..'] * AI-Uveso: offset simInit.lua')
 --445
 
 local AIAttackUtils = import('/lua/ai/aiattackutilities.lua')
@@ -297,7 +297,7 @@ function ValidateMapAndMarkers()
             -- Checking colors (for debug)
             if MarkerDefaults[v.type]['color'] ~= v.color then
                 -- we actual don't print a debugmessage here. This message is for debuging a debug function :)
-                --AILog('* AI-Uveso: ValidateMapAndMarkers: color missmatch in marker ['..k..'] - MarkerType: [\''..v.type..'\']. marker.color is ('..repr(v.color)..'), but should be ('..MarkerDefaults[v.type]['color']..').')
+                --AILog('* AI-Uveso: ValidateMapAndMarkers: color missmatch in marker ['..k..'] - MarkerType: [\''..v.type..'\']. marker.color is ('..repr(v.color)..'), but should be ('..MarkerDefaults[v.type]['color']..').', true, UvesoOffsetSimInitLUA)
                 v.color = MarkerDefaults[v.type]['color']
             end
         -- Check BaseLocations distances to other locations
@@ -2112,21 +2112,21 @@ function DrawHeatMap()
     local OffsetZ = playableArea[2]
     local px, py, pz = 0,1000,0
     local threatScale = { Land = 1, Air = 1, Water = 1, Amphibious = 1, ecoValue = 1}
-    local highestThreat = { Land = 1, Air = 1, Water = 1, Amphibious = 1, Mass = 1}
+    local highestThreat = { Land = 1, Air = 1, Water = 1, Amphibious = 1, ecoValue = 1}
     local FocussedArmy
     local heatMap
     local enemyMainForce
+    local basePosition
     local pr = {}
     while true do
         coroutine.yield(2)
         FocussedArmy = GetFocusArmy()
         if FocussedArmy > 0 then
             heatMap = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').GetHeatMapForArmy(FocussedArmy)
-            if not heatMap then 
+            basePosition = ArmyBrains[FocussedArmy].BuilderManagers['MAIN'].Position
+            if not heatMap or not basePosition then 
                 continue 
             end
-
-
             -- draw debug
             for x = 0, mapXGridCount - 1 do
                 for z = 0, mapYGridCount - 1 do
@@ -2147,19 +2147,23 @@ function DrawHeatMap()
                     -- LAND
                     -- ****
                     -- draw threatRings
-                    pr["Land"] = heatMap[x][z].threatRing["Land"] * threatScale["Land"]
-                    DrawCircle( { px, py, pz }, pr["Land"] , '80f4a460' )
-                    -- get the highest value to scale all circles
-                    if heatMap[x][z].threatRing["Land"] > highestThreat["Land"] then
-                        highestThreat["Land"] = heatMap[x][z].threatRing["Land"]
-                    end
-                    -- draw box with highest threats
-                    for _, threats in pairs(ArmyBrains[FocussedArmy].highestEnemyThreat["Land"]) do
-                        if threats.gridPos[1] == x and threats.gridPos[2] == z then
-                            DrawLine({ 2 + px-HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, {-2 + px+HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, 'fff4a460') -- U
-                            DrawLine({ 2 + px-HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, {-2 + px+HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, 'fff4a460') -- D
-                            DrawLine({ 2 + px-HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, { 2 + px-HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, 'fff4a460') -- L
-                            DrawLine({-2 + px+HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, {-2 + px+HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, 'fff4a460') -- R
+                    if ArmyBrains[FocussedArmy].highestEnemyThreat["Land"] then
+                        pr["Land"] = heatMap[x][z].threatRing["Land"] * threatScale["Land"]
+                        DrawCircle( { px, py, pz }, pr["Land"] , '80f4a460' )
+                        -- get the highest value to scale all circles
+                        if heatMap[x][z].threatRing["Land"] > highestThreat["Land"] then
+                            highestThreat["Land"] = heatMap[x][z].threatRing["Land"]
+                        end
+                        -- draw box with highest threats
+                        for _, threats in pairs(ArmyBrains[FocussedArmy].highestEnemyThreat["Land"]) do
+                            if threats.gridPos[1] == x and threats.gridPos[2] == z then
+                                DrawLine({ 2 + px-HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, {-2 + px+HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, 'fff4a460') -- U
+                                DrawLine({ 2 + px-HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, {-2 + px+HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, 'fff4a460') -- D
+                                DrawLine({ 2 + px-HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, { 2 + px-HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, 'fff4a460') -- L
+                                DrawLine({-2 + px+HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, {-2 + px+HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, 'fff4a460') -- R
+                                -- draw a line to base
+                                DrawLine(basePosition, {px, py, pz}, 'fff4a460') -- M
+                            end
                         end
                     end
 --[[
@@ -2168,7 +2172,7 @@ function DrawHeatMap()
                     -- ****
                     -- draw threatRings
                     pr["Air"] = heatMap[x][z].threatRing["Air"] * threatScale["Air"]
-                    DrawCircle( { px, py, pz }, pr["Air"] , '80FFFFFF' )
+                    DrawCircle( { px, py, pz }, pr["Air"] , '80B0B0FF' )
                     -- get the highest value to scale all circles
                     if heatMap[x][z].threatRing["Air"] > highestThreat["Air"] then
                         highestThreat["Air"] = heatMap[x][z].threatRing["Air"]
@@ -2176,10 +2180,12 @@ function DrawHeatMap()
                     -- draw box with highest threats
                     for _, threats in pairs(ArmyBrains[FocussedArmy].highestEnemyThreat["Air"]) do
                         if threats.gridPos[1] == x and threats.gridPos[2] == z then
-                            DrawLine({ 2 + px-HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, {-2 + px+HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, 'ffFFFFFF') -- U
-                            DrawLine({ 2 + px-HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, {-2 + px+HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, 'ffFFFFFF') -- D
-                            DrawLine({ 2 + px-HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, { 2 + px-HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, 'ffFFFFFF') -- L
-                            DrawLine({-2 + px+HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, {-2 + px+HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, 'ffFFFFFF') -- R
+                            DrawLine({ 2 + px-HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, {-2 + px+HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, 'ffB0B0FF') -- U
+                            DrawLine({ 2 + px-HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, {-2 + px+HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, 'ffB0B0FF') -- D
+                            DrawLine({ 2 + px-HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, { 2 + px-HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, 'ffB0B0FF') -- L
+                            DrawLine({-2 + px+HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, {-2 + px+HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, 'ffB0B0FF') -- R
+                            -- draw a line to base
+                            DrawLine(basePosition, {px, py, pz}, 'ffB0B0FF') -- M
                         end
                     end
                     -- ****
@@ -2226,19 +2232,23 @@ function DrawHeatMap()
                     -- ECO
                     -- ****
                     -- draw ecoValue
-                    pr["ecoValue"] = heatMap[x][z].highestEnemyEcoValue["All"] * threatScale["ecoValue"]
-                    DrawCircle( { px, py, pz }, pr["ecoValue"] , '80FFFFFF' )
-                    -- get the highest value to scale all circles
-                    if heatMap[x][z].highestEnemyEcoValue["All"] > highestThreat["ecoValue"] then
-                        highestThreat["ecoValue"] = heatMap[x][z].highestEnemyEcoValue["All"]
-                    end
-                    -- draw box with highest ecoValue
-                    for _, ecoValue in pairs(ArmyBrains[FocussedArmy].highestEnemyEcoValue["All"]) do
-                        if ecoValue.gridPos[1] == x and ecoValue.gridPos[2] == z then
-                            DrawLine({ 2 + px-HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, {-2 + px+HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, 'ffFFFFFF') -- U
-                            DrawLine({ 2 + px-HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, {-2 + px+HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, 'ffFFFFFF') -- D
-                            DrawLine({ 2 + px-HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, { 2 + px-HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, 'ffFFFFFF') -- L
-                            DrawLine({-2 + px+HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, {-2 + px+HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, 'ffFFFFFF') -- R
+                    if ArmyBrains[FocussedArmy].highestEnemyEcoValue["All"] then
+                        pr["ecoValue"] = heatMap[x][z].highestEnemyEcoValue["All"] * threatScale["ecoValue"]
+                        DrawCircle( { px, py, pz }, pr["ecoValue"] , '80FFFFFF' )
+                        -- get the highest value to scale all circles
+                        if heatMap[x][z].highestEnemyEcoValue["All"] > highestThreat["ecoValue"] then
+                            highestThreat["ecoValue"] = heatMap[x][z].highestEnemyEcoValue["All"]
+                        end
+                        -- draw box with highest ecoValue
+                        for _, ecoValue in pairs(ArmyBrains[FocussedArmy].highestEnemyEcoValue["All"]) do
+                            if ecoValue.gridPos[1] == x and ecoValue.gridPos[2] == z then
+                                DrawLine({ 2 + px-HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, {-2 + px+HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, 'ffFFFFFF') -- U
+                                DrawLine({ 2 + px-HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, {-2 + px+HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, 'ffFFFFFF') -- D
+                                DrawLine({ 2 + px-HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, { 2 + px-HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, 'ffFFFFFF') -- L
+                                DrawLine({-2 + px+HeatMapGridSizeX/2, py,  2 + pz-HeatMapGridSizeZ/2}, {-2 + px+HeatMapGridSizeX/2, py, -2 + pz+HeatMapGridSizeZ/2}, 'ffFFFFFF') -- R
+                                -- draw a line to base
+                                DrawLine(basePosition, {px, py, pz}, 'ffFFFFFF') -- M
+                            end
                         end
                     end
 
@@ -2261,7 +2271,7 @@ end
 function ValidateModFilesUveso()
     local ModName = 'AI-Uveso'
     local Files = 86
-    local Bytes = 2021625
+    local Bytes = 2027112
     local modlocation = ""
     for i, mod in __active_mods do
         if mod.name == ModName then

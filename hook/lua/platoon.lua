@@ -1,5 +1,5 @@
 local UvesoOffsetPlatoonLUA = debug.getinfo(1).currentline - 1
-WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..UvesoOffsetPlatoonLUA..'] * AI-Uveso: offset platoon.lua' )
+SPEW('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..UvesoOffsetPlatoonLUA..'] * AI-Uveso: offset platoon.lua' )
 --6842
 
 local UUtils = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua')
@@ -1296,7 +1296,6 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                             for artyIndex, arty in pairs(self:GetPlatoonUnits()) do
                                 if not arty.Dead then
                                     x, y, z = arty:GetPositionXYZ()
-                                    artyPosition = arty:GetPosition()
                                     distanceToArtillery = VDist2( x, z, artyTarget.pos[1], artyTarget.pos[3] )
                                     artilleryMinRange = __blueprints[arty.UnitId].Weapon[1].MinRadius
                                     artilleryMaxRange = __blueprints[arty.UnitId].Weapon[1].MaxRadius
@@ -1567,7 +1566,6 @@ Platoon = Class(CopyOfOldPlatoonClass) {
 
     NukePlatoonAI = function(self)
         local aiBrain = self:GetBrain()
-        local ECOLoopCounter = 0
         local mapSizeX, mapSizeZ = GetMapSize()
         local platoonUnits
         local LauncherFull
@@ -1662,7 +1660,11 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                             if nukeTarget.name ~= "EcoValue" and EntityCategoryContains(categories.MOBILE * categories.EXPERIMENTAL, realnukeTargetUnit) then
                                 -- Lead target function for moving units
                                 AILog("* AI-Uveso: * NukePlatoonAI():["..nukeTarget.name.."] LeadNukeTarget", NUKEDEBUG, UvesoOffsetPlatoonLUA)
-                                TargetPos = self:LeadNukeTarget(realnukeTargetUnit)
+                                if table.getn(HighMissileCountLauncherReady) > 1 then
+                                    TargetPos = self:LeadNukeTarget(HighMissileCountLauncherReady, realnukeTargetUnit)
+                                else
+                                    TargetPos = self:LeadNukeTarget(LauncherReady, realnukeTargetUnit)
+                                end
                             else
                                 AILog("* AI-Uveso: * NukePlatoonAI():["..nukeTarget.name.."] Unleaded NukeTarget", NUKEDEBUG, UvesoOffsetPlatoonLUA)
                                 TargetPos = nukeTarget.pos
@@ -1751,9 +1753,9 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         AIWarn('* AI-Uveso: * NukePlatoonAI: Function END', NUKEDEBUG, UvesoOffsetPlatoonLUA)
     end,
     
-    LeadNukeTarget = function(self, target)
+    LeadNukeTarget = function(self, launcher, target)
         local aiBrain = self:GetBrain()
-        local LauncherPos = self:GetPlatoonPosition()
+        local LauncherPos = launcher:GetPosition()
         local TargetPos
         -- Get target position in 1 second intervals.
         -- This allows us to get speed and direction from the target
@@ -1899,37 +1901,12 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                 break -- for _, ActualTargetPos in EnemyTargetPositions do
             end
         end
+        if table.getn(Launchers) >= 1 then
+            AILog('* AI-Uveso: ** NukeJerichoAttack: Unused Launchers. Doing Jericho again...', NUKEDEBUG, UvesoOffsetPlatoonLUA)
+            -- we have still launchers ready, let's do Jericho attack again!
+            self:NukeJerichoAttack(aiBrain, Launchers, EnemyTargetPositions)
+        end
         return NukeLaunched
-    end,
-
-    IsTargetNukeProtected = function(self, Target, EnemyAntiMissile)
-        TargetPos = Target:GetPosition() or nil
-        if not TargetPos then
-            -- we don't have a target position, so we return true like we have a protected target.
-            return true
-        end
-        for _, AntiMissile in EnemyAntiMissile do
-            if not AntiMissile or AntiMissile.Dead or AntiMissile:BeenDestroyed() then continue end
-            -- if the launcher is still in build, don't count it.
-            local FractionComplete = AntiMissile:GetFractionComplete() or nil
-            if not FractionComplete then continue end
-            if FractionComplete < 1 then
-                --AILog('* AI-Uveso: * IsTargetNukeProtected: Target TAntiMissile:GetFractionComplete() < 1')
-                continue
-            end
-            -- get the location of AntiMissile
-            local AntiMissilePos = AntiMissile:GetPosition() or nil
-            if not AntiMissilePos then
-               --AILog('* AI-Uveso: * IsTargetNukeProtected: Target AntiMissilePos NIL')
-                continue 
-            end
-            -- Check if our target is inside range of an antimissile
-            if VDist2(TargetPos[1],TargetPos[3],AntiMissilePos[1],AntiMissilePos[3]) < 90 then
-                --AILog('* AI-Uveso: * IsTargetNukeProtected: Target in range of Nuke Anti Missile. Skiped')
-                return true
-            end
-        end
-        return false
     end,
 
     SACUTeleportAI = function(self)
@@ -2366,6 +2343,13 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                 if weapon.Damage < 1 or weapon.MaxRadius < 1 then
                     continue
                 end
+                -- filter anti air weapons if we have a land platoon
+                if self.MovementLayer == "Land" then
+                    if weapon.WeaponCategory == 'Anti Air' then
+                        --AIWarn("* AI-Uveso: HeroFightPlatoon: -- Land unit ["..repr(unit.UnitId).."] ignoring AntiAir Weapon "..repr(weapon.DisplayName))
+                        continue
+                    end
+                end
                 HasMainRearWeapon = false
                 if UnitBlueprint.CategoriesHash.EXPERIMENTAL and UnitBlueprint.Physics.StandUpright then
                     -- for Experiemtnals with 2 legs
@@ -2417,7 +2401,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                     if HasMainRearWeapon then
                         unit.HasMainRearWeapon = HasMainRearWeapon
                     end
-                    -- exclude missiles with range 100 and above
+                    -- exclude missiles
                     if weapon.WeaponCategory ~= 'Missile' then
                         -- save the weaponrange 
                         unit.MaxWeaponRange = weapon.MaxRadius * 0.9 -- maxrange minus 10%
@@ -2462,7 +2446,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
             if not ExperimentalInPlatoon and EntityCategoryContains(categories.EXPERIMENTAL, unit) then
                 ExperimentalInPlatoon = true
             end
-            -- prevent units from reclaiming while attack moving (maybe not working !?!)
+            -- ToDo: prevent units from reclaiming while attack moving (maybe not working !?!)
             unit:RemoveCommandCap('RULEUCC_Reclaim')
             unit:RemoveCommandCap('RULEUCC_Repair')
             -- create a table for individual unit position
@@ -2483,11 +2467,17 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                     --AILog('* AI-Uveso: Scanning: unit ['..repr(unit.UnitId)..'] Is a CloakField Unit')
                     unit.IsShieldOnlyUnit = true
                 end
+                if UnitBlueprint.CategoriesHash.ANTIAIR then
+                    --AILog('* AI-Uveso: Scanning: unit ['..repr(unit.UnitId)..'] Is a IsShieldOnlyUnit')
+                    unit.IsShieldOnlyUnit = true
+                end
             end
             -- debug for modded units that have no weapon and no shield or stealth/cloak
             -- things like seraphim restauration field
             if not unit.MaxWeaponRange and not unit.IsShieldOnlyUnit then
                 AIWarn('* AI-Uveso: Scanning: unit ['..repr(unit.UnitId)..'] has no MaxWeaponRange and no stealth/cloak - '..repr(self.BuilderName))
+                -- Don't know what to do with this unit, lets move it behind the platoon
+                unit.IsShieldOnlyUnit = true
             end
             unit.IamLost = 0
         end
@@ -3009,7 +2999,11 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                                     unit.Blocked = false
                                     if not TargetInPlatoonRange.Dead then
                                         -- set the target as focus, we are in range, the unit will shoot without attack command
-                                        unit:SetFocusEntity(TargetInPlatoonRange)
+                                        if EntityCategoryContains(categories.WALL, TargetInPlatoonRange) then
+                                            IssueAttack({unit}, TargetInPlatoonRange)
+                                        else
+                                            unit:SetFocusEntity(TargetInPlatoonRange)
+                                        end
                                     end
                                 end
                             end

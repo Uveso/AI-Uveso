@@ -1,5 +1,6 @@
---AIWarn('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] * AI-Uveso: offset aiarchetype-managerloader.lua' )
---200
+local UvesoOffsetaiarchetypeLUA = debug.getinfo(1).currentline - 1
+SPEW('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..UvesoOffsetaiarchetypeLUA..'] * AI-Uveso: offset aiarchetype-managerloader.lua')
+--199
 
 local Buff = import('/lua/sim/Buff.lua')
 local HighestThreat = {}
@@ -11,7 +12,7 @@ function ExecutePlan(aiBrain)
     if not aiBrain.Uveso then
         -- Debug for Platoon names
         if (aiBrain[ScenarioInfo.Options.AIPLatoonNameDebug] or ScenarioInfo.Options.AIPLatoonNameDebug == 'all') and not aiBrain.BuilderManagers.MAIN.FactoryManager:HasBuilderList() then
-            aiBrain:ForkThread(LocationRangeManagerThread, aiBrain)
+            aiBrain:ForkThread(AIPLatoonNameDebugThread, aiBrain)
         end
         -- execute the original function
         OldExecutePlanFunctionUveso(aiBrain)
@@ -62,9 +63,9 @@ function EcoManagerThread(aiBrain)
         aiBrain.BuildMult = math.max(aiBrain.CheatMult,aiBrain.BuildMult)
     end
     if aiBrain.CheatEnabled then
-        AILog('* AI-Uveso: Function EcoManagerThread() started! - Cheat(eco)Factor:( '..repr(aiBrain.CheatMult)..' ) - BuildFactor:( '..repr(aiBrain.BuildMult)..' ) - ['..aiBrain.Nickname..']')
+        AILog('* AI-Uveso: Function EcoManagerThread() started! - Cheat(eco)Factor:( '..repr(aiBrain.CheatMult)..' ) - BuildFactor:( '..repr(aiBrain.BuildMult)..' ) - ['..aiBrain.Nickname..']', true, UvesoOffsetaiarchetypeLUA)
     else
-        AILog('* AI-Uveso: Function EcoManagerThread() started! - No Cheat(eco) or BuildFactor')
+        AILog('* AI-Uveso: Function EcoManagerThread() started! - No Cheat(eco) or BuildFactor', true, UvesoOffsetaiarchetypeLUA)
     end
     local lastCall = 0
     local bussy
@@ -238,7 +239,7 @@ function EcoManagerThread(aiBrain)
                             EcoUnits[maxEnergyConsumptionUnitindex].pausedEnergy = true
                             EcoUnits[maxEnergyConsumptionUnitindex].managed = true
                         else
-                            AIWarn('* AI-Uveso: Unit with unknown Category('..LOC(__blueprints[EcoUnits[maxEnergyConsumptionUnitindex].UnitId].Description)..') ['..EcoUnits[maxEnergyConsumptionUnitindex].UnitId..']')
+                            AIWarn('* AI-Uveso: Unit with unknown Category('..LOC(__blueprints[EcoUnits[maxEnergyConsumptionUnitindex].UnitId].Description)..') ['..EcoUnits[maxEnergyConsumptionUnitindex].UnitId..']', true, UvesoOffsetaiarchetypeLUA)
                         end
                     else
 --                        AIDebug('* AI-Uveso: ECO cant pause any unit. break!')
@@ -248,7 +249,7 @@ function EcoManagerThread(aiBrain)
                     -- Never remove this safeguard! Modded units can screw it up and cause a DeadLoop!!!
                     safeguard = safeguard - 1
                     if safeguard < 0 then
-                        AIWarn('* AI-Uveso: ECO E safeguard < 0')
+                        AIWarn('* AI-Uveso: ECO E safeguard < 0', true, UvesoOffsetaiarchetypeLUA)
                         break
                     end
                 end
@@ -326,7 +327,7 @@ function EcoManagerThread(aiBrain)
                             EcoUnits[minEnergyConsumptionUnitindex].pausedEnergy = false
                             EcoUnits[minEnergyConsumptionUnitindex].managed = true
                         else
-                            AIWarn('* AI-Uveso: Unit with unknown Category('..LOC(__blueprints[EcoUnits[minEnergyConsumptionUnitindex].UnitId].Description)..') ['..EcoUnits[minEnergyConsumptionUnitindex].UnitId..']')
+                            AIWarn('* AI-Uveso: Unit with unknown Category('..LOC(__blueprints[EcoUnits[minEnergyConsumptionUnitindex].UnitId].Description)..') ['..EcoUnits[minEnergyConsumptionUnitindex].UnitId..']', true, UvesoOffsetaiarchetypeLUA)
                         end
 --                            EcoUnits[minEnergyConsumptionUnitindex]:OnProductionUnpaused()
 --                            EcoUnits[minEnergyConsumptionUnitindex]:SetActiveConsumptionActive()
@@ -338,7 +339,7 @@ function EcoManagerThread(aiBrain)
                     -- Never remove this safeguard! Modded units can screw it up and cause a DeadLoop!!!
                     safeguard = safeguard - 1
                     if safeguard < 0 then
-                        AIWarn('* AI-Uveso: ECO E safeguard > 0')
+                        AIWarn('* AI-Uveso: ECO E safeguard > 0', true, UvesoOffsetaiarchetypeLUA)
                         break
                     end
                 end
@@ -440,7 +441,7 @@ function EcoManagerThread(aiBrain)
                             EcoUnits[maxMassConsumptionUnitindex].pausedMass = true
                             EcoUnits[maxMassConsumptionUnitindex].managed = true
                         else
-                            AIWarn('* AI-Uveso: Unit with unknown Category('..LOC(__blueprints[EcoUnits[maxMassConsumptionUnitindex].UnitId].Description)..') ['..EcoUnits[maxMassConsumptionUnitindex].UnitId..']')
+                            AIWarn('* AI-Uveso: Unit with unknown Category('..LOC(__blueprints[EcoUnits[maxMassConsumptionUnitindex].UnitId].Description)..') ['..EcoUnits[maxMassConsumptionUnitindex].UnitId..']', true, UvesoOffsetaiarchetypeLUA)
                         end
                     else
 --                        AIDebug('* AI-Uveso: ECO cant pause any unit. break!')
@@ -450,7 +451,7 @@ function EcoManagerThread(aiBrain)
                     -- Never remove this safeguard! Modded units can screw it up and cause a DeadLoop!!!
                     safeguard = safeguard - 1
                     if safeguard < 0 then
-                        AIWarn('* AI-Uveso: ECO M safeguard < 0')
+                        AIWarn('* AI-Uveso: ECO M safeguard < 0', true, UvesoOffsetaiarchetypeLUA)
                         break
                     end
                 end
@@ -528,7 +529,7 @@ function EcoManagerThread(aiBrain)
                             EcoUnits[minMassConsumptionUnitindex].pausedMass = false
                             EcoUnits[minMassConsumptionUnitindex].managed = true
                         else
-                            AIWarn('* AI-Uveso: Unit with unknown Category('..LOC(__blueprints[EcoUnits[minMassConsumptionUnitindex].UnitId].Description)..') ['..EcoUnits[minMassConsumptionUnitindex].UnitId..']')
+                            AIWarn('* AI-Uveso: Unit with unknown Category('..LOC(__blueprints[EcoUnits[minMassConsumptionUnitindex].UnitId].Description)..') ['..EcoUnits[minMassConsumptionUnitindex].UnitId..']', true, UvesoOffsetaiarchetypeLUA)
                         end
 --                            EcoUnits[minMassConsumptionUnitindex]:OnProductionUnpaused()
 --                            EcoUnits[minMassConsumptionUnitindex]:SetActiveConsumptionActive()
@@ -540,7 +541,7 @@ function EcoManagerThread(aiBrain)
                     -- Never remove this safeguard! Modded units can screw it up and cause a DeadLoop!!!
                     safeguard = safeguard - 1
                     if safeguard < 0 then
-                        AIWarn('* AI-Uveso: ECO M safeguard > 0')
+                        AIWarn('* AI-Uveso: ECO M safeguard > 0', true, UvesoOffsetaiarchetypeLUA)
                         break
                     end
                 end
@@ -588,7 +589,7 @@ function EcoManagerThread(aiBrain)
                     unit.pausedEnergy = false
                     unit.managed = false
                 else
-                    AIWarn('* AI-Uveso: Unit with unknown Category('..LOC(__blueprints[unit.UnitId].Description)..') ['..unit.UnitId..']')
+                    AIWarn('* AI-Uveso: Unit with unknown Category('..LOC(__blueprints[unit.UnitId].Description)..') ['..unit.UnitId..']', true, UvesoOffsetaiarchetypeLUA)
                     unit:SetPaused( false )
                     unit.pausedMass = false
                     unit.pausedEnergy = false
@@ -601,8 +602,34 @@ function EcoManagerThread(aiBrain)
     end
 end
 
+function AIPLatoonNameDebugThread(aiBrain)
+    local Plan
+    local Builder
+    while aiBrain.Result ~= "defeat" do
+        coroutine.yield(50)
+        ArmyUnits = aiBrain:GetListOfUnits(categories.MOBILE - categories.MOBILESONAR, false, false) -- also gets unbuilded units (planed to build)
+        for _, unit in ArmyUnits do
+            if unit.Dead then
+                continue
+            end
+            if unit.PlatoonHandle then
+                Plan = unit.PlatoonHandle.PlanName
+                Builder = unit.PlatoonHandle.BuilderName
+                if Plan or Builder then
+                    unit:SetCustomName(''..(Builder or 'Unknown'))
+                    unit.LastPlatoonHandle = {}
+                    unit.LastPlatoonHandle.PlanName = unit.PlatoonHandle.PlanName
+                    unit.LastPlatoonHandle.BuilderName = unit.PlatoonHandle.BuilderName
+                end
+            else
+                unit:SetCustomName('Pool')
+            end
+        end
+    end
+end
+
 function LocationRangeManagerThread(aiBrain)
-    AIDebug('* AI-Uveso: Function LocationRangeManagerThread() started. ['..aiBrain.Nickname..']')
+    AIDebug('* AI-Uveso: Function LocationRangeManagerThread() started. ['..aiBrain.Nickname..']', true, UvesoOffsetaiarchetypeLUA)
     local unitcounterdelayer = 0
     local ArmyUnits = {}
     -- wait at start of the game for delayed AI message
@@ -732,7 +759,7 @@ function LocationRangeManagerThread(aiBrain)
                     for k,v in factory.BuilderManagerData.FactoryBuildManager.FactoryList do
                         -- if we found the factory, delete it. It will assign to a new location
                         if v == factory then
-                            AIDebug('* AI-Uveso: Function LocationRangeManagerThread(): naval factory is assigned to mainbase. -> removed from main')
+                            AIDebug('* AI-Uveso: Function LocationRangeManagerThread(): naval factory is assigned to mainbase. -> removed from main', true, UvesoOffsetaiarchetypeLUA)
                             factory.BuilderManagerData.FactoryBuildManager.FactoryList[k] = nil
                             factory.lost = GetGameTimeSeconds() - 12 -- we know it has no manager, no need to wait
                         end
@@ -921,7 +948,7 @@ function PriorityManagerThread(aiBrain)
     while GetGameTimeSeconds() < 5 + aiBrain:GetArmyIndex() do
         coroutine.yield(10)
     end
-    AIDebug('* AI-Uveso: Function PriorityManagerThread() started. ['..aiBrain.Nickname..']')
+    AIDebug('* AI-Uveso: Function PriorityManagerThread() started. ['..aiBrain.Nickname..']', true, UvesoOffsetaiarchetypeLUA)
     local paragons = {}
     local ParaComplete
     local EnergyTech1num
@@ -1175,7 +1202,7 @@ function PriorityManagerThread(aiBrain)
 end
 
 function AddFactoryToClosestManager(aiBrain, factory)
-    AIDebug('* AI-Uveso: AddFactoryToClosestManager: Factory '..factory.UnitId..' is not assigned to a factory manager!')
+    AIDebug('* AI-Uveso: AddFactoryToClosestManager: Factory '..factory.UnitId..' is not assigned to a factory manager!', true, UvesoOffsetaiarchetypeLUA)
     local FactoryPos = factory:GetPosition()
     local NavalFactory = EntityCategoryContains(categories.NAVAL, factory)
     local ClosestMarkerBasePos, MarkerBaseName, layer, dist, areatype, BaseRadius
@@ -1188,7 +1215,7 @@ function AddFactoryToClosestManager(aiBrain, factory)
         layer = 'Land'
     end
     if not ClosestMarkerBasePos then
-        AIWarn('* AI-Uveso: AddFactoryToClosestManager: ClosestMarkerBasePos is NIL for layer '..layer)
+        AIWarn('* AI-Uveso: AddFactoryToClosestManager: ClosestMarkerBasePos is NIL for layer '..layer, true, UvesoOffsetaiarchetypeLUA)
     end
     --  if exist, get the distance to the closest Marker Location
     if ClosestMarkerBasePos then
@@ -1204,10 +1231,10 @@ function AddFactoryToClosestManager(aiBrain, factory)
     end
     -- check if the distance from our factory to the closest basemanager is closeer than the managers max range and check if we are on the same land/sea
     if not FactoryPos then
-        AIWarn('FactoryPos = NIL')
+        AIWarn('FactoryPos = NIL', true, UvesoOffsetaiarchetypeLUA)
     end
     if not ClosestMarkerBasePos then
-        AIWarn('ClosestMarkerBasePos = NIL')
+        AIWarn('ClosestMarkerBasePos = NIL', true, UvesoOffsetaiarchetypeLUA)
     end
     
     if dist > BaseRadius or (not ClosestMarkerBasePos) or (not AIAttackUtils.CanGraphAreaTo(FactoryPos, ClosestMarkerBasePos, layer)) then -- needs graph check for land and naval locations
@@ -1218,7 +1245,7 @@ function AddFactoryToClosestManager(aiBrain, factory)
             MarkerBaseName = 'Expansion Area '..Random(1000,5000)
             areatype = 'Expansion Area'
         end
-        AIWarn('* AI-Uveso: AddFactoryToClosestManager: Found ['..MarkerBaseName..'] Baseradius('..math.floor(BaseRadius)..') but it\'s to not reachable: Distance to base: '..math.floor(dist)..' - Creating new location: '..MarkerBaseName)
+        AIWarn('* AI-Uveso: AddFactoryToClosestManager: Found ['..MarkerBaseName..'] Baseradius('..math.floor(BaseRadius)..') but it\'s to not reachable: Distance to base: '..math.floor(dist)..' - Creating new location: '..MarkerBaseName, true, UvesoOffsetaiarchetypeLUA)
         -- creating a marker for the expansion or AIUtils.AIGetClosestMarkerLocation() will not find it.
         Scenario.MasterChain._MASTERCHAIN_.Markers[MarkerBaseName] = {}
         Scenario.MasterChain._MASTERCHAIN_.Markers[MarkerBaseName].color = 'fff4a460'
@@ -1245,15 +1272,15 @@ function AddFactoryToClosestManager(aiBrain, factory)
         end
     -- This is only for debug in case map markers have wrong .type
     elseif LocationType ~= 'Naval Area' and LocationType ~= 'Expansion Area' and LocationType ~= 'Large Expansion Area' then
-        AIWarn('* AI-Uveso: AddFactoryToClosestManager: unknown LocationType '..LocationType..' !')
+        AIWarn('* AI-Uveso: AddFactoryToClosestManager: unknown LocationType '..LocationType..' !', true, UvesoOffsetaiarchetypeLUA)
     end
-    AIDebug('* AI-Uveso: AddFactoryToClosestManager: Factory '..factory.UnitId..' is close ('..math.floor(dist)..') to MarkerBaseName '..MarkerBaseName..' ('..LocationType..')')
+    AIDebug('* AI-Uveso: AddFactoryToClosestManager: Factory '..factory.UnitId..' is close ('..math.floor(dist)..') to MarkerBaseName '..MarkerBaseName..' ('..LocationType..')', true, UvesoOffsetaiarchetypeLUA)
     -- search for an manager on this location
     if aiBrain.BuilderManagers[MarkerBaseName] then
-        AIDebug('* AI-Uveso: AddFactoryToClosestManager: BuilderManagers for MarkerBaseName '..MarkerBaseName..' exist!')
+        AIDebug('* AI-Uveso: AddFactoryToClosestManager: BuilderManagers for MarkerBaseName '..MarkerBaseName..' exist!', true, UvesoOffsetaiarchetypeLUA)
         -- Just a failsafe, normaly we have an FactoryManager if the BuilderManagers on this location is present.
         if aiBrain.BuilderManagers[MarkerBaseName].FactoryManager then
-            AIDebug('* AI-Uveso: AddFactoryToClosestManager: FactoryManager at MarkerBaseName '..MarkerBaseName..' exist! -> Adding Factory!')
+            AIDebug('* AI-Uveso: AddFactoryToClosestManager: FactoryManager at MarkerBaseName '..MarkerBaseName..' exist! -> Adding Factory!', true, UvesoOffsetaiarchetypeLUA)
             -- using AddFactory() from the factory manager to add the factory to the manager.
             aiBrain.BuilderManagers[MarkerBaseName].FactoryManager:AddFactory(factory)
             -- Factory is no longer without an manager
@@ -1261,11 +1288,11 @@ function AddFactoryToClosestManager(aiBrain, factory)
         end
     else
         -- no basemanager found, create a new one.
-        AIDebug('* AI-Uveso: AddFactoryToClosestManager: BuilderManagers for MarkerBaseName '..MarkerBaseName..' does not exist! Creating Manager')
+        AIDebug('* AI-Uveso: AddFactoryToClosestManager: BuilderManagers for MarkerBaseName '..MarkerBaseName..' does not exist! Creating Manager', true, UvesoOffsetaiarchetypeLUA)
         -- Create the new expansion on the expansion marker position with a radius of 100. 100 is only an default value, it will be changed from BaseRanger() thread
         aiBrain:AddBuilderManagers(ClosestMarkerBasePos, 100, MarkerBaseName, true)
         -- add the factory to the new manager
-        AIDebug('* AI-Uveso: AddFactoryToClosestManager: FactoryManager at MarkerBaseName '..MarkerBaseName..' created! -> Adding Factory!')
+        AIDebug('* AI-Uveso: AddFactoryToClosestManager: FactoryManager at MarkerBaseName '..MarkerBaseName..' created! -> Adding Factory!', true, UvesoOffsetaiarchetypeLUA)
         aiBrain.BuilderManagers[MarkerBaseName].FactoryManager:AddFactory(factory)
         -- Factory is no longer without an manager
         factory.lost = nil
@@ -1289,7 +1316,7 @@ function AddFactoryToClosestManager(aiBrain, factory)
         end
         -- get a random name if we have more than one possible base template
         local pick = validNames[ Random(1, table.getn(validNames)) ]
-        AIWarn('* AI-Uveso: AddFactoryToClosestManager: picked basetemplate '..pick..' for location '..MarkerBaseName..' ('..LocationType..')')
+        AIWarn('* AI-Uveso: AddFactoryToClosestManager: picked basetemplate '..pick..' for location '..MarkerBaseName..' ('..LocationType..')', true, UvesoOffsetaiarchetypeLUA)
         -- finaly loading the templates for the new base location. From now on the new factory can work for us :D
         import('/lua/ai/AIAddBuilderTable.lua').AddGlobalBaseTemplate(aiBrain, MarkerBaseName, pick)
     end
@@ -1300,7 +1327,7 @@ function OpponentAIWatchThread(aiBrain)
     while GetGameTimeSeconds() < 1 do
         coroutine.yield(10)
     end
-    AIDebug('* AI-Uveso: Function OpponentAIWatchThread() started. ['..aiBrain.Nickname..']')
+    AIDebug('* AI-Uveso: Function OpponentAIWatchThread() started. ['..aiBrain.Nickname..']', true, UvesoOffsetaiarchetypeLUA)
     local AIPaused = false
     local allUnits
     while true do
