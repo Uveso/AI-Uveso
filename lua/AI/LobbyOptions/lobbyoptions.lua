@@ -51,55 +51,6 @@ AIOpts = {
         },
     },
     {
-        default = 1,
-        label = "<LOC aisettingsUveso_0153>DEBUG: AI pathfinding",
-        help = "<LOC aisettingsUveso_0154>Displays pathfinding, waypoints and location radii (only AI-Uveso)",
-        key = 'AIPathingDebug',
-        values = {
-            {
-                text = "<LOC aisettingsUveso_0155>Off",
-                help = "<LOC aisettingsUveso_0156>Display is off",
-                key = 'off',
-            },
-            {
-                text = "<LOC aisettingsUveso_0185>Pathfinding",
-                help = "<LOC aisettingsUveso_0186>Show pathfinding for all layers",
-                key = 'path',
-            },
-            {
-                text = "<LOC aisettingsUveso_0157>Pathfinding and locations",
-                help = "<LOC aisettingsUveso_0158>Show pathfinding and location radii",
-                key = 'pathlocation',
-            },
-
-            {
-                text = "<LOC aisettingsUveso_0209>Pathfinding and IMap threat",
-                help = "<LOC aisettingsUveso_0210>Show pathfinding and threats from ingame threatmap",
-                key = 'imapthreats',
-            },
-            {
-                text = "<LOC aisettingsUveso_0159>Path and land marker",
-                help = "<LOC aisettingsUveso_0160>Show pathfinding, land waypoints and paths",
-                key = 'land',
-            },
-            {
-                text = "<LOC aisettingsUveso_0161>Path and water marker",
-                help = "<LOC aisettingsUveso_0162>Show pathfinding, water waypoints and paths",
-                key = 'water',
-            },
-            {
-                text = "<LOC aisettingsUveso_0163>Path and amphibious marker",
-                help = "<LOC aisettingsUveso_0164>Show pathfinding, amphibious waypoints and paths",
-                key = 'amph',
-            },
-            {
-                text = "<LOC aisettingsUveso_0165>Path and air marker",
-                help = "<LOC aisettingsUveso_0166>Show pathfinding, air waypoints and paths",
-                key = 'air',
-            },
-        },
-    },
-    {
         default = 2,
         label = "<LOC aisettingsUveso_0222>AI overwhelm increase",
         help = "<LOC aisettingsUveso_0223>Increase the Overwhelm's resource and build speed multiplier every minute with this value",
@@ -240,6 +191,55 @@ AIOpts = {
                 text = "45",
                 help = "45",
                 key = 45,
+            },
+        },
+    },
+    {
+        default = 1,
+        label = "<LOC aisettingsUveso_0153>DEBUG: AI pathfinding",
+        help = "<LOC aisettingsUveso_0154>Displays pathfinding, waypoints and location radii (only AI-Uveso)",
+        key = 'AIPathingDebug',
+        values = {
+            {
+                text = "<LOC aisettingsUveso_0155>Off",
+                help = "<LOC aisettingsUveso_0156>Display is off",
+                key = 'off',
+            },
+            {
+                text = "<LOC aisettingsUveso_0185>Pathfinding",
+                help = "<LOC aisettingsUveso_0186>Show pathfinding for all layers",
+                key = 'path',
+            },
+            {
+                text = "<LOC aisettingsUveso_0157>Pathfinding and locations",
+                help = "<LOC aisettingsUveso_0158>Show pathfinding and location radii",
+                key = 'pathlocation',
+            },
+
+            {
+                text = "<LOC aisettingsUveso_0209>Pathfinding and IMap threat",
+                help = "<LOC aisettingsUveso_0210>Show pathfinding and threats from ingame threatmap",
+                key = 'imapthreats',
+            },
+            {
+                text = "<LOC aisettingsUveso_0159>Path and land marker",
+                help = "<LOC aisettingsUveso_0160>Show pathfinding, land waypoints and paths",
+                key = 'land',
+            },
+            {
+                text = "<LOC aisettingsUveso_0161>Path and water marker",
+                help = "<LOC aisettingsUveso_0162>Show pathfinding, water waypoints and paths",
+                key = 'water',
+            },
+            {
+                text = "<LOC aisettingsUveso_0163>Path and amphibious marker",
+                help = "<LOC aisettingsUveso_0164>Show pathfinding, amphibious waypoints and paths",
+                key = 'amph',
+            },
+            {
+                text = "<LOC aisettingsUveso_0165>Path and air marker",
+                help = "<LOC aisettingsUveso_0166>Show pathfinding, air waypoints and paths",
+                key = 'air',
             },
         },
     },

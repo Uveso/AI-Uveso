@@ -330,7 +330,7 @@ function GraphRenderThread()
     coroutine.yield(100)
     AIDebug('* AI-Uveso: Function GraphRenderThread() started.', true, UvesoOffsetSimInitLUA)
     while true do
-        --AILog('* AI-Uveso: Function GraphRenderThread() beat.')
+        AILog('* AI-Uveso: Function GraphRenderThread() beat.')
         -- draw all paths with location radius and AI Pathfinding
         if ScenarioInfo.Options.AIPathingDebug == 'pathlocation'
         or ScenarioInfo.Options.AIPathingDebug == 'path'
@@ -748,14 +748,19 @@ function RenderMarkerCreatorThread()
 
         coroutine.yield(2)
         -- only display all markers at the start of the game
-        if GetGameTimeSeconds() > 10 and not DebugValidMarkerPosition then
+        if GetGameTimeSeconds() > 13 and not DebugValidMarkerPosition then
             return
         end
     end
 end
 
 function CreateAIMarkers()
-    if ScenarioInfo.Options.AIMapMarker == 'off' then
+    if ScenarioInfo.DoNotAllowMarkerGenerator == true then
+        AIWarn('* AI-Uveso: Map does not allow automated marker creation, using the original marker from the map.')
+        -- Build Graphs like LAND1 LAND2 WATER1 WATER2
+        BuildGraphAreas()
+        return
+    elseif ScenarioInfo.Options.AIMapMarker == 'off' then
         AILog('* AI-Uveso: Running without markers, deleting map marker.', true, UvesoOffsetSimInitLUA)
         CREATEDMARKERS = {}
         CopyMarkerToMASTERCHAIN('Land')
@@ -765,11 +770,6 @@ function CreateAIMarkers()
         return
     elseif ScenarioInfo.Options.AIMapMarker == 'map' then
         AILog('* AI-Uveso: Using the original marker from the map.', true, UvesoOffsetSimInitLUA)
-        -- Build Graphs like LAND1 LAND2 WATER1 WATER2
-        BuildGraphAreas()
-        return
-    elseif ScenarioInfo.DoNotAllowMarkerGenerator == true then
-        AIWarn('* AI-Uveso: Map does not allow automated marker creation, using the original marker from the map.')
         -- Build Graphs like LAND1 LAND2 WATER1 WATER2
         BuildGraphAreas()
         return
@@ -789,6 +789,13 @@ function CreateAIMarkers()
     elseif ScenarioInfo.Options.AIMapMarker == 'all' then
         AILog('* AI-Uveso: Generating marker, please wait...', true, UvesoOffsetSimInitLUA)
     end
+
+    -- import functions for marker generator
+    local AIMarkerGenerator = import('/mods/AI-Uveso/lua/AI/AIMarkerGenerator.lua')
+    -- build a table with dirty / unpathable terrain
+    AIMarkerGenerator.BuildTerrainPathMap()
+
+
     -- Map size like 20x10 and 10x20
     if ScenarioInfo.size[1] > ScenarioInfo.size[2] then
         MarkerCountY = MarkerCountY / 2
@@ -796,13 +803,8 @@ function CreateAIMarkers()
         MarkerCountX = MarkerCountX / 2
     end
     -- Playable area
-    local playablearea
-    if  ScenarioInfo.MapData.PlayableRect then
-        playablearea = ScenarioInfo.MapData.PlayableRect
-    else
-        playablearea = {0, 0, ScenarioInfo.size[1], ScenarioInfo.size[2]}
-    end
-    --AILog('* AI-Uveso: playable area coordinates are ' .. repr(playablearea))
+    local playableArea = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').GetPlayableArea()
+    --AILog('* AI-Uveso: playable area coordinates are ' .. repr(playableArea))
     -- Create Air Marker
     CREATEDMARKERS = {}
     local DistanceBetweenMarkers = ScenarioInfo.size[1] / ( MarkerCountX/2 )
@@ -816,7 +818,7 @@ function CreateAIMarkers()
                     ['position'] = VECTOR3( PosX, GetSurfaceHeight(PosX,PosY), PosY ),
                     ['graph'] = 'DefaultAir',
                 }
-            if PosX < playablearea[1] or PosX > playablearea[3] or PosY < playablearea[2] or PosY > playablearea[4] then
+            if PosX < playableArea[1] or PosX > playableArea[3] or PosY < playableArea[2] or PosY > playableArea[4] then
                 CREATEDMARKERS['Marker'..X..'-'..Y].graph = 'Blocked'
             end
         end
@@ -833,7 +835,7 @@ function CreateAIMarkers()
     CopyMarkerToMASTERCHAIN('Air')
 
     -- create Land/Water/Amphibious marker grid
-    CREATEDMARKERS = {}
+    --CREATEDMARKERS = {}
     DistanceBetweenMarkers = ScenarioInfo.size[1] / ( MarkerCountX )
     for Y = 0, MarkerCountY - 1 do
         for X = 0, MarkerCountX - 1 do
@@ -852,7 +854,7 @@ function CreateAIMarkers()
         for X = 0, MarkerCountX - 1 do
             MarkerIndex = 'Marker'..X..'-'..Y
             MarkerPosition = CREATEDMARKERS[MarkerIndex].position
-            if MarkerPosition[1] > playablearea[1] and MarkerPosition[1] < playablearea[3] and MarkerPosition[3] > playablearea[2] and MarkerPosition[3] < playablearea[4] then
+            if MarkerPosition[1] > playableArea[1] and MarkerPosition[1] < playableArea[3] and MarkerPosition[3] > playableArea[2] and MarkerPosition[3] < playableArea[4] then
                 ReturnGraph = CheckValidMarkerPosition(MarkerIndex)
             else
                 ReturnGraph = 'Blocked'
@@ -2108,8 +2110,6 @@ function DrawHeatMap()
     local mapXGridCount = math.floor( PlayableMapSizeX / HeatMapGridSizeX )
     local mapYGridCount = math.floor( PlayableMapSizeZ / HeatMapGridSizeZ )
     local playableArea = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').GetPlayableArea()
-    local OffsetX = playableArea[1]
-    local OffsetZ = playableArea[2]
     local px, py, pz = 0,1000,0
     local threatScale = { Land = 1, Air = 1, Water = 1, Amphibious = 1, ecoValue = 1}
     local highestThreat = { Land = 1, Air = 1, Water = 1, Amphibious = 1, ecoValue = 1}
@@ -2270,8 +2270,8 @@ end
 
 function ValidateModFilesUveso()
     local ModName = 'AI-Uveso'
-    local Files = 86
-    local Bytes = 2027112
+    local Files = 87
+    local Bytes = 2039936
     local modlocation = ""
     for i, mod in __active_mods do
         if mod.name == ModName then

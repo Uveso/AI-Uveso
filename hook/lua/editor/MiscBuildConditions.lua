@@ -104,8 +104,21 @@ end
 
 --            { MIBC, 'IsNavalExpansionsAllowed', {} },
 function IsNavalExpansionsAllowed(aiBrain)
-    local checkNum = tonumber(ScenarioInfo.Options.NavalExpansionsAllowed) or 2
-    return checkNum > 0
+    local ratio = aiBrain:GetMapWaterRatio()
+    -- check if we have less than 20% water on the map
+    if ratio < 0.2 then
+        --AILog('* IsNavalExpansionsAllowed: GetMapWaterRatio: '..(ratio*100)..'% - return false', true, UvesoOffsetMiscBuildConditionsLUA)
+        return false
+    end
+    local allowed = tonumber(ScenarioInfo.Options.NavalExpansionsAllowed) or 0
+    local exist = aiBrain:GetManagerCount('Naval Area')
+    -- check if we have already build the allowed amount of naval expansions
+    if exist >= allowed then
+        --AILog('* IsNavalExpansionsAllowed: GetManagerCount: ('..exist..'/'..allowed..') - return false', true, UvesoOffsetMiscBuildConditionsLUA)
+        return false
+    end
+    --AILog('* IsNavalExpansionsAllowed: GetManagerCount: ('..exist..'/'..allowed..') GetMapWaterRatio: '..(ratio*100)..'% - return true', true, UvesoOffsetMiscBuildConditionsLUA)
+    return true
 end
 
 --            { MIBC, 'ItsTimeForGameender', {} },

@@ -182,7 +182,6 @@ BuilderGroup {
         end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { -9.99, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             --{ MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
@@ -245,7 +244,6 @@ BuilderGroup {
         end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { -9.99, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             --{ MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
@@ -278,12 +276,12 @@ BuilderGroup {
         end,
         BuilderConditions = {
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { -9.99, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             --{ MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
             { MABC, 'CanBuildOnMass', { 'LocationType', 1000, -500, 1, 0, 'AntiSurface', 1 }}, -- LocationType, distance, threatMin, threatMax, threatRadius, threatType, maxNum
             -- Don't build it if...
+            { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 3, categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD }},
             --{ UCBC, 'GreaterThanGameTimeSeconds', { 60*30 } },
         },
         BuilderType = 'Any',

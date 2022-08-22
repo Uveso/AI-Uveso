@@ -1,6 +1,6 @@
 local UvesoOffsetPlatoonLUA = debug.getinfo(1).currentline - 1
 SPEW('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..UvesoOffsetPlatoonLUA..'] * AI-Uveso: offset platoon.lua' )
---6842
+--6844
 
 local UUtils = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua')
 local HERODEBUG = false
@@ -67,9 +67,18 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                 if not eng or eng.Dead or not eng.PlatoonHandle or not aiBrain:PlatoonExists(eng.PlatoonHandle) then
                     return
                 end
+                if eng.PlatoonHandle.UsingTransport then
+                    --AIWarn("* AI-Uveso: ProcessBuildCommand: Engineer is using transport")
+                    coroutine.yield(3)
+                end
                 PlatoonPos = eng:GetPosition()
                 if VDist2(PlatoonPos[1] or 0, PlatoonPos[3] or 0, buildLocation[1] or 0, buildLocation[3] or 0) >= 30 then
                     -- issue buildcommand to block other engineers from caping mex/hydros or to reserve the buildplace
+                    -- check to see if we need to reclaim or capture...
+                    AIUtils.EngineerTryReclaimCaptureArea(aiBrain, eng, buildLocation)
+                    -- check to see if we can repair
+                    AIUtils.EngineerTryRepair(aiBrain, eng, whatToBuild, buildLocation)
+                    -- otherwise, go ahead and build the next structure there
                     aiBrain:BuildStructure(eng, whatToBuild, {buildLocation[1], buildLocation[3], 0}, buildRelative)
                     coroutine.yield(3)
                     -- wait until we are close to the buildplace so we have intel
@@ -969,11 +978,12 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         local aiBrain = self:GetBrain()
         local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
         local ratio = 0.0
-                          -- 0    6     10    15    20    25    30  >600  >1000
+                          -- 0    3     6     10    15    20    25    30  >600  >1000
                           -- 1    2     3     4     5     6     7     8     9
-        local RatioTable = {0.0, 0.10, 0.15, 0.20, 0.25, 0.30, 0.40, 0.50, 1.0}
+        local RatioTable = {0.0, 0.10, 0.10, 0.15, 0.20, 0.25, 0.30, 0.40, 0.50, 1.0}
         if personality == 'uvesorush' then
-            RatioTable = {0.0, 0.20, 0.30, 0.40, 0.50, 0.50, 0.50, 0.50, 1.0}
+            --RatioTable = {0.00, 0.10, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.40, 0.80}
+            RatioTable = {0.00, 0.05, 0.10, 0.15, 0.20, 0.30, 0.40, 0.50, 0.50, 0.75}
         end
         local platoonUnits
         local MassExtractorUnitList
@@ -984,26 +994,28 @@ Platoon = Class(CopyOfOldPlatoonClass) {
             --AILog('* AI-Uveso: +++ ExtractorUpgradeAI: PULSE')
             if aiBrain.PriorityManager.HasParagon then
                 -- if we have a paragon, upgrade mex as fast as possible. Mabye we lose the paragon and need mex again.
-                ratio = RatioTable[9]
+                ratio = RatioTable[10]
             elseif aiBrain:GetEconomyIncome('MASS') * 10 > 1000 then
                 --AILog('* AI-Uveso: Mass over 1000. Eco running with 50%')
-                ratio = RatioTable[9]
+                ratio = RatioTable[10]
             elseif aiBrain:GetEconomyIncome('MASS') * 10 > 600 then
                 --AILog('* AI-Uveso: Mass over 600. Eco running with 35%')
-                ratio = RatioTable[8]
+                ratio = RatioTable[9]
             elseif GetGameTimeSeconds() > 1800 then -- 30 * 60
-                ratio = RatioTable[7]
+                ratio = RatioTable[8]
             elseif GetGameTimeSeconds() > 1500 then -- 25 * 60
-                ratio = RatioTable[6]
+                ratio = RatioTable[7]
             elseif GetGameTimeSeconds() > 1200 then -- 20 * 60
-                ratio = RatioTable[5]
+                ratio = RatioTable[6]
             elseif GetGameTimeSeconds() > 900 then -- 15 * 60
-                ratio = RatioTable[4]
+                ratio = RatioTable[5]
             elseif GetGameTimeSeconds() > 600 then -- 10 * 60
-                ratio = RatioTable[3]
+                ratio = RatioTable[4]
             elseif GetGameTimeSeconds() > 360 then -- 6 * 60
+                ratio = RatioTable[3]
+            elseif GetGameTimeSeconds() > 180 then -- 3 * 60
                 ratio = RatioTable[2]
-            elseif GetGameTimeSeconds() <= 360 then -- 6 * 60 run the first 6 minutes with 0% Eco and 100% Army
+            elseif GetGameTimeSeconds() <= 360 then -- 1-5
                 ratio = RatioTable[1]
             end
             platoonUnits = self:GetPlatoonUnits()
@@ -1297,8 +1309,8 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                                 if not arty.Dead then
                                     x, y, z = arty:GetPositionXYZ()
                                     distanceToArtillery = VDist2( x, z, artyTarget.pos[1], artyTarget.pos[3] )
-                                    artilleryMinRange = __blueprints[arty.UnitId].Weapon[1].MinRadius
-                                    artilleryMaxRange = __blueprints[arty.UnitId].Weapon[1].MaxRadius
+                                    artilleryMinRange = arty.Blueprint.Weapon[1].MinRadius
+                                    artilleryMaxRange = arty.Blueprint.Weapon[1].MaxRadius
                                     if not arty.Dead and distanceToArtillery > artilleryMinRange and distanceToArtillery < artilleryMaxRange then
                                     -- does the arty has a target ?
                                         if not arty.actualTarget or arty.actualTarget.Dead or GetGameTimeSeconds() - arty.lastTargetting > 60 then
@@ -1385,7 +1397,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                                 if targetAvailable then
                                     -- if the target is protected by shields or if the target has high priority, attack it.
                                     if satTarget.protectedByShield >= 1 or satTarget.priority >= 50  then
-                                        --AILog("* AI-Uveso: U4SatelliteAI(): [S:"..satIndex.."] protected target: priority: "..satTarget.priority.." - protectedByShield:"..satTarget.protectedByShield.." - shieldRadius: "..repr(satTarget.shieldRadius or 0).." - techCategory: "..repr(satTarget.techCategory or 0).." - distToBase: "..math.floor(satTarget.distToBase).." - name: "..satTarget.name.."" )
+                                        --AILog("* AI-Uveso: U4SatelliteAI(): [S:"..satIndex.."] protected target: priority: "..satTarget.priority.." - protectedByShield:"..satTarget.protectedByShield.." - shieldRadius: "..repr(satTarget.shieldRadius or 0).." - distToBase: "..math.floor(satTarget.distToBase).." - name: "..satTarget.name.."" )
                                         closestTarget = realSatTargetUnit
                                     else
                                         -- find the closest target for the satellite
@@ -1411,7 +1423,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                                                                 end
                                                             end
                                                             if targetAvailable then
-                                                                --AILog("* AI-Uveso: U4SatelliteAI(): [S:"..satIndex.."] possible target: priority: "..cTarget.priority.." - protectedByShield:"..cTarget.protectedByShield.." - shieldRadius: "..repr(cTarget.shieldRadius or 0).." - techCategory: "..repr(cTarget.techCategory or 0).." - distToSat: "..math.floor(dist).." - name: "..cTarget.name.."" )
+                                                                --AILog("* AI-Uveso: U4SatelliteAI(): [S:"..satIndex.."] possible target: priority: "..cTarget.priority.." - protectedByShield:"..cTarget.protectedByShield.." - shieldRadius: "..repr(cTarget.shieldRadius or 0).." - distToSat: "..math.floor(dist).." - name: "..cTarget.name.."" )
                                                                 closestTarget = realSatTargetUnit
                                                                 closestTargetDist = dist
                                                             end
@@ -1660,9 +1672,9 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                             if nukeTarget.name ~= "EcoValue" and EntityCategoryContains(categories.MOBILE * categories.EXPERIMENTAL, realnukeTargetUnit) then
                                 -- Lead target function for moving units
                                 AILog("* AI-Uveso: * NukePlatoonAI():["..nukeTarget.name.."] LeadNukeTarget", NUKEDEBUG, UvesoOffsetPlatoonLUA)
-                                if table.getn(HighMissileCountLauncherReady) > 1 then
+                                if HighMissileCountLauncherReady and not HighMissileCountLauncherReady.Dead then
                                     TargetPos = self:LeadNukeTarget(HighMissileCountLauncherReady, realnukeTargetUnit)
-                                else
+                                elseif table.getn(LauncherReady) > 0 then
                                     TargetPos = self:LeadNukeTarget(LauncherReady, realnukeTargetUnit)
                                 end
                             else
@@ -1754,6 +1766,9 @@ Platoon = Class(CopyOfOldPlatoonClass) {
     end,
     
     LeadNukeTarget = function(self, launcher, target)
+        if not launcher or launcher.Dead then
+            return false
+        end
         local aiBrain = self:GetBrain()
         local LauncherPos = launcher:GetPosition()
         local TargetPos
@@ -3200,13 +3215,8 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         UnitBlueprint = nil
         --AIWarn('* AI-Uveso: * ACUChampionPlatoon: cdr.MaxWeaponRange: '..cdr.MaxWeaponRange)
 
-        -- set playablearea so we know where the map border is.
-        local playablearea
-        if ScenarioInfo.MapData.PlayableRect then
-            playablearea = ScenarioInfo.MapData.PlayableRect
-        else
-            playablearea = {0, 0, ScenarioInfo.size[1], ScenarioInfo.size[2]}
-        end
+        -- set playableArea so we know where the map border is.
+        local playableArea = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').GetPlayableArea()
 
         local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
         local Braveness = 0
@@ -3759,15 +3769,15 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                 smartPos = cdr.position
             end
             -- Validate move position, make sure it's not out of map
-            if smartPos[1] < playablearea[1] then
-                smartPos[1] = playablearea[1]
-            elseif smartPos[1] > playablearea[3] then
-                smartPos[1] = playablearea[3]
+            if smartPos[1] < playableArea[1] then
+                smartPos[1] = playableArea[1]
+            elseif smartPos[1] > playableArea[3] then
+                smartPos[1] = playableArea[3]
             end
-            if smartPos[3] < playablearea[2] then
-                smartPos[3] = playablearea[2]
-            elseif smartPos[3] > playablearea[4] then
-                smartPos[3] = playablearea[4]
+            if smartPos[3] < playableArea[2] then
+                smartPos[3] = playableArea[2]
+            elseif smartPos[3] > playableArea[4] then
+                smartPos[3] = playableArea[4]
             end
             -- check if the move position is new, then issue a move command
             -- ToDo in case we are under fire we should move in zig-zag to evade
@@ -3953,15 +3963,11 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         local SelfArmyIndex = aiBrain:GetArmyIndex()
         local ValidUnit, NavigatorGoal, FocusTarget, TargetsInACURange, blip, UnitCloseRange
         local EnemyACU, EnemyACUPos, EnemyUnit, EnemyUnitPos, OverchargeVictims, MostUnitAround
-        local playablearea, TargetPosition, AreaTable, EnemyTML, EnemyTMLPos, ACUCloseRange
+        local TargetPosition, AreaTable, EnemyTML, EnemyTMLPos, ACUCloseRange
         local UnitT1, EnemyExperimental, EnemyExperimentalPos, UnitBlueprint, MaxWeaponRange
-        if ScenarioInfo.MapData.PlayableRect then
-            playablearea = ScenarioInfo.MapData.PlayableRect
-        else
-            playablearea = {0, 0, ScenarioInfo.size[1], ScenarioInfo.size[2]}
-        end
         local UnitWithPath, UnitNoPath, path, reason
         local numAirEnemyUnits, numExperimentalEnemyUnits, numT3EnemyUnits
+        local playableArea = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').GetPlayableArea()
         while aiBrain:PlatoonExists(platoon) and not cdr.Dead do
             -- wait here to prevent deadloops and heavy CPU load
             coroutine.yield(7)
@@ -4130,14 +4136,14 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                 UnitT1 = aiBrain:GetNumUnitsAroundPoint( categories.DIRECTFIRE + categories.INDIRECTFIRE + categories.DEFENSE, pos, 25, 'Enemy' )
                 aiBrain.ACUChampion.EnemyInArea = aiBrain.ACUChampion.EnemyInArea + UnitT1
                 -- mimic the map border as enemy units, so the ACU will not get to close to the border
-                if pos[1] <= playablearea[1] + 1 then                  -- left border
+                if pos[1] <= playableArea[1] + 1 then                  -- left border
                     UnitT1 = 1
-                elseif pos[1] >= playablearea[3] -1 then               -- right border
+                elseif pos[1] >= playableArea[3] -1 then               -- right border
                     UnitT1 = 1
                 end
-                if pos[3] <= playablearea[2] + 1then                   -- top border
+                if pos[3] <= playableArea[2] + 1then                   -- top border
                     UnitT1 = 1
-                elseif pos[3] >= playablearea[4] -1 then               -- bottom border
+                elseif pos[3] >= playableArea[4] -1 then               -- bottom border
                     UnitT1 = 1
                 end
                 AreaTable[index][4] = UnitT1
@@ -4187,15 +4193,15 @@ Platoon = Class(CopyOfOldPlatoonClass) {
             coroutine.yield(1)
 
             -- Enemy Bomber/gunship threat
-            numAirEnemyUnits = aiBrain:GetNumUnitsAroundPoint(categories.MOBILE * categories.AIR * (categories.BOMBER + categories.GROUNDATTACK) - categories.TECH1, Vector(playablearea[3]/2,0,playablearea[4]/2), playablearea[3]+playablearea[4] , 'Enemy')
+            numAirEnemyUnits = aiBrain:GetNumUnitsAroundPoint(categories.MOBILE * categories.AIR * (categories.BOMBER + categories.GROUNDATTACK) - categories.TECH1, Vector(playableArea[3]/2,0,playableArea[4]/2), playableArea[3]+playableArea[4] , 'Enemy')
             aiBrain.ACUChampion.numAirEnemyUnits = numAirEnemyUnits
 
             -- Enemy Experimental threat
-            numExperimentalEnemyUnits = aiBrain:GetNumUnitsAroundPoint(categories.MOBILE * categories.EXPERIMENTAL, Vector(playablearea[3]/2,0,playablearea[4]/2), playablearea[3]+playablearea[4] , 'Enemy')
+            numExperimentalEnemyUnits = aiBrain:GetNumUnitsAroundPoint(categories.MOBILE * categories.EXPERIMENTAL, Vector(playableArea[3]/2,0,playableArea[4]/2), playableArea[3]+playableArea[4] , 'Enemy')
             aiBrain.ACUChampion.numExperimentalEnemyUnits = numExperimentalEnemyUnits
 
             -- Enemy T3 threat
-            numT3EnemyUnits = aiBrain:GetNumUnitsAroundPoint(categories.MOBILE * categories.TECH3, Vector(playablearea[3]/2,0,playablearea[4]/2), playablearea[3]+playablearea[4] , 'Enemy')
+            numT3EnemyUnits = aiBrain:GetNumUnitsAroundPoint(categories.MOBILE * categories.TECH3, Vector(playableArea[3]/2,0,playableArea[4]/2), playableArea[3]+playableArea[4] , 'Enemy')
             aiBrain.ACUChampion.numT3EnemyUnits = numT3EnemyUnits
 
         end

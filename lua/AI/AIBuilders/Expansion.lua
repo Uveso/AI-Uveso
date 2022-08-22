@@ -219,7 +219,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}},
             -- When do we want to build this ?
-            { UCBC, 'NavalBaseCheck', { } }, -- related to ScenarioInfo.Options.NavalExpansionsAllowed
+            { MIBC, 'IsNavalExpansionsAllowed', {} }, -- check for naval base count and map water ratio > 20%
             { UCBC, 'NavalAreaNeedsEngineer', { 'LocationType', 150, -1000, 100, 1, 'AntiSurface' } },
             -- Respect UnitCap
         },
@@ -239,8 +239,8 @@ BuilderGroup {
                 ThreatType = 'AntiSurface',
                 ExpansionRadius = 120,
                 BuildStructures = {
-                    'T1SeaFactory',
                     'T1NavalDefense',
+                    'T1SeaFactory',
                     'T1AADefense',
                 }
             }
@@ -262,7 +262,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}},
             -- When do we want to build this ?
-            { UCBC, 'NavalBaseCheck', { } }, -- related to ScenarioInfo.Options.NavalExpansionsAllowed
+            { MIBC, 'IsNavalExpansionsAllowed', {} }, -- check for naval base count and map water ratio > 20%
             { UCBC, 'NavalAreaNeedsEngineer', { 'LocationType', 250, -1000, 100, 1, 'AntiSurface' } },
             -- Respect UnitCap
         },
@@ -282,8 +282,8 @@ BuilderGroup {
                 ThreatType = 'AntiSurface',
                 ExpansionRadius = 120,
                 BuildStructures = {
-                    'T1SeaFactory',
                     'T1NavalDefense',
+                    'T1SeaFactory',
                     'T1AADefense',
                 }
             }
@@ -305,7 +305,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}},
             -- When do we want to build this ?
-            { UCBC, 'NavalBaseCheck', { } }, -- related to ScenarioInfo.Options.NavalExpansionsAllowed
+            { MIBC, 'IsNavalExpansionsAllowed', {} }, -- check for naval base count and map water ratio > 20%
             { UCBC, 'NavalAreaNeedsEngineer', { 'LocationType', 1000, -1000, 100, 1, 'AntiSurface' } },
             -- Respect UnitCap
         },
@@ -325,8 +325,8 @@ BuilderGroup {
                 ThreatType = 'AntiSurface',
                 ExpansionRadius = 120,
                 BuildStructures = {
-                    'T1SeaFactory',
                     'T1NavalDefense',
+                    'T1SeaFactory',
                     'T1AADefense',
                 }
             }
@@ -348,7 +348,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}},
             -- When do we want to build this ?
-            { UCBC, 'NavalBaseCheck', { } }, -- related to ScenarioInfo.Options.NavalExpansionsAllowed
+            { MIBC, 'IsNavalExpansionsAllowed', {} }, -- check for naval base count and map water ratio > 20%
             { UCBC, 'NavalAreaNeedsEngineer', { 'LocationType', 1000, -1000, 100, 1, 'AntiSurface' } },
             -- Respect UnitCap
             { UCBC, 'HaveUnitRatioVersusCap', { MaxCapFactory , '<', categories.STRUCTURE * categories.FACTORY * categories.NAVAL } }, -- Maximal 3 factories at 125 unitcap, 12 factories at 500 unitcap...
@@ -370,8 +370,8 @@ BuilderGroup {
                 ThreatType = 'AntiSurface',
                 ExpansionRadius = 120,
                 BuildStructures = {
-                    'T1SeaFactory',
                     'T1NavalDefense',
+                    'T1SeaFactory',
                     'T1AADefense',
                 }
             }
@@ -394,7 +394,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconIncome',  { 1.0, 6.0}},
             -- When do we want to build this ?
-            { UCBC, 'NavalBaseCheck', { } }, -- related to ScenarioInfo.Options.NavalExpansionsAllowed
+            { MIBC, 'IsNavalExpansionsAllowed', {} }, -- check for naval base count and map water ratio > 20%
             { UCBC, 'NavalAreaNeedsEngineer', { 'LocationType', 1000, -1000, 100, 1, 'AntiSurface' } },
             -- Respect UnitCap
         },
@@ -414,8 +414,8 @@ BuilderGroup {
                 ThreatType = 'AntiSurface',
                 ExpansionRadius = 120,
                 BuildStructures = {
-                    'T1SeaFactory',
                     'T1NavalDefense',
+                    'T1SeaFactory',
                     'T1AADefense',
                 }
             }
@@ -438,7 +438,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.01}}, -- Ratio from 0 to 1. (1=100%)
             { EBC, 'GreaterThanEconIncome',  { 0.8, 0.1}}, -- Absolut Base income
             -- When do we want to build this ?
-            { UCBC, 'NavalBaseCheck', { } }, -- related to ScenarioInfo.Options.NavalExpansionsAllowed
+            { MIBC, 'IsNavalExpansionsAllowed', {} }, -- check for naval base count and map water ratio > 20%
             { UCBC, 'NavalAreaNeedsEngineer', { 'LocationType', NoRushRadius, -1000, 100, 1, 'AntiSurface' } },
             -- Respect UnitCap
         },
@@ -458,8 +458,8 @@ BuilderGroup {
                 ThreatType = 'AntiSurface',
                 ExpansionRadius = 120,
                 BuildStructures = {
-                    'T1SeaFactory',
                     'T1NavalDefense',
+                    'T1SeaFactory',
                     'T1AADefense',
                 }
             }

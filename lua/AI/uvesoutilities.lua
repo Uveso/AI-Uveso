@@ -136,7 +136,7 @@ function ExtractorUpgrade(self, aiBrain, MassExtractorUnitList, ratio, techLevel
         DistanceToBase= VDist2(BasePosition[1] or 0, BasePosition[3] or 0, UnitPos[1] or 0, UnitPos[3] or 0)
         if not LowestDistanceToBase or DistanceToBase < LowestDistanceToBase then
             -- Get the factionindex from the unit to get the right update (in case we have captured this unit from another faction)
-            UnitBeingUpgradeFactionIndex = FactionToIndex[v.factionCategory] or factionIndex
+            UnitBeingUpgradeFactionIndex = FactionToIndex[string.upper(v.Blueprint.General.FactionName)] or factionIndex
             -- see if we can find a upgrade
             if EntityCategoryContains(categories.MOBILE, v) then
                 TempID = aiBrain:FindUpgradeBP(v:GetUnitId(), UnitUpgradeTemplates[UnitBeingUpgradeFactionIndex])
@@ -214,9 +214,8 @@ function GlobalMassUpgradeCostVsGlobalMassIncomeRatio(self, aiBrain, ratio, tech
         then
             numBuilding = numBuilding + 1
             -- look for every building, category can hold different categories / techlevels for multiple building search
-            local UpgraderBlueprint = unit:GetBlueprint()
-            local BeingUpgradeEconomy = __blueprints[UpgraderBlueprint.General.UpgradesTo].Economy
-            SingleUpgradeCost = (UpgraderBlueprint.Economy.BuildRate / BeingUpgradeEconomy.BuildTime) * BeingUpgradeEconomy.BuildCostMass
+            local BeingUpgradeEconomy = __blueprints[unit.Blueprint.General.UpgradesTo].Economy
+            SingleUpgradeCost = (unit.Blueprint.Economy.BuildRate / BeingUpgradeEconomy.BuildTime) * BeingUpgradeEconomy.BuildCostMass
             GlobalUpgradeCost = GlobalUpgradeCost + SingleUpgradeCost
         end
     end
@@ -263,12 +262,7 @@ local PropBlacklist = {}
 function ReclaimAIThread(platoon,self,aiBrain)
     local scanrange = 25
     local scanKM = 0
-    local playablearea
-    if  ScenarioInfo.MapData.PlayableRect then
-        playablearea = ScenarioInfo.MapData.PlayableRect
-    else
-        playablearea = {0, 0, ScenarioInfo.size[1], ScenarioInfo.size[2]}
-    end
+    local playableArea = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').GetPlayableArea()
     local basePosition = aiBrain.BuilderManagers['MAIN'].Position
     local MassStorageRatio
     local EnergyStorageRatio
@@ -287,10 +281,10 @@ function ReclaimAIThread(platoon,self,aiBrain)
             local y1 = SelfPos[3]-scanrange
             local x2 = SelfPos[1]+scanrange
             local y2 = SelfPos[3]+scanrange
-            if x1 < playablearea[1]+6 then x1 = playablearea[1]+6 end
-            if y1 < playablearea[2]+6 then y1 = playablearea[2]+6 end
-            if x2 > playablearea[3]-6 then x2 = playablearea[3]-6 end
-            if y2 > playablearea[4]-6 then y2 = playablearea[4]-6 end
+            if x1 < playableArea[1]+6 then x1 = playableArea[1]+6 end
+            if y1 < playableArea[2]+6 then y1 = playableArea[2]+6 end
+            if x2 > playableArea[3]-6 then x2 = playableArea[3]-6 end
+            if y2 > playableArea[4]-6 then y2 = playableArea[4]-6 end
             --AILog('GetReclaimablesInRect from x1='..math.floor(x1)..' - x2='..math.floor(x2)..' - y1='..math.floor(y1)..' - y2='..math.floor(y2)..' - scanrange='..scanrange..'')
             local props = GetReclaimablesInRect(Rect(x1, y1, x2, y2))
             local NearestWreckDist = -1
@@ -359,17 +353,17 @@ function ReclaimAIThread(platoon,self,aiBrain)
             if NearestWreckDist > 20 and not self.Dead then
                 --AILog('NearestWreck is > 20 away Distance:'..NearestWreckDist..'. Moving to Wreckage!')
                 -- We don't need to go too close to the mapborder for reclaim, we have reclaimdrones with a flightradius of 25!
-                if NearestWreckPos[1] < playablearea[1]+21 then
-                    NearestWreckPos[1] = playablearea[1]+21
+                if NearestWreckPos[1] < playableArea[1]+21 then
+                    NearestWreckPos[1] = playableArea[1]+21
                 end
-                if NearestWreckPos[1] > playablearea[3]-21 then
-                    NearestWreckPos[1] = playablearea[3]-21
+                if NearestWreckPos[1] > playableArea[3]-21 then
+                    NearestWreckPos[1] = playableArea[3]-21
                 end
-                if NearestWreckPos[3] < playablearea[2]+21 then
-                    NearestWreckPos[3] = playablearea[2]+21
+                if NearestWreckPos[3] < playableArea[2]+21 then
+                    NearestWreckPos[3] = playableArea[2]+21
                 end
-                if NearestWreckPos[3] > playablearea[4]-21 then
-                    NearestWreckPos[3] = playablearea[4]-21
+                if NearestWreckPos[3] > playableArea[4]-21 then
+                    NearestWreckPos[3] = playableArea[4]-21
                 end
                  if self.lastXtarget == NearestWreckPos[1] and self.lastYtarget == NearestWreckPos[3] then
                     self.blocked = self.blocked + 1

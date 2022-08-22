@@ -144,7 +144,7 @@ function CalculateThreat(armyIndex)
         if not unit.Dead and IsEnemy( armyIndex, unit.Army ) and unit:GetFractionComplete() >= 1 then
 
             x, z = GetHeatMapGridIndexFromPosition(unit:GetPosition())
-            unitCat = __blueprints[unit.UnitId].CategoriesHash
+            unitCat = unit.Blueprint.CategoriesHash
             -- enemy COMMANDER
             if unitCat.MOBILE and unitCat.COMMAND then
                 HMAP[x][z].numEnemyCommander = HMAP[x][z].numEnemyCommander + 1
@@ -226,8 +226,8 @@ function CalculateThreat(armyIndex)
                 HMAP[x][z].highestEnemyEcoValue["Energy"] = HMAP[x][z].highestEnemyEcoValue["Energy"] + 350000
                 HMAP[x][z].highestEnemyEcoValue["All"] = 28000 + 350000 / 10
             elseif not unitCat.SATELLITE and not unitCat.INSIGNIFICANTUNIT then
-                HMAP[x][z].highestEnemyEcoValue["Mass"] = HMAP[x][z].highestEnemyEcoValue["Mass"] + __blueprints[unit.UnitId].Economy.BuildCostMass
-                HMAP[x][z].highestEnemyEcoValue["Energy"] = HMAP[x][z].highestEnemyEcoValue["Energy"] + __blueprints[unit.UnitId].Economy.BuildCostEnergy
+                HMAP[x][z].highestEnemyEcoValue["Mass"] = HMAP[x][z].highestEnemyEcoValue["Mass"] + unit.Blueprint.Economy.BuildCostMass
+                HMAP[x][z].highestEnemyEcoValue["Energy"] = HMAP[x][z].highestEnemyEcoValue["Energy"] + unit.Blueprint.Economy.BuildCostEnergy
                 HMAP[x][z].highestEnemyEcoValue["All"] = HMAP[x][z].highestEnemyEcoValue["Mass"] + HMAP[x][z].highestEnemyEcoValue["Energy"] / 10
             end
             
@@ -327,7 +327,8 @@ function SetTargets(armyIndex, basePosition)
     local distToBase
     for _, unit in EnemyUnits do
         if not unit.Dead and IsEnemy( armyIndex, unit.Army ) and unit:GetFractionComplete() >= 0.7 then
-            unitCat = __blueprints[unit.UnitId].CategoriesHash
+            unitCat = unit.Blueprint.CategoriesHash
+            unit.techCategory = unit.Blueprint.TechCategory
             unitPosition = unit:GetPosition()
             distToBase = VDist2(basePosition[1], basePosition[3], unitPosition[1], unitPosition[3])
             -- commander
@@ -336,14 +337,14 @@ function SetTargets(armyIndex, basePosition)
             -- shields experimantal
             elseif unitCat.STRUCTURE and unitCat.SHIELD and unitCat.EXPERIMENTAL then
                 if not unit.shieldSize then
-                    unit.shieldSize = unit.MyShield.Size or __blueprints[unit.UnitId].Defense.Shield.ShieldSize
+                    unit.shieldSize = unit.MyShield.Size or unit.Blueprint.Defense.Shield.ShieldSize
                     unit.nukeProtectRadius = unit.shieldSize / 2
                 end
                 table.insert(enemyDefense.shieldExperimental,{ name = "shieldExperimental", priority = 95, pos = unitPosition, distToBase = distToBase, shieldRadius = unit.shieldSize/2, nukeProtectRadius = unit.nukeProtectRadius, categories = categories.STRUCTURE * categories.SHIELD * categories.EXPERIMENTAL } )
             -- shields
             elseif unitCat.STRUCTURE and unitCat.SHIELD and not unitCat.EXPERIMENTAL then
                 if not unit.shieldSize then
-                    unit.shieldSize = unit.MyShield.Size or __blueprints[unit.UnitId].Defense.Shield.ShieldSize
+                    unit.shieldSize = unit.MyShield.Size or unit.Blueprint.Defense.Shield.ShieldSize
                 end
                 table.insert(enemyDefense.shield,{ name = "shield", priority = 90, pos = unitPosition, distToBase = distToBase, shieldRadius = unit.shieldSize/2, categories = categories.STRUCTURE * categories.SHIELD - categories.EXPERIMENTAL } )
             -- experimental resource generator
@@ -358,7 +359,7 @@ function SetTargets(armyIndex, basePosition)
             -- strategic missile defense
             elseif unitCat.STRUCTURE and unitCat.DEFENSE and unitCat.ANTIMISSILE and (unitCat.TECH3 or unitCat.EXPERIMENTAL) then
                 if not unit.nukeProtectRadius then
-                    unit.nukeProtectRadius = __blueprints[unit.UnitId].Weapon[1].MaxRadius
+                    unit.nukeProtectRadius = unit.Blueprint.Weapon[1].MaxRadius
                 end
                 table.insert(enemyDefense.smd,{ name = "smd", priority = 70, pos = unitPosition, distToBase = distToBase, nukeProtectRadius = unit.nukeProtectRadius, categories = categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * ( categories.TECH3 + categories.EXPERIMENTAL ) } )
             -- nukes

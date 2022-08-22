@@ -1,3 +1,6 @@
+local UvesoOffsetaiattackutilitiesLUA = debug.getinfo(1).currentline - 1
+SPEW('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..UvesoOffsetaiattackutilitiesLUA..'] * AI-Uveso: offset aiattackutilities.lua' )
+--2360
 
 --hook to inject own pathfinding function
 UvesoPlatoonGenerateSafePathToFunction = PlatoonGenerateSafePathTo

@@ -1,3 +1,16 @@
+v104 (01.Aug.2022)
+
+- Fix: naval expansion builder checks now for map water ration > 20%
+- Fix: unreachable mass spots will now be blacklisted in AIExecuteBuildStructure()
+- Fix: abuse report for reclaiming ally buildings is now restricted to AI-Uveso only.
+- Fix: in some cases waypoints were created when a map has DoNotAllowMarkerGenerator = true
+- Opt: moved AI debug options to the end of the lobby option list
+- Opt: Rush sub AI: decreased mass extractor upgrades by 5%
+- Opt: Rush sub AI: AI will no longer pause factory upgrades on low energy/mass
+- DEV: IsNavalExpansionsAllowed() now checks for water ratio and expansion count
+- DEV: EngineerMoveWithSafePath() now only call for transport if transporter actual exist
+
+*************************************************************************************************************************************
 v103 (31.Jul.2022)
 
 - Fix: unit no longer ignore walls. (they will destroy walls now)
@@ -780,7 +793,7 @@ v40 (not public released, only on Git-Hub)
 
 
 *************************************************************************************************************************************
-39 (20.Jul.2018)
+v39 (20.Jul.2018)
 
 - Added ecomanager for engineers (engineers will now set to pause if eco is too low while assisting)
 - Added builder for air and naval supportfactories

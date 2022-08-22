@@ -13,8 +13,10 @@ function EngineerMoveWithSafePath(aiBrain, unit, destination)
         return false
     end
     local pos = unit:GetPosition()
+    --AILog('* AI-Uveso: EngineerMoveWithSafePath(): unit ['..repr(unit.EntityId)..'] pos ('..math.floor(pos[1])..','..math.floor(pos[3])..') to destination ('..math.floor(destination[1])..','..math.floor(destination[3])..')', true, UvesoOffsetAiutilitiesLUA)
     -- don't check a path if we are in build range
     if VDist2(pos[1], pos[3], destination[1], destination[3]) <= 12 then
+        --AIWarn('* AI-Uveso: EngineerMoveWithSafePath(): unit ['..repr(unit.EntityId)..'] distance to buildplace < 12, no pathing needed. returning TRUE', true, UvesoOffsetAiutilitiesLUA)
         return true
     end
 
@@ -23,59 +25,74 @@ function EngineerMoveWithSafePath(aiBrain, unit, destination)
     local path, reason = AIAttackUtils.EngineerGenerateSafePathTo(aiBrain, 'Amphibious', pos, destination)
     -- only use CanPathTo for distance closer then 200 and if we can't path with markers
     if reason ~= 'PathOK' then
+        --AILog('* AI-Uveso: EngineerMoveWithSafePath(): unit ['..repr(unit.EntityId)..'] No path found reason:('..reason..')', true, UvesoOffsetAiutilitiesLUA)
         -- we will crash the game if we use CanPathTo() on all engineer movments on a map without markers. So we don't path at all.
         if reason == 'NoGraph' then
             result = true
         -- if we have a Graph (AI markers) but not a path, then there is no path. We need a transporter.
         elseif reason == 'NoPath' then
-            --AILog('* AI-Uveso: EngineerMoveWithSafePath(): No path found ('..math.floor(pos[1])..'/'..math.floor(pos[3])..') to ('..math.floor(destination[1])..'/'..math.floor(destination[3])..')')
+            --AILog('* AI-Uveso: EngineerMoveWithSafePath(): unit ['..repr(unit.EntityId)..'] No path found ('..math.floor(pos[1])..','..math.floor(pos[3])..') to ('..math.floor(destination[1])..','..math.floor(destination[3])..')', true, UvesoOffsetAiutilitiesLUA)
         elseif VDist2(pos[1], pos[3], destination[1], destination[3]) < 200 then
-            AIDebug('* AI-Uveso: EngineerMoveWithSafePath(): EngineerGenerateSafePathTo returned: ('..repr(reason)..') -> executing c-engine function CanPathTo().', true, UvesoOffsetAiutilitiesLUA)
+            --AIDebug('* AI-Uveso: EngineerMoveWithSafePath(): unit ['..repr(unit.EntityId)..'] EngineerGenerateSafePathTo returned reason: ('..repr(reason)..') -> executing c-engine function CanPathTo().', true, UvesoOffsetAiutilitiesLUA)
             -- be really sure we don't try a pathing with a destroyed c-object
             if unit.Dead or unit:BeenDestroyed() or IsDestroyed(unit) then
-                AIDebug('* AI-Uveso: Unit is death before calling CanPathTo()', true, UvesoOffsetAiutilitiesLUA)
+                --AIDebug('* AI-Uveso: EngineerMoveWithSafePath(): unit ['..repr(unit.EntityId)..'] Unit is death before calling CanPathTo(), returning FALSE', true, UvesoOffsetAiutilitiesLUA)
                 return false
             end
             result, bestPos = unit:CanPathTo(destination)
         end
+    else
+        --AILog('* AI-Uveso: EngineerMoveWithSafePath(): unit ['..repr(unit.EntityId)..'] Amphibious path found! reason:('..reason..')', true, UvesoOffsetAiutilitiesLUA)
     end
+
     local bUsedTransports = false
-    -- Increase check to 300 for transports
     if ((not result and reason ~= 'PathOK') or VDist2Sq(pos[1], pos[3], destination[1], destination[3]) > 40000) -- 200*200=40000
     and unit.PlatoonHandle and not EntityCategoryContains(categories.COMMAND, unit) then
+        --AILog('* AI-Uveso: EngineerMoveWithSafePath(): unit ['..repr(unit.EntityId)..'] No path found trying transports (start)', true, UvesoOffsetAiutilitiesLUA)
         -- If we can't path to our destination, we need, rather than want, transports
-        local needTransports = not result and reason ~= 'PathOK'
-        if VDist2Sq(pos[1], pos[3], destination[1], destination[3]) > 40000 then -- 200*200=40000
-            needTransports = true
+        needTransports = true
+
+        local numOwnTransports = aiBrain:GetCurrentUnits(categories.TRANSPORTATION - categories.uea0203)
+        if numOwnTransports > 0 then
+            --AILog('* AI-Uveso: EngineerMoveWithSafePath(): unit ['..repr(unit.EntityId)..'] Transporter found:('..numOwnTransports..') -> SendPlatoonWithTransportsNoCheck (start)', true, UvesoOffsetAiutilitiesLUA)
+            bUsedTransports = AIAttackUtils.SendPlatoonWithTransportsNoCheck(aiBrain, unit.PlatoonHandle, destination, needTransports, true, false)
+            --AILog('* AI-Uveso: EngineerMoveWithSafePath(): unit ['..repr(unit.EntityId)..'] SendPlatoonWithTransportsNoCheck (end)', true, UvesoOffsetAiutilitiesLUA)
+        else
+            --AILog('* AI-Uveso: EngineerMoveWithSafePath(): unit ['..repr(unit.EntityId)..'] numOwnTransports = 0, no transporter found', true, UvesoOffsetAiutilitiesLUA)
         end
 
-        bUsedTransports = AIAttackUtils.SendPlatoonWithTransportsNoCheck(aiBrain, unit.PlatoonHandle, destination, needTransports, true, false)
-
         if bUsedTransports then
+            --AIWarn('* AI-Uveso: EngineerMoveWithSafePath(): unit ['..repr(unit.EntityId)..'] No path found used transport (bUsedTransports = true)', true, UvesoOffsetAiutilitiesLUA)
             return true
         elseif VDist2Sq(pos[1], pos[3], destination[1], destination[3]) > 262144 then -- 515*515=262144
+            --AIWarn('* AI-Uveso: EngineerMoveWithSafePath(): unit ['..repr(unit.EntityId)..'] No path found trying transports failed (>515*515 FALSE)', true, UvesoOffsetAiutilitiesLUA)
             -- If over 512 and no transports dont try and walk!
             return false
         end
+    else
+        --AILog('* AI-Uveso: EngineerMoveWithSafePath(): unit ['..repr(unit.EntityId)..'] no transport used! reason:('..reason..')', true, UvesoOffsetAiutilitiesLUA)
     end
 
     -- If we're here, we haven't used transports and we can path to the destination
     if result or reason == 'PathOK' then
-        if reason ~= 'PathOK' then
-            path, reason = AIAttackUtils.EngineerGenerateSafePathTo(aiBrain, 'Amphibious', pos, destination)
-        end
+         --AILog('* AI-Uveso: EngineerMoveWithSafePath(): unit ['..repr(unit.EntityId)..'] target is reachable, path found! reason:('..reason..')', true, UvesoOffsetAiutilitiesLUA)
+--        if reason ~= 'PathOK' then
+--            path, reason = AIAttackUtils.EngineerGenerateSafePathTo(aiBrain, 'Amphibious', pos, destination)
+--        end
         if path then
-            local pathSize = table.getn(path)
+            --AIWarn('* AI-Uveso: EngineerMoveWithSafePath(): unit ['..repr(unit.EntityId)..'] target is reachable, path found! moving waypoints, returning TRUE', true, UvesoOffsetAiutilitiesLUA)
             -- Move to way points (but not to destination... leave that for the final command)
             for widx, waypointPath in path do
                 IssueMove({unit}, waypointPath)
             end
             --IssueMove({unit}, destination)
         else
+            --AIWarn('* AI-Uveso: EngineerMoveWithSafePath(): unit ['..repr(unit.EntityId)..'] target is reachable, CanPathTo found! moving direct, returning TRUE', true, UvesoOffsetAiutilitiesLUA)
             IssueMove({unit}, destination)
         end
         return true
     end
+    --AIWarn('* AI-Uveso: EngineerMoveWithSafePath(): unit ['..repr(unit.EntityId)..'] target is not reachable, cancel MoveWithSafePath, returning FALSE', true, UvesoOffsetAiutilitiesLUA)
     return false
 end
 
@@ -210,7 +227,7 @@ function AIFindNearestCategoryTargetInRange(aiBrain, platoon, squad, position, m
     local PlatoonStrength = 0
     local unitCat
     for _, unit in platoon:GetPlatoonUnits() do
-        unitCat = __blueprints[unit.UnitId].CategoriesHash
+        unitCat = unit.Blueprint.CategoriesHash
         if unitCat.TECH1 then
             PlatoonStrength = PlatoonStrength + 1
         elseif unitCat.TECH2 then
@@ -401,7 +418,7 @@ function AIFindNearestCategoryTargetInRangeOLD(aiBrain, platoon, squad, position
     local PlatoonStrength = 0
     local unitCat
     for _, unit in platoon:GetPlatoonUnits() do
-        unitCat = __blueprints[unit.UnitId].CategoriesHash
+        unitCat = unit.Blueprint.CategoriesHash
         if unitCat.TECH1 then
             PlatoonStrength = PlatoonStrength + 1
         elseif unitCat.TECH2 then

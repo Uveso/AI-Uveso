@@ -146,8 +146,8 @@ BuilderGroup {
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             { UCBC, 'CheckBuildPlattonDelay', { 'MobileExperimental' }},
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconIncome', { 7.0, 100.0 }},                    -- Base income
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
+            { EBC, 'GreaterThanEconIncome', { 12.0, 200.0 }},                    -- Base income
             -- When do we want to build this ?
             { MIBC, 'ItsTimeForGameender', {} },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.MOBILE * categories.LAND * categories.EXPERIMENTAL }},

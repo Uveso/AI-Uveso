@@ -171,24 +171,26 @@ function EcoManagerThread(aiBrain)
                     if unit.UnitBeingAssist and EntityCategoryContains( categories.COMMAND, unit.UnitBeingAssist) then
                         continue
                     end
-                    -- If we are rushing, never pause any factory building units
                     if personality == 'uvesorush' then
+                        -- If we are rushing, never pause any factory building units
                         if unit.UnitBeingBuilt and EntityCategoryContains( categories.MOBILE, unit.UnitBeingBuilt ) then
+                            continue
+                        end
+                        -- if we build or upgrade  factories, don't pause it
+                        if unit.UnitBeingBuilt and EntityCategoryContains( categories.FACTORY, unit.UnitBeingBuilt) then
                             continue
                         end
                     end
                     if unit.pausedMass or unit.pausedEnergy then continue end
                     if EntityCategoryContains( (categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO, unit) then
-                        if unit.ProductionEnabled then
-                            -- siloBuildRate is only for debugging, we don't use it inside the code
-                            --local siloBuildRate = unit:GetBuildRate() or 1
-                            time, energy, mass = unit:GetBuildCosts(unit.SiloProjectile)
---                            AILog('* AI-Uveso: ECO Buildcost time '..time..' - mass '..mass..' - energy '..energy..' - siloBuildRate '..siloBuildRate)
-                            energy = (energy / time)
-                            mass = (mass / time)
---                            AILog('* AI-Uveso: ECO Buildcost time '..time..' - mass '..mass..' - energy '..energy..' - siloBuildRate '..siloBuildRate)
-                            unit.ConsumptionPerSecondEnergy = energy
-                        end
+                        -- siloBuildRate is only for debugging, we don't use it inside the code
+                        --local siloBuildRate = unit:GetBuildRate() or 1
+                        time, energy, mass = unit:GetBuildCosts(unit.SiloProjectile)
+--                        AILog('* AI-Uveso: ECO Buildcost time '..time..' - mass '..mass..' - energy '..energy..' - siloBuildRate '..siloBuildRate)
+                        energy = (energy / time)
+                        mass = (mass / time)
+--                        AILog('* AI-Uveso: ECO Buildcost time '..time..' - mass '..mass..' - energy '..energy..' - siloBuildRate '..siloBuildRate)
+                        unit.ConsumptionPerSecondEnergy = energy
                     else
                         unit.ConsumptionPerSecondEnergy = unit:GetConsumptionPerSecondEnergy()
                     end
@@ -219,27 +221,27 @@ function EcoManagerThread(aiBrain)
                         bussy = true
                         energyTrend = energyTrend + maxEnergyConsumption
                         if EntityCategoryContains(categories.FACTORY + (categories.ENGINEER - categories.POD) + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD) + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO), EcoUnits[maxEnergyConsumptionUnitindex]) then
---                            AILog('* AI-Uveso: ECO ['..EcoUnits[maxEnergyConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[maxEnergyConsumptionUnitindex].UnitId].Description)..') unit:SetPaused( true ) Saving ('..maxEnergyConsumption..') energy')
+--                            AILog('* AI-Uveso: ECO ['..EcoUnits[maxEnergyConsumptionUnitindex].UnitId..'] ('..LOC(EcoUnits[maxEnergyConsumptionUnitindex].Blueprint.Description)..') unit:SetPaused( true ) Saving ('..maxEnergyConsumption..') energy')
                             EcoUnits[maxEnergyConsumptionUnitindex]:SetPaused( true )
                             EcoUnits[maxEnergyConsumptionUnitindex].pausedEnergy = true
                             EcoUnits[maxEnergyConsumptionUnitindex].managed = true
                         elseif EntityCategoryContains(categories.RADAR + categories.OMNI + categories.OPTICS + categories.SONAR + categories.COUNTERINTELLIGENCE, EcoUnits[maxEnergyConsumptionUnitindex]) then
---                            AILog('* AI-Uveso: ECO ['..EcoUnits[maxEnergyConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[maxEnergyConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( IntelToggle, true ) Saving ('..maxEnergyConsumption..') energy')
+--                            AILog('* AI-Uveso: ECO ['..EcoUnits[maxEnergyConsumptionUnitindex].UnitId..'] ('..LOC(EcoUnits[maxEnergyConsumptionUnitindex].Blueprint.Description)..') unit:SetScriptBit( IntelToggle, true ) Saving ('..maxEnergyConsumption..') energy')
                             EcoUnits[maxEnergyConsumptionUnitindex]:SetScriptBit('RULEUTC_IntelToggle', true)
                             EcoUnits[maxEnergyConsumptionUnitindex].pausedEnergy = true
                             EcoUnits[maxEnergyConsumptionUnitindex].managed = true
                         elseif EntityCategoryContains(categories.MASSFABRICATION, EcoUnits[maxEnergyConsumptionUnitindex]) then
---                            AILog('* AI-Uveso: ECO ['..EcoUnits[maxEnergyConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[maxEnergyConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( ProductionToggle, true ) Saving ('..maxEnergyConsumption..') energy')
+--                            AILog('* AI-Uveso: ECO ['..EcoUnits[maxEnergyConsumptionUnitindex].UnitId..'] ('..LOC(EcoUnits[maxEnergyConsumptionUnitindex].Blueprint.Description)..') unit:SetScriptBit( ProductionToggle, true ) Saving ('..maxEnergyConsumption..') energy')
                             EcoUnits[maxEnergyConsumptionUnitindex]:SetScriptBit('RULEUTC_ProductionToggle', true)
                             EcoUnits[maxEnergyConsumptionUnitindex].pausedEnergy = true
                             EcoUnits[maxEnergyConsumptionUnitindex].managed = true
                         elseif EntityCategoryContains(categories.OVERLAYCOUNTERINTEL + categories.COUNTERINTELLIGENCE, EcoUnits[maxEnergyConsumptionUnitindex]) then
---                            AILog('* AI-Uveso: ECO ['..EcoUnits[maxEnergyConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[maxEnergyConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( JammingToggle, true ) Saving ('..maxEnergyConsumption..') energy')
+--                            AILog('* AI-Uveso: ECO ['..EcoUnits[maxEnergyConsumptionUnitindex].UnitId..'] ('..LOC(EcoUnits[maxEnergyConsumptionUnitindex].Blueprint.Description)..') unit:SetScriptBit( JammingToggle, true ) Saving ('..maxEnergyConsumption..') energy')
                             EcoUnits[maxEnergyConsumptionUnitindex]:SetScriptBit('RULEUTC_JammingToggle', true)
                             EcoUnits[maxEnergyConsumptionUnitindex].pausedEnergy = true
                             EcoUnits[maxEnergyConsumptionUnitindex].managed = true
                         else
-                            AIWarn('* AI-Uveso: Unit with unknown Category('..LOC(__blueprints[EcoUnits[maxEnergyConsumptionUnitindex].UnitId].Description)..') ['..EcoUnits[maxEnergyConsumptionUnitindex].UnitId..']', true, UvesoOffsetaiarchetypeLUA)
+                            AIWarn('* AI-Uveso: Unit with unknown Category('..LOC(EcoUnits[maxEnergyConsumptionUnitindex].Blueprint.Description)..') ['..EcoUnits[maxEnergyConsumptionUnitindex].UnitId..']', true, UvesoOffsetaiarchetypeLUA)
                         end
                     else
 --                        AIDebug('* AI-Uveso: ECO cant pause any unit. break!')
@@ -277,9 +279,9 @@ function EcoManagerThread(aiBrain)
                     if not unit.pausedEnergy then continue end
                     -- filter units that are not finished
                     if unit:GetFractionComplete() < 1 then continue end
---                    AILog('* AI-Uveso: ECO checking unit ['..index..']  paused:('..repr(unit.pausedMass)..'/'..repr(unit.pausedEnergy)..') '..LOC(__blueprints[unit.UnitId].Description))
+--                    AILog('* AI-Uveso: ECO checking unit ['..index..']  paused:('..repr(unit.pausedMass)..'/'..repr(unit.pausedEnergy)..') '..LOC(unit.Blueprint.Description))
                     if unit.ConsumptionPerSecondEnergy > 0 then
---                        AILog('* AI-Uveso: ECO Adding unit ['..index..'] to table '..LOC(__blueprints[unit.UnitId].Description))
+--                        AILog('* AI-Uveso: ECO Adding unit ['..index..'] to table '..LOC(unit.Blueprint.Description))
                         table.insert(EcoUnits, unit)
                     end
                 end
@@ -307,27 +309,27 @@ function EcoManagerThread(aiBrain)
                         energyTrend = energyTrend - minEnergyConsumption
                         bussy = true
                         if EntityCategoryContains(categories.FACTORY + (categories.ENGINEER - categories.POD) + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO)), EcoUnits[minEnergyConsumptionUnitindex]) then
---                            AILog('* AI-Uveso: ECO ['..EcoUnits[minEnergyConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[minEnergyConsumptionUnitindex].UnitId].Description)..') unit:SetPaused( false ) Consuming ('..minEnergyConsumption..') energy')
+--                            AILog('* AI-Uveso: ECO ['..EcoUnits[minEnergyConsumptionUnitindex].UnitId..'] ('..LOC(EcoUnits[minEnergyConsumptionUnitindex].Blueprint.Description)..') unit:SetPaused( false ) Consuming ('..minEnergyConsumption..') energy')
                             EcoUnits[minEnergyConsumptionUnitindex]:SetPaused( false )
                             EcoUnits[minEnergyConsumptionUnitindex].pausedEnergy = false
                             EcoUnits[minEnergyConsumptionUnitindex].managed = true
                         elseif EntityCategoryContains(categories.RADAR + categories.OMNI + categories.OPTICS + categories.SONAR + categories.COUNTERINTELLIGENCE, EcoUnits[minEnergyConsumptionUnitindex]) then
---                            AILog('* AI-Uveso: ECO ['..EcoUnits[minEnergyConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[minEnergyConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( IntelToggle, false ) Consuming ('..minEnergyConsumption..') energy')
+--                            AILog('* AI-Uveso: ECO ['..EcoUnits[minEnergyConsumptionUnitindex].UnitId..'] ('..LOC(EcoUnits[minEnergyConsumptionUnitindex].Blueprint.Description)..') unit:SetScriptBit( IntelToggle, false ) Consuming ('..minEnergyConsumption..') energy')
                             EcoUnits[minEnergyConsumptionUnitindex]:SetScriptBit('RULEUTC_IntelToggle', false)
                             EcoUnits[minEnergyConsumptionUnitindex].pausedEnergy = false
                             EcoUnits[minEnergyConsumptionUnitindex].managed = true
                         elseif EntityCategoryContains(categories.MASSFABRICATION, EcoUnits[minEnergyConsumptionUnitindex]) then
---                            AILog('* AI-Uveso: ECO ['..EcoUnits[minEnergyConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[minEnergyConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( ProductionToggle, false ) Consuming ('..minEnergyConsumption..') energy')
+--                            AILog('* AI-Uveso: ECO ['..EcoUnits[minEnergyConsumptionUnitindex].UnitId..'] ('..LOC(EcoUnits[minEnergyConsumptionUnitindex].Blueprint.Description)..') unit:SetScriptBit( ProductionToggle, false ) Consuming ('..minEnergyConsumption..') energy')
                             EcoUnits[minEnergyConsumptionUnitindex]:SetScriptBit('RULEUTC_ProductionToggle', false)
                             EcoUnits[minEnergyConsumptionUnitindex].pausedEnergy = false
                             EcoUnits[minEnergyConsumptionUnitindex].managed = true
                         elseif EntityCategoryContains(categories.OVERLAYCOUNTERINTEL + categories.COUNTERINTELLIGENCE, EcoUnits[minEnergyConsumptionUnitindex]) then
---                            AILog('* AI-Uveso: ECO ['..EcoUnits[minEnergyConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[minEnergyConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( JammingToggle, false ) Consuming ('..minEnergyConsumption..') energy')
+--                            AILog('* AI-Uveso: ECO ['..EcoUnits[minEnergyConsumptionUnitindex].UnitId..'] ('..LOC(EcoUnits[minEnergyConsumptionUnitindex].Blueprint.Description)..') unit:SetScriptBit( JammingToggle, false ) Consuming ('..minEnergyConsumption..') energy')
                             EcoUnits[minEnergyConsumptionUnitindex]:SetScriptBit('RULEUTC_JammingToggle', false)
                             EcoUnits[minEnergyConsumptionUnitindex].pausedEnergy = false
                             EcoUnits[minEnergyConsumptionUnitindex].managed = true
                         else
-                            AIWarn('* AI-Uveso: Unit with unknown Category('..LOC(__blueprints[EcoUnits[minEnergyConsumptionUnitindex].UnitId].Description)..') ['..EcoUnits[minEnergyConsumptionUnitindex].UnitId..']', true, UvesoOffsetaiarchetypeLUA)
+                            AIWarn('* AI-Uveso: Unit with unknown Category('..LOC(EcoUnits[minEnergyConsumptionUnitindex].Blueprint.Description)..') ['..EcoUnits[minEnergyConsumptionUnitindex].UnitId..']', true, UvesoOffsetaiarchetypeLUA)
                         end
 --                            EcoUnits[minEnergyConsumptionUnitindex]:OnProductionUnpaused()
 --                            EcoUnits[minEnergyConsumptionUnitindex]:SetActiveConsumptionActive()
@@ -383,15 +385,19 @@ function EcoManagerThread(aiBrain)
                     if unit.UnitBeingAssist and EntityCategoryContains( categories.COMMAND, unit.UnitBeingAssist) then
                         continue
                     end
-                    -- If we are rushing, never pause any factory building units
                     if personality == 'uvesorush' then
+                        -- If we are rushing, never pause any factory building units
                         if unit.UnitBeingBuilt and EntityCategoryContains( categories.MOBILE, unit.UnitBeingBuilt ) then
+                            continue
+                        end
+                        -- if we build or upgrade  factories, don't pause it
+                        if unit.UnitBeingBuilt and EntityCategoryContains( categories.FACTORY, unit.UnitBeingBuilt) then
                             continue
                         end
                     end
                     unit.ConsumptionPerSecondMass = unit:GetConsumptionPerSecondMass()
                     if unit.ConsumptionPerSecondMass > 0 then
---                        AILog('* AI-Uveso: ECO Adding unit ['..index..'] to table '..LOC(__blueprints[unit.UnitId].Description))
+--                        AILog('* AI-Uveso: ECO Adding unit ['..index..'] to table '..LOC(unit.Blueprint.Description))
                         table.insert(EcoUnits, unit)
                     end
                 end
@@ -421,27 +427,27 @@ function EcoManagerThread(aiBrain)
                         bussy = true
                         massTrend = massTrend + maxMassConsumption
                         if EntityCategoryContains(categories.FACTORY + categories.ENGINEER + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO)), EcoUnits[maxMassConsumptionUnitindex]) then
---                            AILog('* AI-Uveso: ECO ['..EcoUnits[maxMassConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[maxMassConsumptionUnitindex].UnitId].Description)..') unit:SetPaused( true ) Saving ('..maxMassConsumption..') mass')
+--                            AILog('* AI-Uveso: ECO ['..EcoUnits[maxMassConsumptionUnitindex].UnitId..'] ('..LOC(EcoUnits[maxMassConsumptionUnitindex].Blueprint.Description)..') unit:SetPaused( true ) Saving ('..maxMassConsumption..') mass')
                             EcoUnits[maxMassConsumptionUnitindex]:SetPaused( true )
                             EcoUnits[maxMassConsumptionUnitindex].pausedMass = true
                             EcoUnits[maxMassConsumptionUnitindex].managed = true
                         elseif EntityCategoryContains(categories.RADAR + categories.OMNI + categories.OPTICS + categories.SONAR + categories.COUNTERINTELLIGENCE, EcoUnits[maxMassConsumptionUnitindex]) then
---                            AILog('* AI-Uveso: ECO ['..EcoUnits[maxMassConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[maxMassConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( IntelToggle, true ) Saving ('..maxMassConsumption..') mass')
+--                            AILog('* AI-Uveso: ECO ['..EcoUnits[maxMassConsumptionUnitindex].UnitId..'] ('..LOC(EcoUnits[maxMassConsumptionUnitindex].Blueprint.Description)..') unit:SetScriptBit( IntelToggle, true ) Saving ('..maxMassConsumption..') mass')
                             EcoUnits[maxMassConsumptionUnitindex]:SetScriptBit('RULEUTC_IntelToggle', true)
                             EcoUnits[maxMassConsumptionUnitindex].pausedMass = true
                             EcoUnits[maxMassConsumptionUnitindex].managed = true
                         elseif EntityCategoryContains(categories.MASSFABRICATION, EcoUnits[maxMassConsumptionUnitindex]) then
---                            AILog('* AI-Uveso: ECO ['..EcoUnits[maxMassConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[maxMassConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( ProductionToggle, true ) Saving ('..maxMassConsumption..') mass')
+--                            AILog('* AI-Uveso: ECO ['..EcoUnits[maxMassConsumptionUnitindex].UnitId..'] ('..LOC(EcoUnits[maxMassConsumptionUnitindex].Blueprint.Description)..') unit:SetScriptBit( ProductionToggle, true ) Saving ('..maxMassConsumption..') mass')
                             EcoUnits[maxMassConsumptionUnitindex]:SetScriptBit('RULEUTC_ProductionToggle', true)
                             EcoUnits[maxMassConsumptionUnitindex].pausedMass = true
                             EcoUnits[maxMassConsumptionUnitindex].managed = true
                         elseif EntityCategoryContains(categories.OVERLAYCOUNTERINTEL + categories.COUNTERINTELLIGENCE, EcoUnits[maxMassConsumptionUnitindex]) then
---                            AILog('* AI-Uveso: ECO ['..EcoUnits[maxMassConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[maxMassConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( JammingToggle, true ) Saving ('..maxMassConsumption..') mass')
+--                            AILog('* AI-Uveso: ECO ['..EcoUnits[maxMassConsumptionUnitindex].UnitId..'] ('..LOC(EcoUnits[maxMassConsumptionUnitindex].Blueprint.Description)..') unit:SetScriptBit( JammingToggle, true ) Saving ('..maxMassConsumption..') mass')
                             EcoUnits[maxMassConsumptionUnitindex]:SetScriptBit('RULEUTC_JammingToggle', true)
                             EcoUnits[maxMassConsumptionUnitindex].pausedMass = true
                             EcoUnits[maxMassConsumptionUnitindex].managed = true
                         else
-                            AIWarn('* AI-Uveso: Unit with unknown Category('..LOC(__blueprints[EcoUnits[maxMassConsumptionUnitindex].UnitId].Description)..') ['..EcoUnits[maxMassConsumptionUnitindex].UnitId..']', true, UvesoOffsetaiarchetypeLUA)
+                            AIWarn('* AI-Uveso: Unit with unknown Category('..LOC(EcoUnits[maxMassConsumptionUnitindex].Blueprint.Description)..') ['..EcoUnits[maxMassConsumptionUnitindex].UnitId..']', true, UvesoOffsetaiarchetypeLUA)
                         end
                     else
 --                        AIDebug('* AI-Uveso: ECO cant pause any unit. break!')
@@ -478,9 +484,9 @@ function EcoManagerThread(aiBrain)
                     if not unit.pausedMass then continue end
                     -- filter units that are not finished
                     if unit:GetFractionComplete() < 1 then continue end
---                    AILog('* AI-Uveso: ECO checking unit ['..index..']  paused:('..repr(unit.pausedMass)..'/'..repr(unit.pausedEnergy)..') '..LOC(__blueprints[unit.UnitId].Description))
+--                    AILog('* AI-Uveso: ECO checking unit ['..index..']  paused:('..repr(unit.pausedMass)..'/'..repr(unit.pausedEnergy)..') '..LOC(unit.Blueprint.Description))
                     if unit.ConsumptionPerSecondMass > 0 then
---                        AILog('* AI-Uveso: ECO Adding unit ['..index..'] to table '..LOC(__blueprints[unit.UnitId].Description))
+--                        AILog('* AI-Uveso: ECO Adding unit ['..index..'] to table '..LOC(unit.Blueprint.Description))
                         table.insert(EcoUnits, unit)
                     end
                 end
@@ -509,27 +515,27 @@ function EcoManagerThread(aiBrain)
                         massTrend = massTrend - minMassConsumption
                         bussy = true
                         if EntityCategoryContains(categories.FACTORY + (categories.ENGINEER - categories.POD) + (categories.ENGINEERSTATION - categories.STATIONASSISTPOD + ((categories.NUKE + categories.TACTICALMISSILEPLATFORM) * categories.SILO)), EcoUnits[minMassConsumptionUnitindex]) then
---                            AILog('* AI-Uveso: ECO ['..EcoUnits[minMassConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[minMassConsumptionUnitindex].UnitId].Description)..') unit:SetPaused( false ) Consuming ('..minMassConsumption..') mass')
+--                            AILog('* AI-Uveso: ECO ['..EcoUnits[minMassConsumptionUnitindex].UnitId..'] ('..LOC(EcoUnits[minMassConsumptionUnitindex].Blueprint.Description)..') unit:SetPaused( false ) Consuming ('..minMassConsumption..') mass')
                             EcoUnits[minMassConsumptionUnitindex]:SetPaused( false )
                             EcoUnits[minMassConsumptionUnitindex].pausedMass = false
                             EcoUnits[minMassConsumptionUnitindex].managed = true
                         elseif EntityCategoryContains(categories.RADAR + categories.OMNI + categories.OPTICS + categories.SONAR + categories.COUNTERINTELLIGENCE, EcoUnits[minMassConsumptionUnitindex]) then
---                            AILog('* AI-Uveso: ECO ['..EcoUnits[minMassConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[minMassConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( IntelToggle, false ) Consuming ('..minMassConsumption..') mass')
+--                            AILog('* AI-Uveso: ECO ['..EcoUnits[minMassConsumptionUnitindex].UnitId..'] ('..LOC(EcoUnits[minMassConsumptionUnitindex].Blueprint.Description)..') unit:SetScriptBit( IntelToggle, false ) Consuming ('..minMassConsumption..') mass')
                             EcoUnits[minMassConsumptionUnitindex]:SetScriptBit('RULEUTC_IntelToggle', false)
                             EcoUnits[minMassConsumptionUnitindex].pausedMass = false
                             EcoUnits[minMassConsumptionUnitindex].managed = true
                         elseif EntityCategoryContains(categories.MASSFABRICATION, EcoUnits[minMassConsumptionUnitindex]) then
---                            AILog('* AI-Uveso: ECO ['..EcoUnits[minMassConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[minMassConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( ProductionToggle, false ) Consuming ('..minMassConsumption..') mass')
+--                            AILog('* AI-Uveso: ECO ['..EcoUnits[minMassConsumptionUnitindex].UnitId..'] ('..LOC(EcoUnits[minMassConsumptionUnitindex].Blueprint.Description)..') unit:SetScriptBit( ProductionToggle, false ) Consuming ('..minMassConsumption..') mass')
                             EcoUnits[minMassConsumptionUnitindex]:SetScriptBit('RULEUTC_ProductionToggle', false)
                             EcoUnits[minMassConsumptionUnitindex].pausedMass = false
                             EcoUnits[minMassConsumptionUnitindex].managed = true
                         elseif EntityCategoryContains(categories.OVERLAYCOUNTERINTEL + categories.COUNTERINTELLIGENCE, EcoUnits[minMassConsumptionUnitindex]) then
---                            AILog('* AI-Uveso: ECO ['..EcoUnits[minMassConsumptionUnitindex].UnitId..'] ('..LOC(__blueprints[EcoUnits[minMassConsumptionUnitindex].UnitId].Description)..') unit:SetScriptBit( JammingToggle, false ) Consuming ('..minMassConsumption..') mass')
+--                            AILog('* AI-Uveso: ECO ['..EcoUnits[minMassConsumptionUnitindex].UnitId..'] ('..LOC(EcoUnits[minMassConsumptionUnitindex].Blueprint.Description)..') unit:SetScriptBit( JammingToggle, false ) Consuming ('..minMassConsumption..') mass')
                             EcoUnits[minMassConsumptionUnitindex]:SetScriptBit('RULEUTC_JammingToggle', false)
                             EcoUnits[minMassConsumptionUnitindex].pausedMass = false
                             EcoUnits[minMassConsumptionUnitindex].managed = true
                         else
-                            AIWarn('* AI-Uveso: Unit with unknown Category('..LOC(__blueprints[EcoUnits[minMassConsumptionUnitindex].UnitId].Description)..') ['..EcoUnits[minMassConsumptionUnitindex].UnitId..']', true, UvesoOffsetaiarchetypeLUA)
+                            AIWarn('* AI-Uveso: Unit with unknown Category('..LOC(EcoUnits[minMassConsumptionUnitindex].Blueprint.Description)..') ['..EcoUnits[minMassConsumptionUnitindex].UnitId..']', true, UvesoOffsetaiarchetypeLUA)
                         end
 --                            EcoUnits[minMassConsumptionUnitindex]:OnProductionUnpaused()
 --                            EcoUnits[minMassConsumptionUnitindex]:SetActiveConsumptionActive()
@@ -589,7 +595,7 @@ function EcoManagerThread(aiBrain)
                     unit.pausedEnergy = false
                     unit.managed = false
                 else
-                    AIWarn('* AI-Uveso: Unit with unknown Category('..LOC(__blueprints[unit.UnitId].Description)..') ['..unit.UnitId..']', true, UvesoOffsetaiarchetypeLUA)
+                    AIWarn('* AI-Uveso: Unit with unknown Category('..LOC(unit.Blueprint.Description)..') ['..unit.UnitId..']', true, UvesoOffsetaiarchetypeLUA)
                     unit:SetPaused( false )
                     unit.pausedMass = false
                     unit.pausedEnergy = false
@@ -950,11 +956,10 @@ function PriorityManagerThread(aiBrain)
     end
     AIDebug('* AI-Uveso: Function PriorityManagerThread() started. ['..aiBrain.Nickname..']', true, UvesoOffsetaiarchetypeLUA)
     local paragons = {}
-    local ParaComplete
+    local paragonComplete
     local EnergyTech1num
     local EnergyTech2num
     local EnergyTech3num
-    local EnergyTech4num
     local LANDSTRUCTURE
     local LANDMOBILE
     local AIRSTRUCTURE
@@ -977,14 +982,14 @@ function PriorityManagerThread(aiBrain)
         coroutine.yield(50)
 
         -- Check for Paragon
-        ParaComplete = 0
+        paragonComplete = 0
         paragons = aiBrain:GetListOfUnits(categories.STRUCTURE * categories.EXPERIMENTAL * categories.ECONOMIC * categories.ENERGYPRODUCTION * categories.MASSPRODUCTION, false, false)
         for unitNum, unit in paragons do
             if unit:GetFractionComplete() >= 1 then
-                ParaComplete = ParaComplete + 1
+                paragonComplete = paragonComplete + 1
             end
         end
-        if ParaComplete >= 1 then
+        if paragonComplete >= 1 then
             aiBrain.PriorityManager.HasParagon = true
         else
             aiBrain.PriorityManager.HasParagon = false
@@ -994,23 +999,22 @@ function PriorityManagerThread(aiBrain)
         EnergyTech1num = aiBrain:GetCurrentUnits(categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH1)
         EnergyTech2num = aiBrain:GetCurrentUnits(categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH2)
         EnergyTech3num = aiBrain:GetCurrentUnits(categories.STRUCTURE * categories.ENERGYPRODUCTION * categories.TECH3)
-        EnergyTech4num = ParaComplete
-        if EnergyTech2num < 1 and EnergyTech3num < 1 and EnergyTech4num < 1 then
+        if EnergyTech2num < 2 and EnergyTech3num < 1 and paragonComplete < 1 then
             aiBrain.PriorityManager.NeedEnergyTech1 = true
         else
             aiBrain.PriorityManager.NeedEnergyTech1 = false
         end
-        if EnergyTech3num < 1 and EnergyTech4num < 1 then
+        if EnergyTech3num < 1 and paragonComplete < 1 then
             aiBrain.PriorityManager.NeedEnergyTech2 = true
         else
             aiBrain.PriorityManager.NeedEnergyTech2 = false
         end
-        if EnergyTech4num < 1 then
+        if paragonComplete < 1 then
             aiBrain.PriorityManager.NeedEnergyTech3 = true
         else
             aiBrain.PriorityManager.NeedEnergyTech3 = false
         end
-        if EnergyTech4num < 3 then
+        if paragonComplete < 3 then
             aiBrain.PriorityManager.NeedEnergyTech4 = true
         else
             aiBrain.PriorityManager.NeedEnergyTech4 = false

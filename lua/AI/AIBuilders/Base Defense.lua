@@ -947,6 +947,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconIncome',  { 4.0, 1000.0}}, -- Absolut Base income 40 10000
+            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { MIBC, 'ItsTimeForGameender', {} },
             -- Do we need additional conditions to build it ?
@@ -982,6 +983,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconIncome',  { 4.0, 1000.0}}, -- Absolut Base income 40 10000
+            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { MIBC, 'ItsTimeForGameender', {} },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ARTILLERY } },
@@ -1017,6 +1019,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconIncome',  { 4.0, 1000.0}}, -- Absolut Base income 40 10000
+            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { MIBC, 'ItsTimeForGameender', {} },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.ARTILLERY } },
@@ -1045,6 +1048,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconIncome',  { 4.0, 1000.0}}, -- Absolut Base income 40 10000
+            { EBC, 'GreaterThanEconStorageRatio', { 0.20, 1.00 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { MIBC, 'ItsTimeForGameender', {} },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.SATELLITE * categories.EXPERIMENTAL } },
