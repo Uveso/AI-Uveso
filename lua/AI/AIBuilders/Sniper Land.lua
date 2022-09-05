@@ -188,7 +188,7 @@ BuilderGroup {
         BuilderConditions = {
             { MIBC, 'FactionIndex', { 2, 4 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             -- Have we the eco to build it ?
-            { EBC, 'GreaterThanEconTrend', { 0.0, 12000.0 } }, -- relative income (wee need 10000 energy for a teleport. x3 SACU's
+            { EBC, 'GreaterThanEconTrend', { 0.0, 9000.0 } }, -- relative income (wee need 10000 energy for a teleport. x3 SACU's
             -- When do we want to build this ?
             { UCBC, 'HaveGreaterThanArmyPoolWithCategory', { 9, categories.SUBCOMMANDER} },
             { UCBC, 'UnitsGreaterAtEnemy', { 1 , categories.STRUCTURE } },

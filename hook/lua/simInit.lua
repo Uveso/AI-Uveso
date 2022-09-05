@@ -103,7 +103,11 @@ local TraceSouthWest = false
 local OldBeginSessionUveso = BeginSession
 function BeginSession()
     OldBeginSessionUveso()
+
     ValidateModFilesUveso()
+    -- import functions for target manager
+    import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').InitAITargetManagerData()
+
     if ScenarioInfo.Options.AIPathingDebug ~= 'off' then
         ForkThread(GraphRenderThread)
     end
@@ -330,7 +334,6 @@ function GraphRenderThread()
     coroutine.yield(100)
     AIDebug('* AI-Uveso: Function GraphRenderThread() started.', true, UvesoOffsetSimInitLUA)
     while true do
-        AILog('* AI-Uveso: Function GraphRenderThread() beat.')
         -- draw all paths with location radius and AI Pathfinding
         if ScenarioInfo.Options.AIPathingDebug == 'pathlocation'
         or ScenarioInfo.Options.AIPathingDebug == 'path'
@@ -789,13 +792,62 @@ function CreateAIMarkers()
     elseif ScenarioInfo.Options.AIMapMarker == 'all' then
         AILog('* AI-Uveso: Generating marker, please wait...', true, UvesoOffsetSimInitLUA)
     end
-
+--[[
     -- import functions for marker generator
     local AIMarkerGenerator = import('/mods/AI-Uveso/lua/AI/AIMarkerGenerator.lua')
+    -- init Generator variables
+    AIMarkerGenerator.InitMarkerGenerator()
     -- build a table with dirty / unpathable terrain
     AIMarkerGenerator.BuildTerrainPathMap()
 
+    -- Set grid size for air
+    AIMarkerGenerator.SetWantedGridSize(32)
+    -- build marker grid for air
+    AIMarkerGenerator.CreateMarkerGrid(false) -- true = with pathing check
+    -- build connections for air
+    AIMarkerGenerator.ConnectMarkerWithoutPathing()
+    -- get marker for air
+    markerTable = AIMarkerGenerator.GetMarkerTable()
 
+    -------------------------------------------------
+    -- convert markerTable to FAF air marker START --
+    CREATEDMARKERS = {}
+    local MarkerGridCountX, MarkerGridCountZ = import('/mods/AI-Uveso/lua/AI/AIMarkerGenerator.lua').MarkerGridCountXZ()
+    for x = 0, MarkerGridCountX - 1 do
+        for z = 0, MarkerGridCountZ - 1 do
+            CREATEDMARKERS['Marker'..x..'-'..z] = {
+                ['position'] = markerTable[x][z].position,
+                ['graph'] = 'DefaultAir',
+            }
+            -- copy adjacent
+            if markerTable[x][z].adjacentTo[1] then
+                for _, adjacent in markerTable[x][z].adjacentTo do
+                    if not CREATEDMARKERS['Marker'..x..'-'..z].adjacentTo then
+                        CREATEDMARKERS['Marker'..x..'-'..z].adjacentTo = 'Marker'..adjacent[1]..'-'..adjacent[2]
+                    else
+                        CREATEDMARKERS['Marker'..x..'-'..z].adjacentTo = CREATEDMARKERS['Marker'..x..'-'..z].adjacentTo..' '..'Marker'..adjacent[1]..'-'..adjacent[2]
+                    end
+                end
+            end
+        end
+    end
+    -- Copy Markers to the Scenario.MasterChain._MASTERCHAIN
+    CopyMarkerToMASTERCHAIN('Air')
+    -- convert markerTable to FAF air marker END --
+    -----------------------------------------------
+
+    -- Set grid size for land/amphibious/hover/water
+    AIMarkerGenerator.SetWantedGridSize(16)
+    -- build marker grid for land/amphibious/hover/water
+    AIMarkerGenerator.CreateMarkerGrid(true) -- true = with pathing check
+    -- build connections for land/amphibious/hover/water
+    --AIMarkerGenerator.ConnectMarkerWithPathing()
+    ForkThread(AIMarkerGenerator.ConnectMarkerWithPathing)
+
+    -- debug; draw the markers on the map
+--    ForkThread(AIMarkerGenerator.MarkerRenderThread)
+
+--]]
     -- Map size like 20x10 and 10x20
     if ScenarioInfo.size[1] > ScenarioInfo.size[2] then
         MarkerCountY = MarkerCountY / 2
@@ -2103,12 +2155,12 @@ function BuildGraphAreas()
 end
 
 function DrawHeatMap()
-    coroutine.yield(10)
+    while GetGameTimeSeconds() < 1 do
+        coroutine.yield(10)
+    end
     local GetHeatMapGridPositionFromIndex = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').GetHeatMapGridPositionFromIndex
     local HeatMapGridSizeX, HeatMapGridSizeZ = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').GetHeatMapGridSizeXZ()
-    local PlayableMapSizeX, PlayableMapSizeZ = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').GetPlayableMapSizeXZ()
-    local mapXGridCount = math.floor( PlayableMapSizeX / HeatMapGridSizeX )
-    local mapYGridCount = math.floor( PlayableMapSizeZ / HeatMapGridSizeZ )
+    local mapXGridCount, mapZGridCount = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').HeatMapGridCountXZ()
     local playableArea = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').GetPlayableArea()
     local px, py, pz = 0,1000,0
     local threatScale = { Land = 1, Air = 1, Water = 1, Amphibious = 1, ecoValue = 1}
@@ -2129,7 +2181,7 @@ function DrawHeatMap()
             end
             -- draw debug
             for x = 0, mapXGridCount - 1 do
-                for z = 0, mapYGridCount - 1 do
+                for z = 0, mapZGridCount - 1 do
                     GridCenterPos = GetHeatMapGridPositionFromIndex(x, z)
                     px = GridCenterPos[1]
                     pz = GridCenterPos[3]
@@ -2271,7 +2323,7 @@ end
 function ValidateModFilesUveso()
     local ModName = 'AI-Uveso'
     local Files = 87
-    local Bytes = 2039936
+    local Bytes = 2061110
     local modlocation = ""
     for i, mod in __active_mods do
         if mod.name == ModName then

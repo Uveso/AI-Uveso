@@ -35,9 +35,7 @@ AIBrain = Class(UvesoAIBrainClass) {
 
     -- For AI Patch V9. remove AI tables and functions on defeat; destroying first Buildmanager then condition manager
     OnDefeat = function(self)
-        self:SetResult("defeat")
-
-        SetArmyOutOfGame(self:GetArmyIndex())
+        self.Status = 'Defeat'
 
         import('/lua/SimUtils.lua').UpdateUnitCap(self:GetArmyIndex())
         import('/lua/SimPing.lua').OnArmyDefeat(self:GetArmyIndex())
@@ -45,21 +43,19 @@ AIBrain = Class(UvesoAIBrainClass) {
         local function KillArmy()
             local shareOption = ScenarioInfo.Options.Share
 
-            if shareOption == 'ShareUntilDeath' then
+            local function KillWalls()
                 -- Kill all walls while the ACU is blowing up
                 local tokill = self:GetListOfUnits(categories.WALL, false)
-                if tokill and table.getn(tokill) > 0 then
+                if tokill and not table.empty(tokill) then
                     for index, unit in tokill do
                         unit:Kill()
                     end
                 end
             end
 
-            WaitSeconds(10) -- Wait for commander explosion, then transfer units.
-            local selfIndex = self:GetArmyIndex()
-            local shareOption = ScenarioInfo.Options.Share
-            local victoryOption = ScenarioInfo.Options.Victory
-            local BrainCategories = {Enemies = {}, Civilians = {}, Allies = {}}
+            if shareOption == 'ShareUntilDeath' then
+                ForkThread(KillWalls)
+            end
 
             -- AI Start
 
@@ -106,6 +102,12 @@ AIBrain = Class(UvesoAIBrainClass) {
 
             -- AI End
 
+            WaitSeconds(10) -- Wait for commander explosion, then transfer units.
+            local selfIndex = self:GetArmyIndex()
+            local shareOption = ScenarioInfo.Options.Share
+            local victoryOption = ScenarioInfo.Options.Victory
+            local BrainCategories = {Enemies = {}, Civilians = {}, Allies = {}}
+
             -- Used to have units which were transferred to allies noted permanently as belonging to the new player
             local function TransferOwnershipOfBorrowedUnits(brains)
                 for index, brain in brains do
@@ -135,17 +137,33 @@ AIBrain = Class(UvesoAIBrainClass) {
                     for k, brain in brains do
                         local units = self:GetListOfUnits(categories.ALLUNITS - categories.WALL - categories.COMMAND, false)
                         if units and not table.empty(units) then
-                            TransferUnitsOwnership(units, brain.index)
+                            local givenUnitCount = table.getn(TransferUnitsOwnership(units, brain.index))
+
+                            -- only show message when we actually gift that player some units
+                            if givenUnitCount > 0 then 
+                                Sync.ArmyTransfer = { { from = selfIndex, to = brain.index, reason = "fullshare" } }
+                            end
+
                             WaitSeconds(1)
                         end
                     end
                 end
             end
 
-            -- Sort the destiniation armies by score
+            -- Sort the destiniation brains (armies/players) by rating (and if rating does not exist (such as with regular AI's), by score, after players with positive rating)
             local function TransferUnitsToHighestBrain(brains)
                 if not table.empty(brains) then
-                    table.sort(brains, function(a, b) return a.score > b.score end)
+                    local ratings = ScenarioInfo.Options.Ratings
+                    for i, brain in brains do 
+                        if ratings[brain.Nickname] then
+                            brain.rating = ratings[brain.Nickname]
+                        else 
+                            -- if there is no rating, create a fake negative rating based on score
+                            brain.rating = - (1 / brain.score)
+                        end
+                    end
+                    -- sort brains by rating
+                    table.sort(brains, function(a, b) return a.rating > b.rating end)
                     TransferUnitsToBrain(brains)
                 end
             end
@@ -239,7 +257,7 @@ AIBrain = Class(UvesoAIBrainClass) {
                 elseif shareOption == 'Defectors' then
                     TransferUnitsToHighestBrain(BrainCategories.Enemies)
                 else -- Something went wrong in settings. Act like share until death to avoid abuse
-                    AIWarn('Invalid share condition was used for this game. Defaulting to killing all units')
+                    WARN('Invalid share condition was used for this game. Defaulting to killing all units')
                     KillSharedUnits(self:GetArmyIndex()) -- Kill things I gave away
                     ReturnBorrowedUnits() -- Give back things I was given by other
                 end
@@ -252,65 +270,63 @@ AIBrain = Class(UvesoAIBrainClass) {
                     unit:Kill()
                 end
             end
-
-            -- AI Start
-
-            if self.BrainType == 'AI' then
-                coroutine.yield(3)
-                -- removing AI BuilderManagers
-                if self.BuilderManagers then
-                    for k, v in self.BuilderManagers do
-                        v.EngineerManager:Destroy()
-                        v.FactoryManager:Destroy()
-                        v.PlatoonFormManager:Destroy()
-                        if v.StrategyManager then
-                            v.StrategyManager:Destroy()
-                        end
-                        self.BuilderManagers[k].EngineerManager = nil
-                        self.BuilderManagers[k].FactoryManager = nil
-                        self.BuilderManagers[k].PlatoonFormManager = nil
-                        self.BuilderManagers[k].BaseSettings = nil
-                        self.BuilderManagers[k].BuilderHandles = nil
-                    end
-                end
-                coroutine.yield(3)
-                -- removing AI BrainConditionsMonitor
-                if self.ConditionsMonitor then
-                    self.ConditionsMonitor:Destroy()
-                end
-                -- delete the AI pathcache
-                self.PathCache = {}
-                -- remove EconState tabes
-                self.EconMassStorageState = {}
-                self.EconEnergyStorageState = {}
-                self.EconStorageTrigs = {}
-                -- remove remaining tables
-                self.BuilderManagers = {}
-                self.CurrentPlan = {}
-                self.PlatoonNameCounter = {}
-                self.BaseTemplates = {}
-                self.IntelData = {}
-                self.UnitBuiltTriggerList = {}
-                self.FactoryAssistList = {}
-                self.DelayEqualBuildPlattons = {}
-                self.AIPlansList = {}
-                self.IntelTriggerList = {}
-                self.VeterancyTriggerList = {}
-                self.PingCallbackList = {}
-                self.UnitBuiltTriggerList = {}
-                self.VOTable = {}
-            end
-
-            -- AI End
-
-            if self.Trash then
-                self.Trash:Destroy()
-            end
         end
 
-        -- the whole KillThread is forked here, so we can continue the game while removing/transfering the dead army
+        -- AI Start
+
+        if self.BrainType == 'AI' then
+            coroutine.yield(3)
+            -- removing AI BuilderManagers
+            if self.BuilderManagers then
+                for k, v in self.BuilderManagers do
+                    v.EngineerManager:Destroy()
+                    v.FactoryManager:Destroy()
+                    v.PlatoonFormManager:Destroy()
+                    if v.StrategyManager then
+                        v.StrategyManager:Destroy()
+                    end
+                    self.BuilderManagers[k].EngineerManager = nil
+                    self.BuilderManagers[k].FactoryManager = nil
+                    self.BuilderManagers[k].PlatoonFormManager = nil
+                    self.BuilderManagers[k].BaseSettings = nil
+                    self.BuilderManagers[k].BuilderHandles = nil
+                end
+            end
+            coroutine.yield(3)
+            -- removing AI BrainConditionsMonitor
+            if self.ConditionsMonitor then
+                self.ConditionsMonitor:Destroy()
+            end
+            -- delete the AI pathcache
+            self.PathCache = {}
+            -- remove EconState tabes
+            self.EconMassStorageState = {}
+            self.EconEnergyStorageState = {}
+            self.EconStorageTrigs = {}
+            -- remove remaining tables
+            self.BuilderManagers = {}
+            self.CurrentPlan = {}
+            self.PlatoonNameCounter = {}
+            self.BaseTemplates = {}
+            self.IntelData = {}
+            self.UnitBuiltTriggerList = {}
+            self.FactoryAssistList = {}
+            self.DelayEqualBuildPlattons = {}
+            self.AIPlansList = {}
+            self.IntelTriggerList = {}
+            self.VeterancyTriggerList = {}
+            self.PingCallbackList = {}
+            self.UnitBuiltTriggerList = {}
+            self.VOTable = {}
+        end
+
+        -- AI End
+
         ForkThread(KillArmy)
 
+        if self.Trash then
+            self.Trash:Destroy()
+        end
     end,
 
     -- Hook AI-Uveso, set self.Uveso = true

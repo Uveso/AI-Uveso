@@ -52,6 +52,7 @@ end
 
 function CreateHeatMap(basePosition)
     local map = {}
+    local GridCenterPos
     for x = 0, HeatMapGridCountX - 1 do
         map[x] = {}
         for z = 0, HeatMapGridCountZ - 1 do
@@ -76,9 +77,8 @@ function CreateHeatMap(basePosition)
             map[x][z].threatRing["Amphibious"] = 0
             -- ony calculate when base location is present (first time)
             if basePosition then
-                posX = x * HeatMapGridSizeX + HeatMapGridSizeX / 2
-                posZ = z * HeatMapGridSizeZ + HeatMapGridSizeZ / 2
-                map[x][z].distantToOwnBase = VDist2(basePosition[1], basePosition[3], posX, posZ)
+                GridCenterPos = GetHeatMapGridPositionFromIndex(x, z)
+                map[x][z].distantToOwnBase = VDist2(basePosition[1], basePosition[3], GridCenterPos[1], GridCenterPos[3])
             end
         end
     end
@@ -95,6 +95,10 @@ end
 
 function GetPlayableMapSizeXZ()
     return PlayableMapSizeX, PlayableMapSizeZ
+end
+
+function HeatMapGridCountXZ()
+    return HeatMapGridCountX, HeatMapGridCountZ
 end
 
 function GetPlayableArea()
@@ -749,6 +753,9 @@ function SortTableForNuke(nukeTargets)
 end
 
 function GetDangerZoneRadii(bool)
+    if not playableArea then
+        playableArea = {0, 0, ScenarioInfo.size[1], ScenarioInfo.size[2]}
+    end
     -- Military zone is the half the map size (10x10map) or maximal 250.
     local BaseMilitaryZone = math.max( playableArea[3], playableArea[4] ) / 2
     BaseMilitaryZone = math.min( 250, BaseMilitaryZone )
@@ -786,6 +793,6 @@ function GetTargetsFromEcoTable(armyIndex, ecoTable)
 end
 
 -- init HeatMap data
-InitAITargetManagerData()
+--InitAITargetManagerData()
 
 

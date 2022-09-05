@@ -1,3 +1,10 @@
+v105 (06.Sep.2022)
+
+- Fix: updated AI Fn OnDefeat() to match latest FAF version
+- Opt: decreased energy need for 9 unit SACU teleport platoon from 120000 to 90000
+- DEV: Fn GetDangerZoneRadii() will use ScenarioInfo.size in case playableArea is not present
+
+*************************************************************************************************************************************
 v104 (01.Aug.2022)
 
 - Fix: naval expansion builder checks now for map water ration > 20%
