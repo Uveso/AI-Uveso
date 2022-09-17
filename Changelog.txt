@@ -1,3 +1,13 @@
+v106 (18.Sep.2022)
+
+- New: completely new marker generator - every movement layer is now created independently
+- New: added movement layer for hover units (was using amphibious layer before).
+- Fix: fixed a bug that could cause the nuke function to error out after a launcher died
+- Opt: minor improvement in EconomyBuildConditions calculation speed
+- DEV: Fn OnDefeat() now first checks for the existence of a manager before trying to delete it
+- DEV: changed check for defeat to aiBrain.Status ~= "Defeat"
+
+*************************************************************************************************************************************
 v105 (06.Sep.2022)
 
 - Fix: updated AI Fn OnDefeat() to match latest FAF version

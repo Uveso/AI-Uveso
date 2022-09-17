@@ -33,7 +33,7 @@ AIBrain = Class(UvesoAIBrainClass) {
         self.NumBases = self.NumBases + 1
     end,
 
-    -- For AI Patch V9. remove AI tables and functions on defeat; destroying first Buildmanager then condition manager
+    -- For AI Patch V9. remove AI tables, functions and platoons on defeat
     OnDefeat = function(self)
         self.Status = 'Defeat'
 
@@ -64,6 +64,11 @@ AIBrain = Class(UvesoAIBrainClass) {
                 SUtils.AISendChat('enemies', ArmyBrains[self:GetArmyIndex()].Nickname, 'ilost')
                 -- Stop the AI from executing AI plans
                 self.RepeatExecution = false
+                -- kill AI BrainConditionMonitorThread
+                if self.ConditionsMonitor.ConditionMonitor then
+                    KillThread(self.ConditionsMonitor.ConditionMonitor)
+                end
+                coroutine.yield(3)
                 -- remove PlatoonHandle from all AI units before we kill / transfer the army
                 local units = self:GetListOfUnits(categories.ALLUNITS - categories.WALL, false)
                 if units and table.getn(units) > 0 then
@@ -74,22 +79,22 @@ AIBrain = Class(UvesoAIBrainClass) {
                                 unit.PlatoonHandle:PlatoonDisbandNoAssign()
                             end
                             IssueStop({unit})
-                            IssueClearCommands({unit})
                         end
                     end
-                end
-                coroutine.yield(3)
-                -- removing AI BrainConditionMonitorThread
-                if self.ConditionsMonitor.ConditionMonitor then
-                    KillThread(self.ConditionsMonitor.ConditionMonitor)
                 end
                 coroutine.yield(3)
                 -- stop AI BuilderManagers
                 if self.BuilderManagers then
                     for k, v in self.BuilderManagers do
-                        v.EngineerManager:SetEnabled(false)
-                        v.FactoryManager:SetEnabled(false)
-                        v.PlatoonFormManager:SetEnabled(false)
+                        if v.EngineerManager then
+                            v.EngineerManager:SetEnabled(false)
+                        end
+                        if v.FactoryManager then
+                            v.FactoryManager:SetEnabled(false)
+                        end
+                        if v.PlatoonFormManager then
+                            v.PlatoonFormManager:SetEnabled(false)
+                        end
                         if v.StrategyManager then
                             v.StrategyManager:SetEnabled(false)
                         end
@@ -270,63 +275,71 @@ AIBrain = Class(UvesoAIBrainClass) {
                     unit:Kill()
                 end
             end
-        end
 
-        -- AI Start
+            -- AI Start
 
-        if self.BrainType == 'AI' then
-            coroutine.yield(3)
-            -- removing AI BuilderManagers
-            if self.BuilderManagers then
-                for k, v in self.BuilderManagers do
-                    v.EngineerManager:Destroy()
-                    v.FactoryManager:Destroy()
-                    v.PlatoonFormManager:Destroy()
-                    if v.StrategyManager then
-                        v.StrategyManager:Destroy()
+            if self.BrainType == 'AI' then
+                coroutine.yield(3)
+                -- removing AI BuilderManagers
+                if self.BuilderManagers then
+                    for k, v in self.BuilderManagers do
+                        if v.EngineerManager then
+                            v.EngineerManager:Destroy()
+                        end
+                        if v.FactoryManager then
+                            v.FactoryManager:Destroy()
+                        end
+                        if v.PlatoonFormManager then
+                            v.PlatoonFormManager:Destroy()
+                        end
+                        if v.StrategyManager then
+                            v.StrategyManager:Destroy()
+                        end
+                        self.BuilderManagers[k].EngineerManager = nil
+                        self.BuilderManagers[k].FactoryManager = nil
+                        self.BuilderManagers[k].PlatoonFormManager = nil
+                        self.BuilderManagers[k].BaseSettings = nil
+                        self.BuilderManagers[k].BuilderHandles = nil
                     end
-                    self.BuilderManagers[k].EngineerManager = nil
-                    self.BuilderManagers[k].FactoryManager = nil
-                    self.BuilderManagers[k].PlatoonFormManager = nil
-                    self.BuilderManagers[k].BaseSettings = nil
-                    self.BuilderManagers[k].BuilderHandles = nil
                 end
+                coroutine.yield(3)
+                -- removing AI BrainConditionsMonitor
+                if self.ConditionsMonitor then
+                    self.ConditionsMonitor:Destroy()
+                end
+                -- delete the AI pathcache
+                self.PathCache = {}
+                -- remove EconState tabes
+                self.EconMassStorageState = {}
+                self.EconEnergyStorageState = {}
+                self.EconStorageTrigs = {}
+                -- remove remaining tables
+                self.BuilderManagers = {}
+                self.CurrentPlan = {}
+                self.PlatoonNameCounter = {}
+                self.BaseTemplates = {}
+                self.IntelData = {}
+                self.UnitBuiltTriggerList = {}
+                self.FactoryAssistList = {}
+                self.DelayEqualBuildPlattons = {}
+                self.AIPlansList = {}
+                self.IntelTriggerList = {}
+                self.VeterancyTriggerList = {}
+                self.PingCallbackList = {}
+                self.UnitBuiltTriggerList = {}
+                self.VOTable = {}
             end
-            coroutine.yield(3)
-            -- removing AI BrainConditionsMonitor
-            if self.ConditionsMonitor then
-                self.ConditionsMonitor:Destroy()
+
+            -- AI End
+            
+            if self.Trash then
+                self.Trash:Destroy()
             end
-            -- delete the AI pathcache
-            self.PathCache = {}
-            -- remove EconState tabes
-            self.EconMassStorageState = {}
-            self.EconEnergyStorageState = {}
-            self.EconStorageTrigs = {}
-            -- remove remaining tables
-            self.BuilderManagers = {}
-            self.CurrentPlan = {}
-            self.PlatoonNameCounter = {}
-            self.BaseTemplates = {}
-            self.IntelData = {}
-            self.UnitBuiltTriggerList = {}
-            self.FactoryAssistList = {}
-            self.DelayEqualBuildPlattons = {}
-            self.AIPlansList = {}
-            self.IntelTriggerList = {}
-            self.VeterancyTriggerList = {}
-            self.PingCallbackList = {}
-            self.UnitBuiltTriggerList = {}
-            self.VOTable = {}
         end
 
-        -- AI End
 
         ForkThread(KillArmy)
 
-        if self.Trash then
-            self.Trash:Destroy()
-        end
     end,
 
     -- Hook AI-Uveso, set self.Uveso = true

@@ -114,7 +114,7 @@ function EcoManagerThread(aiBrain)
             Buff.ApplyBuff(unit, 'CheatBuildRate')
         end
     end
-    while aiBrain.Result ~= "defeat" do
+    while aiBrain.Status ~= "Defeat" do
         while not aiBrain:IsOpponentAIRunning() do
             coroutine.yield(10)
         end
@@ -611,7 +611,7 @@ end
 function AIPLatoonNameDebugThread(aiBrain)
     local Plan
     local Builder
-    while aiBrain.Result ~= "defeat" do
+    while aiBrain.Status ~= "Defeat" do
         coroutine.yield(50)
         ArmyUnits = aiBrain:GetListOfUnits(categories.MOBILE - categories.MOBILESONAR, false, false) -- also gets unbuilded units (planed to build)
         for _, unit in ArmyUnits do
@@ -649,7 +649,7 @@ function LocationRangeManagerThread(aiBrain)
     local Plan, WeAreInRange, nearestbase
     local Builder, UnitPos, NeedNavalBase, MaxCap
 
-    while aiBrain.Result ~= "defeat" do
+    while aiBrain.Status ~= "Defeat" do
         while not aiBrain:IsOpponentAIRunning() do
             coroutine.yield(10)
         end
@@ -975,7 +975,7 @@ function PriorityManagerThread(aiBrain)
     local NavalFactoryTech1
     local NavalFactoryTech2
     local NavalFactoryTech3
-    while aiBrain.Result ~= "defeat" do
+    while aiBrain.Status ~= "Defeat" do
         while not aiBrain:IsOpponentAIRunning() do
             coroutine.yield(10)
         end

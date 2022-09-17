@@ -49,8 +49,7 @@ end
 
 --            { UCBC, 'LessThanMassTrend', { 50.0 } },
 function LessThanMassTrend(aiBrain, mTrend)
-    local econ = AIUtils.AIGetEconomyNumbers(aiBrain)
-    if econ.MassTrend < mTrend then
+    if GetEconomyTrend(aiBrain, 'MASS') < mTrend then
         return true
     else
         return false
@@ -59,8 +58,7 @@ end
 
 --            { UCBC, 'LessThanEnergyTrend', { 50.0 } },
 function LessThanEnergyTrend(aiBrain, eTrend)
-    local econ = AIUtils.AIGetEconomyNumbers(aiBrain)
-    if econ.EnergyTrend < eTrend then
+    if GetEconomyTrend(aiBrain, 'ENERGY') < eTrend then
         return true
     else
         return false
@@ -69,7 +67,5 @@ end
 
 --            { UCBC, 'EnergyToMassRatioIncome', { 10.0, '>=',true } },  -- True if we have 10 times more Energy then Mass income ( 100 >= 10 = true )
 function EnergyToMassRatioIncome(aiBrain, ratio, compareType)
-    local econ = AIUtils.AIGetEconomyNumbers(aiBrain)
-    --AILog(aiBrain:GetArmyIndex()..' CompareBody {World} ( E:'..(econ.EnergyIncome*10)..' '..compareType..' M:'..(econ.MassIncome*10)..' ) -- R['..ratio..'] -- return '..repr(CompareBody(econ.EnergyIncome / econ.MassIncome, ratio, compareType)))
-    return CompareBody(econ.EnergyIncome / econ.MassIncome, ratio, compareType)
+    return CompareBody(GetEconomyIncome(aiBrain,'ENERGY') / GetEconomyIncome(aiBrain,'MASS'), ratio, compareType)
 end

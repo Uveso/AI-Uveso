@@ -1,10 +1,11 @@
 
 -- HeatMap
 
+-- ToDo: Take the weapon range in to account and remove the spreaded threat
 local TARGETDEBUG = false
 local HEATMAPDEBUG = false
 
-local WantedGridSize = 16
+local WantedGridCellSize = 16
 local HeatMap = {}
 local TempMap = {}
 local playableArea
@@ -19,8 +20,8 @@ function InitAITargetManagerData()
     playableArea = GetPlayableArea()
     PlayableMapSizeX = playableArea[3] - playableArea[1]
     PlayableMapSizeZ = playableArea[4] - playableArea[2]
-    HeatMapGridCountX = math.floor(PlayableMapSizeX / WantedGridSize)
-    HeatMapGridCountZ = math.floor(PlayableMapSizeZ / WantedGridSize)
+    HeatMapGridCountX = math.floor(PlayableMapSizeX / WantedGridCellSize)
+    HeatMapGridCountZ = math.floor(PlayableMapSizeZ / WantedGridCellSize)
     HeatMapGridSizeX = PlayableMapSizeX / HeatMapGridCountX
     HeatMapGridSizeZ = PlayableMapSizeZ / HeatMapGridCountZ
 end

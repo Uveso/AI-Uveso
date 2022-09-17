@@ -2,7 +2,117 @@ local UvesoOffsetaiattackutilitiesLUA = debug.getinfo(1).currentline - 1
 SPEW('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..UvesoOffsetaiattackutilitiesLUA..'] * AI-Uveso: offset aiattackutilities.lua' )
 --2360
 
---hook to inject own pathfinding function
+
+-- hook for new hover movement layer
+UvesoGetThreatOfUnitsFunction = GetThreatOfUnits
+function GetThreatOfUnits(platoon)
+    -- Only use this with AI-Uveso
+    if not platoon:GetBrain().Uveso then
+        return UvesoGetThreatOfUnitsFunction(platoon)
+    end
+    local totalThreat = 0
+    local bpThreat = 0
+
+    --get the layer this platoon acts on for attack weight calculation
+    GetMostRestrictiveLayer(platoon)
+
+    local units = platoon:GetPlatoonUnits()
+    for _,u in units do
+        if not u.Dead then
+            if platoon.MovementLayer == 'Land' then
+                bpThreat = u:GetBlueprint().Defense.SurfaceThreatLevel
+            elseif platoon.MovementLayer == 'Water' then
+                bpThreat = u:GetBlueprint().Defense.SurfaceThreatLevel
+            elseif platoon.MovementLayer == 'Amphibious' or platoon.MovementLayer == 'Hover' then
+                bpThreat = u:GetBlueprint().Defense.SurfaceThreatLevel
+            elseif platoon.MovementLayer == 'Air' then
+                bpThreat = u:GetBlueprint().Defense.SurfaceThreatLevel
+                if u:GetBlueprint().Defense.AirThreatLevel then
+                    bpThreat = bpThreat + u:GetBlueprint().Defense.AirThreatLevel
+                end
+            end
+        end
+        totalThreat = totalThreat + bpThreat
+    end
+
+    return totalThreat
+end
+-- hook for new hover movement layer
+UvesoGetMostRestrictiveLayerFunction = GetMostRestrictiveLayer
+function GetMostRestrictiveLayer(platoon)
+    -- Only use this with AI-Uveso
+    if not platoon:GetBrain().Uveso then
+        return UvesoGetMostRestrictiveLayerFunction(platoon)
+    end
+    -- in case the platoon is already destroyed return false.
+    if not platoon then
+        return false
+    end
+    local unit = false
+    local layer = false
+    for k,v in platoon:GetPlatoonUnits() do
+        if not v.Dead then
+            local mType = v:GetBlueprint().Physics.MotionType
+            -- only set air if no other layer is set
+            if mType == 'RULEUMT_Air' and not layer then
+                layer = 'Air' -- air can move on all layers
+                unit = v
+            -- set layer to land will stop the search
+            elseif (mType == 'RULEUMT_Biped' or mType == 'RULEUMT_Land') then
+                layer = 'Land'
+                unit = v
+                break
+            -- set layer to water will stop the search
+            elseif (mType == 'RULEUMT_Water' or mType == 'RULEUMT_SurfacingSub') then
+                layer = 'Water'
+                unit = v
+                break
+            -- only set to hover layer if we don't have already set amphibious layer
+            elseif (mType == 'RULEUMT_AmphibiousFloating' or mType == 'RULEUMT_Hover') and layer ~= 'Amphibious' then
+                layer = 'Hover' -- hover can use amphibious and land layer too
+                unit = v
+            elseif mType == 'RULEUMT_Amphibious' then
+                layer = 'Amphibious' -- amphibious can use land layer too
+                unit = v
+            end
+
+        end
+    end
+    platoon.MovementLayer = layer or 'Air'
+    return unit
+end
+-- destructive hook for new hover movement layer
+function GetPathGraphs()
+    if ScenarioInfo.PathGraphs then
+        return ScenarioInfo.PathGraphs
+    else
+        ScenarioInfo.PathGraphs = {}
+    end
+
+    local markerGroups = {
+        Land = AIUtils.AIGetMarkerLocationsEx(nil, 'Land Path Node') or {},
+        Water = AIUtils.AIGetMarkerLocationsEx(nil, 'Water Path Node') or {},
+        Air = AIUtils.AIGetMarkerLocationsEx(nil, 'Air Path Node') or {},
+        Amphibious = AIUtils.AIGetMarkerLocationsEx(nil, 'Amphibious Path Node') or {},
+        Hover = AIUtils.AIGetMarkerLocationsEx(nil, 'Hover Path Node') or {},
+    }
+
+    for gk, markerGroup in markerGroups do
+        for mk, marker in markerGroup do
+            --Create stuff if it doesn't exist
+            ScenarioInfo.PathGraphs[gk] = ScenarioInfo.PathGraphs[gk] or {}
+            ScenarioInfo.PathGraphs[gk][marker.graph] = ScenarioInfo.PathGraphs[gk][marker.graph] or {}
+            --Add the marker to the graph.
+            ScenarioInfo.PathGraphs[gk][marker.graph][marker.name] = {name = marker.name, layer = gk, graphName = marker.graph, position = marker.position, adjacent = STR_GetTokens(marker.adjacentTo, ' '), color = marker.color}
+        end
+    end
+
+    return ScenarioInfo.PathGraphs or {}
+end
+
+
+
+--AI-Uveso hook to inject own pathfinding function
 UvesoPlatoonGenerateSafePathToFunction = PlatoonGenerateSafePathTo
 function PlatoonGenerateSafePathTo(aiBrain, platoonLayer, startPos, endPos, optThreatWeight, optMaxMarkerDist, testPathDist)
     -- Only use this with AI-Uveso
@@ -167,7 +277,7 @@ function GeneratePathUveso(aiBrain, startNode, endNode, threatType, threatWeight
     local GetThreatFromHeatMap = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').GetThreatFromHeatMap
     -- Now loop over all path's that are stored in queue. If we start, only the startNode is inside the queue
     -- (We are using here the "A*(Star) search algorithm". An extension of "Edsger Dijkstra's" pathfinding algorithm used by "Shakey the Robot" in 1959)
-    while aiBrain.Result ~= "defeat" do
+    while aiBrain.Status ~= "Defeat" do
         -- remove the table (shortest path) from the queue table and store the removed table in curPath
         -- (We remove the path from the queue here because if we don't find a adjacent marker and we
         --  have not reached the destination, then we no longer need this path. It's a dead end.)
@@ -304,7 +414,7 @@ function EngineerGeneratePathUveso(aiBrain, startNode, endNode, threatType, thre
     local GetThreatFromHeatMap = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').GetThreatFromHeatMap
     -- Now loop over all path's that are stored in queue. If we start, only the startNode is inside the queue
     -- (We are using here the "A*(Star) search algorithm". An extension of "Edsger Dijkstra's" pathfinding algorithm used by "Shakey the Robot" in 1959)
-    while aiBrain.Result ~= "defeat" do
+    while aiBrain.Status ~= "Defeat" do
         -- remove the table (shortest path) from the queue table and store the removed table in curPath
         -- (We remove the path from the queue here because if we don't find a adjacent marker and we
         --  have not reached the destination, then we no longer need this path. It's a dead end.)

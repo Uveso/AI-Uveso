@@ -1769,8 +1769,13 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         if not launcher or launcher.Dead then
             return false
         end
-        local aiBrain = self:GetBrain()
+        if not launcher.GetPosition then
+            --AIWarn('* AI-Uveso: * LeadNukeTarget: launcher has no GetPosition() function ?!?', true, UvesoOffsetPlatoonLUA)
+            --AIWarn(repr(launcher), true, UvesoOffsetPlatoonLUA)
+            return false
+        end
         local LauncherPos = launcher:GetPosition()
+        local aiBrain = self:GetBrain()
         local TargetPos
         -- Get target position in 1 second intervals.
         -- This allows us to get speed and direction from the target
