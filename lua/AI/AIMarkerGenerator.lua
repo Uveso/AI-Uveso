@@ -679,49 +679,49 @@ function getFreeMarkerPosition(x, z, movementLayer)
                 or PathMap[xc-1][zc-1].layer == "Water"
             shoreBlocked = cellBlocked and land and water
             if (movementLayer == "Hover" or movementLayer == "Amphibious") and (PathMap[xc][zc].blocked or shoreBlocked or layerrestricted) then
-                PathMap[xc][zc].graphArea = 0
+                PathMap[xc][zc].cellArea = 0
                 if not blocked then
                     blocked = true
                     area = area + 1
                 end
                 --AIWarn("* AI-Uveso:  "..xc.." "..zc.." "..area.." blocked 1 for layer "..movementLayer.." Blocked:"..repr(PathMap[xc][zc].blocked).." Restricted:"..repr(layerrestricted).." Maplayer:"..repr(PathMap[xc][zc].layer), debugPrint)
             elseif movementLayer ~= "Hover" and ((PathMap[xc][zc].blocked and movementLayer ~= "Water") or layerrestricted) then
-                PathMap[xc][zc].graphArea = 0
+                PathMap[xc][zc].cellArea = 0
                 if not blocked then
                     blocked = true
                     area = area + 1
                 end
                 --AIWarn("* AI-Uveso:  "..xc.." "..zc.." "..area.." blocked 2 for layer "..movementLayer.." Blocked:"..repr(PathMap[xc][zc].blocked).." Restricted:"..repr(layerrestricted).." Maplayer:"..repr(PathMap[xc][zc].layer), debugPrint)
             else
-                if zc - 1 >= zcStart and PathMap[xc][zc-1].graphArea and PathMap[xc][zc-1].graphArea > 0 then
+                if zc - 1 >= zcStart and PathMap[xc][zc-1].cellArea and PathMap[xc][zc-1].cellArea > 0 then
                     --AIWarn("* AI-Uveso:  "..xc.." "..zc.." "..area.." UP", debugPrint)
-                    if xc - 1 >= xcStart and PathMap[xc-1][zc].graphArea and PathMap[xc-1][zc].graphArea > 0 then
-                        AreaNeedReplace = PathMap[xc][zc-1].graphArea
-                        PathMap[xc][zc].graphArea = PathMap[xc-1][zc].graphArea
+                    if xc - 1 >= xcStart and PathMap[xc-1][zc].cellArea and PathMap[xc-1][zc].cellArea > 0 then
+                        AreaNeedReplace = PathMap[xc][zc-1].cellArea
+                        PathMap[xc][zc].cellArea = PathMap[xc-1][zc].cellArea
                     else
-                        PathMap[xc][zc].graphArea = PathMap[xc][zc-1].graphArea
+                        PathMap[xc][zc].cellArea = PathMap[xc][zc-1].cellArea
                         AreaNeedReplace = area
                     end
-                    --AIWarn("* AI-Uveso:  "..xc.." "..zc.." "..area.." change "..AreaNeedReplace.." to "..PathMap[xc][zc].graphArea, debugPrint)
-                    if PathMap[xc][zc].graphArea ~= AreaNeedReplace then
+                    --AIWarn("* AI-Uveso:  "..xc.." "..zc.." "..area.." change "..AreaNeedReplace.." to "..PathMap[xc][zc].cellArea, debugPrint)
+                    if PathMap[xc][zc].cellArea ~= AreaNeedReplace then
                         for zm = zcStart, zcEnd do
                             for xm = xcStart, xcEnd do
-                                if PathMap[xm][zm].graphArea == AreaNeedReplace then
-                                    PathMap[xm][zm].graphArea = PathMap[xc][zc].graphArea
+                                if PathMap[xm][zm].cellArea == AreaNeedReplace then
+                                    PathMap[xm][zm].cellArea = PathMap[xc][zc].cellArea
                                 end
                             end
                         end
                     end
-                elseif xc - 1 >= xcStart and PathMap[xc-1][zc].graphArea and PathMap[xc-1][zc].graphArea > 0 then
+                elseif xc - 1 >= xcStart and PathMap[xc-1][zc].cellArea and PathMap[xc-1][zc].cellArea > 0 then
                     --AIWarn("* AI-Uveso:  "..xc.." "..zc.." "..area.." LEFT", debugPrint)
-                    PathMap[xc][zc].graphArea = PathMap[xc-1][zc].graphArea
+                    PathMap[xc][zc].cellArea = PathMap[xc-1][zc].cellArea
                 else
                     if blocked then
                         blocked = false
                     else
                         area = area + 1
                     end
-                    PathMap[xc][zc].graphArea = area
+                    PathMap[xc][zc].cellArea = area
                     --AIWarn("* AI-Uveso:  "..xc.." "..zc.." "..area.." NEW", debugPrint)
                 end
             end
@@ -735,18 +735,18 @@ function getFreeMarkerPosition(x, z, movementLayer)
     for zc = zcStart, zcEnd do
 --        text = ""
         for xc = xcStart, xcEnd do
-            if PathMap[xc][zc].graphArea ~= 0 then
-                if count[PathMap[xc][zc].graphArea] then
-                    count[PathMap[xc][zc].graphArea] = count[PathMap[xc][zc].graphArea] + 1
+            if PathMap[xc][zc].cellArea ~= 0 then
+                if count[PathMap[xc][zc].cellArea] then
+                    count[PathMap[xc][zc].cellArea] = count[PathMap[xc][zc].cellArea] + 1
                 else
-                    count[PathMap[xc][zc].graphArea] = 1
+                    count[PathMap[xc][zc].cellArea] = 1
                 end
-                if count[PathMap[xc][zc].graphArea] > countMax then
-                    countMax = count[PathMap[xc][zc].graphArea]
-                    countMaxGraph = PathMap[xc][zc].graphArea
+                if count[PathMap[xc][zc].cellArea] > countMax then
+                    countMax = count[PathMap[xc][zc].cellArea]
+                    countMaxGraph = PathMap[xc][zc].cellArea
                 end
             end
---            text = text.." "..PathMap[xc][zc].graphArea or "x"
+--            text = text.." "..PathMap[xc][zc].cellArea or "x"
         end
 --        AIWarn(text, debugPrint)
     end
@@ -758,7 +758,7 @@ function getFreeMarkerPosition(x, z, movementLayer)
     if count[1] and not count[2] then
         local returnX = mathfloor(x * MarkerGridSizeX + MarkerGridSizeX/ 2 + playableArea[1])
         local returnZ = mathfloor(z * MarkerGridSizeZ + MarkerGridSizeZ / 2 + playableArea[2])
-        if PathMap[returnX][returnZ].graphArea ~= 0 then
+        if PathMap[returnX][returnZ].cellArea ~= 0 then
             --AIWarn("Short cut count[1] and not count[2] "..repr(count), true)
             return returnX, returnZ
         end
@@ -772,8 +772,8 @@ function getFreeMarkerPosition(x, z, movementLayer)
     local centerX, centerZ, centerCount = 0, 0, 0
     for zc = zcStart, zcEnd do
         for xc = xcStart, xcEnd do
-            --AIWarn("* AI-Uveso:  "..xc.." "..zc.." graphArea:"..repr(PathMap[xc][zc].graphArea), debugPrint)
-            if PathMap[xc][zc].graphArea == countMaxGraph then
+            --AIWarn("* AI-Uveso:  "..xc.." "..zc.." cellArea:"..repr(PathMap[xc][zc].cellArea), debugPrint)
+            if PathMap[xc][zc].cellArea == countMaxGraph then
                 centerX = centerX + xc
                 centerZ = centerZ + zc
                 centerCount = centerCount + 1
@@ -798,10 +798,10 @@ function getFreeMarkerPosition(x, z, movementLayer)
     for zm = mathfloor(centerZ - markerSize / 2), mathceil(centerZ + markerSize / 2) do
 --        text = ""
         for xm = mathfloor(centerX - markerSize / 2), mathceil(centerX + markerSize / 2) do
-            if PathMap[xm][zm].graphArea then
-                if PathMap[xm][zm].graphArea ~= countMaxGraph then
+            if PathMap[xm][zm].cellArea then
+                if PathMap[xm][zm].cellArea ~= countMaxGraph then
                     blocked = blocked + 1
-                    --text = text..PathMap[xm][zm].graphArea
+                    --text = text..PathMap[xm][zm].cellArea
 --                else
 --                    text = text.."+"
                 end
@@ -826,8 +826,8 @@ function getFreeMarkerPosition(x, z, movementLayer)
                 blocked = 0
                 for zm = zc, zc + markerSize - 1 do
                     for xm = xc, xc + markerSize - 1 do
-                        if PathMap[xm][zm].graphArea then
-                            if PathMap[xm][zm].graphArea ~= countMaxGraph then
+                        if PathMap[xm][zm].cellArea then
+                            if PathMap[xm][zm].cellArea ~= countMaxGraph then
                                 blocked = blocked + 1
                             end
                         end
@@ -928,6 +928,7 @@ function BuildGraphAreas(movementLayer)
 end
 
 function CreateNavalExpansions()
+    AIDebug("* AI-Uveso: Function CreateNavalExpansions started.", true)
     local NavalMarkerPositions = {}
     local Blocked
     local markerInfo
@@ -971,13 +972,13 @@ function CreateNavalExpansions()
                     -- check if we have a naval marker close to this area
                     for index, NAVALpostition in NavalMarkerPositions do
                         -- is this marker farther away than 60
-                        if VDist2( markerInfo.position[1], markerInfo.position[3], NAVALpostition[1], NAVALpostition[3]) < 60 then
+                        if VDist2( markerInfo.position[1], markerInfo.position[3], NAVALpostition.x, NAVALpostition.z) < 60 then
                             Blocked = true
                             break
                         end
                     end
                     if not Blocked then
-                        table.insert(NavalMarkerPositions, markerInfo.position)
+                        table.insert(NavalMarkerPositions, {x = markerInfo.position[1], z = markerInfo.position[3], GraphArea = MarkerGrid["Water"][X][Z].GraphArea } )
                     end
                 end
             end
@@ -987,6 +988,7 @@ function CreateNavalExpansions()
 end
 
 function CreateLandExpansions()
+    AIDebug("* AI-Uveso: Function CreateLandExpansions started.", true)
     local MassMarker = {}
     local MexInMarkerRange = {}
     local StartPosition = {}
@@ -1037,23 +1039,23 @@ function CreateLandExpansions()
     for k, v in IndexTable do
         local posCount = 0
         local x = 0
-        local y = 0
+        local z = 0
         if type(v) == 'table' then
             for k2, v2 in v do
                 if type(v2) == 'table' then
                     posCount = posCount + 1
                     x = x + v[k2].Position[1]
-                    y = y + v[k2].Position[3]
+                    z = z + v[k2].Position[3]
                 end
             end
             v.x =  x / posCount
-            v.y =  y / posCount
+            v.z =  z / posCount
         end
     end
     -- make path check from center position to mex spot
     for k, v in IndexTable do
         local x = v.x
-        local z = v.y
+        local z = v.z
         if type(v) == 'table' then
             for k2, v2 in v do
                 if type(v2) == 'table' then
@@ -1073,17 +1075,17 @@ function CreateLandExpansions()
     for k, v in IndexTable do
         local posCount = 0
         local x = 0
-        local y = 0
+        local z = 0
         if type(v) == 'table' then
             for k2, v2 in v do
                 if type(v2) == 'table' then
                     posCount = posCount + 1
                     x = x + v[k2].Position[1]
-                    y = y + v[k2].Position[3]
+                    z = z + v[k2].Position[3]
                 end
             end
             v.x =  x / posCount
-            v.y =  y / posCount
+            v.z =  z / posCount
         end
     end
     -- remove expansion areas that are to close to start or other expansion areas
@@ -1092,31 +1094,32 @@ function CreateLandExpansions()
         local UseThisMarker = true
         -- Search if we are near a start position
         for ks, vs in StartPosition do
-            if VDist2(v.x, v.y, vs.Position[1], vs.Position[3]) < 80 then
+            if VDist2(v.x, v.z, vs.Position[1], vs.Position[3]) < 80 then
                 -- we are to close to a start position, don't use it as expansion
                 UseThisMarker = false
             end
         end
         -- check if we are to close to an expansion
         for ks, vn in NewExpansion do
-            if VDist2(v.x, v.y, vn.x, vn.y) < 60 then
+            if VDist2(v.x, v.z, vn.x, vn.z) < 60 then
                 -- we are to close to another expansion, don't use it
                 UseThisMarker = false
             end
         end
         -- save the expansion position
         if UseThisMarker then
-            table.insert(NewExpansion, {x = v.x, y = v.y, MexInRange = v.mexcount} )
+            table.insert(NewExpansion, {x = v.x, z = v.z, MexInRange = v.mexcount} )
         end
     end
     -- make sure markers are placed on flat area
-    local x, z, posX, posZ
+    local gridX, gridZ, posX, posZ
     for index, expansion in NewExpansion do
-        x,z = GetMarkerGridIndexFromPosition({expansion.x, 0, expansion.y})
-        posX, posZ = getFreeMarkerPosition(x, z, "Land")
+        gridX, gridZ = GetMarkerGridIndexFromPosition({expansion.x, 0, expansion.z})
+        posX, posZ = getFreeMarkerPosition(gridX, gridZ, "Land")
         if posX then
             expansion.x = posX
-            expansion.y = posZ
+            expansion.z = posZ
+            expansion.GraphArea = MarkerGrid["Land"][gridX][gridZ].GraphArea
         else
             NewExpansion[index] = nil
         end

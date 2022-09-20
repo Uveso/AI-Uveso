@@ -1,4 +1,4 @@
-v106 (18.Sep.2022)
+v106 (not public released)
 
 - New: completely new marker generator - every movement layer is now created independently
 - New: added movement layer for hover units (was using amphibious layer before).

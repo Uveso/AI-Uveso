@@ -177,6 +177,7 @@ function UnitDebugThread()
     while true do
         coroutine.yield(10)
         if GetFocusArmy() > 0 then
+            -- using this in multiplayer can cause desyncs!!!
             aiBrain = ArmyBrains[GetFocusArmy()]
             ArmyUnits = aiBrain:GetListOfUnits(categories.MOBILE, false, false) -- also gets unbuilded units (planed to build)
             for _, unit in ArmyUnits do
@@ -766,7 +767,7 @@ function ConvertNavalExpansionsToFAF(NavalMarkerPositions)
         Scenario.MasterChain._MASTERCHAIN_.Markers['Naval Area '..index].orientation = { 0, 0, 0 }
         Scenario.MasterChain._MASTERCHAIN_.Markers['Naval Area '..index].prop = "/env/common/props/markers/M_Expansion_prop.bp"
         Scenario.MasterChain._MASTERCHAIN_.Markers['Naval Area '..index].type = "Naval Area"
-        Scenario.MasterChain._MASTERCHAIN_.Markers['Naval Area '..index].position = NAVALpostition
+        Scenario.MasterChain._MASTERCHAIN_.Markers['Naval Area '..index].position = {NAVALpostition.x, GetTerrainHeight(NAVALpostition.x, NAVALpostition.z), NAVALpostition.z}
     end
 end
 
@@ -788,7 +789,7 @@ function ConvertLandExpansionsToFAF(LandMarkerPositions)
             Scenario.MasterChain._MASTERCHAIN_.Markers['Large Expansion Area '..index].orientation = { 0, 0, 0 }
             Scenario.MasterChain._MASTERCHAIN_.Markers['Large Expansion Area '..index].prop = "/env/common/props/markers/M_Expansion_prop.bp"
             Scenario.MasterChain._MASTERCHAIN_.Markers['Large Expansion Area '..index].type = "Large Expansion Area"
-            Scenario.MasterChain._MASTERCHAIN_.Markers['Large Expansion Area '..index].position = {Expansion.x, GetTerrainHeight(Expansion.x, Expansion.y), Expansion.y}
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Large Expansion Area '..index].position = {Expansion.x, GetTerrainHeight(Expansion.x, Expansion.z), Expansion.z}
         -- normal expansions should have 2-3 mexes
         elseif Expansion.MexInRange > 1 then
             -- add data for a normal expansion
@@ -798,7 +799,7 @@ function ConvertLandExpansionsToFAF(LandMarkerPositions)
             Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index].orientation = { 0, 0, 0 }
             Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index].prop = "/env/common/props/markers/M_Expansion_prop.bp"
             Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index].type = "Expansion Area"
-            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index].position = {Expansion.x, GetTerrainHeight(Expansion.x, Expansion.y), Expansion.y}
+            Scenario.MasterChain._MASTERCHAIN_.Markers['Expansion Area '..index].position = {Expansion.x, GetTerrainHeight(Expansion.x, Expansion.z), Expansion.z}
         end
     end
 end
@@ -1157,7 +1158,7 @@ end
 function ValidateModFilesUveso()
     local ModName = 'AI-Uveso'
     local Files = 87
-    local Bytes = 2031896
+    local Bytes = 2032344
     local modlocation = ""
     for i, mod in __active_mods do
         if mod.name == ModName then
