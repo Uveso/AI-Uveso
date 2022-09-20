@@ -230,7 +230,7 @@ end
 
 function GraphRenderThread()
     -- wait 10 seconds at gamestart before we start debuging
-    while GetGameTimeSeconds() < 10 do
+    while GetGameTimeSeconds() < 5 do
         coroutine.yield(10)
     end
     AIDebug('* AI-Uveso: Function GraphRenderThread() started.', true)
@@ -241,8 +241,11 @@ function GraphRenderThread()
         or ScenarioInfo.Options.AIPathingDebug == 'paththreats'
         or ScenarioInfo.Options.AIPathingDebug == 'imapthreats'
         then
-            -- display first all land nodes (true will let them blink)
-            if GetGameTimeSeconds() < 15 then
+            if GetGameTimeSeconds() < 10 then
+                -- only display the expansions
+                DrawPathGraph('NoPathDraw', false)
+            elseif GetGameTimeSeconds() < 15 then
+                -- display first all land nodes (true will let them blink)
                 DrawPathGraph('Amphibious', false)
                 DrawPathGraph('Hover', false)
                 DrawPathGraph('Land', false)
@@ -505,8 +508,8 @@ end
 function CanPathBetweenMarker(x, z, xA, zA, movementLayer, useAbsolutCoords)
     local PathMap = PathMap
     --AIWarn("* AI-Uveso: Function CanPathBetweenMarker() from grid ["..x.."]["..z.."] to adjacent ["..xA.."]["..zA.."].", true)
-    local pos = MarkerGrid[movementLayer][x][z].position
-    local posA = MarkerGrid[movementLayer][xA][zA].position
+    local pos
+    local posA
     -- check if we use marker index or map position
     if not useAbsolutCoords then
         pos = MarkerGrid[movementLayer][x][z].position
@@ -882,7 +885,6 @@ end
 
 function BuildGraphAreas(movementLayer)
     local old
-    local adjancents
     local GraphIndex = 0
     for xc, MarkerGridYrow in MarkerGrid[movementLayer] do
         for zc, markerInfo in MarkerGridYrow or {} do
@@ -993,7 +995,9 @@ function CreateLandExpansions()
     local MexInMarkerRange = {}
     local StartPosition = {}
     local NewExpansion = {}
-    local AlreadyUsed = {}
+    local alreadyUsed = {}
+    local IndexTable = {}
+    local gridX, gridZ, posX, posZ, MexInRange, UseThisMarker, count
     -- get player start positions
     for nodename, markerInfo in Scenario.MasterChain._MASTERCHAIN_.Markers or {} do
         if markerInfo['type'] == 'Blank Marker' then
@@ -1025,85 +1029,105 @@ function CreateLandExpansions()
         end
     end
     -- build table with index and minimum 2 mex spots
-    local IndexTable = {}
-    local count = 0
+    count = 0
     for _, array in MexInMarkerRange do
         if array.mexcount > 1 then
-            IndexTable[count+1] = array
             count = count +1
+            IndexTable[count] = array
         end
     end
     -- sort table by mex count
     table.sort(IndexTable, function(a, b) return a.mexcount > b.mexcount end)
     -- Search for the center location of all mexes inside an expansion for pathing
     for k, v in IndexTable do
-        local posCount = 0
-        local x = 0
-        local z = 0
+        count = 0
+        posX = 0
+        posZ = 0
         if type(v) == 'table' then
             for k2, v2 in v do
                 if type(v2) == 'table' then
-                    posCount = posCount + 1
-                    x = x + v[k2].Position[1]
-                    z = z + v[k2].Position[3]
+                    count = count + 1
+                    posX = posX + v[k2].Position[1]
+                    posZ = posZ + v[k2].Position[3]
                 end
             end
-            v.x =  x / posCount
-            v.z =  z / posCount
+            v.x =  posX / count
+            v.z =  posZ / count
         end
     end
     -- make path check from center position to mex spot
     for k, v in IndexTable do
-        local x = v.x
-        local z = v.z
         if type(v) == 'table' then
             for k2, v2 in v do
                 if type(v2) == 'table' then
-                    if not CanPathBetweenMarker(x, z, v2.Position[1], v2.Position[3], "Land", true) then
+                    if not CanPathBetweenMarker(v.x, v.z, v2.Position[1], v2.Position[3], "Land", true) then
+                        -- delete this mex spot, we cant find a path to it
                         table.remove(v,k2)
                         v.mexcount = table.getn(v)
                     end
                 end
             end
-            -- count table if lower 1 then nil
+            -- if we have only 1 mex left, then this is no longer a possible expansion
             if v.mexcount < 2 then
                 IndexTable[k] = nil
             end
         end
     end
-     -- Search again for the center location for marker placement
+    -- remove mexes that are already assigned to another expansion
     for k, v in IndexTable do
-        local posCount = 0
-        local x = 0
-        local z = 0
         if type(v) == 'table' then
             for k2, v2 in v do
                 if type(v2) == 'table' then
-                    posCount = posCount + 1
-                    x = x + v[k2].Position[1]
-                    z = z + v[k2].Position[3]
+                    if not alreadyUsed[v2.Position] then
+                        alreadyUsed[v2.Position] = true
+                    else
+                        -- delete this mex spot, its already part of another expansion
+                        table.remove(v,k2)
+                        v.mexcount = table.getn(v)
+                    end
                 end
             end
-            v.x =  x / posCount
-            v.z =  z / posCount
+            -- if we have only 1 mex left, then this is no longer a possible expansion
+            if v.mexcount < 2 then
+                IndexTable[k] = nil
+            end
+        end
+    end
+    -- Search again for the center location for marker placement
+    for k, v in IndexTable do
+        count = 0
+        posX = 0
+        posZ = 0
+        if type(v) == 'table' then
+            for k2, v2 in v do
+                if type(v2) == 'table' then
+                    count = count + 1
+                    posX = posX + v[k2].Position[1]
+                    posZ = posZ + v[k2].Position[3]
+                end
+            end
+            v.x =  posX / count
+            v.z =  posZ / count
         end
     end
     -- remove expansion areas that are to close to start or other expansion areas
     for k, v in IndexTable do
-        local MexInRange = v.mexcount
-        local UseThisMarker = true
+        MexInRange = v.mexcount
+        UseThisMarker = true
         -- Search if we are near a start position
         for ks, vs in StartPosition do
             if VDist2(v.x, v.z, vs.Position[1], vs.Position[3]) < 80 then
                 -- we are to close to a start position, don't use it as expansion
                 UseThisMarker = false
+                break
             end
         end
         -- check if we are to close to an expansion
         for ks, vn in NewExpansion do
-            if VDist2(v.x, v.z, vn.x, vn.z) < 60 then
+            if VDist2(v.x, v.z, vn.x, vn.z) < 50 then
                 -- we are to close to another expansion, don't use it
                 UseThisMarker = false
+                break
             end
         end
         -- save the expansion position
@@ -1112,7 +1136,6 @@ function CreateLandExpansions()
         end
     end
     -- make sure markers are placed on flat area
-    local gridX, gridZ, posX, posZ
     for index, expansion in NewExpansion do
         gridX, gridZ = GetMarkerGridIndexFromPosition({expansion.x, 0, expansion.z})
         posX, posZ = getFreeMarkerPosition(gridX, gridZ, "Land")

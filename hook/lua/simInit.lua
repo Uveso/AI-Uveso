@@ -1158,7 +1158,7 @@ end
 function ValidateModFilesUveso()
     local ModName = 'AI-Uveso'
     local Files = 87
-    local Bytes = 2032344
+    local Bytes = 2033387
     local modlocation = ""
     for i, mod in __active_mods do
         if mod.name == ModName then
