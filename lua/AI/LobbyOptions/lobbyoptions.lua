@@ -237,6 +237,11 @@ AIOpts = {
                 key = 'amph',
             },
             {
+                text = "<LOC aisettingsUveso_XXX>Path and hover marker",
+                help = "<LOC aisettingsUveso_XXX>Show pathfinding, hover waypoints and paths",
+                key = 'hover',
+            },
+            {
                 text = "<LOC aisettingsUveso_0165>Path and air marker",
                 help = "<LOC aisettingsUveso_0166>Show pathfinding, air waypoints and paths",
                 key = 'air',

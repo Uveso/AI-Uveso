@@ -38,6 +38,8 @@ aisettingsUveso_0161="Pfade und Wasser Marker"
 aisettingsUveso_0162="Zeigt Wegfindung, Wasser Wegpunkte und Pfade"
 aisettingsUveso_0163="Pfade und amphibische Marker"
 aisettingsUveso_0164="Zeigt Wegfindung, amphibische Wegpunkte und Pfade"
+aisettingsUveso_0231="Pfade und Hover Marker"
+aisettingsUveso_0232="Zeigt Wegfindung, Hover Wegpunkte und Pfade"
 aisettingsUveso_0165="Pfade und Lufraum Marker"
 aisettingsUveso_0166="Zeigt Wegfindung, Lufraum Wegpunkte und Pfade"
 

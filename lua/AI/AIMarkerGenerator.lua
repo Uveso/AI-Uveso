@@ -113,7 +113,7 @@ function IsPathable(x,z)
 --[[
 --        if (x == 246 or x == 247) and (z == 200 or z == 201) then
 --        if (x == 35 or x == 36) and (z == 46 or z == 47) then
-        if (x == 11 or x == 410) and (z == 12 or z == 411) then
+        if (x == 10 or x == 11) and (z == 155 or z == 156) then
             AIWarn("["..x.."]["..z.."] mathabs(M-U) "..math.floor(mathabs(M-U)*100))
             AIWarn("["..x.."]["..z.."] mathabs(M-D) "..math.floor(mathabs(M-D)*100))
             AIWarn("["..x.."]["..z.."] mathabs(M-L) "..math.floor(mathabs(M-L)*100))
@@ -251,19 +251,19 @@ function GraphRenderThread()
                 DrawPathGraph('Land', false)
                 DrawPathGraph('Water', false)
             elseif GetGameTimeSeconds() < 20 then
-                DrawPathGraph('Land', true)
+                DrawPathGraph('Land', 1)
             -- water nodes
             elseif GetGameTimeSeconds() < 25 then
-                DrawPathGraph('Water', true)
+                DrawPathGraph('Water', 1)
             -- display amphibious nodes
             elseif GetGameTimeSeconds() < 30 then
-                DrawPathGraph('Amphibious', true)
+                DrawPathGraph('Amphibious', 1)
             -- display hover nodes
             elseif GetGameTimeSeconds() < 35 then
-                DrawPathGraph('Hover', true)
+                DrawPathGraph('Hover', 1)
             -- air nodes
             elseif GetGameTimeSeconds() < 40 then
-                DrawPathGraph('Air', true)
+                DrawPathGraph('Air', 1)
             elseif GetGameTimeSeconds() < 45 then
                 DrawPathGraph('Amphibious', false)
                 DrawPathGraph('Hover', false)
@@ -283,20 +283,24 @@ function GraphRenderThread()
             DrawAIPathCache()
         -- Display land path permanent
         elseif ScenarioInfo.Options.AIPathingDebug == 'land' then
-            DrawPathGraph('DefaultLand', false)
-            DrawAIPathCache('DefaultLand')
+            DrawPathGraph('Land', 2)
+            DrawAIPathCache('Land')
         -- Display water path permanent
         elseif ScenarioInfo.Options.AIPathingDebug == 'water' then
-            DrawPathGraph('DefaultWater', false)
-            DrawAIPathCache('DefaultWater')
+            DrawPathGraph('Water', 2)
+            DrawAIPathCache('Water')
         -- Display amph path permanent
         elseif ScenarioInfo.Options.AIPathingDebug == 'amph' then
-            DrawPathGraph('DefaultAmphibious', false)
-            DrawAIPathCache('DefaultAmphibious')
+            DrawPathGraph('Amphibious', 2)
+            DrawAIPathCache('Amphibious')
+        -- Display hover path permanent
+        elseif ScenarioInfo.Options.AIPathingDebug == 'hover' then
+            DrawPathGraph('Hover', 2)
+            DrawAIPathCache('Hover')
         -- Display air path permanent
         elseif ScenarioInfo.Options.AIPathingDebug == 'air' then
-            DrawPathGraph('DefaultAir', false)
-            DrawAIPathCache('DefaultAir')
+            DrawPathGraph('Air', 2)
+            DrawAIPathCache('Air')
         end
         coroutine.yield(2)
     end
@@ -304,7 +308,7 @@ end
 
 function DrawPathGraph(DrawOnly,Blink)
     local color
-    if Blink then
+    if Blink == 1 then
         colors['counter'] = colors['counter'] + 1
         if colors['counter'] > colors['countermax'] then
             colors['counter'] = 0
@@ -316,6 +320,8 @@ function DrawPathGraph(DrawOnly,Blink)
             end
         end
         color = colors[colors['lastcolorindex']]
+    elseif Blink == 2 then
+        color = "ff404040"
     else
         color = markerOffsets[DrawOnly]['color']
     end
@@ -331,8 +337,6 @@ function DrawPathGraph(DrawOnly,Blink)
                     MarkerPosition[1] = markerInfo.position[1] + (markerOffsets[markerInfo.layer][1])
                     MarkerPosition[2] = markerInfo.position[2] + (markerOffsets[markerInfo.layer][2])
                     MarkerPosition[3] = markerInfo.position[3] + (markerOffsets[markerInfo.layer][3])
-                    -- Draw the marker path node
-                    DrawCircle(MarkerPosition, 2.5, color)
                     -- Draw the connecting lines to its adjacent nodes
                     for i, node in markerInfo.adjacent do
                         otherMarker = GraphMarkers[node]
@@ -343,6 +347,17 @@ function DrawPathGraph(DrawOnly,Blink)
                             --DrawLinePop(MarkerPosition, Marker2Position, GraphOffsets[otherMarker.layer]['color'])
                             DrawLinePop(MarkerPosition, Marker2Position, color )
                         end
+                    end
+                    -- Draw the marker path node
+                    if markerInfo.impassability == 1 then
+                        DrawCircle(MarkerPosition, 3.0, "ff0000FF")
+                        DrawCircle(MarkerPosition, 3.2, "ff000000")
+                    elseif markerInfo.impassability == 2 then
+                        DrawCircle(MarkerPosition, 3.0, "ffFF0000")
+                        DrawCircle(MarkerPosition, 3.2, "ff000000")
+                    else
+                        DrawCircle(MarkerPosition, 2.5, color)
+
                     end
                 end
             end
@@ -431,6 +446,7 @@ function CreateMarkerGrid(movementLayer)
     local MarkerGrid = MarkerGrid
     local posX
     local posZ
+    local impassability
     MarkerGrid[movementLayer] = {}
     for x = 0, MarkerGridCountX - 1 do
         --AIDebug("* AI-Uveso: Function CreateMarkerGrid("..movementLayer..") working on row "..x.."", true)
@@ -441,13 +457,14 @@ function CreateMarkerGrid(movementLayer)
                 posX = x * MarkerGridSizeX + MarkerGridSizeX / 2 + playableArea[1]
                 posZ = z * MarkerGridSizeZ + MarkerGridSizeZ / 2 + playableArea[2]
             else
-                posX, posZ = getFreeMarkerPosition(x, z, movementLayer)
+                posX, posZ, impassability = getFreeMarkerPosition(x, z, movementLayer)
             end
             if posX then -- we asume that posZ is present like posX.
                 MarkerGrid[movementLayer][x][z] =
                     {
                         ['position'] = VECTOR3( posX, GetSurfaceHeight(posX,posZ), posZ ),
                         ['adjacentTo'] = {},
+                        ['impassability'] = impassability or 0,
                     }
             end
         end
@@ -500,6 +517,10 @@ function ConnectMarkerWithPathing(movementLayer)
                 end
 --end
 --end
+                -- count adjacents
+                if table.getn(MarkerGrid[movementLayer][x][z].adjacentTo) < 8 then
+                    MarkerGrid[movementLayer][x][z].impassability = MarkerGrid[movementLayer][x][z].impassability + 1
+                end
             end
         end
     end
@@ -755,7 +776,7 @@ function getFreeMarkerPosition(x, z, movementLayer)
     end
     -- if we don't have at least 1 free graph area, then return false
     if not countMaxGraph then
-        return false, false
+        return false, false, false
     end
     -- check if we have only 1 graph (free place) and if the middle is not blocked
     if count[1] and not count[2] then
@@ -763,7 +784,7 @@ function getFreeMarkerPosition(x, z, movementLayer)
         local returnZ = mathfloor(z * MarkerGridSizeZ + MarkerGridSizeZ / 2 + playableArea[2])
         if PathMap[returnX][returnZ].cellArea ~= 0 then
             --AIWarn("Short cut count[1] and not count[2] "..repr(count), true)
-            return returnX, returnZ
+            return returnX, returnZ, 0
         end
     end
 
@@ -786,9 +807,6 @@ function getFreeMarkerPosition(x, z, movementLayer)
     centerX = mathfloor(centerX / centerCount)
     centerZ = mathfloor(centerZ / centerCount)
     --AIWarn("* AI-Uveso: centerX:"..centerX.." - centerZ:"..centerZ.."", debugPrint)
---    if 1 == 1 then
---        return centerX, centerZ
---    end
 
     -- search for all possible free places inside the grid
     local markerSize = 6
@@ -817,7 +835,7 @@ function getFreeMarkerPosition(x, z, movementLayer)
     end
     -- is the square a valid place ?
     if blocked <= blockedTolerance then
-        return centerX, centerZ
+        return centerX, centerZ, 1
     end
 
     -- deep search for free position
@@ -853,7 +871,7 @@ function getFreeMarkerPosition(x, z, movementLayer)
     end
 
     if not possiblePositions[1] then
-        return false, false
+        return false, false, false
     end
 
     -- remove positions with high block rate
@@ -877,10 +895,10 @@ function getFreeMarkerPosition(x, z, movementLayer)
     end
     --AIWarn("Closest free place: "..repr(closestPos), debugPrint)
     if closestPos then
-        return closestPos[1], closestPos[2]
+        return closestPos[1], closestPos[2], 1
     end
     -- no place for the marker found
-    return false, false
+    return false, false, false
 end
 
 function BuildGraphAreas(movementLayer)

@@ -602,6 +602,7 @@ function ConvertMarkerTableToFAF(markerTable, layer)
                     ['position'] = markerTable[x][z].position,
                     ['graph'] = 'Default'..layer,
                     ['GraphArea'] = markerTable[x][z].GraphArea,
+                    ['impassability'] = markerTable[x][z].impassability,
                 }
                 -- copy adjacent
                 if markerTable[x][z].adjacentTo[1] then
@@ -1158,7 +1159,7 @@ end
 function ValidateModFilesUveso()
     local ModName = 'AI-Uveso'
     local Files = 87
-    local Bytes = 2033387
+    local Bytes = 2035832
     local modlocation = ""
     for i, mod in __active_mods do
         if mod.name == ModName then

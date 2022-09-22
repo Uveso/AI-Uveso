@@ -38,6 +38,8 @@ aisettingsUveso_0161="Path and water marker"
 aisettingsUveso_0162="Show pathfinding, water waypoints and paths"
 aisettingsUveso_0163="Path and amphibious marker"
 aisettingsUveso_0164="Show pathfinding, amphibious waypoints and paths"
+aisettingsUveso_0231="Path and hover marker"
+aisettingsUveso_0232="Show pathfinding, hover waypoints and paths"
 aisettingsUveso_0165="Path and air marker"
 aisettingsUveso_0166="Show pathfinding, air waypoints and paths"
 
