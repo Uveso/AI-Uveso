@@ -651,7 +651,7 @@ end
 function getFreeMarkerPosition(x, z, movementLayer)
     local PathMap = PathMap
     local debugPrint = false
---    if x == 6 and z == 18 then
+--    if x == 11 and z == 10 then
 --        debugPrint = true
 --    end
     local zcStart = mathfloor(z * MarkerGridSizeZ + playableArea[2])
@@ -753,11 +753,11 @@ function getFreeMarkerPosition(x, z, movementLayer)
     end
 
     -- count graph fileds to find the biggest graph area inside the grid
---    local text
+    local text
     local count = {}
     local countMax, countMaxGraph = 0, nil
     for zc = zcStart, zcEnd do
---        text = ""
+        text = ""
         for xc = xcStart, xcEnd do
             if PathMap[xc][zc].cellArea ~= 0 then
                 if count[PathMap[xc][zc].cellArea] then
@@ -770,27 +770,33 @@ function getFreeMarkerPosition(x, z, movementLayer)
                     countMaxGraph = PathMap[xc][zc].cellArea
                 end
             end
---            text = text.." "..PathMap[xc][zc].cellArea or "x"
+            text = text.." "..PathMap[xc][zc].cellArea or "x"
         end
---        AIWarn(text, debugPrint)
+        AIWarn(text, debugPrint)
     end
     -- if we don't have at least 1 free graph area, then return false
     if not countMaxGraph then
         return false, false, false
     end
+    AIWarn("Grid Areas: "..repr(count), debugPrint)
+    AIWarn("Biggest area ID: "..countMaxGraph.." with "..countMax.." positions", debugPrint)
+
     -- check if we have only 1 graph (free place) and if the middle is not blocked
-    if count[1] and not count[2] then
+    countMax = 0
+    for _, _ in count do
+        countMax = countMax + 1
+    end
+    AIWarn("Grid Area count: "..repr(countMax), debugPrint)
+    if countMax == 1 then
         local returnX = mathfloor(x * MarkerGridSizeX + MarkerGridSizeX/ 2 + playableArea[1])
         local returnZ = mathfloor(z * MarkerGridSizeZ + MarkerGridSizeZ / 2 + playableArea[2])
         if PathMap[returnX][returnZ].cellArea ~= 0 then
-            --AIWarn("Short cut count[1] and not count[2] "..repr(count), true)
+            AIWarn("Short cut count[1] and not count[2] "..repr(count), debugPrint)
             return returnX, returnZ, 0
         end
     end
 
---    AIWarn("Grid Areas: "..repr(count), debugPrint)
---    AIWarn("Biggest area ID: "..countMaxGraph.." with "..countMax.." positions", debugPrint)
---    AIWarn("Search grid "..xcStart.." "..xcEnd.." "..zcStart.." "..zcEnd.." ", debugPrint)
+    AIWarn("Search grid "..xcStart.." "..xcEnd.." "..zcStart.." "..zcEnd.." ", debugPrint)
 
     -- search for the center position of MaxGraph
     local centerX, centerZ, centerCount = 0, 0, 0
