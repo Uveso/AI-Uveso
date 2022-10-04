@@ -1,14 +1,19 @@
+-- This file and all of its content are part of the AI-Uveso mod.
+-- You are not permitted to copy the content and use the copy in any form.
+-- All functions are exclusively available to FAF custom AI mods.
+-- Download is only allowed from FAForever.com or Uveso.de
+-- Copyright © 2022 Enhearten Media PTY LTD.
 
 local getTerrainHeight = GetTerrainHeight
-local mathmax = math.max
-local mathfloor = math.floor
-local mathabs = math.abs
-local mathceil = math.ceil
-local mathatan2 = math.atan2
+local mathMax = math.max
+local mathFloor = math.floor
+local mathAbs = math.abs
+local mathCeil = math.ceil
+local mathAtan2 = math.atan2
 
 local AIAttackUtils = import('/lua/ai/aiattackutilities.lua')
 local WantedGridCellSize = 14
-local playableArea
+local PlayableArea
 local PlayableMapSizeX
 local PlayableMapSizeZ
 local MarkerGridCountX
@@ -20,11 +25,11 @@ local PathMap = {}
 
 
 function InitMarkerGenerator()
-    playableArea = import("/mods/AI-Uveso/lua/AI/AITargetManager.lua").GetPlayableArea()
-    PlayableMapSizeX = playableArea[3] - playableArea[1]
-    PlayableMapSizeZ = playableArea[4] - playableArea[2]
-    MarkerGridCountX = mathfloor(PlayableMapSizeX / WantedGridCellSize)
-    MarkerGridCountZ = mathfloor(PlayableMapSizeZ / WantedGridCellSize)
+    PlayableArea = import("/mods/AI-Uveso/lua/AI/AITargetManager.lua").GetPlayableArea()
+    PlayableMapSizeX = PlayableArea[3] - PlayableArea[1]
+    PlayableMapSizeZ = PlayableArea[4] - PlayableArea[2]
+    MarkerGridCountX = mathFloor(PlayableMapSizeX / WantedGridCellSize)
+    MarkerGridCountZ = mathFloor(PlayableMapSizeZ / WantedGridCellSize)
     MarkerGridSizeX = PlayableMapSizeX / MarkerGridCountX
     MarkerGridSizeZ = PlayableMapSizeZ / MarkerGridCountZ
 end
@@ -42,8 +47,8 @@ end
 
 function GetMarkerGridIndexFromPosition(Position)
     --AILog("GetHeatMapGridIndexFromPosition unit Pos"..Position[1].." "..Position[3].."")
-    local x = math.floor( (Position[1] - playableArea[1]) / MarkerGridSizeX ) 
-    local z = math.floor( (Position[3] - playableArea[2]) / MarkerGridSizeZ )
+    local x = math.floor( (Position[1] - PlayableArea[1]) / MarkerGridSizeX ) 
+    local z = math.floor( (Position[3] - PlayableArea[2]) / MarkerGridSizeZ )
     --AILog("GetHeatMapGridIndexFromPosition area Pos"..x.." "..z.."")
     -- Make sure that x and z are inside the playable area
     x = math.max( 0, x )
@@ -56,8 +61,8 @@ end
 
 function GetMarkerGridPositionFromIndex(x, z)
     --AILog("GetHeatMapGridPositionFromIndex index x "..x.." - z "..z.."")
-    local posX = x * MarkerGridSizeX + MarkerGridSizeX / 2 + playableArea[1]
-    local posZ = z * MarkerGridSizeZ + MarkerGridSizeZ / 2 + playableArea[2]
+    local posX = x * MarkerGridSizeX + MarkerGridSizeX / 2 + PlayableArea[1]
+    local posZ = z * MarkerGridSizeZ + MarkerGridSizeZ / 2 + PlayableArea[2]
     local posY = 0
     --AILog("GetHeatMapGridPositionFromIndex MapPos"..posX.." "..posZ.."")
     return {posX, posY, posZ}
@@ -67,9 +72,9 @@ function BuildTerrainPathMap()
     AIDebug("* AI-Uveso: Function BuildTerrainPathMap() started.", true)
     local PathMap = PathMap
     local waterDepth
-    for x = playableArea[1], playableArea[3] do
+    for x = PlayableArea[1], PlayableArea[3] do
         PathMap[x] = {}
-        for z = playableArea[2], playableArea[4] do
+        for z = PlayableArea[2], PlayableArea[4] do
             PathMap[x][z] = {}
             -- check for water depth. -21 would be 21 beyond the water surface
             waterDepth = getTerrainHeight(x, z) - GetSurfaceHeight(x, z)
@@ -84,7 +89,7 @@ function BuildTerrainPathMap()
                 -- -24.9 to -1.8 is hover / amphibious / naval (not land)
                 PathMap[x][z].layer = "Seabed"
             else
-                -- -25 to xx is hover / naval (not amphibious / land)
+                -- -25 to -xx is hover / naval (not amphibious / land)
                 --AIWarn("Found very deep water!")
                 PathMap[x][z].layer = "Abyss"
                 PathMap[x][z].blocked = true
@@ -96,7 +101,7 @@ function BuildTerrainPathMap()
         end
     end
 end
-local maxcounter = 0
+
 function IsPathable(x,z)
     if not GetTerrainType(x,z).Blocking then
         local U, D, L, R, LU, RU, LD, RD
@@ -114,22 +119,22 @@ function IsPathable(x,z)
 --        if (x == 246 or x == 247) and (z == 200 or z == 201) then
 --        if (x == 35 or x == 36) and (z == 46 or z == 47) then
         if (x == 10 or x == 11) and (z == 155 or z == 156) then
-            AIWarn("["..x.."]["..z.."] mathabs(M-U) "..math.floor(mathabs(M-U)*100))
-            AIWarn("["..x.."]["..z.."] mathabs(M-D) "..math.floor(mathabs(M-D)*100))
-            AIWarn("["..x.."]["..z.."] mathabs(M-L) "..math.floor(mathabs(M-L)*100))
-            AIWarn("["..x.."]["..z.."] mathabs(M-R) "..math.floor(mathabs(M-R)*100))
-            AIWarn("["..x.."]["..z.."] mathabs(M-LU) "..math.floor(mathabs(M-LU)*100))
-            AIWarn("["..x.."]["..z.."] mathabs(M-RU) "..math.floor(mathabs(M-RU)*100))
-            AIWarn("["..x.."]["..z.."] mathabs(M-LD) "..math.floor(mathabs(M-LD)*100))
-            AIWarn("["..x.."]["..z.."] mathabs(M-RD) "..math.floor(mathabs(M-RD)*100))
+            AIWarn("["..x.."]["..z.."] mathAbs(M-U) "..math.floor(mathAbs(M-U)*100))
+            AIWarn("["..x.."]["..z.."] mathAbs(M-D) "..math.floor(mathAbs(M-D)*100))
+            AIWarn("["..x.."]["..z.."] mathAbs(M-L) "..math.floor(mathAbs(M-L)*100))
+            AIWarn("["..x.."]["..z.."] mathAbs(M-R) "..math.floor(mathAbs(M-R)*100))
+            AIWarn("["..x.."]["..z.."] mathAbs(M-LU) "..math.floor(mathAbs(M-LU)*100))
+            AIWarn("["..x.."]["..z.."] mathAbs(M-RU) "..math.floor(mathAbs(M-RU)*100))
+            AIWarn("["..x.."]["..z.."] mathAbs(M-LD) "..math.floor(mathAbs(M-LD)*100))
+            AIWarn("["..x.."]["..z.."] mathAbs(M-RD) "..math.floor(mathAbs(M-RD)*100))
         end
 --]]
-        return mathmax( mathabs(M-U), mathabs(M-D), mathabs(M-L), mathabs(M-R) ) < 0.36 and mathmax( mathabs(M-LU), mathabs(M-RU), mathabs(M-LD), mathabs(M-RD) ) < 0.44
+        return mathMax( mathAbs(M-U), mathAbs(M-D), mathAbs(M-L), mathAbs(M-R) ) < 0.36 and mathMax( mathAbs(M-LU), mathAbs(M-RU), mathAbs(M-LD), mathAbs(M-RD) ) < 0.44
     end
     return false
 end
 
-local layerOffsets = {
+local pathMapColors = {
     ['Air']        = { ['color'] = 'ffffffff', ['colorBlocked'] = 'ffff0000' },
     ['Land']       = { ['color'] = 'fff4a460', ['colorBlocked'] = 'ffFFa460' },
     ['Beach']      = { ['color'] = 'ff1e90ff', ['colorBlocked'] = 'ffFF90ff' },
@@ -175,17 +180,17 @@ local colors = {
 function PathableTerrainRenderThread()
     while true do
         coroutine.yield(2)
-        for x = playableArea[1], playableArea[3], 1 do
-            for z = playableArea[2], playableArea[4], 1 do
+        for x = PlayableArea[1], PlayableArea[3], 1 do
+            for z = PlayableArea[2], PlayableArea[4], 1 do
                 if PathMap[x][z].blocked then
                     if PathMap[x][z].layer == "Land" then
-                        DrawCircle({x + 0.50, getTerrainHeight(x + 0.5, z + 0.5) , z + 0.50}, 0.5, layerOffsets[PathMap[x][z].layer].colorBlocked )
+                        DrawCircle({x + 0.50, getTerrainHeight(x + 0.5, z + 0.5) , z + 0.50}, 0.5, pathMapColors[PathMap[x][z].layer].colorBlocked )
                     elseif PathMap[x][z].layer == "Beach" then
-                        DrawCircle({x + 0.50, getTerrainHeight(x + 0.5, z + 0.5) , z + 0.50}, 0.5, layerOffsets[PathMap[x][z].layer].colorBlocked )
+                        DrawCircle({x + 0.50, getTerrainHeight(x + 0.5, z + 0.5) , z + 0.50}, 0.5, pathMapColors[PathMap[x][z].layer].colorBlocked )
                     elseif PathMap[x][z].layer == "Seabed" then
-                        DrawCircle({x + 0.50, getTerrainHeight(x + 0.5, z + 0.5) , z + 0.50}, 0.5, layerOffsets[PathMap[x][z].layer].colorBlocked )
+                        DrawCircle({x + 0.50, getTerrainHeight(x + 0.5, z + 0.5) , z + 0.50}, 0.5, pathMapColors[PathMap[x][z].layer].colorBlocked )
                     elseif PathMap[x][z].layer == "Abyss" then
-                        DrawCircle({x + 0.50, getTerrainHeight(x + 0.5, z + 0.5) , z + 0.50}, 0.5, layerOffsets[PathMap[x][z].layer].colorBlocked )
+                        DrawCircle({x + 0.50, getTerrainHeight(x + 0.5, z + 0.5) , z + 0.50}, 0.5, pathMapColors[PathMap[x][z].layer].colorBlocked )
                     end
                 end
             end
@@ -350,11 +355,11 @@ function DrawPathGraph(DrawOnly,Blink)
                     end
                     -- Draw the marker path node
                     if markerInfo.impassability == 1 then
-                        DrawCircle(MarkerPosition, 3.0, "ff0000FF")
-                        DrawCircle(MarkerPosition, 3.2, "ff000000")
+                        DrawCircle(MarkerPosition, 2.5, "ff000000")
+                        DrawCircle(MarkerPosition, 3.2, "ff00FF00")
                     elseif markerInfo.impassability == 2 then
-                        DrawCircle(MarkerPosition, 3.0, "ffFF0000")
-                        DrawCircle(MarkerPosition, 3.2, "ff000000")
+                        DrawCircle(MarkerPosition, 2.5, "ff000000")
+                        DrawCircle(MarkerPosition, 3.2, "ffFF0000")
                     else
                         DrawCircle(MarkerPosition, 2.5, color)
 
@@ -415,7 +420,7 @@ function DrawAIPathCache(DrawOnly)
                                         if not DrawOnly or DrawOnly == PathNode.layer then
                                             if LastNode then
                                                 -- If we draw a horizontal line, then draw the next line "under" the last line
-                                                if mathabs(LastNode.position[1] - PathNode.position[1]) > mathabs(LastNode.position[3] - PathNode.position[3]) then
+                                                if mathAbs(LastNode.position[1] - PathNode.position[1]) > mathAbs(LastNode.position[3] - PathNode.position[3]) then
                                                     DirectionOffsetX = 0
                                                     DirectionOffsetY = 0.2
                                                 -- else we are drawing vertical, then draw the next line "Right" near the last line
@@ -454,8 +459,8 @@ function CreateMarkerGrid(movementLayer)
         for z = 0, MarkerGridCountZ - 1 do
             -- don't search for a free marker place for Air
             if movementLayer == "Air" then
-                posX = x * MarkerGridSizeX + MarkerGridSizeX / 2 + playableArea[1]
-                posZ = z * MarkerGridSizeZ + MarkerGridSizeZ / 2 + playableArea[2]
+                posX = x * MarkerGridSizeX + MarkerGridSizeX / 2 + PlayableArea[1]
+                posZ = z * MarkerGridSizeZ + MarkerGridSizeZ / 2 + PlayableArea[2]
             else
                 posX, posZ, impassability = getFreeMarkerPosition(x, z, movementLayer)
             end
@@ -487,7 +492,7 @@ function ConnectMarkerWithPathing(movementLayer)
                 --AIDebug("* AI-Uveso: Function ConnectMarkerWithoutPathing() connecting marker ("..x..", "..z..") with adjacents.", true)
 -- this is to draw the pathing on a specific marker
 -- ConnectMarkerWithPathing need to be run as forkedThread
---if x == 5 and z == 16 then
+--if x == 26 and z == 25 then
 --while true do
 --coroutine.yield(2)
                 -- search up/right, right and down/right
@@ -531,7 +536,7 @@ function CanPathBetweenMarker(x, z, xA, zA, movementLayer, useAbsolutCoords)
     --AIWarn("* AI-Uveso: Function CanPathBetweenMarker() from grid ["..x.."]["..z.."] to adjacent ["..xA.."]["..zA.."].", true)
     local pos
     local posA
-    -- check if we use marker index or map position
+    -- check if we use marker table index or map position
     if not useAbsolutCoords then
         pos = MarkerGrid[movementLayer][x][z].position
         posA = MarkerGrid[movementLayer][xA][zA].position
@@ -545,24 +550,24 @@ function CanPathBetweenMarker(x, z, xA, zA, movementLayer, useAbsolutCoords)
 
     --AIWarn("* AI-Uveso: Function CanPathBetweenMarker() from pos1("..pos[1]..", "..pos[3]..") to posA("..posA[1]..", "..posA[3]..").", true)
     local distance = VDist2(pos[1], pos[3], posA[1], posA[3])
-    local steps = mathceil(distance) * 1.1
+    local steps = mathCeil(distance) * 1.1
     local xstep = (posA[1] - pos[1]) / steps
     local zstep = (posA[3] - pos[3]) / steps
     --AIWarn("xstep: "..xstep.." - zstep: "..zstep.."")
 
 
-    -- orientation layerOffsets
-    local alpha = mathatan2(pos[3] - posA[3] ,pos[1] - posA[1]) * ( 180 / math.pi )
+    -- orientation (path direction)
+    local alpha = mathAtan2(pos[3] - posA[3] ,pos[1] - posA[1]) * ( 180 / math.pi )
     --AIWarn("alpha "..alpha)
     --   45  90  135
     --    0  ##  180
     --  -45 -90 -135 
-    if mathabs(alpha) <= 22.5 or mathabs(alpha) >= 157.5 then
+    if mathAbs(alpha) <= 22.5 or mathAbs(alpha) >= 157.5 then
         --AIWarn("- L R")
         xH = 0
         zH = 1
         -- L R
-    elseif mathabs(alpha) >= 67.5 and mathabs(alpha) <= 112.5 then
+    elseif mathAbs(alpha) >= 67.5 and mathAbs(alpha) <= 112.5 then
         --AIWarn("| U D")
         xH = 1
         zH = 0
@@ -580,27 +585,31 @@ function CanPathBetweenMarker(x, z, xA, zA, movementLayer, useAbsolutCoords)
     end
 
     local passed = 0
-    local layerrestricted, lineBlocked, cellBlocked, shoreline, posX, posZ
-    for o = -2, 2, 2 do
+    local layerRestricted, lineBlocked, cellBlocked, shoreline, posX, posZ
+    for o = -2, 2, 1 do
         lineBlocked = false
         for i = 0, steps do
-            posX = mathfloor(o*xH + pos[1] +  (xstep * i))
-            posZ = mathfloor(o*zH + pos[3] +  (zstep * i))
-            layerrestricted = false
+            posX = mathFloor(o*xH + pos[1] +  (xstep * i))
+            posZ = mathFloor(o*zH + pos[3] +  (zstep * i))
+            layerRestricted = false
             if movementLayer == "Land" then
                 if PathMap[posX][posZ].layer ~= "Land" then
-                    layerrestricted = true
+                    -- Land can't move on Beach, Seabed, Abyss
+                    layerRestricted = true
                 end
             elseif movementLayer == "Water" then
                 if PathMap[posX][posZ].layer ~= "Seabed" and PathMap[posX][posZ].layer ~= "Abyss" then
-                    layerrestricted = true
+                    -- Water can't move on Land, Beach
+                    layerRestricted = true
                 end
             elseif movementLayer == "Amphibious" then
                 if PathMap[posX][posZ].layer == "Abyss" then
-                    layerrestricted = true
+                    -- Amphibious can't move on Abyss
+                    layerRestricted = true
                 end
             elseif movementLayer == "Hover" then
-                layerrestricted = false
+                -- Hover can move on all ground layers
+                layerRestricted = false
             end
             cellBlocked = PathMap[posX][posZ].blocked 
                 or PathMap[posX-1][posZ].blocked
@@ -615,27 +624,29 @@ function CanPathBetweenMarker(x, z, xA, zA, movementLayer, useAbsolutCoords)
                     or PathMap[posX][posZ-1].layer == "Land"
                     or PathMap[posX+1][posZ+1].layer == "Land"
                     or PathMap[posX-1][posZ-1].layer == "Land"
-                if lineBlocked or layerrestricted or (cellBlocked and shoreline) then
+                if lineBlocked or layerRestricted or (cellBlocked and shoreline) then
                     --AIWarn("blocked", true)
-                    --DrawLine( {pos[1] + o*xH, pos[2] + 0.1, pos[3] + o*zH}, { posX, pos[2] + 0.1, posZ}, 'ffFF0000' )
+                    DrawLine( {pos[1] + o*xH, pos[2] + 0.1, pos[3] + o*zH}, { posX, pos[2] + 0.1, posZ}, 'ffFF0000' )
                     lineBlocked = true
                     break
                 else
-                    --DrawLine( {pos[1] + o*xH, pos[2] + 0.1, pos[3] + o*zH}, { posX, pos[2] + 0.1, posZ}, 'ff0000FF' )
+                    DrawLine( {pos[1] + o*xH, pos[2] + 0.1, pos[3] + o*zH}, { posX, pos[2] + 0.1, posZ}, 'ff0000FF' )
                     --AIWarn("free", true)
                 end
             else
-                if lineBlocked or layerrestricted or (cellBlocked and movementLayer ~= "Water") then
+                if lineBlocked or layerRestricted or (cellBlocked and movementLayer ~= "Water") then
                     --AIWarn("blocked", true)
-                    --DrawLine( {pos[1] + o*xH, pos[2] + 0.1, pos[3] + o*zH}, { posX, pos[2] + 0.1, posZ}, 'ffFF0000' )
+                    DrawLine( {pos[1] + o*xH, pos[2] + 0.1, pos[3] + o*zH}, { posX, pos[2] + 0.1, posZ}, 'ffFF0000' )
                     lineBlocked = true
                     break
                 else
-                    --DrawLine( {pos[1] + o*xH, pos[2] + 0.1, pos[3] + o*zH}, { posX, pos[2] + 0.1, posZ}, 'ff0000FF' )
+                    DrawLine( {pos[1] + o*xH, pos[2] + 0.1, pos[3] + o*zH}, { posX, pos[2] + 0.1, posZ}, 'ff0000FF' )
                     --AIWarn("free", true)
                 end
             end
-            --DrawLine( {pos[1] , pos[2] + 0.1, pos[3]}, { mathfloor( pos[1] + (xstep * i)), pos[2] + 0.1, mathfloor(pos[3] + (zstep * i))}, 'ffFFFFFF' )
+            posX = o*xH + pos[1] +  (xstep * i)
+            posZ = o*zH + pos[3] +  (zstep * i)
+            DrawLine( {pos[1] , pos[2] + 0.1, pos[3]}, { mathFloor( pos[1] + (xstep * i)), pos[2] + 0.1, mathFloor(pos[3] + (zstep * i))}, 'ffFFFFFF' )
         end
         if not lineBlocked then
             passed = passed + 1
@@ -643,7 +654,7 @@ function CanPathBetweenMarker(x, z, xA, zA, movementLayer, useAbsolutCoords)
                 return true
             end
         end
-        --AIWarn(" "..mathfloor(o*xH).." "..mathfloor(o*zH).." BLOCKED")
+        --AIWarn(" "..mathFloor(o*xH).." "..mathFloor(o*zH).." BLOCKED")
     end
     return false
 end
@@ -654,13 +665,13 @@ function getFreeMarkerPosition(x, z, movementLayer)
 --    if x == 11 and z == 10 then
 --        debugPrint = true
 --    end
-    local zcStart = mathfloor(z * MarkerGridSizeZ + playableArea[2])
-    local zcEnd = mathfloor(z * MarkerGridSizeZ + MarkerGridSizeZ + playableArea[2])
-    local xcStart =  mathfloor(x * MarkerGridSizeX + playableArea[1])
-    local xcEnd = mathfloor(x * MarkerGridSizeX + MarkerGridSizeX + playableArea[1])
+    local zcStart = mathFloor(z * MarkerGridSizeZ + PlayableArea[2])
+    local zcEnd = mathFloor(z * MarkerGridSizeZ + MarkerGridSizeZ + PlayableArea[2])
+    local xcStart =  mathFloor(x * MarkerGridSizeX + PlayableArea[1])
+    local xcEnd = mathFloor(x * MarkerGridSizeX + MarkerGridSizeX + PlayableArea[1])
     
     local area = 0
-    local blocked, AreaNeedReplace, layerrestricted
+    local blocked, AreaNeedReplace, layerRestricted
     local cellBlocked, shoreBlocked, land, water
     for zc = zcStart, zcEnd do
         --AIWarn("* AI-Uveso:  "..zc.."#####################################################", debugPrint)
@@ -669,21 +680,21 @@ function getFreeMarkerPosition(x, z, movementLayer)
             area = area + 1
         end
         for xc = xcStart, xcEnd do
-            layerrestricted = false
+            layerRestricted = false
             if movementLayer == "Land" then
                 if PathMap[xc][zc].layer ~= "Land" then
-                    layerrestricted = true
+                    layerRestricted = true
                 end
             elseif movementLayer == "Water" then
                 if PathMap[xc][zc].layer ~= "Seabed" and PathMap[xc][zc].layer ~= "Abyss" then
-                    layerrestricted = true
+                    layerRestricted = true
                 end
             elseif movementLayer == "Amphibious" then
                 if PathMap[xc][zc].layer == "Abyss" then
-                    layerrestricted = true
+                    layerRestricted = true
                 end
             elseif movementLayer == "Hover" then
-                layerrestricted = false
+                layerRestricted = false
             end
             -- special rule for hover and amphibious, don't make a marker on the shoreline between land and water if its blocked
             cellBlocked = PathMap[xc][zc].blocked 
@@ -702,20 +713,20 @@ function getFreeMarkerPosition(x, z, movementLayer)
                 or PathMap[xc+1][zc+1].layer == "Water"
                 or PathMap[xc-1][zc-1].layer == "Water"
             shoreBlocked = cellBlocked and land and water
-            if (movementLayer == "Hover" or movementLayer == "Amphibious") and (PathMap[xc][zc].blocked or shoreBlocked or layerrestricted) then
+            if (movementLayer == "Hover" or movementLayer == "Amphibious") and (PathMap[xc][zc].blocked or shoreBlocked or layerRestricted) then
                 PathMap[xc][zc].cellArea = 0
                 if not blocked then
                     blocked = true
                     area = area + 1
                 end
-                --AIWarn("* AI-Uveso:  "..xc.." "..zc.." "..area.." blocked 1 for layer "..movementLayer.." Blocked:"..repr(PathMap[xc][zc].blocked).." Restricted:"..repr(layerrestricted).." Maplayer:"..repr(PathMap[xc][zc].layer), debugPrint)
-            elseif movementLayer ~= "Hover" and ((PathMap[xc][zc].blocked and movementLayer ~= "Water") or layerrestricted) then
+                --AIWarn("* AI-Uveso:  "..xc.." "..zc.." "..area.." blocked 1 for layer "..movementLayer.." Blocked:"..repr(PathMap[xc][zc].blocked).." Restricted:"..repr(layerRestricted).." Maplayer:"..repr(PathMap[xc][zc].layer), debugPrint)
+            elseif movementLayer ~= "Hover" and ((PathMap[xc][zc].blocked and movementLayer ~= "Water") or layerRestricted) then
                 PathMap[xc][zc].cellArea = 0
                 if not blocked then
                     blocked = true
                     area = area + 1
                 end
-                --AIWarn("* AI-Uveso:  "..xc.." "..zc.." "..area.." blocked 2 for layer "..movementLayer.." Blocked:"..repr(PathMap[xc][zc].blocked).." Restricted:"..repr(layerrestricted).." Maplayer:"..repr(PathMap[xc][zc].layer), debugPrint)
+                --AIWarn("* AI-Uveso:  "..xc.." "..zc.." "..area.." blocked 2 for layer "..movementLayer.." Blocked:"..repr(PathMap[xc][zc].blocked).." Restricted:"..repr(layerRestricted).." Maplayer:"..repr(PathMap[xc][zc].layer), debugPrint)
             else
                 if zc - 1 >= zcStart and PathMap[xc][zc-1].cellArea and PathMap[xc][zc-1].cellArea > 0 then
                     --AIWarn("* AI-Uveso:  "..xc.." "..zc.." "..area.." UP", debugPrint)
@@ -788,8 +799,8 @@ function getFreeMarkerPosition(x, z, movementLayer)
     end
     AIWarn("Grid Area count: "..repr(countMax), debugPrint)
     if countMax == 1 then
-        local returnX = mathfloor(x * MarkerGridSizeX + MarkerGridSizeX/ 2 + playableArea[1])
-        local returnZ = mathfloor(z * MarkerGridSizeZ + MarkerGridSizeZ / 2 + playableArea[2])
+        local returnX = mathFloor(x * MarkerGridSizeX + MarkerGridSizeX/ 2 + PlayableArea[1])
+        local returnZ = mathFloor(z * MarkerGridSizeZ + MarkerGridSizeZ / 2 + PlayableArea[2])
         if PathMap[returnX][returnZ].cellArea ~= 0 then
             AIWarn("Short cut count[1] and not count[2] "..repr(count), debugPrint)
             return returnX, returnZ, 0
@@ -810,8 +821,8 @@ function getFreeMarkerPosition(x, z, movementLayer)
             end
         end
     end
-    centerX = mathfloor(centerX / centerCount)
-    centerZ = mathfloor(centerZ / centerCount)
+    centerX = mathFloor(centerX / centerCount)
+    centerZ = mathFloor(centerZ / centerCount)
     --AIWarn("* AI-Uveso: centerX:"..centerX.." - centerZ:"..centerZ.."", debugPrint)
 
     -- search for all possible free places inside the grid
@@ -822,9 +833,9 @@ function getFreeMarkerPosition(x, z, movementLayer)
     
     -- fast search for free center position
     blocked = 0
-    for zm = mathfloor(centerZ - markerSize / 2), mathceil(centerZ + markerSize / 2) do
+    for zm = mathFloor(centerZ - markerSize / 2), mathCeil(centerZ + markerSize / 2) do
 --        text = ""
-        for xm = mathfloor(centerX - markerSize / 2), mathceil(centerX + markerSize / 2) do
+        for xm = mathFloor(centerX - markerSize / 2), mathCeil(centerX + markerSize / 2) do
             if PathMap[xm][zm].cellArea then
                 if PathMap[xm][zm].cellArea ~= countMaxGraph then
                     blocked = blocked + 1
@@ -869,7 +880,7 @@ function getFreeMarkerPosition(x, z, movementLayer)
                 -- is the square a valid place ?
                 if blocked <= blockedTolerance then
                     --AIWarn("place valid; "..(xc + markerSize / 2).." "..(zc + markerSize / 2).." ", debugPrint)
-                    table.insert(possiblePositions, {mathfloor(xc + markerSize / 2), mathfloor (zc + markerSize / 2), blocked  })
+                    table.insert(possiblePositions, {mathFloor(xc + markerSize / 2), mathFloor (zc + markerSize / 2), blocked  })
                     blockedTolerance = blocked
                 end
             end

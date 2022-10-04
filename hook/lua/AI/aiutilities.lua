@@ -558,6 +558,7 @@ end
 
 function AIFindNearestCategoryTargetInCloseRange(platoon, aiBrain, squad, position, maxRange, MoveToCategories, TargetSearchCategory)
     --AILog('* AIFindNearestCategoryTargetInCloseRange: calling function'..platoon.BuilderName)
+    local CanGraphAreaTo = AIAttackUtils.CanGraphAreaTo
     local IgnoreTargetLayerCheck = platoon.PlatoonData.IgnoreTargetLayerCheck
     local MyArmyIndex = aiBrain:GetArmyIndex()
     if maxRange < 30 then
@@ -598,6 +599,8 @@ function AIFindNearestCategoryTargetInCloseRange(platoon, aiBrain, squad, positi
                         if platoon.MovementLayer ~= 'Air' and EntityCategoryContains(categories.AIR, Target) then continue end
                         if platoon.MovementLayer == 'Water' and not ValidateLayer(TargetPosition, 'Water' ) then continue end
                     end
+                    -- Check if we can graph to the target (cheap pathing). Needed for naval + 2 lakes or land + islands
+                    if not CanGraphAreaTo(position, TargetPosition, platoon.MovementLayer) then continue end
                     --AILog('* AIFindNearestCategoryTargetInCloseRange: closer target in range: ('..targetRange..') - '..platoon.BuilderName)
                     TargetUnit = Target
                     distance = targetRange

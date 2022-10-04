@@ -80,8 +80,6 @@ end
 
 -- hooks for map validation on game start and debugstuff for pathfinding and base ranger.
 local CREATEDMARKERS = {}
-local MarkerCountX = 32
-local MarkerCountY = 32
 
 local OldBeginSessionUveso = BeginSession
 function BeginSession()
@@ -100,10 +98,7 @@ function BeginSession()
 
     -- Fist calculate markers, then continue with the game start sequence.
     AILog('* AI-Uveso: Function CreateAIMarkers() started!', true, UvesoOffsetSimInitLUA)
-    local START = GetSystemTimeSecondsOnlyForProfileUse()
     CreateAIMarkers()
-    local END = GetSystemTimeSecondsOnlyForProfileUse()
-    AILog(string.format('* AI-Uveso: Function CreateAIMarkers() finished, runtime: %.2f seconds.', END - START  ), true, UvesoOffsetSimInitLUA)
 
     ValidateMapAndMarkers()
 
@@ -492,6 +487,7 @@ function CreateAIMarkers()
 --runtime: 14.09 seconds. after making commands local
 --runtime:  2.90 seconds. after optimizing cell search for marker placement
 
+    local START = GetSystemTimeSecondsOnlyForProfileUse()
     -- for FAF we want the same grid count (36)+1 on every map size, so we adjust the grid cell size here
     local WantedGridCellSize = math.floor( math.max( ScenarioInfo.size[1], ScenarioInfo.size[2] ) / 36)
     AILog('* AI-Uveso: Generating marker with grid cell size of ('..WantedGridCellSize..')', true, UvesoOffsetSimInitLUA)
@@ -505,6 +501,7 @@ function CreateAIMarkers()
     AIMarkerGenerator.BuildTerrainPathMap()
     -- debug; draw dirty/unpathable areas
     --ForkThread(AIMarkerGenerator.PathableTerrainRenderThread)
+    AIDebug(string.format('* AI-Uveso: Function CreateAIMarkers(): building TerrainPathMap finished, runtime: %.2f seconds.', GetSystemTimeSecondsOnlyForProfileUse() - START  ), true, UvesoOffsetSimInitLUA)
 
     -- Set grid cell size for air (half the size than normal layers)
     AIMarkerGenerator.SetWantedGridCellSize(WantedGridCellSize * 2)
@@ -523,12 +520,18 @@ function CreateAIMarkers()
     -- Set grid cell size for land
     AIMarkerGenerator.SetWantedGridCellSize(WantedGridCellSize)
     -- build marker grid for land
+    local STARTSUB = GetSystemTimeSecondsOnlyForProfileUse()
     AIMarkerGenerator.CreateMarkerGrid("Land")
+    AIDebug(string.format('* AI-Uveso: Function CreateAIMarkers(): CreateMarkerGrid finished, runtime: %.2f seconds.', GetSystemTimeSecondsOnlyForProfileUse() - STARTSUB  ), true, UvesoOffsetSimInitLUA)
     -- build connections for land
+    local STARTSUB = GetSystemTimeSecondsOnlyForProfileUse()
     AIMarkerGenerator.ConnectMarkerWithPathing("Land")
     --ForkThread(AIMarkerGenerator.ConnectMarkerWithPathing, 'Land')
+    AIDebug(string.format('* AI-Uveso: Function CreateAIMarkers(): ConnectMarkerWithPathing finished, runtime: %.2f seconds.', GetSystemTimeSecondsOnlyForProfileUse() - STARTSUB  ), true, UvesoOffsetSimInitLUA)
     -- build Graph for related areas
+    local STARTSUB = GetSystemTimeSecondsOnlyForProfileUse()
     AIMarkerGenerator.BuildGraphAreas("Land")
+    AIDebug(string.format('* AI-Uveso: Function CreateAIMarkers(): BuildGraphAreas finished, runtime: %.2f seconds.', GetSystemTimeSecondsOnlyForProfileUse() - STARTSUB  ), true, UvesoOffsetSimInitLUA)
     -- get marker for land
     markerTable = AIMarkerGenerator.GetMarkerTable("Land")
     -- convert markers and copy to MASTERCHAIN
@@ -579,6 +582,7 @@ function CreateAIMarkers()
     --create naval Areas
     NavalMarkerPositions = AIMarkerGenerator.CreateNavalExpansions()
     ConvertNavalExpansionsToFAF(NavalMarkerPositions)
+    AILog(string.format('* AI-Uveso: Function CreateAIMarkers(): Marker generator finished, runtime: %.2f seconds.', GetSystemTimeSecondsOnlyForProfileUse() - START  ), true, UvesoOffsetSimInitLUA)
 
     --create land expansions
     LandMarkerPositions = AIMarkerGenerator.CreateLandExpansions()
@@ -1158,8 +1162,9 @@ end
 
 function ValidateModFilesUveso()
     local ModName = 'AI-Uveso'
+    local ModDirectory = 'AI-Uveso'
     local Files = 87
-    local Bytes = 2035960
+    local Bytes = 2030025
     local modlocation = ""
     for i, mod in __active_mods do
         if mod.name == ModName then
@@ -1168,14 +1173,14 @@ function ValidateModFilesUveso()
         end
     end
     AILog('* '..ModName..': Running from: '..debug.getinfo(1).source..'.', true, UvesoOffsetSimInitLUA)
-    AILog('* '..ModName..': Checking directory /mods/ for "'..ModName..'"...', true, UvesoOffsetSimInitLUA)
+    AILog('* '..ModName..': Checking directory "/mods/'..ModDirectory..'"...', true, UvesoOffsetSimInitLUA)
     local FilesInFolder = DiskFindFiles('/mods/', '*.*')
     local modfoundcount = 0
     local modfilepath = ""
     for _, FilepathAndName in FilesInFolder do
         -- FilepathAndName = /mods/ai-uveso/mod_info.lua
         if string.find(FilepathAndName, 'mod_info.lua') then
-            if string.gsub(FilepathAndName, ".*/(.*)/.*", "%1") == string.lower(ModName) then
+            if string.gsub(FilepathAndName, ".*/(.*)/.*", "%1") == string.lower(ModDirectory) then
                 modfilepath = string.gsub(FilepathAndName, "(.*/.*)/.*", "%1")
                 modfoundcount = modfoundcount + 1
                 if modlocation == modfilepath then
@@ -1187,12 +1192,12 @@ function ValidateModFilesUveso()
         end
     end
     if modfoundcount == 1 then
-        AILog('* '..ModName..': Check OK. Found '..modfoundcount..' "'..ModName..'" directory.', true, UvesoOffsetSimInitLUA)
+        AILog('* '..ModName..': Check OK. Found '..modfoundcount..' "'..ModDirectory..'" directory.', true, UvesoOffsetSimInitLUA)
     else
-        AILog('* '..ModName..': Check FAILED! Found '..modfoundcount..' "'..ModName..'" directories.', true, UvesoOffsetSimInitLUA)
+        AILog('* '..ModName..': Check FAILED! Found '..modfoundcount..' "'..ModDirectory..'" directories.', true, UvesoOffsetSimInitLUA)
     end
     AILog('* '..ModName..': Checking files and filesize for "'..ModName..'"...', true, UvesoOffsetSimInitLUA)
-    local FilesInFolder = DiskFindFiles('/mods/'..ModName..'/', '*.*')
+    local FilesInFolder = DiskFindFiles('/mods/'..ModDirectory..'/', '*.*')
     local filecount = 0
     local bytecount = 0
     local fileinfo
@@ -1205,17 +1210,17 @@ function ValidateModFilesUveso()
     end
     local FAIL = false
     if filecount < Files then
-        AILog('* '..ModName..': Check FAILED! Directory: "'..ModName..'" - Missing '..(Files - filecount)..' files! ('..filecount..'/'..Files..')', true, UvesoOffsetSimInitLUA)
+        AILog('* '..ModName..': Check FAILED! Directory: "'..ModDirectory..'" - Missing '..(Files - filecount)..' files! ('..filecount..'/'..Files..')', true, UvesoOffsetSimInitLUA)
         FAIL = true
     elseif filecount > Files then
-        AILog('* '..ModName..': Check FAILED! Directory: "'..ModName..'" - Found '..(filecount - Files)..' odd files! ('..filecount..'/'..Files..')', true, UvesoOffsetSimInitLUA)
+        AILog('* '..ModName..': Check FAILED! Directory: "'..ModDirectory..'" - Found '..(filecount - Files)..' odd files! ('..filecount..'/'..Files..')', true, UvesoOffsetSimInitLUA)
         FAIL = true
     end
     if bytecount < Bytes then
-        AILog('* '..ModName..': Check FAILED! Directory: "'..ModName..'" - Missing '..(Bytes - bytecount)..' bytes! ('..bytecount..'/'..Bytes..')', true, UvesoOffsetSimInitLUA)
+        AILog('* '..ModName..': Check FAILED! Directory: "'..ModDirectory..'" - Missing '..(Bytes - bytecount)..' bytes! ('..bytecount..'/'..Bytes..')', true, UvesoOffsetSimInitLUA)
         FAIL = true
     elseif bytecount > Bytes then
-        AILog('* '..ModName..': Check FAILED! Directory: "'..ModName..'" - Found '..(bytecount - Bytes)..' odd bytes! ('..bytecount..'/'..Bytes..')', true, UvesoOffsetSimInitLUA)
+        AILog('* '..ModName..': Check FAILED! Directory: "'..ModDirectory..'" - Found '..(bytecount - Bytes)..' odd bytes! ('..bytecount..'/'..Bytes..')', true, UvesoOffsetSimInitLUA)
         FAIL = true
     end
     if not FAIL then

@@ -4,6 +4,7 @@ v106 (not public released)
 - New: added movement layer for hover units (was using amphibious layer before).
 - Fix: fixed a bug that could cause the nuke function to error out after a launcher died
 - Opt: minor improvement in EconomyBuildConditions calculation speed
+- Opt: removes special pathing for engineers (pathing without heuristic search)
 - DEV: Fn OnDefeat() now first checks for the existence of a manager before trying to delete it
 - DEV: changed check for defeat to aiBrain.Status ~= "Defeat"
 - DEV: pathing debug will now display expansions first (from game second 5 to 10)
