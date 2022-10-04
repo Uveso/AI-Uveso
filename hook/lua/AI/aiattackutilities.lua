@@ -103,7 +103,7 @@ function GetPathGraphs()
             ScenarioInfo.PathGraphs[gk] = ScenarioInfo.PathGraphs[gk] or {}
             ScenarioInfo.PathGraphs[gk][marker.graph] = ScenarioInfo.PathGraphs[gk][marker.graph] or {}
             --Add the marker to the graph.
-            ScenarioInfo.PathGraphs[gk][marker.graph][marker.name] = {name = marker.name, layer = gk, graphName = marker.graph, position = marker.position, adjacent = STR_GetTokens(marker.adjacentTo, ' '), impassability = marker.impassability, color = marker.color}
+            ScenarioInfo.PathGraphs[gk][marker.graph][marker.name] = {name = marker.name, layer = gk, graphName = marker.graph, position = marker.position, adjacent = STR_GetTokens(marker.adjacentTo, ' '), impassability = marker.impassability or 0, color = marker.color}
         end
     end
 
@@ -304,7 +304,7 @@ function GeneratePathUveso(aiBrain, startNode, endNode, threatType, threatWeight
                     -- get threat from current node to adjacent node
                     threat = GetThreatFromHeatMap(armyIndex, newNode.position, startNode.layer)
                     -- prevent map border and close hills/cliffs
-                    threat = threat + newNode.impassability * 30
+                    threat = threat + (newNode.impassability or 0) * 30
                     -- add as cost for the path the distance and threat to the overall cost from the whole path
                     fork.cost = fork.cost + dist + (threat * 1) * threatWeight
                     -- add the newNode at the end of the path

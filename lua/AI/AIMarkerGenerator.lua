@@ -492,7 +492,7 @@ function ConnectMarkerWithPathing(movementLayer)
                 --AIDebug("* AI-Uveso: Function ConnectMarkerWithoutPathing() connecting marker ("..x..", "..z..") with adjacents.", true)
 -- this is to draw the pathing on a specific marker
 -- ConnectMarkerWithPathing need to be run as forkedThread
---if x == 26 and z == 25 then
+--if x == 18 and z == 0 then
 --while true do
 --coroutine.yield(2)
                 -- search up/right, right and down/right
@@ -591,62 +591,67 @@ function CanPathBetweenMarker(x, z, xA, zA, movementLayer, useAbsolutCoords)
         for i = 0, steps do
             posX = mathFloor(o*xH + pos[1] +  (xstep * i))
             posZ = mathFloor(o*zH + pos[3] +  (zstep * i))
-            layerRestricted = false
-            if movementLayer == "Land" then
-                if PathMap[posX][posZ].layer ~= "Land" then
-                    -- Land can't move on Beach, Seabed, Abyss
-                    layerRestricted = true
-                end
-            elseif movementLayer == "Water" then
-                if PathMap[posX][posZ].layer ~= "Seabed" and PathMap[posX][posZ].layer ~= "Abyss" then
-                    -- Water can't move on Land, Beach
-                    layerRestricted = true
-                end
-            elseif movementLayer == "Amphibious" then
-                if PathMap[posX][posZ].layer == "Abyss" then
-                    -- Amphibious can't move on Abyss
-                    layerRestricted = true
-                end
-            elseif movementLayer == "Hover" then
-                -- Hover can move on all ground layers
+            if posX >= PlayableArea[1] and  posX <= PlayableArea[3] and posZ >= PlayableArea[2] and posZ <= PlayableArea[4] then
                 layerRestricted = false
-            end
-            cellBlocked = PathMap[posX][posZ].blocked 
-                or PathMap[posX-1][posZ].blocked
-                or PathMap[posX][posZ-1].blocked
-                or PathMap[posX+1][posZ+1].blocked
-                or PathMap[posX-1][posZ-1].blocked
-            if movementLayer == "Hover" then
-                -- special rule for Hover, we can't be blocked by terrain on beach, seabed or Abyss
-                -- except the shoreline on beach 1 cell near land
-                shoreline = PathMap[posX][posZ].layer == "Land"
-                    or PathMap[posX-1][posZ].layer == "Land"
-                    or PathMap[posX][posZ-1].layer == "Land"
-                    or PathMap[posX+1][posZ+1].layer == "Land"
-                    or PathMap[posX-1][posZ-1].layer == "Land"
-                if lineBlocked or layerRestricted or (cellBlocked and shoreline) then
-                    --AIWarn("blocked", true)
-                    DrawLine( {pos[1] + o*xH, pos[2] + 0.1, pos[3] + o*zH}, { posX, pos[2] + 0.1, posZ}, 'ffFF0000' )
-                    lineBlocked = true
-                    break
-                else
-                    DrawLine( {pos[1] + o*xH, pos[2] + 0.1, pos[3] + o*zH}, { posX, pos[2] + 0.1, posZ}, 'ff0000FF' )
-                    --AIWarn("free", true)
+                if movementLayer == "Land" then
+                    if PathMap[posX][posZ].layer ~= "Land" then
+                        -- Land can't move on Beach, Seabed, Abyss
+                        layerRestricted = true
+                    end
+                elseif movementLayer == "Water" then
+                    if PathMap[posX][posZ].layer ~= "Seabed" and PathMap[posX][posZ].layer ~= "Abyss" then
+                        -- Water can't move on Land, Beach
+                        layerRestricted = true
+                    end
+                elseif movementLayer == "Amphibious" then
+                    if PathMap[posX][posZ].layer == "Abyss" then
+                        -- Amphibious can't move on Abyss
+                        layerRestricted = true
+                    end
+                elseif movementLayer == "Hover" then
+                    -- Hover can move on all ground layers
+                    layerRestricted = false
                 end
+                cellBlocked = PathMap[posX][posZ].blocked 
+                    or PathMap[posX-1][posZ].blocked
+                    or PathMap[posX][posZ-1].blocked
+                    or PathMap[posX+1][posZ+1].blocked
+                    or PathMap[posX-1][posZ-1].blocked
+                if movementLayer == "Hover" then
+                    -- special rule for Hover, we can't be blocked by terrain on beach, seabed or Abyss
+                    -- except the shoreline on beach 1 cell near land
+                    shoreline = PathMap[posX][posZ].layer == "Land"
+                        or PathMap[posX-1][posZ].layer == "Land"
+                        or PathMap[posX][posZ-1].layer == "Land"
+                        or PathMap[posX+1][posZ+1].layer == "Land"
+                        or PathMap[posX-1][posZ-1].layer == "Land"
+                    if lineBlocked or layerRestricted or (cellBlocked and shoreline) then
+                        --AIWarn("blocked", true)
+                        DrawLine( {pos[1] + o*xH, pos[2] + 0.1, pos[3] + o*zH}, { posX, pos[2] + 0.1, posZ}, 'ffFF0000' )
+                        lineBlocked = true
+                        break
+                    else
+                        DrawLine( {pos[1] + o*xH, pos[2] + 0.1, pos[3] + o*zH}, { posX, pos[2] + 0.1, posZ}, 'ff0000FF' )
+                        --AIWarn("free", true)
+                    end
+                else
+                    if lineBlocked or layerRestricted or (cellBlocked and movementLayer ~= "Water") then
+                        --AIWarn("blocked", true)
+                        DrawLine( {pos[1] + o*xH, pos[2] + 0.1, pos[3] + o*zH}, { posX, pos[2] + 0.1, posZ}, 'ffFF0000' )
+                        lineBlocked = true
+                        break
+                    else
+                        DrawLine( {pos[1] + o*xH, pos[2] + 0.1, pos[3] + o*zH}, { posX, pos[2] + 0.1, posZ}, 'ff0000FF' )
+                        --AIWarn("free", true)
+                    end
+                end
+                posX = o*xH + pos[1] +  (xstep * i)
+                posZ = o*zH + pos[3] +  (zstep * i)
+                DrawLine( {pos[1] , pos[2] + 0.1, pos[3]}, { mathFloor( pos[1] + (xstep * i)), pos[2] + 0.1, mathFloor(pos[3] + (zstep * i))}, 'ffFFFFFF' )
             else
-                if lineBlocked or layerRestricted or (cellBlocked and movementLayer ~= "Water") then
-                    --AIWarn("blocked", true)
-                    DrawLine( {pos[1] + o*xH, pos[2] + 0.1, pos[3] + o*zH}, { posX, pos[2] + 0.1, posZ}, 'ffFF0000' )
-                    lineBlocked = true
-                    break
-                else
-                    DrawLine( {pos[1] + o*xH, pos[2] + 0.1, pos[3] + o*zH}, { posX, pos[2] + 0.1, posZ}, 'ff0000FF' )
-                    --AIWarn("free", true)
-                end
+                -- outside PlayableArea
+                lineBlocked = true
             end
-            posX = o*xH + pos[1] +  (xstep * i)
-            posZ = o*zH + pos[3] +  (zstep * i)
-            DrawLine( {pos[1] , pos[2] + 0.1, pos[3]}, { mathFloor( pos[1] + (xstep * i)), pos[2] + 0.1, mathFloor(pos[3] + (zstep * i))}, 'ffFFFFFF' )
         end
         if not lineBlocked then
             passed = passed + 1
@@ -662,7 +667,7 @@ end
 function getFreeMarkerPosition(x, z, movementLayer)
     local PathMap = PathMap
     local debugPrint = false
---    if x == 11 and z == 10 then
+--    if x == 18 and z == 0 then
 --        debugPrint = true
 --    end
     local zcStart = mathFloor(z * MarkerGridSizeZ + PlayableArea[2])

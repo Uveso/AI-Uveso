@@ -490,10 +490,10 @@ function CreateAIMarkers()
     local START = GetSystemTimeSecondsOnlyForProfileUse()
     -- for FAF we want the same grid count (36)+1 on every map size, so we adjust the grid cell size here
     local WantedGridCellSize = math.floor( math.max( ScenarioInfo.size[1], ScenarioInfo.size[2] ) / 36)
-    AILog('* AI-Uveso: Generating marker with grid cell size of ('..WantedGridCellSize..')', true, UvesoOffsetSimInitLUA)
+    AILog(" AI-Uveso: Generating marker with grid cell size of ("..WantedGridCellSize..")", true, UvesoOffsetSimInitLUA)
    
     -- import functions for marker generator
-    local AIMarkerGenerator = import('/mods/AI-Uveso/lua/AI/AIMarkerGenerator.lua')
+    local AIMarkerGenerator = import("/mods/AI-Uveso/lua/AI/AIMarkerGenerator.lua")
     -- init Generator variables
     AIMarkerGenerator.InitMarkerGenerator()
     local markerTable, NavalMarkerPositions, LandMarkerPositions
@@ -501,7 +501,7 @@ function CreateAIMarkers()
     AIMarkerGenerator.BuildTerrainPathMap()
     -- debug; draw dirty/unpathable areas
     --ForkThread(AIMarkerGenerator.PathableTerrainRenderThread)
-    AIDebug(string.format('* AI-Uveso: Function CreateAIMarkers(): building TerrainPathMap finished, runtime: %.2f seconds.', GetSystemTimeSecondsOnlyForProfileUse() - START  ), true, UvesoOffsetSimInitLUA)
+    AIDebug(string.format("* AI-Uveso: Function CreateAIMarkers(): building TerrainPathMap finished, runtime: %.2f seconds.", GetSystemTimeSecondsOnlyForProfileUse() - START  ), true, UvesoOffsetSimInitLUA)
 
     -- Set grid cell size for air (half the size than normal layers)
     AIMarkerGenerator.SetWantedGridCellSize(WantedGridCellSize * 2)
@@ -515,27 +515,27 @@ function CreateAIMarkers()
     -- get marker for air
     markerTable = AIMarkerGenerator.GetMarkerTable("Air")
     -- convert markers and copy to MASTERCHAIN
-    ConvertMarkerTableToFAF(markerTable, 'Air')
+    ConvertMarkerTableToFAF(markerTable, "Air")
 
     -- Set grid cell size for land
     AIMarkerGenerator.SetWantedGridCellSize(WantedGridCellSize)
     -- build marker grid for land
     local STARTSUB = GetSystemTimeSecondsOnlyForProfileUse()
     AIMarkerGenerator.CreateMarkerGrid("Land")
-    AIDebug(string.format('* AI-Uveso: Function CreateAIMarkers(): CreateMarkerGrid finished, runtime: %.2f seconds.', GetSystemTimeSecondsOnlyForProfileUse() - STARTSUB  ), true, UvesoOffsetSimInitLUA)
+    AIDebug(string.format('* AI-Uveso: Function CreateAIMarkers(): CreateMarkerGrid (Land) finished, runtime: %.2f seconds.', GetSystemTimeSecondsOnlyForProfileUse() - STARTSUB  ), true, UvesoOffsetSimInitLUA)
     -- build connections for land
     local STARTSUB = GetSystemTimeSecondsOnlyForProfileUse()
     AIMarkerGenerator.ConnectMarkerWithPathing("Land")
     --ForkThread(AIMarkerGenerator.ConnectMarkerWithPathing, 'Land')
-    AIDebug(string.format('* AI-Uveso: Function CreateAIMarkers(): ConnectMarkerWithPathing finished, runtime: %.2f seconds.', GetSystemTimeSecondsOnlyForProfileUse() - STARTSUB  ), true, UvesoOffsetSimInitLUA)
+    AIDebug(string.format('* AI-Uveso: Function CreateAIMarkers(): ConnectMarkerWithPathing (Land) finished, runtime: %.2f seconds.', GetSystemTimeSecondsOnlyForProfileUse() - STARTSUB  ), true, UvesoOffsetSimInitLUA)
     -- build Graph for related areas
     local STARTSUB = GetSystemTimeSecondsOnlyForProfileUse()
     AIMarkerGenerator.BuildGraphAreas("Land")
-    AIDebug(string.format('* AI-Uveso: Function CreateAIMarkers(): BuildGraphAreas finished, runtime: %.2f seconds.', GetSystemTimeSecondsOnlyForProfileUse() - STARTSUB  ), true, UvesoOffsetSimInitLUA)
+    AIDebug(string.format('* AI-Uveso: Function CreateAIMarkers(): BuildGraphAreas (Land) finished, runtime: %.2f seconds.', GetSystemTimeSecondsOnlyForProfileUse() - STARTSUB  ), true, UvesoOffsetSimInitLUA)
     -- get marker for land
     markerTable = AIMarkerGenerator.GetMarkerTable("Land")
     -- convert markers and copy to MASTERCHAIN
-    ConvertMarkerTableToFAF(markerTable, 'Land')
+    ConvertMarkerTableToFAF(markerTable, "Land")
 
     -- Set grid cell size for water
     AIMarkerGenerator.SetWantedGridCellSize(WantedGridCellSize)
@@ -549,7 +549,7 @@ function CreateAIMarkers()
     -- get marker for water
     markerTable = AIMarkerGenerator.GetMarkerTable("Water")
     -- convert markers and copy to MASTERCHAIN
-    ConvertMarkerTableToFAF(markerTable, 'Water')
+    ConvertMarkerTableToFAF(markerTable, "Water")
 
     -- Set grid cell size for amphibious
     AIMarkerGenerator.SetWantedGridCellSize(WantedGridCellSize)
@@ -563,7 +563,7 @@ function CreateAIMarkers()
     -- get marker for amphibious
     markerTable = AIMarkerGenerator.GetMarkerTable("Amphibious")
     -- convert markers and copy to MASTERCHAIN
-    ConvertMarkerTableToFAF(markerTable, 'Amphibious')
+    ConvertMarkerTableToFAF(markerTable, "Amphibious")
 
     -- Set grid cell size for hover
     AIMarkerGenerator.SetWantedGridCellSize(WantedGridCellSize)
@@ -577,12 +577,12 @@ function CreateAIMarkers()
     -- get marker for hover
     markerTable = AIMarkerGenerator.GetMarkerTable("Hover")
     -- convert markers and copy to MASTERCHAIN
-    ConvertMarkerTableToFAF(markerTable, 'Hover')
+    ConvertMarkerTableToFAF(markerTable, "Hover")
     
     --create naval Areas
     NavalMarkerPositions = AIMarkerGenerator.CreateNavalExpansions()
     ConvertNavalExpansionsToFAF(NavalMarkerPositions)
-    AILog(string.format('* AI-Uveso: Function CreateAIMarkers(): Marker generator finished, runtime: %.2f seconds.', GetSystemTimeSecondsOnlyForProfileUse() - START  ), true, UvesoOffsetSimInitLUA)
+    AILog(string.format("* AI-Uveso: Function CreateAIMarkers(): Marker generator finished, runtime: %.2f seconds.", GetSystemTimeSecondsOnlyForProfileUse() - START  ), true, UvesoOffsetSimInitLUA)
 
     --create land expansions
     LandMarkerPositions = AIMarkerGenerator.CreateLandExpansions()
@@ -1164,7 +1164,7 @@ function ValidateModFilesUveso()
     local ModName = 'AI-Uveso'
     local ModDirectory = 'AI-Uveso'
     local Files = 87
-    local Bytes = 2030025
+    local Bytes = 2030657
     local modlocation = ""
     for i, mod in __active_mods do
         if mod.name == ModName then

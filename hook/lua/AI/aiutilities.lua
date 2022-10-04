@@ -500,7 +500,8 @@ function AIFindNearestCategoryTargetInRangeOLD(aiBrain, platoon, squad, position
                                         ReturnReason = reason
                                         --AILog('* AIFindNearestCategoryTargetInRange: Possible target with path. distance '..distance..'  ')
                                     -- We don't find a path with markers
-                                    else
+                                    -- only check units with no path if we don't have already a unit with path
+                                    elseif not UnitWithPath then
                                         -- NoPath happens if we have markers, but can't find a way to the destination. (We need transport)
                                         if reason == 'NoPath' then
                                             UnitNoPath = Target
