@@ -341,6 +341,8 @@ function GeneratePathUveso(aiBrain, startNode, endNode, threatType, threatWeight
     return false
 end
 
+-- moved to AIMarkerGenerator.lua
+--[[
 function CanGraphAreaTo(startPos, destPos, layer)
     if layer == 'Air' then
         return true
@@ -380,7 +382,7 @@ function CanGraphAreaTo(startPos, destPos, layer)
     --AIWarn('* AI-Uveso: CanGraphAreaTo: startNode: '..repr(startNode)..' - endNode: '..repr(endNode)..' FALSE')
     return false
 end
-
+--]]
 
 ----For time debug GeneratePathUveso()
 --local TimeHIGHEST

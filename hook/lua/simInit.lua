@@ -202,6 +202,7 @@ function ValidateMapAndMarkers()
     end
 
     -- Check map markers
+    local playableArea = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').GetPlayableArea()
     local TEMP = {}
     local UNKNOWNMARKER = {}
     local dist
@@ -240,7 +241,7 @@ function ValidateMapAndMarkers()
 
         -- Check Mass Marker
         if v.type == 'Mass' then
-            if v.position[1] <= 8 or v.position[1] >= ScenarioInfo.size[1] - 8 or v.position[3] <= 8 or v.position[3] >= ScenarioInfo.size[2] - 8 then
+            if v.position[1] <= playableArea[1] + 8 or v.position[1] >= playableArea[3] - 8 or v.position[3] <= playableArea[2] + 8 or v.position[3] >= playableArea[4] - 8 then
                 AIWarn('* AI-Uveso: ValidateMapAndMarkers: MarkerType: [\''..v.type..'\'] is too close to map border. IndexName = ['..k..']. (Mass marker deleted!!!)', true, UvesoOffsetSimInitLUA)
                 Scenario.MasterChain._MASTERCHAIN_.Markers[k] = nil
             end
@@ -447,6 +448,8 @@ function CreateAIMarkers()
         -- Build Graphs like LAND1 LAND2 WATER1 WATER2
         BuildGraphAreasWithFAFMarker()
         return
+-- disabled option for marker generator
+--[[
     elseif ScenarioInfo.Options.AIMapMarker == 'off' then
         AILog('* AI-Uveso: Running without markers, deleting map marker.', true, UvesoOffsetSimInitLUA)
         CREATEDMARKERS = {}
@@ -475,7 +478,10 @@ function CreateAIMarkers()
         end
     elseif ScenarioInfo.Options.AIMapMarker == 'all' then
         AILog('* AI-Uveso: Generating marker, please wait...', true, UvesoOffsetSimInitLUA)
+--]]
     end
+
+    AILog('* AI-Uveso: Generating marker, please wait...', true, UvesoOffsetSimInitLUA)
 
 -- 10x10 Map
 --runtime: 50.04 seconds. first run
@@ -1164,7 +1170,7 @@ function ValidateModFilesUveso()
     local ModName = 'AI-Uveso'
     local ModDirectory = 'AI-Uveso'
     local Files = 87
-    local Bytes = 2030657
+    local Bytes = 2021765
     local modlocation = ""
     for i, mod in __active_mods do
         if mod.name == ModName then

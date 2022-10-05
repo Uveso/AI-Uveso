@@ -3,7 +3,7 @@
 
 local MAPBASEPOSTITIONS = {}
 local mapSizeX, mapSizeZ = GetMapSize()
-local AIAttackUtils = import('/lua/AI/aiattackutilities.lua')
+local CanGraphAreaTo = import("/mods/AI-Uveso/lua/AI/AIMarkerGenerator.lua").CanGraphAreaTo
 
 --{ UCBC, 'CanBuildCategory', { categories.RADAR * categories.TECH1 } },
 local FactionIndexToCategory = {[1] = categories.UEF, [2] = categories.AEON, [3] = categories.CYBRAN, [4] = categories.SERAPHIM, [5] = categories.NOMADS, [6] = categories.ARM, [7] = categories.CORE }
@@ -361,7 +361,7 @@ function CanPathNavalBaseToNavalTargets(aiBrain, locationType, unitCategory)
     for _, EnemyUnit in EnemyNavalUnits do
         if not EnemyUnit.Dead then
             --AILog('checking enemy factories '..repr(EnemyUnit:GetPosition()))
-            if AIAttackUtils.CanGraphAreaTo(baseposition, EnemyUnit:GetPosition(), 'Water') then
+            if CanGraphAreaTo(baseposition, EnemyUnit:GetPosition(), 'Water') then
                 --AILog('Found a water path from base ['..locationType..'] to enemy position '..repr(EnemyUnit:GetPosition()))
                 return true
             end

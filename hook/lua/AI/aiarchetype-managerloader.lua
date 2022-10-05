@@ -4,7 +4,7 @@ SPEW('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'.
 
 local Buff = import('/lua/sim/Buff.lua')
 local HighestThreat = {}
-local AIAttackUtils = import('/lua/ai/aiattackutilities.lua')
+local CanGraphAreaTo = import("/mods/AI-Uveso/lua/AI/AIMarkerGenerator.lua").CanGraphAreaTo
 
 -- This hook is for debug-option Platoon-Names. Hook for all AI's
 OldExecutePlanFunctionUveso = ExecutePlan
@@ -1241,7 +1241,7 @@ function AddFactoryToClosestManager(aiBrain, factory)
         AIWarn('ClosestMarkerBasePos = NIL', true, UvesoOffsetaiarchetypeLUA)
     end
     
-    if dist > BaseRadius or (not ClosestMarkerBasePos) or (not AIAttackUtils.CanGraphAreaTo(FactoryPos, ClosestMarkerBasePos, layer)) then -- needs graph check for land and naval locations
+    if dist > BaseRadius or (not ClosestMarkerBasePos) or (not CanGraphAreaTo(FactoryPos, ClosestMarkerBasePos, layer)) then -- needs graph check for land and naval locations
         if NavalFactory then
             MarkerBaseName = 'Naval Area '..Random(1000,5000)
             areatype = 'Naval Area'

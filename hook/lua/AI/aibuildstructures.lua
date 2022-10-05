@@ -14,6 +14,7 @@ function AIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder,
     if not aiBrain.Uveso then
         return UvesoAIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder, relative, buildingTemplate, baseTemplate, reference, NearMarkerType)
     end
+    local playableArea = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').GetPlayableArea()
     local factionIndex = aiBrain:GetFactionIndex()
     local whatToBuild = aiBrain:DecideWhatToBuild(builder, buildingType, buildingTemplate)
     local FactionIndexToName = {[1] = 'UEF', [2] = 'AEON', [3] = 'CYBRAN', [4] = 'SERAPHIM', [5] = 'NOMADS', [6] = 'ARM', [7] = 'CORE' }
@@ -151,7 +152,7 @@ function AIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder,
             MexPositions[aiBrain.Army] = {}
             for _, v in Scenario.MasterChain._MASTERCHAIN_.Markers do
                 if v.type == 'Mass' then
-                    if v.position[1] <= 8 or v.position[1] >= ScenarioInfo.size[1] - 8 or v.position[3] <= 8 or v.position[3] >= ScenarioInfo.size[2] - 8 then
+                    if v.position[1] <= playableArea[1] + 8 or v.position[1] >= playableArea[3] - 8 or v.position[3] <= playableArea[2] + 8 or v.position[3] >= playableArea[4] - 8 then
                         -- mass marker is too close to border, skip it.
                         continue
                     end

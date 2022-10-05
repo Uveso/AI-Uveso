@@ -17,6 +17,8 @@ AIOpts = {
             '1000', '1100', '1200', '1300', '1400', '1500', '1600', '1700', '1800', '1900', '2000'
         },
     },
+-- disabled option for marker generator
+--[[
     {
         default = 2,
         label = "<LOC aisettingsUveso_0192>AI Map Marker generator",
@@ -50,6 +52,7 @@ AIOpts = {
             },
         },
     },
+--]]
     {
         default = 2,
         label = "<LOC aisettingsUveso_0222>AI overwhelm increase",

@@ -667,7 +667,7 @@ end
 function getFreeMarkerPosition(x, z, movementLayer)
     local PathMap = PathMap
     local debugPrint = false
---    if x == 18 and z == 0 then
+--    if x == 23 and z == 30 then
 --        debugPrint = true
 --    end
     local zcStart = mathFloor(z * MarkerGridSizeZ + PlayableArea[2])
@@ -959,6 +959,9 @@ function BuildGraphAreas(movementLayer)
     local GraphCountIndex = {}
     for x, MarkerGridYrow in MarkerGrid[movementLayer] do
         for z, markerInfo in MarkerGridYrow or {} do
+        if movementLayer == "Land" then
+                AIDebug('* AI-Uveso: BuildGraphAreas(): for '..movementLayer..' ['..x..']['..z..'] '..repr(markerInfo.GraphArea), true)
+            end
             if markerInfo.GraphArea then
                 GraphCountIndex[markerInfo.GraphArea] = GraphCountIndex[markerInfo.GraphArea] or 1
                 GraphCountIndex[markerInfo.GraphArea] = GraphCountIndex[markerInfo.GraphArea] + 1
@@ -967,6 +970,53 @@ function BuildGraphAreas(movementLayer)
     end
     AIDebug('* AI-Uveso: BuildGraphAreas(): for '..movementLayer..' '..repr(GraphCountIndex), true)
 --]]
+end
+
+function CanGraphAreaTo(startPos, destPos, movementLayer)
+    if movementLayer == 'Air' then
+        return true
+    end
+    local areaS, areaE, dist
+    local gridXs, gridZs = GetMarkerGridIndexFromPosition(startPos)
+    local gridXe, gridZe = GetMarkerGridIndexFromPosition(destPos)
+    if MarkerGrid[movementLayer][gridXs][gridZs].GraphArea then
+        areaS = MarkerGrid[movementLayer][gridXs][gridZs].GraphArea
+    else
+        local closestDist
+        for x = -1, 1, 1 do
+            for z = -1, 1, 1 do
+                if MarkerGrid[movementLayer][gridXs + x][gridZs + z].GraphArea then
+                    dist = VDist2(startPos[1], startPos[3], MarkerGrid[movementLayer][gridXs + x][gridZs + z].position[1], MarkerGrid[movementLayer][gridXs + x][gridZs + z].position[3])
+                    if not closestDist or closestDist > dist then
+                        closestDist = dist
+                        areaS = MarkerGrid[movementLayer][gridXs + x][gridZs + z].GraphArea
+                    end
+                end
+            end
+        end
+    end
+    if MarkerGrid[movementLayer][gridXe][gridZe].GraphArea then
+        areaE = MarkerGrid[movementLayer][gridXe][gridZe].GraphArea
+    else
+        local closestDist
+        for x = -1, 1, 1 do
+            for z = -1, 1, 1 do
+                if MarkerGrid[movementLayer][gridXe + x][gridZe + z].GraphArea then
+                    dist = VDist2(startPos[1], startPos[3], MarkerGrid[movementLayer][gridXe + x][gridZe + z].position[1], MarkerGrid[movementLayer][gridXe + x][gridZe + z].position[3])
+                    if not closestDist or closestDist > dist then
+                        closestDist = dist
+                        areaE = MarkerGrid[movementLayer][gridXe + x][gridZe + z].GraphArea
+                    end
+                end
+            end
+        end
+    end
+    if areaS and areaE and areaS == areaE then
+        --AILog('* AI-Uveso: CanGraphAreaTo: startNode: '..repr(areaS)..' - endNode: '..repr(areaE)..' TRUE')
+        return true
+    end
+    --AIWarn('* AI-Uveso: CanGraphAreaTo: startNode: '..repr(areaS)..' - endNode: '..repr(areaE)..' FALSE')
+    return false
 end
 
 function CreateNavalExpansions()
@@ -1031,6 +1081,7 @@ end
 
 function CreateLandExpansions()
     AIDebug("* AI-Uveso: Function CreateLandExpansions started.", true)
+    local playableArea = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').GetPlayableArea()
     local MassMarker = {}
     local MexInMarkerRange = {}
     local StartPosition = {}
@@ -1047,7 +1098,7 @@ function CreateLandExpansions()
     -- get all mass spots
     for _, v in Scenario.MasterChain._MASTERCHAIN_.Markers do
         if v.type == 'Mass' then
-            if v.position[1] <= 8 or v.position[1] >= ScenarioInfo.size[1] - 8 or v.position[3] <= 8 or v.position[3] >= ScenarioInfo.size[2] - 8 then
+            if v.position[1] <= playableArea[1] + 8 or v.position[1] >= playableArea[3] - 8 or v.position[3] <= playableArea[2] + 8 or v.position[3] >= playableArea[4] - 8 then
                 -- mass marker is too close to border, skip it.
             else
                 table.insert(MassMarker, {Position = v.position})

@@ -7,6 +7,7 @@ local LastGetMassMarker = -1
 local MassMarker = {}
 local LastMassBOOL = false
 function CanBuildOnMass(aiBrain, locationType, distance, threatMin, threatMax, threatRings, threatType, maxNum )
+    local playableArea = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').GetPlayableArea()
     local engineerManager = aiBrain.BuilderManagers[locationType].EngineerManager
     if not engineerManager then
         --AIWarn('*AI WARNING: CanBuildOnMass: Invalid location - ' .. locationType)
@@ -18,7 +19,7 @@ function CanBuildOnMass(aiBrain, locationType, distance, threatMin, threatMax, t
         MassMarker = {}
         for _, v in Scenario.MasterChain._MASTERCHAIN_.Markers do
             if v.type == 'Mass' then
-                if v.position[1] <= 8 or v.position[1] >= ScenarioInfo.size[1] - 8 or v.position[3] <= 8 or v.position[3] >= ScenarioInfo.size[2] - 8 then
+                if v.position[1] <= playableArea[1] + 8 or v.position[1] >= playableArea[3] - 8 or v.position[3] <= playableArea[2] + 8 or v.position[3] >= playableArea[4] - 8 then
                     -- mass marker is too close to border, skip it.
                     continue
                 end

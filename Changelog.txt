@@ -1,13 +1,20 @@
-v106 (not public released)
+v107 (05.Oct.2022)
 
 - New: completely new marker generator - every movement layer is now created independently
 - New: added movement layer for hover units (was using amphibious layer before).
+- Del: removed lobby option for AI waypoint genertor. (it's now always on)
 - Fix: fixed a bug that could cause the nuke function to error out after a launcher died
 - Opt: minor improvement in EconomyBuildConditions calculation speed
 - Opt: removes special pathing for engineers (pathing without heuristic search)
+- Opt: check for mass spots are now based on playerarea instead of map size
 - DEV: Fn OnDefeat() now first checks for the existence of a manager before trying to delete it
 - DEV: changed check for defeat to aiBrain.Status ~= "Defeat"
 - DEV: pathing debug will now display expansions first (from game second 5 to 10)
+
+*************************************************************************************************************************************
+v106 (not public released)
+
+- Test: new marker generator
 
 *************************************************************************************************************************************
 v105 (06.Sep.2022)
