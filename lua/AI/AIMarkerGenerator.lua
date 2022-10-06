@@ -5,13 +5,16 @@
 -- Copyright © 2022 Enhearten Media PTY LTD.
 
 local getTerrainHeight = GetTerrainHeight
+local getSurfaceHeight = GetSurfaceHeight
+local getTerrainType = GetTerrainType
+
 local mathMax = math.max
+local mathMin = math.min
 local mathFloor = math.floor
 local mathAbs = math.abs
 local mathCeil = math.ceil
 local mathAtan2 = math.atan2
 
-local AIAttackUtils = import('/lua/ai/aiattackutilities.lua')
 local WantedGridCellSize = 14
 local PlayableArea
 local PlayableMapSizeX
@@ -22,7 +25,8 @@ local MarkerGridSizeX
 local MarkerGridSizeZ
 local MarkerGrid = {}
 local PathMap = {}
-
+local LandExpansions = {}
+local NavalExpansions = {}
 
 function InitMarkerGenerator()
     PlayableArea = import("/mods/AI-Uveso/lua/AI/AITargetManager.lua").GetPlayableArea()
@@ -47,14 +51,14 @@ end
 
 function GetMarkerGridIndexFromPosition(Position)
     --AILog("GetHeatMapGridIndexFromPosition unit Pos"..Position[1].." "..Position[3].."")
-    local x = math.floor( (Position[1] - PlayableArea[1]) / MarkerGridSizeX ) 
-    local z = math.floor( (Position[3] - PlayableArea[2]) / MarkerGridSizeZ )
+    local x = mathFloor( (Position[1] - PlayableArea[1]) / MarkerGridSizeX ) 
+    local z = mathFloor( (Position[3] - PlayableArea[2]) / MarkerGridSizeZ )
     --AILog("GetHeatMapGridIndexFromPosition area Pos"..x.." "..z.."")
     -- Make sure that x and z are inside the playable area
-    x = math.max( 0, x )
-    x = math.min( MarkerGridCountX - 1, x )
-    z = math.max( 0, z )
-    z = math.min( MarkerGridCountZ - 1, z )
+    x = mathMax( 0, x )
+    x = mathMin( MarkerGridCountX - 1, x )
+    z = mathMax( 0, z )
+    z = mathMin( MarkerGridCountZ - 1, z )
     --AILog("GetHeatMapGridIndexFromPosition math Pos"..x.." "..z.."")
     return x, z
 end
@@ -77,7 +81,7 @@ function BuildTerrainPathMap()
         for z = PlayableArea[2], PlayableArea[4] do
             PathMap[x][z] = {}
             -- check for water depth. -21 would be 21 beyond the water surface
-            waterDepth = getTerrainHeight(x, z) - GetSurfaceHeight(x, z)
+            waterDepth = getTerrainHeight(x, z) - getSurfaceHeight(x, z)
             -- set the layer depending on the water depth
             if waterDepth >= 0 then
                 -- 0+ is land / hover / amphibious (not naval)
@@ -103,7 +107,7 @@ function BuildTerrainPathMap()
 end
 
 function IsPathable(x,z)
-    if not GetTerrainType(x,z).Blocking then
+    if not getTerrainType(x,z).Blocking then
         local U, D, L, R, LU, RU, LD, RD
         M = getTerrainHeight(x + 0.50, z + 0.50 )
         U = getTerrainHeight(x + 0.50, z + 0.01 )
@@ -119,19 +123,27 @@ function IsPathable(x,z)
 --        if (x == 246 or x == 247) and (z == 200 or z == 201) then
 --        if (x == 35 or x == 36) and (z == 46 or z == 47) then
         if (x == 10 or x == 11) and (z == 155 or z == 156) then
-            AIWarn("["..x.."]["..z.."] mathAbs(M-U) "..math.floor(mathAbs(M-U)*100))
-            AIWarn("["..x.."]["..z.."] mathAbs(M-D) "..math.floor(mathAbs(M-D)*100))
-            AIWarn("["..x.."]["..z.."] mathAbs(M-L) "..math.floor(mathAbs(M-L)*100))
-            AIWarn("["..x.."]["..z.."] mathAbs(M-R) "..math.floor(mathAbs(M-R)*100))
-            AIWarn("["..x.."]["..z.."] mathAbs(M-LU) "..math.floor(mathAbs(M-LU)*100))
-            AIWarn("["..x.."]["..z.."] mathAbs(M-RU) "..math.floor(mathAbs(M-RU)*100))
-            AIWarn("["..x.."]["..z.."] mathAbs(M-LD) "..math.floor(mathAbs(M-LD)*100))
-            AIWarn("["..x.."]["..z.."] mathAbs(M-RD) "..math.floor(mathAbs(M-RD)*100))
+            AIWarn("["..x.."]["..z.."] mathAbs(M-U) "..mathFloor(mathAbs(M-U)*100))
+            AIWarn("["..x.."]["..z.."] mathAbs(M-D) "..mathFloor(mathAbs(M-D)*100))
+            AIWarn("["..x.."]["..z.."] mathAbs(M-L) "..mathFloor(mathAbs(M-L)*100))
+            AIWarn("["..x.."]["..z.."] mathAbs(M-R) "..mathFloor(mathAbs(M-R)*100))
+            AIWarn("["..x.."]["..z.."] mathAbs(M-LU) "..mathFloor(mathAbs(M-LU)*100))
+            AIWarn("["..x.."]["..z.."] mathAbs(M-RU) "..mathFloor(mathAbs(M-RU)*100))
+            AIWarn("["..x.."]["..z.."] mathAbs(M-LD) "..mathFloor(mathAbs(M-LD)*100))
+            AIWarn("["..x.."]["..z.."] mathAbs(M-RD) "..mathFloor(mathAbs(M-RD)*100))
         end
 --]]
         return mathMax( mathAbs(M-U), mathAbs(M-D), mathAbs(M-L), mathAbs(M-R) ) < 0.36 and mathMax( mathAbs(M-LU), mathAbs(M-RU), mathAbs(M-LD), mathAbs(M-RD) ) < 0.44
     end
     return false
+end
+
+function GetLandExpansions()
+    return LandExpansions
+end
+
+function GetNavalExpansions()
+    return NavalExpansions
 end
 
 local pathMapColors = {
@@ -210,15 +222,15 @@ end
 --    local MarkerPosition = {0,0,0}
 --    local Marker2Position = {0,0,0}
 --    while true do
---        for x, MarkerGridYrow in MarkerGrid[movementLayer] do
---            for y, markerInfo in MarkerGridYrow or {} do
+--        for x, MarkerGridYrow in pairs(MarkerGrid[movementLayer]) do
+--            for y, markerInfo in pairs(MarkerGridYrow or {}) do
 --                -- Draw the marker path node
 --                MarkerPosition[1] = markerInfo.position[1] + (markerOffsets[movementLayer][1])
 --                MarkerPosition[2] = markerInfo.position[2] + (markerOffsets[movementLayer][2])
 --                MarkerPosition[3] = markerInfo.position[3] + (markerOffsets[movementLayer][3])
 --                DrawCircle( markerInfo.position, 2.5, markerOffsets[movementLayer]['color'] )
 --                -- Draw the connecting lines to its adjacent nodes
---                for i, node in markerInfo.adjacentTo or {} do
+--                for i, node in pairs(markerInfo.adjacentTo or {}) do
 --                    otherMarker = MarkerGrid[movementLayer][node[1]][node[2]]
 --                    if otherMarker then
 --                        Marker2Position[1] = otherMarker.position[1] + markerOffsets[movementLayer][1]
@@ -311,13 +323,12 @@ function GraphRenderThread()
     end
 end
 
-function DrawPathGraph(DrawOnly,Blink)
+function DrawPathGraph(drawOnly,blink)
     local color
-    if Blink == 1 then
+    if blink == 1 then
         colors['counter'] = colors['counter'] + 1
         if colors['counter'] > colors['countermax'] then
             colors['counter'] = 0
-            --AILog('lastcolorindex:'..colors['lastcolorindex']..' - table.getn(colors)'..table.getn(colors))
             if colors['lastcolorindex'] >= (table.getn(colors)) then
                 colors['lastcolorindex'] = 1
             else
@@ -325,74 +336,82 @@ function DrawPathGraph(DrawOnly,Blink)
             end
         end
         color = colors[colors['lastcolorindex']]
-    elseif Blink == 2 then
+    elseif blink == 2 then
         color = "ff404040"
     else
-        color = markerOffsets[DrawOnly]['color']
+        color = markerOffsets[drawOnly]['color']
     end
 
     local MarkerPosition = {0,0,0}
     local Marker2Position = {0,0,0}
     -- Render the connection between the path nodes for the specific graph
     local otherMarker
-    for Layer, LayerMarkers in AIAttackUtils.GetPathGraphs() do
-        for graph, GraphMarkers in LayerMarkers do
-            for nodename, markerInfo in GraphMarkers do
-                if not DrawOnly or DrawOnly == markerInfo.layer then
-                    MarkerPosition[1] = markerInfo.position[1] + (markerOffsets[markerInfo.layer][1])
-                    MarkerPosition[2] = markerInfo.position[2] + (markerOffsets[markerInfo.layer][2])
-                    MarkerPosition[3] = markerInfo.position[3] + (markerOffsets[markerInfo.layer][3])
+    for movementLayer, layerMarkers in pairs(MarkerGrid) do
+        if not drawOnly or drawOnly == movementLayer then
+            for _, GraphMarkers in pairs(layerMarkers) do
+                for _, markerInfo in pairs(GraphMarkers) do
+                    MarkerPosition[1] = markerInfo.position[1] + (markerOffsets[movementLayer][1])
+                    MarkerPosition[2] = markerInfo.position[2] + (markerOffsets[movementLayer][2])
+                    MarkerPosition[3] = markerInfo.position[3] + (markerOffsets[movementLayer][3])
                     -- Draw the connecting lines to its adjacent nodes
-                    for i, node in markerInfo.adjacent do
-                        otherMarker = GraphMarkers[node]
+                    for _, node in pairs(markerInfo.adjacentTo or {}) do
+                        otherMarker = MarkerGrid[movementLayer][node[1]][node[2]]
                         if otherMarker then
-                            Marker2Position[1] = otherMarker.position[1] + markerOffsets[otherMarker.layer][1]
-                            Marker2Position[2] = otherMarker.position[2] + markerOffsets[otherMarker.layer][2]
-                            Marker2Position[3] = otherMarker.position[3] + markerOffsets[otherMarker.layer][3]
-                            --DrawLinePop(MarkerPosition, Marker2Position, GraphOffsets[otherMarker.layer]['color'])
+                            Marker2Position[1] = otherMarker.position[1] + markerOffsets[movementLayer][1]
+                            Marker2Position[2] = otherMarker.position[2] + markerOffsets[movementLayer][2]
+                            Marker2Position[3] = otherMarker.position[3] + markerOffsets[movementLayer][3]
                             DrawLinePop(MarkerPosition, Marker2Position, color )
                         end
                     end
                     -- Draw the marker path node
                     if markerInfo.impassability == 1 then
-                        DrawCircle(MarkerPosition, 2.5, "ff000000")
-                        DrawCircle(MarkerPosition, 3.2, "ff00FF00")
+                        DrawCircle(MarkerPosition, 2.5, color)
+                        DrawCircle(MarkerPosition, 3.2, "ff0000FF")
                     elseif markerInfo.impassability == 2 then
-                        DrawCircle(MarkerPosition, 2.5, "ff000000")
+                        DrawCircle(MarkerPosition, 2.5, color)
+                        DrawCircle(MarkerPosition, 3.2, "ff00FF00")
+                    elseif markerInfo.impassability == 3 then
+                        DrawCircle(MarkerPosition, 2.5, color)
                         DrawCircle(MarkerPosition, 3.2, "ffFF0000")
                     else
                         DrawCircle(MarkerPosition, 2.5, color)
-
                     end
                 end
             end
         end
     end
-    for nodename, markerInfo in Scenario.MasterChain._MASTERCHAIN_.Markers or {} do
+    
+    -- draw start positions
+    for _, markerInfo in Scenario.MasterChain._MASTERCHAIN_.Markers or {} do
         if markerInfo['type'] == 'Blank Marker' then
             DrawCircle(markerInfo['position'], 8, 'ffFF0000' )
             DrawCircle(markerInfo['position'], 7.5, 'ff000000' )
             DrawCircle(markerInfo['position'], 9, 'ffF4A460' )
         end
-        if markerInfo['type'] == 'Expansion Area' then
-            DrawCircle(markerInfo['position'], 5, 'ffFF0000' )
-            DrawCircle(markerInfo['position'], 4.5, 'ff808080' )
-            DrawCircle(markerInfo['position'], 6, 'ffF4A460' )
+    end
+    -- draw land expansions
+    for _, markerInfo in pairs(LandExpansions or {}) do
+        if markerInfo.MexInRange <= 3 then
+            -- Expansion Area
+            DrawCircle( {markerInfo.x, 0 , markerInfo.z}, 5, 'ffFF0000' )
+            DrawCircle( {markerInfo.x, 0 , markerInfo.z}, 4.5, 'ff808080' )
+            DrawCircle( {markerInfo.x, 0 , markerInfo.z}, 6, 'ffF4A460' )
+        else
+            -- Large Expansion Area
+            DrawCircle( {markerInfo.x, 0 , markerInfo.z}, 10, 'ffFF0000' )
+            DrawCircle( {markerInfo.x, 0 , markerInfo.z}, 9.5, 'ffFFFFFF' )
+            DrawCircle( {markerInfo.x, 0 , markerInfo.z}, 11, 'ffF4A460' )
         end
-        if markerInfo['type'] == 'Large Expansion Area' then
-            DrawCircle(markerInfo['position'], 10, 'ffFF0000' )
-            DrawCircle(markerInfo['position'], 9.5, 'ffFFFFFF' )
-            DrawCircle(markerInfo['position'], 11, 'ffF4A460' )
-        end
-        if markerInfo['type'] == 'Naval Area' then
-            DrawCircle(markerInfo['position'], 8, 'ffFF0000' )
-            DrawCircle(markerInfo['position'], 7.5, 'ff808080' )
-            DrawCircle(markerInfo['position'], 9, 'ffF0F0FF' )
-        end
+    end
+    -- draw naval expansions
+    for _, markerInfo in pairs(NavalExpansions or {}) do
+        DrawCircle( {markerInfo.x, 0 , markerInfo.z}, 8, 'ffFF0000' )
+        DrawCircle( {markerInfo.x, 0 , markerInfo.z}, 7.5, 'ff808080' )
+        DrawCircle( {markerInfo.x, 0 , markerInfo.z}, 9, 'ffF0F0FF' )
     end
 end
 
-function DrawAIPathCache(DrawOnly)
+function DrawAIPathCache(drawOnly)
     -- loop over all players in the game
     local FocussedArmy = GetFocusArmy()
     local LineCountOffset
@@ -417,7 +436,7 @@ function DrawAIPathCache(DrawOnly)
                                     -- loop over all path waypoints and draw lines.
                                     for NodeIndex, PathNode in PathNodes.path.path do
                                         -- continue if we don't want to draw this graph node
-                                        if not DrawOnly or DrawOnly == PathNode.layer then
+                                        if not drawOnly or drawOnly == PathNode.layer then
                                             if LastNode then
                                                 -- If we draw a horizontal line, then draw the next line "under" the last line
                                                 if mathAbs(LastNode.position[1] - PathNode.position[1]) > mathAbs(LastNode.position[3] - PathNode.position[3]) then
@@ -467,7 +486,7 @@ function CreateMarkerGrid(movementLayer)
             if posX then -- we asume that posZ is present like posX.
                 MarkerGrid[movementLayer][x][z] =
                     {
-                        ['position'] = VECTOR3( posX, GetSurfaceHeight(posX,posZ), posZ ),
+                        ['position'] = VECTOR3( posX, getSurfaceHeight(posX,posZ), posZ ),
                         ['adjacentTo'] = {},
                         ['impassability'] = impassability or 0,
                     }
@@ -524,11 +543,27 @@ function ConnectMarkerWithPathing(movementLayer)
 --end
                 -- count adjacents
                 if table.getn(MarkerGrid[movementLayer][x][z].adjacentTo) < 8 then
-                    MarkerGrid[movementLayer][x][z].impassability = MarkerGrid[movementLayer][x][z].impassability + 1
+                    MarkerGrid[movementLayer][x][z].impassability = MarkerGrid[movementLayer][x][z].impassability + 2
                 end
             end
         end
     end
+    -- loop over all marker and set the impassibility flag to all markers that have impassibility neighbours
+    local neighbours
+    for x = 0, MarkerGridCountX - 1 do
+        for z = 0, MarkerGridCountZ - 1 do
+            if MarkerGrid[movementLayer][x][z] and MarkerGrid[movementLayer][x][z].impassability == 0 then
+                if MarkerGrid[movementLayer][x][z - 1].impassability > 1
+                    or MarkerGrid[movementLayer][x - 1][z].impassability > 1
+                    or MarkerGrid[movementLayer][x + 1][z].impassability > 1
+                    or MarkerGrid[movementLayer][x][z + 1].impassability > 1
+                then
+                    MarkerGrid[movementLayer][x][z].impassability = 1
+                end
+            end
+        end
+    end
+
 end
 
 function CanPathBetweenMarker(x, z, xA, zA, movementLayer, useAbsolutCoords)
@@ -620,11 +655,16 @@ function CanPathBetweenMarker(x, z, xA, zA, movementLayer, useAbsolutCoords)
                 if movementLayer == "Hover" then
                     -- special rule for Hover, we can't be blocked by terrain on beach, seabed or Abyss
                     -- except the shoreline on beach 1 cell near land
-                    shoreline = PathMap[posX][posZ].layer == "Land"
-                        or PathMap[posX-1][posZ].layer == "Land"
-                        or PathMap[posX][posZ-1].layer == "Land"
-                        or PathMap[posX+1][posZ+1].layer == "Land"
-                        or PathMap[posX-1][posZ-1].layer == "Land"
+                    shoreline = false
+                    for x = posX - 1, posX + 1, 1 do
+                        for z = posZ - 1, posZ + 1, 1 do
+                            if PathMap[x] and PathMap[x][z] then
+                                if PathMap[posX][posZ].layer == "Land" then
+                                    shoreline = true
+                                end
+                            end
+                        end
+                    end
                     if lineBlocked or layerRestricted or (cellBlocked and shoreline) then
                         --AIWarn("blocked", true)
                         DrawLine( {pos[1] + o*xH, pos[2] + 0.1, pos[3] + o*zH}, { posX, pos[2] + 0.1, posZ}, 'ffFF0000' )
@@ -702,21 +742,24 @@ function getFreeMarkerPosition(x, z, movementLayer)
                 layerRestricted = false
             end
             -- special rule for hover and amphibious, don't make a marker on the shoreline between land and water if its blocked
-            cellBlocked = PathMap[xc][zc].blocked 
-                or PathMap[xc-1][zc].blocked
-                or PathMap[xc][zc-1].blocked
-                or PathMap[xc+1][zc+1].blocked
-                or PathMap[xc-1][zc-1].blocked
-            land = PathMap[xc][zc].layer == "Land"
-                or PathMap[xc-1][zc].layer == "Land"
-                or PathMap[xc][zc-1].layer == "Land"
-                or PathMap[xc+1][zc+1].layer == "Land"
-                or PathMap[xc-1][zc-1].layer == "Land"
-            water = PathMap[xc][zc].layer == "Water"
-                or PathMap[xc-1][zc].layer == "Water"
-                or PathMap[xc][zc-1].layer == "Water"
-                or PathMap[xc+1][zc+1].layer == "Water"
-                or PathMap[xc-1][zc-1].layer == "Water"
+            cellBlocked, land, water = false, false, false
+            for x = xc - 1, xc + 1, 1 do
+                for z = zc - 1, zc + 1, 1 do
+                    if PathMap[x] and PathMap[x][z] then
+                        if PathMap[x][z].blocked then
+                            cellBlocked = true
+                        end
+                        if PathMap[x][z].layer == "Land" then
+                            land = true
+                        end
+                        if PathMap[x][z].layer == "Water" then
+                            water = true
+                        end
+                    else
+                        cellBlocked = true
+                    end
+                end
+            end
             shoreBlocked = cellBlocked and land and water
             if (movementLayer == "Hover" or movementLayer == "Amphibious") and (PathMap[xc][zc].blocked or shoreBlocked or layerRestricted) then
                 PathMap[xc][zc].cellArea = 0
@@ -797,17 +840,19 @@ function getFreeMarkerPosition(x, z, movementLayer)
     AIWarn("Grid Areas: "..repr(count), debugPrint)
     AIWarn("Biggest area ID: "..countMaxGraph.." with "..countMax.." positions", debugPrint)
 
-    -- check if we have only 1 graph (free place) and if the middle is not blocked
+    -- check if we have only 1 graph (free place)
     countMax = 0
-    for _, _ in count do
+    for _, _ in pairs(count) do
         countMax = countMax + 1
     end
     AIWarn("Grid Area count: "..repr(countMax), debugPrint)
     if countMax == 1 then
+        -- calculate the center position of this marker grid cell
         local returnX = mathFloor(x * MarkerGridSizeX + MarkerGridSizeX/ 2 + PlayableArea[1])
         local returnZ = mathFloor(z * MarkerGridSizeZ + MarkerGridSizeZ / 2 + PlayableArea[2])
         if PathMap[returnX][returnZ].cellArea ~= 0 then
-            AIWarn("Short cut count[1] and not count[2] "..repr(count), debugPrint)
+            AIWarn("Short cut countMax == 1 "..repr(count), debugPrint)
+            -- the marker grid cell is plane area, place the marker in the middle
             return returnX, returnZ, 0
         end
     end
@@ -857,6 +902,7 @@ function getFreeMarkerPosition(x, z, movementLayer)
     end
     -- is the square a valid place ?
     if blocked <= blockedTolerance then
+        -- Marker grid cell is blocked on some areas but there is place for the marker in the middle
         return centerX, centerZ, 1
     end
 
@@ -917,6 +963,7 @@ function getFreeMarkerPosition(x, z, movementLayer)
     end
     --AIWarn("Closest free place: "..repr(closestPos), debugPrint)
     if closestPos then
+        -- Marker grid cell is blocked on many areas but there is place for the marker somewhere in the cell
         return closestPos[1], closestPos[2], 1
     end
     -- no place for the marker found
@@ -926,15 +973,15 @@ end
 function BuildGraphAreas(movementLayer)
     local old
     local GraphIndex = 0
-    for xc, MarkerGridYrow in MarkerGrid[movementLayer] do
-        for zc, markerInfo in MarkerGridYrow or {} do
+    for xc, MarkerGridYrow in pairs(MarkerGrid[movementLayer]) do
+        for zc, markerInfo in pairs(MarkerGridYrow or {}) do
             -- Do we have already an Index number for this Graph area ?
             if not markerInfo.GraphArea then
                 GraphIndex = GraphIndex + 1
                 markerInfo.GraphArea = GraphIndex
             end
             -- check adjancents
-            for i, node in markerInfo.adjacentTo or {} do
+            for i, node in pairs(markerInfo.adjacentTo or {}) do
                 -- check if the new node has not a GraphIndex 
                 if not MarkerGrid[movementLayer][node[1]][node[2]].GraphArea then
                     MarkerGrid[movementLayer][node[1]][node[2]].GraphArea = markerInfo.GraphArea
@@ -942,8 +989,8 @@ function BuildGraphAreas(movementLayer)
                 elseif MarkerGrid[movementLayer][node[1]][node[2]].GraphArea ~= markerInfo.GraphArea then
                     -- save the old index here, we will overwrite Markers[node].GraphArea
                     old = MarkerGrid[movementLayer][node[1]][node[2]].GraphArea
-                    for xc2, MarkerGridYrow2 in MarkerGrid[movementLayer] do
-                        for zc2, markerInfo2 in MarkerGridYrow2 or {} do
+                    for xc2, MarkerGridYrow2 in pairs(MarkerGrid[movementLayer]) do
+                        for zc2, markerInfo2 in pairs(MarkerGridYrow2 or {}) do
                             -- has this node the same index then our main marker ?
                             if markerInfo2.GraphArea == old then
                                 markerInfo2.GraphArea = markerInfo.GraphArea
@@ -957,8 +1004,8 @@ function BuildGraphAreas(movementLayer)
 --[[
     -- Validate (only for debug printing)
     local GraphCountIndex = {}
-    for x, MarkerGridYrow in MarkerGrid[movementLayer] do
-        for z, markerInfo in MarkerGridYrow or {} do
+    for x, MarkerGridYrow in pairs(MarkerGrid[movementLayer]) do
+        for z, markerInfo in pairs(MarkerGridYrow or {}) do
         if movementLayer == "Land" then
                 AIDebug('* AI-Uveso: BuildGraphAreas(): for '..movementLayer..' ['..x..']['..z..'] '..repr(markerInfo.GraphArea), true)
             end
@@ -1021,12 +1068,11 @@ end
 
 function CreateNavalExpansions()
     AIDebug("* AI-Uveso: Function CreateNavalExpansions started.", true)
-    local NavalMarkerPositions = {}
     local Blocked
     local markerInfo
     -- Search for naval areas
-    for X, MarkerGridYrow in MarkerGrid["Water"] do
-        for Z, markerInfo in MarkerGridYrow or {} do
+    for X, MarkerGridYrow in pairs(MarkerGrid["Water"]) do
+        for Z, markerInfo in pairs(MarkerGridYrow or {}) do
             Blocked = false
             -- check if we are in the middle of water nodes 3x3 grid
             for ZW = -1, 1 do
@@ -1062,7 +1108,7 @@ function CreateNavalExpansions()
                 end
                 if not Blocked then
                     -- check if we have a naval marker close to this area
-                    for index, NAVALpostition in NavalMarkerPositions do
+                    for index, NAVALpostition in NavalExpansions do
                         -- is this marker farther away than 60
                         if VDist2( markerInfo.position[1], markerInfo.position[3], NAVALpostition.x, NAVALpostition.z) < 60 then
                             Blocked = true
@@ -1070,13 +1116,13 @@ function CreateNavalExpansions()
                         end
                     end
                     if not Blocked then
-                        table.insert(NavalMarkerPositions, {x = markerInfo.position[1], z = markerInfo.position[3], GraphArea = MarkerGrid["Water"][X][Z].GraphArea } )
+                        table.insert(NavalExpansions, {x = markerInfo.position[1], z = markerInfo.position[3], GraphArea = MarkerGrid["Water"][X][Z].GraphArea } )
                     end
                 end
             end
         end
     end
-    return NavalMarkerPositions
+    return NavalExpansions
 end
 
 function CreateLandExpansions()
@@ -1085,7 +1131,6 @@ function CreateLandExpansions()
     local MassMarker = {}
     local MexInMarkerRange = {}
     local StartPosition = {}
-    local NewExpansion = {}
     local alreadyUsed = {}
     local IndexTable = {}
     local gridX, gridZ, posX, posZ, MexInRange, UseThisMarker, count
@@ -1106,8 +1151,8 @@ function CreateLandExpansions()
         end
     end
     -- search for areas with mex in range
-    for X, MarkerGridYrow in MarkerGrid["Land"] do
-        for Z, markerInfo in MarkerGridYrow or {} do
+    for X, MarkerGridYrow in pairs(MarkerGrid["Land"]) do
+        for Z, markerInfo in pairs(MarkerGridYrow or {}) do
             -- check how many masspoints are located near the marker
             for k, v in MassMarker do
                 if VDist2(markerInfo.position[1], markerInfo.position[3], v.Position[1], v.Position[3]) <= 30 then
@@ -1214,7 +1259,7 @@ function CreateLandExpansions()
             end
         end
         -- check if we are to close to an expansion
-        for ks, vn in NewExpansion do
+        for ks, vn in LandExpansions do
             if VDist2(v.x, v.z, vn.x, vn.z) < 50 then
                 -- we are to close to another expansion, don't use it
                 UseThisMarker = false
@@ -1223,11 +1268,11 @@ function CreateLandExpansions()
         end
         -- save the expansion position
         if UseThisMarker then
-            table.insert(NewExpansion, {x = v.x, z = v.z, MexInRange = v.mexcount} )
+            table.insert(LandExpansions, {x = v.x, z = v.z, MexInRange = v.mexcount} )
         end
     end
     -- make sure markers are placed on flat area
-    for index, expansion in NewExpansion do
+    for index, expansion in LandExpansions do
         gridX, gridZ = GetMarkerGridIndexFromPosition({expansion.x, 0, expansion.z})
         posX, posZ = getFreeMarkerPosition(gridX, gridZ, "Land")
         if posX then
@@ -1235,8 +1280,8 @@ function CreateLandExpansions()
             expansion.z = posZ
             expansion.GraphArea = MarkerGrid["Land"][gridX][gridZ].GraphArea
         else
-            NewExpansion[index] = nil
+            LandExpansions[index] = nil
         end
     end    
-    return NewExpansion
+    return LandExpansions
 end

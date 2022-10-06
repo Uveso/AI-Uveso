@@ -1,6 +1,6 @@
 name = "AI-Uveso"
-uid = "62e2j64a-AIUV-107-89465-146as555a8u3"
-version = 107
+uid = "62e2j64a-AIUV-108-89465-146as555a8u3"
+version = 108
 copyright = "2017-2022 Uveso"
 description = "(For FAF only) Advanced turtle AI. Supports Nomads and other unit mods"
 author = "Uveso"

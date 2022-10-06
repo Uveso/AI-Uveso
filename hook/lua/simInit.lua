@@ -496,7 +496,7 @@ function CreateAIMarkers()
     local START = GetSystemTimeSecondsOnlyForProfileUse()
     -- for FAF we want the same grid count (36)+1 on every map size, so we adjust the grid cell size here
     local WantedGridCellSize = math.floor( math.max( ScenarioInfo.size[1], ScenarioInfo.size[2] ) / 36)
-    AILog(" AI-Uveso: Generating marker with grid cell size of ("..WantedGridCellSize..")", true, UvesoOffsetSimInitLUA)
+    AILog("* AI-Uveso: Generating marker with grid cell size of ("..WantedGridCellSize..")", true, UvesoOffsetSimInitLUA)
    
     -- import functions for marker generator
     local AIMarkerGenerator = import("/mods/AI-Uveso/lua/AI/AIMarkerGenerator.lua")
@@ -588,17 +588,20 @@ function CreateAIMarkers()
     --create naval Areas
     NavalMarkerPositions = AIMarkerGenerator.CreateNavalExpansions()
     ConvertNavalExpansionsToFAF(NavalMarkerPositions)
-    AILog(string.format("* AI-Uveso: Function CreateAIMarkers(): Marker generator finished, runtime: %.2f seconds.", GetSystemTimeSecondsOnlyForProfileUse() - START  ), true, UvesoOffsetSimInitLUA)
 
     --create land expansions
     LandMarkerPositions = AIMarkerGenerator.CreateLandExpansions()
     ConvertLandExpansionsToFAF(LandMarkerPositions)
 
+    AILog(string.format("* AI-Uveso: Function CreateAIMarkers(): Marker generator finished, runtime: %.2f seconds.", GetSystemTimeSecondsOnlyForProfileUse() - START  ), true, UvesoOffsetSimInitLUA)
+
+-- disabled option for marker generator
+--[[
     if ScenarioInfo.Options.AIMapMarker == 'print' then
         AILog('map: Printing markers to game.log', true, UvesoOffsetSimInitLUA)
         PrintMASTERCHAIN()
     end
-
+--]]
 end
 
 function ConvertMarkerTableToFAF(markerTable, layer)
@@ -1170,7 +1173,7 @@ function ValidateModFilesUveso()
     local ModName = 'AI-Uveso'
     local ModDirectory = 'AI-Uveso'
     local Files = 87
-    local Bytes = 2021765
+    local Bytes = 2024362
     local modlocation = ""
     for i, mod in __active_mods do
         if mod.name == ModName then

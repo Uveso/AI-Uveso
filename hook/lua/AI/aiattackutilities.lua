@@ -303,10 +303,9 @@ function GeneratePathUveso(aiBrain, startNode, endNode, threatType, threatWeight
                     dist = VDist2(newNode.position[1], newNode.position[3], endNode.position[1], endNode.position[3])
                     -- get threat from current node to adjacent node
                     threat = GetThreatFromHeatMap(armyIndex, newNode.position, startNode.layer)
-                    -- prevent map border and close hills/cliffs
-                    threat = threat + (newNode.impassability or 0) * 30
                     -- add as cost for the path the distance and threat to the overall cost from the whole path
-                    fork.cost = fork.cost + dist + (threat * 1) * threatWeight
+                    --fork.cost = fork.cost + dist + (threat * 1) * threatWeight
+                    fork.cost = fork.cost + dist + (newNode.impassability or 0) * 30 + (threat * 1) * threatWeight
                     -- add the newNode at the end of the path
                     table.insert(fork.path, newNode)
                     -- check if we have reached our destination

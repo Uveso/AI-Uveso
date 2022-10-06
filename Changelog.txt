@@ -1,3 +1,14 @@
+v108 (07.Oct.2022)
+
+- Fix: fixed a bug in EconomyBuildConditions. (Mod was build for FAF develop version)
+- Fix: fixed pathing to evade cliffs / hills or cluttered areas.
+- Fix: sub AI Experimentals was not building defense tanks if enemy is close to base
+- Opt: refactored marker generator.
+- Opt: pathing debug view is now using the internal markers, not the FAF PathGraphs
+- DEV: added 3rd impassability value for markers that are neighbors to already flaged markers
+- DEV: new commands for marker generator: GetLandExpansions(), GetNavalExpansions() 
+
+*************************************************************************************************************************************
 v107 (05.Oct.2022)
 
 - New: completely new marker generator - every movement layer is now created independently

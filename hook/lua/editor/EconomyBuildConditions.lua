@@ -1,3 +1,6 @@
+-- canbe removed after the next FAF patch 07.Oct.2022
+local GetEconomyTrend = moho.aibrain_methods.GetEconomyTrend
+local GetEconomyIncome = moho.aibrain_methods.GetEconomyIncome
 
 GreaterThanEconStorageRatio_FunctionBackupUveso = GreaterThanEconStorageRatio
 function GreaterThanEconStorageRatio(aiBrain, mStorageRatio, eStorageRatio)
