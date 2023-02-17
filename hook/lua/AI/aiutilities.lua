@@ -24,7 +24,7 @@ function EngineerMoveWithSafePath(aiBrain, unit, destination)
 
     -- first try to find a path with markers.
     local result, bestPos
-    local path, reason = AIAttackUtils.EngineerGenerateSafePathTo(aiBrain, 'Amphibious', pos, destination)
+    local path, reason = AIAttackUtils.EngineerGenerateSafePathTo(aiBrain, 'Hover', pos, destination)
     -- only use CanPathTo for distance closer then 200 and if we can't path with markers
     if reason ~= 'PathOK' then
         --AILog('* AI-Uveso: EngineerMoveWithSafePath(): unit ['..repr(unit.EntityId)..'] No path found reason:('..reason..')', true, UvesoOffsetAiutilitiesLUA)
@@ -44,7 +44,7 @@ function EngineerMoveWithSafePath(aiBrain, unit, destination)
             result, bestPos = unit:CanPathTo(destination)
         end
     else
-        --AILog('* AI-Uveso: EngineerMoveWithSafePath(): unit ['..repr(unit.EntityId)..'] Amphibious path found! reason:('..reason..')', true, UvesoOffsetAiutilitiesLUA)
+        --AILog('* AI-Uveso: EngineerMoveWithSafePath(): unit ['..repr(unit.EntityId)..'] Hover path found! reason:('..reason..')', true, UvesoOffsetAiutilitiesLUA)
     end
 
     local bUsedTransports = false

@@ -1,8 +1,10 @@
 local UvesoOffsetPlatoonLUA = debug.getinfo(1).currentline - 1
 SPEW('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..UvesoOffsetPlatoonLUA..'] * AI-Uveso: offset platoon.lua' )
---6844
+--6936
 
 local UUtils = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua')
+local AITargetManager = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua')
+local AIMarkerGenerator = import('/mods/AI-Uveso/lua/AI/AIMarkerGenerator.lua')
 local HERODEBUG = false
 local CHAMPIONDEBUG = false -- you need to fucus the AI army to see the debug drawing
 local NUKEDEBUG = false
@@ -128,6 +130,94 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         end
         if eng then eng.ProcessBuild = nil end
     end,    
+
+    -- fix for *UnitUpgradeAI ERROR: Can't find StructureUpgradeTemplate for structure: zeb9501  faction: UEF
+    UnitUpgradeAI = function(self)
+        local aiBrain = self:GetBrain()
+        local platoonUnits = self:GetPlatoonUnits()
+        local factionIndex = aiBrain:GetFactionIndex()
+        local FactionToIndex  = { UEF = 1, AEON = 2, CYBRAN = 3, SERAPHIM = 4, NOMADS = 5}
+        local UnitBeingUpgradeFactionIndex = nil
+        local upgradeIssued = false
+        self:Stop()
+        --LOG('* UnitUpgradeAI: PlatoonName:'..repr(self.BuilderName))
+        for k, v in platoonUnits do
+            --LOG('* UnitUpgradeAI: Upgrading unit '..v.UnitId..' ('..v.Blueprint.FactionCategory..')')
+            local upgradeID
+            -- Get the factionindex from the unit to get the right update (in case we have captured this unit from another faction)
+            UnitBeingUpgradeFactionIndex = FactionToIndex[v.Blueprint.FactionCategory] or factionIndex
+            --LOG('* UnitUpgradeAI: UnitBeingUpgradeFactionIndex '..UnitBeingUpgradeFactionIndex)
+            if self.PlatoonData.OverideUpgradeBlueprint then
+                local tempUpgradeID = self.PlatoonData.OverideUpgradeBlueprint[UnitBeingUpgradeFactionIndex]
+                WARN('* UnitUpgradeAI: OverideUpgradeBlueprint '..repr(tempUpgradeID))
+                if not tempUpgradeID then
+                    WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI WARNING: OverideUpgradeBlueprint ' .. repr(v.UnitId) .. ' failed. (Override unitID is empty' )
+                elseif type(tempUpgradeID) ~= 'string' then
+                    WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI WARNING: OverideUpgradeBlueprint ' .. repr(v.UnitId) .. ' failed. (Override unit not present.)' )
+                elseif v:CanBuild(tempUpgradeID) then
+                    upgradeID = tempUpgradeID
+                else
+                    -- in case the unit can't upgrade with OverideUpgradeBlueprint, warn the programmer
+                    -- this can happen if the AI relcaimed a factory and tries to upgrade to a support factory without having a HQ factory from the reclaimed factory faction.
+                    -- in this case we fall back to HQ upgrade template and upgrade to a HQ factory instead of support.
+                    -- Output: WARNING: [platoon.lua, line:xxx] *UnitUpgradeAI WARNING: OverideUpgradeBlueprint UnitId:CanBuild(tempUpgradeID) failed. (Override tree not available, upgrading to default instead.)
+                    WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI WARNING: OverideUpgradeBlueprint ' .. repr(v.UnitId) .. ':CanBuild( '..tempUpgradeID..' ) failed. (Override tree not available, upgrading to default instead.)' )
+                end
+            end
+            if not upgradeID and EntityCategoryContains(categories.MOBILE, v) then
+                upgradeID = aiBrain:FindUpgradeBP(v.UnitId, UpgradeTemplates.UnitUpgradeTemplates[UnitBeingUpgradeFactionIndex])
+                -- if we can't find a UnitUpgradeTemplate for this unit, warn the programmer
+                if not upgradeID then
+                    -- Output: WARNING: [platoon.lua, line:xxx] *UnitUpgradeAI ERROR: Can\'t find UnitUpgradeTemplate for mobile unit: ABC1234
+                    WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI ERROR: Can\'t find UnitUpgradeTemplate for mobile unit: ' .. repr(v.UnitId) )
+                end
+            elseif not upgradeID then
+                upgradeID = aiBrain:FindUpgradeBP(v.UnitId, UpgradeTemplates.StructureUpgradeTemplates[UnitBeingUpgradeFactionIndex])
+                -- if we can't find a StructureUpgradeTemplate for this unit, warn the programmer
+                if not upgradeID then
+                    -- Output: WARNING: [platoon.lua, line:xxx] *UnitUpgradeAI ERROR: Can\'t find StructureUpgradeTemplate for structure: ABC1234
+                    WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI ERROR: Can\'t find StructureUpgradeTemplate for structure: ' .. repr(v.UnitId) .. '  faction: ' .. repr(v.Blueprint.FactionCategory) )
+                end
+            end
+            -- get the data from the blueprint instead of Templates
+            if not upgradeID then
+                if v.Blueprint.General.UpgradesTo then
+                    upgradeID = v.Blueprint.General.UpgradesTo
+                    WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI ERROR: Can\'t find Template for upgrade, using Blueprint.General.UpgradesTo: ' .. repr(upgradeID) .. '  faction: ' .. repr(v.Blueprint.FactionCategory) )
+                end
+            end
+            if upgradeID and EntityCategoryContains(categories.STRUCTURE, v) and not v:CanBuild(upgradeID) then
+                -- in case the unit can't upgrade with upgradeID, warn the programmer
+                -- Output: WARNING: [platoon.lua, line:xxx] *UnitUpgradeAI ERROR: ABC1234:CanBuild(upgradeID) failed!
+                WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI ERROR: ' .. repr(v.UnitId) .. ':CanBuild( '..upgradeID..' ) failed!' )
+                continue
+            end
+            if upgradeID then
+                upgradeIssued = true
+                IssueUpgrade({v}, upgradeID)
+                --LOG('-- Upgrading unit '..v.UnitId..' ('..v.Blueprint.FactionCategory..') with '..upgradeID)
+            end
+        end
+        if not upgradeIssued then
+            self:PlatoonDisband()
+            return
+        end
+        local upgrading = true
+        while aiBrain:PlatoonExists(self) and upgrading do
+            WaitSeconds(3)
+            upgrading = false
+            for k, v in platoonUnits do
+                if v and not v.Dead then
+                    upgrading = true
+                end
+            end
+        end
+        if not aiBrain:PlatoonExists(self) then
+            return
+        end
+        WaitTicks(1)
+        self:PlatoonDisband()
+    end,
 
 -- UVESO's Stuff: ------------------------------------------------------------------------------------
 
@@ -341,32 +431,6 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         return true
     end,
 
-    MakeShortPath = function(self, PlatoonPosition, path)
-        -- sometimes we don't have a platoonposition even if the platoon exist.
-        if not PlatoonPosition then
-            return path
-        end
-        local dist, shortestDist, shortestIndex
-        -- loop over all path nodes and look for the closest one
-        for i, nodePos in path do
-            dist = VDist2Sq(PlatoonPosition[1], PlatoonPosition[3], nodePos[1], nodePos[3])
-            if not shortestDist or shortestDist >= dist then
-                shortestDist = dist
-                shortestIndex = i
-            end
-        end
-        -- no need to change, the path is ok
-        if shortestIndex == 1 then
-            return path
-        end
-        -- only use waypoints from the closest node up to the destination
-        local newPath = {}
-        for i=shortestIndex, table.getn(path) do
-            table.insert(newPath, path[i])
-        end
-        return newPath
-    end,
-
     MoveWithTransportNoPath = function(self, aiBrain, bAggroMove, target, basePosition, ExperimentalInPlatoon, MaxPlatoonWeaponRange, EnemyThreatCategory)
         local MaxPlatoonWeaponRange = MaxPlatoonWeaponRange or 30
         local EnemyThreatCategory = EnemyThreatCategory or categories.ALLUNITS
@@ -498,7 +562,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         end
         local platoonUnits = self:GetPlatoonUnits()
         local PlatoonPosition = self:GetPlatoonPosition()
-        path = self:MakeShortPath(PlatoonPosition, path)
+        path = AIMarkerGenerator.MakeShortPath(PlatoonPosition, path)
         self:SetPlatoonFormationOverride('NoFormation')
         
         local PathNodesCount = table.getn(path)
@@ -624,7 +688,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         local path, reason
         if overridePath then
             path, reason = overridePath, overrideReason
-            path = self:MakeShortPath(PlatoonPosition, path)
+            path = AIMarkerGenerator.MakeShortPath(PlatoonPosition, path)
         else
             path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, self.MovementLayer or 'Land' , PlatoonPosition, TargetPosition, 1000, 512)
         end
@@ -1030,13 +1094,13 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                         -- if we have 10% TECH1 extractors left (and 90% TECH2), then upgrade TECH2 to TECH3
                         if UUtils.HaveUnitRatio( aiBrain, 0.90, categories.MASSEXTRACTION * categories.TECH1, '<=', categories.MASSEXTRACTION * categories.TECH2 ) then
                             -- Try to upgrade a TECH2 extractor.
-                            if not UUtils.ExtractorUpgrade(self, aiBrain, MassExtractorUnitList, ratio, 'TECH2', UnitUpgradeTemplates, StructureUpgradeTemplates) then
+                            if not UUtils.ExtractorUpgrade(self, aiBrain, MassExtractorUnitList, ratio, 'TECH2', UpgradeTemplates.UnitUpgradeTemplates, UpgradeTemplates.StructureUpgradeTemplates) then
                                 -- We can't upgrade a TECH2 extractor. Try to upgrade from TECH1 to TECH2
-                                UUtils.ExtractorUpgrade(self, aiBrain, MassExtractorUnitList, ratio, 'TECH1', UnitUpgradeTemplates, StructureUpgradeTemplates)
+                                UUtils.ExtractorUpgrade(self, aiBrain, MassExtractorUnitList, ratio, 'TECH1', UpgradeTemplates.UnitUpgradeTemplates, UpgradeTemplates.StructureUpgradeTemplates)
                             end
                         else
                             -- We have less than 90% TECH2 extractors compared to TECH1. Upgrade more TECH1
-                            UUtils.ExtractorUpgrade(self, aiBrain, MassExtractorUnitList, ratio, 'TECH1', UnitUpgradeTemplates, StructureUpgradeTemplates)
+                            UUtils.ExtractorUpgrade(self, aiBrain, MassExtractorUnitList, ratio, 'TECH1', UpgradeTemplates.UnitUpgradeTemplates, UpgradeTemplates.StructureUpgradeTemplates)
                         end
                     end
                 end
@@ -2133,13 +2197,17 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         if platoonUnits and PlatoonStrength > 0 then
             for k, v in platoonUnits do
                 if not v.Dead then
-                    if v:TestToggleCaps('RULEUTC_StealthToggle') then
-                        --AILog('* AI-Uveso: * AirSuicideAI: Switching RULEUTC_StealthToggle')
-                        v:SetScriptBit('RULEUTC_StealthToggle', false)
-                    end
-                    if v:TestToggleCaps('RULEUTC_CloakToggle') then
-                        --AILog('* AI-Uveso: * AirSuicideAI: Switching RULEUTC_CloakToggle')
-                        v:SetScriptBit('RULEUTC_CloakToggle', false)
+                    if v.TestToggleCaps then
+                        if v:TestToggleCaps('RULEUTC_StealthToggle') then
+                            --AILog('* AI-Uveso: * AirSuicideAI: Switching RULEUTC_StealthToggle')
+                            v:SetScriptBit('RULEUTC_StealthToggle', false)
+                        end
+                        if v:TestToggleCaps('RULEUTC_CloakToggle') then
+                            --AILog('* AI-Uveso: * AirSuicideAI: Switching RULEUTC_CloakToggle')
+                            v:SetScriptBit('RULEUTC_CloakToggle', false)
+                        end
+                    else
+                        AIWarn("missing unit function TestToggleCaps()")
                     end
                     -- prevent units from reclaiming while attack moving
                     v:RemoveCommandCap('RULEUCC_Reclaim')
@@ -2456,11 +2524,15 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                 unit.WeaponArc = unit.WeaponArcBackup
             end
             -- Search all platoon units and activate Stealth and Cloak (mostly Modded units)
-            if unit:TestToggleCaps('RULEUTC_StealthToggle') then
-                unit:SetScriptBit('RULEUTC_StealthToggle', false)
-            end
-            if unit:TestToggleCaps('RULEUTC_CloakToggle') then
-                unit:SetScriptBit('RULEUTC_CloakToggle', false)
+            if unit.TestToggleCaps then
+                if unit:TestToggleCaps('RULEUTC_StealthToggle') then
+                    unit:SetScriptBit('RULEUTC_StealthToggle', false)
+                end
+                if unit:TestToggleCaps('RULEUTC_CloakToggle') then
+                    unit:SetScriptBit('RULEUTC_CloakToggle', false)
+                end
+            else
+                AIWarn("missing unit function TestToggleCaps()")
             end
             -- search if we have an experimental inside the platoon so we can't use transports
             if not ExperimentalInPlatoon and EntityCategoryContains(categories.EXPERIMENTAL, unit) then
@@ -2495,7 +2567,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
             -- debug for modded units that have no weapon and no shield or stealth/cloak
             -- things like seraphim restauration field
             if not unit.MaxWeaponRange and not unit.IsShieldOnlyUnit then
-                AIWarn('* AI-Uveso: Scanning: unit ['..repr(unit.UnitId)..'] has no MaxWeaponRange and no stealth/cloak - '..repr(self.BuilderName))
+                AIWarn('* AI-Uveso: Scanning: unit ['..repr(unit.UnitId)..'] has no MaxWeaponRange and no stealth/cloak - '..repr(self.BuilderName), true, UvesoOffsetPlatoonLUA)
                 -- Don't know what to do with this unit, lets move it behind the platoon
                 unit.IsShieldOnlyUnit = true
             end
@@ -2599,16 +2671,29 @@ Platoon = Class(CopyOfOldPlatoonClass) {
             end
             -- Search for a target (don't remove the :BeenDestroyed() call!)
             if not target or target.Dead or target:BeenDestroyed() then
-                -- if we have amphibious units, try first a land path, so we don't need to go under water
-                if self.MovementLayer == "Amphibious" then
-                    -- set platoon to land layer
-                    self.MovementLayer = "Land"
-                    -- search for a land path
-                    UnitWithPath, UnitNoPath, path, reason = AIUtils.AIFindNearestCategoryTargetInRange(aiBrain, self, 'Attack', GetTargetsFrom, maxRadius, MoveToCategories, TargetSearchCategory, false )
-                    -- reset platoon to amphibious layer
-                    self.MovementLayer = "Amphibious"
-                else
-                    UnitWithPath, UnitNoPath, path, reason = AIUtils.AIFindNearestCategoryTargetInRange(aiBrain, self, 'Attack', GetTargetsFrom, maxRadius, MoveToCategories, TargetSearchCategory, false )
+                if not GetTargetsFromBase and aiBrain.highestEnemyThreat[self.MovementLayer][1] then
+                    local pos = aiBrain.highestEnemyThreat[self.MovementLayer][1].gridPos
+                    TargetPos = AITargetManager.GetHeatMapGridPositionFromIndex(pos[1], pos[2])
+                    UnitWithPath, UnitNoPath, path, reason = AIUtils.AIFindNearestCategoryTargetInRange(aiBrain, self, 'Attack', TargetPos, maxRadius, MoveToCategories, TargetSearchCategory, false )
+                    GetTargetsFrom = TargetPos
+                elseif not GetTargetsFromBase and aiBrain.highestEnemyEcoValue["All"][1] then
+                    local pos = aiBrain.highestEnemyEcoValue["All"][1].gridPos
+                    TargetPos = AITargetManager.GetHeatMapGridPositionFromIndex(pos[1], pos[2])
+                    UnitWithPath, UnitNoPath, path, reason = AIUtils.AIFindNearestCategoryTargetInRange(aiBrain, self, 'Attack', TargetPos, maxRadius, MoveToCategories, TargetSearchCategory, false )
+                    GetTargetsFrom = TargetPos
+                end
+                if not UnitWithPath then
+                    -- if we have amphibious units, try first a land path, so we don't need to go under water
+                    if self.MovementLayer == "Amphibious" then
+                        -- set platoon to land layer
+                        self.MovementLayer = "Land"
+                        -- search for a land path
+                        UnitWithPath, UnitNoPath, path, reason = AIUtils.AIFindNearestCategoryTargetInRange(aiBrain, self, 'Attack', GetTargetsFrom, maxRadius, MoveToCategories, TargetSearchCategory, false )
+                        -- reset platoon to amphibious layer
+                        self.MovementLayer = "Amphibious"
+                    else
+                        UnitWithPath, UnitNoPath, path, reason = AIUtils.AIFindNearestCategoryTargetInRange(aiBrain, self, 'Attack', GetTargetsFrom, maxRadius, MoveToCategories, TargetSearchCategory, false )
+                    end
                 end
                 target = UnitWithPath or UnitNoPath
             end
@@ -3221,7 +3306,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         --AIWarn('* AI-Uveso: * ACUChampionPlatoon: cdr.MaxWeaponRange: '..cdr.MaxWeaponRange)
 
         -- set playableArea so we know where the map border is.
-        local playableArea = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').GetPlayableArea()
+        local playableArea = AITargetManager.GetPlayableArea()
 
         local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality
         local Braveness = 0
@@ -3972,7 +4057,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         local UnitT1, EnemyExperimental, EnemyExperimentalPos, UnitBlueprint, MaxWeaponRange
         local UnitWithPath, UnitNoPath, path, reason
         local numAirEnemyUnits, numExperimentalEnemyUnits, numT3EnemyUnits
-        local playableArea = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').GetPlayableArea()
+        local playableArea = AITargetManager.GetPlayableArea()
         while aiBrain:PlatoonExists(platoon) and not cdr.Dead do
             -- wait here to prevent deadloops and heavy CPU load
             coroutine.yield(7)
@@ -4210,6 +4295,160 @@ Platoon = Class(CopyOfOldPlatoonClass) {
             aiBrain.ACUChampion.numT3EnemyUnits = numT3EnemyUnits
 
         end
+    end,
+
+    ScoutingUveso = function(self)
+        local aiBrain = self:GetBrain()
+        local armyIndex = aiBrain:GetArmyIndex()
+        local scoutUnit = self:GetPlatoonUnits()[1]
+        local VisionRadius = scoutUnit.Blueprint.Intel.VisionRadius or 1
+        local RadarRadius = scoutUnit.Blueprint.Intel.RadarRadius or 1
+        local scoutRadius = math.max(VisionRadius, RadarRadius)
+        --AILog("* AI-Uveso: ScoutingUveso(): scoutRadius = "..repr(scoutRadius), true, UvesoOffsetPlatoonLUA)
+        local highPrioList, lowPrioList, unitPosition, path, reason, lastDist, scoutDestination
+        -- this will set self.MovementLayer to the platoon
+        AIAttackUtils.GetMostRestrictiveLayer(self)
+        -- enable cloak and stealth
+        if scoutUnit.Dead then
+            AILog("* AI-Uveso: ScoutingUveso(): scoutUnit.Dead 0")
+            self:PlatoonDisband()
+            return
+        end
+        if scoutUnit.TestToggleCaps then
+            if scoutUnit:TestToggleCaps('RULEUTC_StealthToggle') then
+                scoutUnit:SetScriptBit('RULEUTC_StealthToggle', false)
+            end
+            if scoutUnit:TestToggleCaps('RULEUTC_CloakToggle') then
+                scoutUnit:SetScriptBit('RULEUTC_CloakToggle', false)
+            end
+        else
+            AIWarn("missing unit function TestToggleCaps()")
+        end
+        -- main loop
+        while aiBrain:PlatoonExists(self) do
+            --AILog("* AI-Uveso: ScoutingUveso(): Loop", true, UvesoOffsetPlatoonLUA)
+            coroutine.yield(1)
+            if scoutUnit.Dead then
+                --AILog("* AI-Uveso: ScoutingUveso(): scoutUnit.Dead 1")
+                self:PlatoonDisband()
+                return
+            end
+            while not aiBrain:IsOpponentAIRunning() do
+                coroutine.yield(10)
+            end
+            unitPosition = scoutUnit:GetPosition()
+            -- search for the grid cell that hasn't been scouted for the longest time
+            IssueClearCommands({scoutUnit})
+            path = false
+            scoutDestination = false
+            highPrioList, lowPrioList = AITargetManager.GetScoutTable(armyIndex)
+            --check highPrioList
+            for i, location in pairs(highPrioList) do
+                --AILog("* Fn ScoutingUveso():[A:"..armyIndex.."] loop over highPrioList: "..i.." ("..location.id..")", true, UvesoOffsetPlatoonLUA)
+                scoutDestination = {x = location.x, y = GetTerrainHeight(location.x, location.z), z = location.z}
+                --AILog("* Fn ScoutingUveso():[A:"..armyIndex.."] check GetLastScoutBy for : ("..scoutDestination.x..","..scoutDestination.z..") ...", true, UvesoOffsetPlatoonLUA)
+                -- is no scout on the way and we can path to the destination
+                if not AITargetManager.GetLastScoutBy(armyIndex, scoutDestination) then
+                    --AILog("* Fn ScoutingUveso():[A:"..armyIndex.."] GetLastScoutBy for : ("..scoutDestination.x..","..scoutDestination.z..") is false, send scout!", true, UvesoOffsetPlatoonLUA)
+                    path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, self.MovementLayer, unitPosition, {scoutDestination.x, 0, scoutDestination.z}, 1000, 512)
+                    if path then
+                        --AILog("* Fn ScoutingUveso():[A:"..armyIndex.."] path found "..i.." ("..location.id..") "..repr(reason), true, UvesoOffsetPlatoonLUA)
+                        -- add the destination to the path
+                        --AILog("* Fn ScoutingUveso():[A:"..armyIndex.."] scoutDestination "..repr(scoutDestination).." will be scouted from unit: "..repr(scoutUnit.EntityId), true, UvesoOffsetPlatoonLUA)
+                        table.insert(path, {scoutDestination.x, scoutDestination.y, scoutDestination.z})
+                        AITargetManager.SetWillBeScoutedFrom(armyIndex, scoutDestination, scoutUnit.EntityId)
+                        --AILog(scoutUnit)
+                        -- exit the in pairs(highPrioList) loop, we found a path to a scout destination
+                        break
+                    else
+                        --AILog("* Fn ScoutingUveso():[A:"..armyIndex.."] no path found. reason: ("..repr(reason)..")", true, UvesoOffsetPlatoonLUA)
+                    end
+                else
+                    --AILog("* Fn ScoutingUveso():[A:"..armyIndex.."] GetLastScoutBy for : ("..scoutDestination.x..","..scoutDestination.z..") is true, no scout needed here.", true, UvesoOffsetPlatoonLUA)
+                end
+            end
+
+            --check for areas that need scouting nearby
+            if not path then
+                scoutDestination = AITargetManager.GetLastScoutedDistance(armyIndex, unitPosition, scoutRadius)
+                if scoutDestination then
+                    --AILog("* Fn ScoutingUveso():[A:"..armyIndex.."] get unscouted area nearby : ("..scoutDestination.x..","..scoutDestination.z..") sending scout.", true, UvesoOffsetPlatoonLUA)
+                    path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, self.MovementLayer, unitPosition, {scoutDestination.x, 0, scoutDestination.z}, 1000, 512)
+                    if path then
+                        --AILog("* Fn ScoutingUveso():[A:"..armyIndex.."] path found. "..repr(reason), true, UvesoOffsetPlatoonLUA)
+                        -- add the destination to the path
+                        --AILog("* Fn ScoutingUveso():[A:"..armyIndex.."] scoutDestination "..repr(scoutDestination).." will be scouted from unit: "..repr(scoutUnit.EntityId), true, UvesoOffsetPlatoonLUA)
+                        table.insert(path, {scoutDestination.x, scoutDestination.y, scoutDestination.z})
+                        AITargetManager.SetWillBeScoutedFrom(armyIndex, scoutDestination, scoutUnit.EntityId)
+                        --AILog(scoutUnit)
+                        -- exit the in pairs(highPrioList) loop, we found a path to a scout destination
+                    else
+                        --AILog("* Fn ScoutingUveso():[A:"..armyIndex.."] no path found. reason: ("..repr(reason)..")", true, UvesoOffsetPlatoonLUA)
+                    end
+                end
+            end
+
+            --check lowPrioList
+            if not path then
+                for i, location in pairs(lowPrioList) do
+                    --AILog("* Fn ScoutingUveso():[A:"..armyIndex.."] loop over lowPrioList: "..i.." ("..location.id..")", true, UvesoOffsetPlatoonLUA)
+                    scoutDestination = {x = location.x, y = GetTerrainHeight(location.x, location.z), z = location.z}
+                    --AILog("* Fn ScoutingUveso():[A:"..armyIndex.."] check GetLastScoutBy for : ("..scoutDestination.x..","..scoutDestination.z..") ...", true, UvesoOffsetPlatoonLUA)
+                    -- is no scout on the way and we can path to the destination
+                    if not AITargetManager.GetLastScoutBy(armyIndex, scoutDestination) then
+                        --AILog("* Fn ScoutingUveso():[A:"..armyIndex.."] GetLastScoutBy for : ("..scoutDestination.x..","..scoutDestination.z..") is false, send scout!", true, UvesoOffsetPlatoonLUA)
+                        path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, self.MovementLayer, unitPosition, {scoutDestination.x, 0, scoutDestination.z}, 1000, 512)
+                        if path then
+                            -- add the destination to the path
+                            table.insert(path, {scoutDestination.x, scoutDestination.y, scoutDestination.z})
+                            AITargetManager.SetWillBeScoutedFrom(armyIndex, scoutDestination, scoutUnit.EntityId)
+                            -- exit the in pairs(lowPrioList) loop, we found a path to a scout destination
+                            break
+                        else
+                            --AILog("* Fn ScoutingUveso():[A:"..armyIndex.."] no path found. reason: ("..repr(reason)..")", true, UvesoOffsetPlatoonLUA)
+                        end
+                    else
+                        --AILog("* Fn ScoutingUveso():[A:"..armyIndex.."] GetLastScoutBy for : ("..scoutDestination.x..","..scoutDestination.z..") is true, no scout needed here.", true, UvesoOffsetPlatoonLUA)
+                    end
+                end
+            end
+
+            -- if we can path, move to the destination
+            path = AIMarkerGenerator.StraightenPath(path)
+            if path then
+                for z, nodePos in path do
+                    IssueMove({scoutUnit}, nodePos)
+                end
+            else
+                if self.MovementLayer == "Air" then
+                    -- move home
+                    IssueMove({scoutUnit}, aiBrain.BuilderManagers["MAIN"].Position )
+                    coroutine.yield(100)
+                end
+                coroutine.yield(10)
+            end
+            -- wait for the movement
+            if scoutDestination then
+                repeat
+                    coroutine.yield(1)
+                    if scoutUnit.Dead then
+                        --AILog("* AI-Uveso: ScoutingUveso(): scoutUnit.Dead 2")
+                        -- clear the will be scouted flag
+                        AITargetManager.SetWillBeScoutedFrom(armyIndex, scoutDestination, false)
+                        self:PlatoonDisband()
+                        return
+                    end
+                    if scoutUnit:IsIdleState() then
+                        AIWarn("* AI-Uveso: ScoutingUveso(): scoutUnit idle !?!", true, UvesoOffsetPlatoonLUA)
+                        break
+                    end
+                    unitPosition = scoutUnit:GetPosition()
+                    AITargetManager.SetLastScoutedDistance(armyIndex, unitPosition, scoutRadius)
+                until AITargetManager.GetLastScoutBy(armyIndex, scoutDestination) ~= scoutUnit.EntityId
+            end
+        end
+        self:PlatoonDisband()
+        return
     end,
 
 }

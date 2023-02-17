@@ -38,6 +38,11 @@ function InitMarkerGenerator()
     MarkerGridSizeZ = PlayableMapSizeZ / MarkerGridCountZ
 end
 
+function ClearMemoryMarkerGenerator()
+    PathMap = nil
+    AIDebug("* AI-Uveso: Function ClearMemoryMarkerGenerator() MarkerGrid and PathMap deleted.", true)
+end
+
 function SetWantedGridCellSize(size)
     AIDebug("* AI-Uveso: Function SetWantedGridCellSize() Grid size for AI marker set to: "..size, true)
     WantedGridCellSize = size
@@ -49,10 +54,10 @@ function MarkerGridCountXZ()
     return MarkerGridCountX, MarkerGridCountZ
 end
 
-function GetMarkerGridIndexFromPosition(Position)
-    --AILog("GetHeatMapGridIndexFromPosition unit Pos"..Position[1].." "..Position[3].."")
-    local x = mathFloor( (Position[1] - PlayableArea[1]) / MarkerGridSizeX ) 
-    local z = mathFloor( (Position[3] - PlayableArea[2]) / MarkerGridSizeZ )
+function GetMarkerGridIndexFromPosition(position)
+    --AILog("GetHeatMapGridIndexFromPosition unit Pos"..position[1].." "..position[3].."")
+    local x = mathFloor( (position[1] - PlayableArea[1]) / MarkerGridSizeX ) 
+    local z = mathFloor( (position[3] - PlayableArea[2]) / MarkerGridSizeZ )
     --AILog("GetHeatMapGridIndexFromPosition area Pos"..x.." "..z.."")
     -- Make sure that x and z are inside the playable area
     x = mathMax( 0, x )
@@ -136,6 +141,30 @@ function IsPathable(x,z)
         return mathMax( mathAbs(M-U), mathAbs(M-D), mathAbs(M-L), mathAbs(M-R) ) < 0.36 and mathMax( mathAbs(M-LU), mathAbs(M-RU), mathAbs(M-LD), mathAbs(M-RD) ) < 0.44
     end
     return false
+end
+
+function GetStartPositions()
+    local StartPosition = {}
+    for nodename, markerInfo in Scenario.MasterChain._MASTERCHAIN_.Markers or {} do
+        if markerInfo['type'] == 'Blank Marker' then
+            table.insert(StartPosition, {x = markerInfo.position[1], z = markerInfo.position[3]} )
+        end
+    end
+    return StartPosition
+end
+
+function GetMassPositions()
+    local MassMarker = {}
+    for _, v in Scenario.MasterChain._MASTERCHAIN_.Markers do
+        if v.type == 'Mass' then
+            if v.position[1] <= PlayableArea[1] + 8 or v.position[1] >= PlayableArea[3] - 8 or v.position[3] <= PlayableArea[2] + 8 or v.position[3] >= PlayableArea[4] - 8 then
+                -- mass marker is too close to border, skip it.
+            else
+                table.insert(MassMarker, {Position = v.position})
+            end
+        end
+    end
+    return MassMarker
 end
 
 function GetLandExpansions()
@@ -573,8 +602,12 @@ function CanPathBetweenMarker(x, z, xA, zA, movementLayer, useAbsolutCoords)
     local posA
     -- check if we use marker table index or map position
     if not useAbsolutCoords then
-        pos = MarkerGrid[movementLayer][x][z].position
-        posA = MarkerGrid[movementLayer][xA][zA].position
+        if MarkerGrid[movementLayer][x] and MarkerGrid[movementLayer][x][z] then
+            pos = MarkerGrid[movementLayer][x][z].position
+        end
+        if MarkerGrid[movementLayer][xA] and MarkerGrid[movementLayer][xA][zA] then
+            posA = MarkerGrid[movementLayer][xA][zA].position
+        end
     else
         pos = {x, 0, z}
         posA = {xA, 0, zA}
@@ -818,7 +851,7 @@ function getFreeMarkerPosition(x, z, movementLayer)
     for zc = zcStart, zcEnd do
         text = ""
         for xc = xcStart, xcEnd do
-            if PathMap[xc][zc].cellArea ~= 0 then
+            if PathMap[xc][zc].cellArea > 0 then
                 if count[PathMap[xc][zc].cellArea] then
                     count[PathMap[xc][zc].cellArea] = count[PathMap[xc][zc].cellArea] + 1
                 else
@@ -850,7 +883,7 @@ function getFreeMarkerPosition(x, z, movementLayer)
         -- calculate the center position of this marker grid cell
         local returnX = mathFloor(x * MarkerGridSizeX + MarkerGridSizeX/ 2 + PlayableArea[1])
         local returnZ = mathFloor(z * MarkerGridSizeZ + MarkerGridSizeZ / 2 + PlayableArea[2])
-        if PathMap[returnX][returnZ].cellArea ~= 0 then
+        if PathMap[returnX][returnZ].cellArea > 0 then
             AIWarn("Short cut countMax == 1 "..repr(count), debugPrint)
             -- the marker grid cell is plane area, place the marker in the middle
             return returnX, returnZ, 0
@@ -914,18 +947,22 @@ function getFreeMarkerPosition(x, z, movementLayer)
             for xc = xcStart - 3, xcEnd - markerSize + 3 do
                 blocked = 0
                 for zm = zc, zc + markerSize - 1 do
-                    for xm = xc, xc + markerSize - 1 do
-                        if PathMap[xm][zm].cellArea then
-                            if PathMap[xm][zm].cellArea ~= countMaxGraph then
-                                blocked = blocked + 1
+                    if zm >= zcStart and zm <= zcEnd then
+                        for xm = xc, xc + markerSize - 1 do
+                            if xm >= xcStart and xm <= xcEnd then
+                                if PathMap[xm][zm].cellArea then
+                                    if PathMap[xm][zm].cellArea ~= countMaxGraph then
+                                        blocked = blocked + 1
+                                    end
+                                end
+                                if blocked > blockedTolerance then
+                                    break
+                                end
                             end
                         end
                         if blocked > blockedTolerance then
                             break
                         end
-                    end
-                    if blocked > blockedTolerance then
-                        break
                     end
                 end
                 -- is the square a valid place ?
@@ -943,7 +980,7 @@ function getFreeMarkerPosition(x, z, movementLayer)
     end
 
     -- remove positions with high block rate
-    for index, freePostions in possiblePositions do
+    for index, freePostions in pairs(possiblePositions) do
         if freePostions[3] > blockedTolerance then
             possiblePositions[index] = nil
             --AIWarn("place has to much blocked areas: possiblePositions["..index.."] = "..freePostions[3], debugPrint)
@@ -952,7 +989,7 @@ function getFreeMarkerPosition(x, z, movementLayer)
  
     -- now search for the closest free place to the center position
     local dist, closestDist, closestPos
-    for index, freePostions in possiblePositions do
+    for index, freePostions in pairs(possiblePositions) do
         dist = VDist2(freePostions[1], freePostions[2], centerX, centerZ)
         --AIWarn("dist "..dist, debugPrint)
         if not closestDist or closestDist > dist then
@@ -1127,7 +1164,6 @@ end
 
 function CreateLandExpansions()
     AIDebug("* AI-Uveso: Function CreateLandExpansions started.", true)
-    local playableArea = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').GetPlayableArea()
     local MassMarker = {}
     local MexInMarkerRange = {}
     local StartPosition = {}
@@ -1135,26 +1171,14 @@ function CreateLandExpansions()
     local IndexTable = {}
     local gridX, gridZ, posX, posZ, MexInRange, UseThisMarker, count
     -- get player start positions
-    for nodename, markerInfo in Scenario.MasterChain._MASTERCHAIN_.Markers or {} do
-        if markerInfo['type'] == 'Blank Marker' then
-            table.insert(StartPosition, {Position = markerInfo.position} )
-        end
-    end
+    StartPosition = GetStartPositions()
     -- get all mass spots
-    for _, v in Scenario.MasterChain._MASTERCHAIN_.Markers do
-        if v.type == 'Mass' then
-            if v.position[1] <= playableArea[1] + 8 or v.position[1] >= playableArea[3] - 8 or v.position[3] <= playableArea[2] + 8 or v.position[3] >= playableArea[4] - 8 then
-                -- mass marker is too close to border, skip it.
-            else
-                table.insert(MassMarker, {Position = v.position})
-            end
-        end
-    end
+    MassMarker = GetMassPositions()
     -- search for areas with mex in range
     for X, MarkerGridYrow in pairs(MarkerGrid["Land"]) do
         for Z, markerInfo in pairs(MarkerGridYrow or {}) do
             -- check how many masspoints are located near the marker
-            for k, v in MassMarker do
+            for k, v in pairs(MassMarker) do
                 if VDist2(markerInfo.position[1], markerInfo.position[3], v.Position[1], v.Position[3]) <= 30 then
                     MexInMarkerRange[X.."-"..Z] = MexInMarkerRange[X.."-"..Z] or {}
                     table.insert(MexInMarkerRange[X.."-"..Z], {Position = v.Position} )
@@ -1252,7 +1276,7 @@ function CreateLandExpansions()
         UseThisMarker = true
         -- Search if we are near a start position
         for ks, vs in StartPosition do
-            if VDist2(v.x, v.z, vs.Position[1], vs.Position[3]) < 80 then
+            if VDist2(v.x, v.z, vs.x, vs.z) < 80 then
                 -- we are to close to a start position, don't use it as expansion
                 UseThisMarker = false
                 break
@@ -1284,4 +1308,55 @@ function CreateLandExpansions()
         end
     end    
     return LandExpansions
+end
+
+function MakeShortPath(platoonPosition, path)
+    -- sometimes we don't have a platoonPosition even if the platoon exist.
+    if not platoonPosition then
+        return path
+    end
+    local dist, shortestDist, shortestIndex
+    -- loop over all path nodes and look for the closest one
+    for i, nodePos in pairs(path) do
+        dist = VDist2Sq(platoonPosition[1], platoonPosition[3], nodePos[1], nodePos[3])
+        if not shortestDist or shortestDist >= dist then
+            shortestDist = dist
+            shortestIndex = i
+        end
+    end
+    -- no need to change, the path is ok
+    if shortestIndex == 1 then
+        return path
+    end
+    -- only use waypoints from the closest node up to the destination
+    local newPath = {}
+    for i=shortestIndex, table.getn(path) do
+        table.insert(newPath, path[i])
+    end
+    return newPath
+end
+
+function StraightenPath(path)
+    local newPath = {}
+    local degreesFront, degreesRear
+    if path then
+        for z, nodePos in pairs(path) do
+            -- don't skip the first or last waypoint from this path
+            if z == 1 or z == table.getn(path) then
+                table.insert(newPath, path[z])
+                --AILog("* AI-Uveso: StraightenPath(): path node ["..z.."/"..table.getn(path).."] - saving waypoint | path start or end")
+            else
+                degreesRear = math.atan2(path[z - 1][3] - nodePos[3], path[z - 1][1] - nodePos[1]) * ( 180 / math.pi )
+                degreesFront = math.atan2(nodePos[3] - path[z + 1][3], nodePos[1] - path[z + 1][1]) * ( 180 / math.pi )
+                if math.abs(math.abs(degreesFront) - math.abs(degreesRear)) >= 2 then 
+                    table.insert(newPath, path[z])
+                    --AILog("* AI-Uveso: StraightenPath(): path node ["..z.."/"..table.getn(path).."] - saving waypoint | degreesRear("..degreesRear..") - degreesFront("..degreesFront..") angle="..math.abs(math.abs(degreesFront) - math.abs(degreesRear)) )
+                --else
+                    --AIWarn("* AI-Uveso: StraightenPath(): path node ["..z.."/"..table.getn(path).."] - removing waypoint | degreesRear("..degreesRear..") - degreesFront("..degreesFront..") angle="..math.abs(math.abs(degreesFront) - math.abs(degreesRear)) )
+                end
+            end
+        end
+        return newPath
+    end
+    return path
 end

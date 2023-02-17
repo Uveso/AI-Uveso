@@ -121,21 +121,5 @@ BuilderManager = Class(TheOldBuilderManager) {
         return false
     end,
 
-    -- Hook needed for vanilla game
-    IsPlattonBuildDelayed = function(self, DelayEqualBuildPlattons)
-        if DelayEqualBuildPlattons then
-            local CheckDelayTime = GetGameTimeSeconds()
-            local PlatoonName = DelayEqualBuildPlattons[1]
-            if not self.Brain.DelayEqualBuildPlattons[PlatoonName] or self.Brain.DelayEqualBuildPlattons[PlatoonName] < CheckDelayTime then
-                --AILog('Setting '..DelayEqualBuildPlattons[2]..' sec. delaytime for builder ['..PlatoonName..']')
-                self.Brain.DelayEqualBuildPlattons[PlatoonName] = CheckDelayTime + DelayEqualBuildPlattons[2]
-                return false
-            else
-                --AILog('Builder ['..PlatoonName..'] still delayed for '..(CheckDelayTime - self.Brain.DelayEqualBuildPlattons[PlatoonName])..' seconds.')
-                return true
-            end
-        end
-    end,
-
 }
 

@@ -1,3 +1,23 @@
+v109 (17.Feb.2023)
+
+- Fix: added missing threat values for hover movement layer in target manager
+- Fix: removed CanPathToCurrentEnemy function that requires a navigation mesh.
+- Fix: UnitUpgradeTemplates are now a subtable from UpgradeTemplates
+- Fix: StructureUpgradeTemplates are now a subtable from UpgradeTemplates
+- Fix: fixed a bug that prevented the score screen from showing
+- Fix: Pathing function was missing map threat
+- Fix: OnDefeat function updated to the latest FAF version
+- Fix: added missing baseLayer to AddBuilderManagers hook
+- Fix: Fixed a bug where civilians would not attack AI units
+- Opt: increased speed of pathing function.
+- Opt: scout will now check for already scouted areas
+- Opt: engineer will now use the hover instead of the amhibious layer for pathing
+- Opt: removed temporary map-path table from marker generator
+- Opt: naval factories should no longer overbuild units
+- Opt: AI should no longer build to much sonar
+- Opt: platoons are now using the target manager more often
+
+*************************************************************************************************************************************
 v108 (07.Oct.2022)
 
 - Fix: fixed a bug in EconomyBuildConditions. (Mod was build for FAF develop version)

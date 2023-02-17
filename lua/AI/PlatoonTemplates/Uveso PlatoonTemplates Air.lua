@@ -1,3 +1,12 @@
+-- scout 
+
+PlatoonTemplate {
+    Name = 'U13 Scouting Air',
+    Plan = 'ScoutingUveso',
+    GlobalSquads = {
+        { categories.AIR * ((categories.SCOUT * categories.TECH1) + (categories.INTELLIGENCE * categories.TECH3)), 1, 1, 'scout', 'None' },
+    }
+}
 
 -- Air Fighter
 

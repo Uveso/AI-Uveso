@@ -1583,20 +1583,20 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 Air Scout',
         PlatoonTemplate = 'T1AirScout',
-        Priority = 1000,
+        Priority = 20000,
         DelayEqualBuildPlattons = {'Scouts', 10},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush1stPhaseActive then
                 return 0
             else
-                return 1000
+                return 20000
             end
         end,
         BuilderConditions = {
             { UCBC, 'CheckBuildPlattonDelay', { 'Scouts' }},
             -- Have we the eco to build it ?
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.AIR * categories.SCOUT }},
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 6, categories.AIR * categories.SCOUT }},
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.FACTORY * categories.AIR * categories.TECH3 } },
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, categories.AIR * categories.SCOUT } },
             -- Respect UnitCap
@@ -1606,20 +1606,20 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 Air Scout',
         PlatoonTemplate = 'T3AirScout',
-        Priority = 1000,
+        Priority = 20000,
         DelayEqualBuildPlattons = {'Scouts', 10},
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush1stPhaseActive then
                 return 0
             else
-                return 1000
+                return 20000
             end
         end,
         BuilderConditions = {
             { UCBC, 'CheckBuildPlattonDelay', { 'Scouts' }},
             -- Have we the eco to build it ?
             -- When do we want to build this ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 2, categories.INTELLIGENCE * categories.AIR * categories.TECH3 }},
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 8, categories.INTELLIGENCE * categories.AIR * categories.TECH3 }},
             { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, categories.AIR * categories.SCOUT } },
             -- Respect UnitCap
         },
@@ -1634,9 +1634,9 @@ BuilderGroup {
     BuildersType = 'PlatoonFormBuilder',
     Builder {
         BuilderName = 'U1 Air Scout Form',
-        PlatoonTemplate = 'T1AirScoutForm',
+        PlatoonTemplate = 'U13 Scouting Air',
         Priority = 5000,
-        InstanceCount = 3,
+        InstanceCount = 6,
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush1stPhaseActive then
                 return 0
@@ -1646,16 +1646,16 @@ BuilderGroup {
         end,
         BuilderConditions = {
             -- When do we want to form this ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.AIR * categories.SCOUT } },
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 0, categories.AIR * categories.SCOUT - categories.INTELLIGENCE } },
         },
         BuilderType = 'Any',
     },
     Builder {
         BuilderName = 'U3 Air Scout Form',
-        PlatoonTemplate = 'T3AirScoutForm',
+        PlatoonTemplate = 'U13 Scouting Air',
         PlatoonAddBehaviors = { 'AirUnitRefit' },
         Priority = 5000,
-        InstanceCount = 5,
+        InstanceCount = 8,
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush1stPhaseActive then
                 return 0

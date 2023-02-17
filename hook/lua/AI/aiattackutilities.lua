@@ -2,6 +2,8 @@ local UvesoOffsetaiattackutilitiesLUA = debug.getinfo(1).currentline - 1
 SPEW('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..UvesoOffsetaiattackutilitiesLUA..'] * AI-Uveso: offset aiattackutilities.lua' )
 --2360
 
+local GetThreatFromHeatMapGrid = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').GetThreatFromHeatMapGrid
+local CanGraphAreaTo = import("/mods/AI-Uveso/lua/AI/AIMarkerGenerator.lua").CanGraphAreaTo
 
 -- hook for new hover movement layer
 UvesoGetThreatOfUnitsFunction = GetThreatOfUnits
@@ -103,10 +105,10 @@ function GetPathGraphs()
             ScenarioInfo.PathGraphs[gk] = ScenarioInfo.PathGraphs[gk] or {}
             ScenarioInfo.PathGraphs[gk][marker.graph] = ScenarioInfo.PathGraphs[gk][marker.graph] or {}
             --Add the marker to the graph.
-            ScenarioInfo.PathGraphs[gk][marker.graph][marker.name] = {name = marker.name, layer = gk, graphName = marker.graph, position = marker.position, adjacent = STR_GetTokens(marker.adjacentTo, ' '), impassability = marker.impassability or 0, color = marker.color}
+            ScenarioInfo.PathGraphs[gk][marker.graph][marker.name] = {name = marker.name, layer = gk, graphName = marker.graph, position = marker.position, adjacent = STR_GetTokens(marker.adjacentTo, ' '), impassability = marker.impassability or 0, gridPos = marker.gridPos, color = marker.color}
         end
     end
-
+    
     return ScenarioInfo.PathGraphs or {}
 end
 
@@ -133,6 +135,11 @@ function PlatoonGenerateSafePathTo(aiBrain, platoonLayer, startPos, endPos, optT
     --Get the matching path node at the destiantion
     local endNode = GetClosestPathNodeInRadiusByGraph(endPos, optMaxMarkerDist, startNode.graphName)
     if not endNode then return false, 'NoEndNode' end
+
+    --check graph
+    if not CanGraphAreaTo({startNode.position[1], 0, startNode.position[3]}, {endNode.position[1], 0, endNode.position[3]}, platoonLayer) then
+        return false, 'NoPath'
+    end
 
     --Generate the safest path between the start and destination
     local path = GeneratePathUveso(aiBrain, startNode, endNode, ThreatTable[platoonLayer], optThreatWeight, endPos, startPos)
@@ -176,6 +183,15 @@ function EngineerGenerateSafePathTo(aiBrain, platoonLayer, startPos, endPos, opt
     --Get the matching path node at the destiantion
     local endNode = GetClosestPathNodeInRadiusByGraph(endPos, optMaxMarkerDist, startNode.graphName)
     if not endNode then return false, 'NoEndNode' end
+
+    --check graph
+    if not CanGraphAreaTo({startNode.position[1], 0, startNode.position[3]}, {endNode.position[1], 0, endNode.position[3]}, platoonLayer) then
+        return false, 'NoPath'
+    end
+
+--    if 1 == 1 then
+--        return {{endNode.position[1], 0, endNode.position[3]}}, 'PathOK'
+--    end
 
     --Generate the safest path between the start and destination
     local path = GeneratePathUveso(aiBrain, startNode, endNode, ThreatTable[platoonLayer], optThreatWeight, endPos, startPos)
@@ -265,6 +281,7 @@ function GeneratePathUveso(aiBrain, startNode, endNode, threatType, threatWeight
     local armyIndex = aiBrain:GetArmyIndex()
     -- Get all the waypoints that are from the same movementlayer than the start point.
     local graph = GetPathGraphs()[startNode.layer][startNode.graphName]
+    local GetThreatFromHeatMapGrid = GetThreatFromHeatMapGrid
     -- For the beginning we store the startNode here as first path node.
     local queue = {
         {
@@ -274,7 +291,7 @@ function GeneratePathUveso(aiBrain, startNode, endNode, threatType, threatWeight
     }
     local table = table
     local unpack = unpack
-    local GetThreatFromHeatMap = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').GetThreatFromHeatMap
+    local VDist2Sq = VDist2Sq
     -- Now loop over all path's that are stored in queue. If we start, only the startNode is inside the queue
     -- (We are using here the "A*(Star) search algorithm". An extension of "Edsger Dijkstra's" pathfinding algorithm used by "Shakey the Robot" in 1959)
     while aiBrain.Status ~= "Defeat" do
@@ -300,12 +317,13 @@ function GeneratePathUveso(aiBrain, startNode, endNode, threatType, threatWeight
                         path = {unpack(curPath.path)},  -- copy full path from starnode to the lastNode
                     }
                     -- get distance from new node to destination node
-                    dist = VDist2(newNode.position[1], newNode.position[3], endNode.position[1], endNode.position[3])
+                    --dist = VDist2(newNode.position[1], newNode.position[3], endNode.position[1], endNode.position[3])
+                    dist = VDist2Sq(newNode.position[1], newNode.position[3], endNode.position[1], endNode.position[3])
                     -- get threat from current node to adjacent node
-                    threat = GetThreatFromHeatMap(armyIndex, newNode.position, startNode.layer)
+                    -- ToDo threat must be saved inside the marker, calling a function here is to slow
+                    threat = GetThreatFromHeatMapGrid(armyIndex, newNode.gridPos, startNode.layer)
                     -- add as cost for the path the distance and threat to the overall cost from the whole path
-                    --fork.cost = fork.cost + dist + (threat * 1) * threatWeight
-                    fork.cost = fork.cost + dist + (newNode.impassability or 0) * 30 + (threat * 1) * threatWeight
+                    fork.cost = fork.cost + dist + (newNode.impassability or 0) * 2000 + (threat * threat * threatWeight)
                     -- add the newNode at the end of the path
                     table.insert(fork.path, newNode)
                     -- check if we have reached our destination
@@ -340,75 +358,34 @@ function GeneratePathUveso(aiBrain, startNode, endNode, threatType, threatWeight
     return false
 end
 
--- moved to AIMarkerGenerator.lua
 --[[
-function CanGraphAreaTo(startPos, destPos, layer)
-    if layer == 'Air' then
-        return true
-    end
-    local graphTable = GetPathGraphs()[layer]
-    --AILog('* AI-Uveso: CanGraphAreaTo: graphTable['..layer..']')
-    --AILog('* AI-Uveso: CanGraphAreaTo: startPos = '..repr(startPos))
-    --AILog('* AI-Uveso: CanGraphAreaTo: destPos = '..repr(destPos))
-    local startNode, endNode, distS, distE
-    local bestDistS, bestDistE = 1000000, 1000000 -- will only find markers that are closer than 1000 map units
-    if graphTable then
-        for mn, markerInfo in graphTable['Default'..layer] do
-            distS = VDist2Sq(startPos[1], startPos[3], markerInfo.position[1], markerInfo.position[3])
-            distE = VDist2Sq(destPos[1], destPos[3], markerInfo.position[1], markerInfo.position[3])
-            if distS < bestDistS then
-                --DrawLinePop(startPos, markerInfo.position, 'ffFF0000')
-                --AILog('* AI-Uveso: CanGraphAreaTo: distS('..math.sqrt(distS)..')')
-                --AILog('* AI-Uveso: CanGraphAreaTo: markerInfo.name('..markerInfo.name..')')
-                bestDistS = distS
-                startNode = markerInfo.name
-            end
-            if distE < bestDistE then
-                --DrawLinePop(destPos, markerInfo.position, 'ff0000FF')
-                --AILog('* AI-Uveso: CanGraphAreaTo: distE('..math.sqrt(distE)..')')
-                --AILog('* AI-Uveso: CanGraphAreaTo: markerInfo.name('..markerInfo.name..')')
-                bestDistE = distE
-                endNode = markerInfo.name
-            end
+----For time debug GeneratePathUveso()
+local TimeHIGHEST
+local TimeSUM = 0
+local TimeCOUNT = 0
+local TimeAVERAGE
+local LastCheck = 0
+function GeneratePathUveso(aiBrain, startNode, endNode, threatType, threatWeight, endPos, startPos)
+    local START = GetSystemTimeSecondsOnlyForProfileUse()
+    local PATHs = GeneratePathUvesoXXX(aiBrain, startNode, endNode, threatType, threatWeight, endPos, startPos)
+    local END = GetSystemTimeSecondsOnlyForProfileUse()
+    local DIV = END - START
+    if DIV > 0.001 then
+        if LastCheck + 60 < GetSystemTimeSecondsOnlyForProfileUse() then
+            LastCheck = GetSystemTimeSecondsOnlyForProfileUse()
+            TimeAVERAGE = nil
+        end
+        if not TimeHIGHEST or DIV > TimeHIGHEST then
+            TimeHIGHEST = DIV
+            TimeAVERAGE = nil
+        end
+        TimeSUM = TimeSUM + (DIV)
+        TimeCOUNT = TimeCOUNT + 1
+        if not TimeAVERAGE or TimeAVERAGE < TimeSUM/TimeCOUNT then
+            TimeAVERAGE = TimeSUM/TimeCOUNT
+            AILog('- Pathing Highest:'..(TimeHIGHEST)..' - Pathing Average:'..(TimeSUM/TimeCOUNT)..' - Pathing Actual:'..(DIV))
         end
     end
-    --AILog('* AI-Uveso: CanGraphAreaTo: startNode: '..repr(startNode)..' - endNode: '..repr(endNode)..'')
-    --AILog('* AI-Uveso: CanGraphAreaTo: Start Area: '..repr(Scenario.MasterChain._MASTERCHAIN_.Markers[startNode].GraphArea)..' - End Area: '..repr(Scenario.MasterChain._MASTERCHAIN_.Markers[endNode].GraphArea)..'')
-    if startNode and endNode and Scenario.MasterChain._MASTERCHAIN_.Markers[startNode].GraphArea == Scenario.MasterChain._MASTERCHAIN_.Markers[endNode].GraphArea then
-        --AILog('* AI-Uveso: CanGraphAreaTo: startNode: '..repr(startNode)..' - endNode: '..repr(endNode)..' TRUE')
-        return true
-    end
-    --AIWarn('* AI-Uveso: CanGraphAreaTo: startNode: '..repr(startNode)..' - endNode: '..repr(endNode)..' FALSE')
-    return false
+    return PATHs
 end
 --]]
-
-----For time debug GeneratePathUveso()
---local TimeHIGHEST
---local TimeSUM = 0
---local TimeCOUNT = 0
---local TimeAVERAGE
---local LastCheck = 0
---function GeneratePathUveso(aiBrain, startNode, endNode, threatType, threatWeight, endPos, startPos)
---    local START = GetSystemTimeSecondsOnlyForProfileUse()
---    local PATHs = GeneratePathUvesoXXX(aiBrain, startNode, endNode, threatType, threatWeight, endPos, startPos)
---    local END = GetSystemTimeSecondsOnlyForProfileUse()
---    local DIV = END - START
---    if DIV > 0.001 then
---        if LastCheck + 60 < GetSystemTimeSecondsOnlyForProfileUse() then
---            LastCheck = GetSystemTimeSecondsOnlyForProfileUse()
---            TimeAVERAGE = nil
---        end
---        if not TimeHIGHEST or DIV > TimeHIGHEST then
---            TimeHIGHEST = DIV
---            TimeAVERAGE = nil
---        end
---        TimeSUM = TimeSUM + (DIV)
---        TimeCOUNT = TimeCOUNT + 1
---        if not TimeAVERAGE or TimeAVERAGE < TimeSUM/TimeCOUNT then
---            TimeAVERAGE = TimeSUM/TimeCOUNT
---            AILog('- Pathing Highest:'..(TimeHIGHEST)..' - Pathing Average:'..(TimeSUM/TimeCOUNT)..' - Pathing Actual:'..(DIV))
---        end
---    end
---    return PATHs
---end

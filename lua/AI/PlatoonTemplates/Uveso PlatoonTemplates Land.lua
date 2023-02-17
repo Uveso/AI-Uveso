@@ -13,6 +13,13 @@
 -- ==== Global Form platoons ==== --
 
 PlatoonTemplate {
+    Name = 'U1 Scouting Land',
+    Plan = 'ScoutingUveso',
+    GlobalSquads = {
+        { categories.MOBILE * categories.SCOUT * categories.TECH1, 1, 1, 'scout', 'none' }
+    }
+}
+PlatoonTemplate {
     Name = 'Uveso CDR Attack',
     Plan = 'ACUChampionPlatoon',
     GlobalSquads = {

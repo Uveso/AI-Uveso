@@ -35,7 +35,7 @@ BuilderGroup {
             { EBC, 'GreaterThanEconTrend', { -1.0, -1.00 } }, -- relative income
             -- When do we want to build this ?
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.MOBILE * categories.NAVAL * categories.SUBMERSIBLE * categories.TECH1  }},
-            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 50,  categories.MOBILE * categories.NAVAL * categories.SUBMERSIBLE * categories.TECH1 } },
+            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 10,  categories.MOBILE * categories.NAVAL * categories.SUBMERSIBLE * categories.TECH1 } },
             { UCBC, 'NavalBaseWithLeastUnits', {  100, 'LocationType', categories.MOBILE * categories.NAVAL * categories.SUBMERSIBLE * categories.TECH1 }}, -- radius, LocationType, categoryUnits
             { UCBC, 'HaveUnitRatioVersusCap', { MaxAttackForce / 3 , '<', categories.MOBILE - categories.ENGINEER } },
         },
@@ -49,6 +49,7 @@ BuilderGroup {
         PlatoonTemplate = 'T1SeaSub',
         Priority = 18600,
         BuilderConditions = {
+            { UCBC, 'CanPathNavalBaseToNavalTargets', {  'LocationType', categories.NAVAL }}, -- LocationType, categoryUnits
             -- Have we the eco to build it ?
             -- When do we want to build this ?
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  80, 'LocationType', 0, categories.MOBILE * categories.NAVAL }}, -- radius, LocationType, unitCount, categoryEnemy
@@ -64,7 +65,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             -- When do we want to build this ?
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  80, 'LocationType', 0, categories.MOBILE * categories.AIR * ( categories.BOMBER + categories.GROUNDATTACK + categories.ANTINAVY ) }}, -- radius, LocationType, unitCount, categoryEnemy
-            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 30,  categories.MOBILE * categories.NAVAL } },
+            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 10,  categories.MOBILE * categories.NAVAL } },
         },
         BuilderType = 'Sea',
     },
@@ -83,6 +84,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
+            { UCBC, 'CanPathNavalBaseToNavalTargets', {  'LocationType', categories.NAVAL }}, -- LocationType, categoryUnits
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
@@ -102,7 +104,8 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
-            -- Have we the eco to build it ?
+             { UCBC, 'CanPathNavalBaseToNavalTargets', {  'LocationType', categories.NAVAL }}, -- LocationType, categoryUnits
+           -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 10,  categories.MOBILE * categories.NAVAL } },
@@ -194,6 +197,7 @@ BuilderGroup {
         end,
         BuilderConditions = {
             -- Have we the eco to build it ?
+            { UCBC, 'CanPathNavalBaseToNavalTargets', {  'LocationType', categories.NAVAL }}, -- LocationType, categoryUnits
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
@@ -329,6 +333,7 @@ BuilderGroup {
         end,
         BuilderConditions = {
             -- Have we the eco to build it ?
+            { UCBC, 'CanPathNavalBaseToNavalTargets', {  'LocationType', categories.NAVAL }}, -- LocationType, categoryUnits
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.01, 0.30 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
@@ -396,6 +401,7 @@ BuilderGroup {
         PlatoonTemplate = 'T1SeaSub',
         Priority = 18600,
         BuilderConditions = {
+            { UCBC, 'CanPathNavalBaseToNavalTargets', {  'LocationType', categories.NAVAL }}, -- LocationType, categoryUnits
             -- Have we the eco to build it ?
             -- When do we want to build this ?
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  60, 'LocationType', 0, categories.MOBILE * categories.NAVAL }}, -- radius, LocationType, unitCount, categoryEnemy
@@ -408,6 +414,7 @@ BuilderGroup {
         PlatoonTemplate = 'T1SeaAntiAir',
         Priority = 18600,
         BuilderConditions = {
+            { UCBC, 'CanPathNavalBaseToNavalTargets', {  'LocationType', categories.NAVAL }}, -- LocationType, categoryUnits
             -- Have we the eco to build it ?
             -- When do we want to build this ?
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  60, 'LocationType', 0, categories.MOBILE * categories.AIR * ( categories.BOMBER + categories.GROUNDATTACK + categories.ANTINAVY ) }}, -- radius, LocationType, unitCount, categoryEnemy
@@ -502,6 +509,7 @@ BuilderGroup {
             end
         end,
         BuilderConditions = {
+            { UCBC, 'CanPathNavalBaseToNavalTargets', {  'LocationType', categories.NAVAL }}, -- LocationType, categoryUnits
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.11, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
@@ -644,6 +652,7 @@ BuilderGroup {
         end,
         BuilderConditions = {
             -- Have we the eco to build it ?
+            { UCBC, 'CanPathNavalBaseToNavalTargets', {  'LocationType', categories.NAVAL }}, -- LocationType, categoryUnits
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
             { EBC, 'GreaterThanEconStorageRatio', { 0.12, 0.50 } },             -- Ratio from 0 to 1. (1=100%)
             -- When do we want to build this ?
@@ -715,6 +724,7 @@ BuilderGroup {
             -- Have we the eco to build it ?
             -- When do we want to build this ?
             { UCBC, 'UnitsLessAtLocation', { 'LocationType', 1, (categories.STRUCTURE * categories.SONAR) + categories.MOBILESONAR } }, -- TECH3 sonar is MOBILE not STRUCTURE!!!
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 5, (categories.STRUCTURE * categories.SONAR) + categories.MOBILESONAR } },
             { UCBC, 'HaveGreaterThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.FACTORY * categories.NAVAL } },
             { UCBC, 'PoolGreaterAtLocation', { 'LocationType', 0, categories.ENGINEER * categories.TECH1 - categories.STATIONASSISTPOD }},
             -- Respect UnitCap

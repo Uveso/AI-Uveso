@@ -1,11 +1,16 @@
 
 -- HeatMap
 
--- ToDo: Take the weapon range in to account and remove the spreaded threat
+-- ToDo: Targeting Take the weapon range in to account and remove the spreaded threat
+-- Scouting: scout random a low prio target
+-- Scouting: copy scouted data to history layer
+-- Scouting: changed debug view for players eyes to easy understand the scouting goals (target = square ?)
+
 local TARGETDEBUG = false
 local HEATMAPDEBUG = false
+local SCOUTDEBUG = false
 
-local WantedGridCellSize = 16
+local WantedGridCellSize = 14
 local HeatMap = {}
 local TempMap = {}
 local playableArea
@@ -16,7 +21,8 @@ local HeatMapGridCountZ
 local HeatMapGridSizeX
 local HeatMapGridSizeZ
 
-function InitAITargetManagerData()
+function InitAITargetManagerData(GridCellSize)
+    WantedGridCellSize = GridCellSize
     playableArea = GetPlayableArea()
     PlayableMapSizeX = playableArea[3] - playableArea[1]
     PlayableMapSizeZ = playableArea[4] - playableArea[2]
@@ -33,6 +39,11 @@ function AITargetManagerThread(aiBrain, armyIndex)
     ArmyBrains[armyIndex].targets = {}
     ArmyBrains[armyIndex].highestEnemyThreat = {}
     ArmyBrains[armyIndex].highestEnemyEcoValue = {}
+    if SCOUTDEBUG then
+        aiBrain:ForkThread(DrawScoutMap)
+    end
+
+    aiBrain:ForkThread(ArmyScouting, armyIndex)
 
     local loop = 0 
     while true do
@@ -53,7 +64,7 @@ end
 
 function CreateHeatMap(basePosition)
     local map = {}
-    local GridCenterPos
+    local gridCenterPos
     for x = 0, HeatMapGridCountX - 1 do
         map[x] = {}
         for z = 0, HeatMapGridCountZ - 1 do
@@ -69,17 +80,20 @@ function CreateHeatMap(basePosition)
             map[x][z].threat = {}
             map[x][z].threat["Land"] = 0
             map[x][z].threat["Air"] = 0
-            map[x][z].threat['Water'] = 0
+            map[x][z].threat["Water"] = 0
             map[x][z].threat["Amphibious"] = 0
+            map[x][z].threat["Hover"] = 0
             map[x][z].threatRing = {}
             map[x][z].threatRing["Land"] = 0
             map[x][z].threatRing["Air"] = 0
-            map[x][z].threatRing['Water'] = 0
+            map[x][z].threatRing["Water"] = 0
             map[x][z].threatRing["Amphibious"] = 0
+            map[x][z].threatRing["Hover"] = 0
+            map[x][z].lastScouted = -60
             -- ony calculate when base location is present (first time)
             if basePosition then
-                GridCenterPos = GetHeatMapGridPositionFromIndex(x, z)
-                map[x][z].distantToOwnBase = VDist2(basePosition[1], basePosition[3], GridCenterPos[1], GridCenterPos[3])
+                gridCenterPos = GetHeatMapGridPositionFromIndex(x, z)
+                map[x][z].distantToOwnBase = VDist2(basePosition[1], basePosition[3], gridCenterPos[1], gridCenterPos[3])
             end
         end
     end
@@ -110,16 +124,22 @@ function GetPlayableArea()
 end
 
 function GetHeatMapGridIndexFromPosition(Position)
-    --AILog("GetHeatMapGridIndexFromPosition unit Pos"..Position[1].." "..Position[3].."")
-    local x = math.floor( (Position[1] - playableArea[1]) / HeatMapGridSizeX ) 
-    local z = math.floor( (Position[3] - playableArea[2]) / HeatMapGridSizeZ )
-    --AILog("GetHeatMapGridIndexFromPosition area Pos"..x.." "..z.."")
+    if not Position.x or not Position.z then
+        AILog("- Warning: * Fn GetHeatMapGridIndexFromPosition(): Position.x or Position.z not present!!!.")
+        local FuncData = debug.getinfo(2)
+        if FuncData.name and FuncData.name ~= "" then
+            AILog("- Warning: * Fn GetHeatMapGridIndexFromPosition(): Called from function: \""..FuncData.name.."\" in "..string.gsub(FuncData.short_src, "in file: ", "").." line "..FuncData.currentline..'')
+        else
+            AILog('- Warning: * Fn GetHeatMapGridIndexFromPosition(): Called from '..FuncData.source..' - line: '..FuncData.currentline.. '')
+        end
+    end
+    local x = math.floor( (Position.x - playableArea[1]) / HeatMapGridSizeX ) 
+    local z = math.floor( (Position.z - playableArea[2]) / HeatMapGridSizeZ )
     -- Make sure that x and z are inside the playable area
     x = math.max( 0, x )
     x = math.min( HeatMapGridCountX - 1, x )
     z = math.max( 0, z )
     z = math.min( HeatMapGridCountZ - 1, z )
-    --AILog("GetHeatMapGridIndexFromPosition math Pos"..x.." "..z.."")
     return x, z
 end
 
@@ -132,9 +152,19 @@ function GetHeatMapGridPositionFromIndex(x, z)
     return {posX, posY, posZ}
 end
 
-function GetThreatFromHeatMap(armyIndex, position, layer)
+function GetThreatFromHeatMapPosition(armyIndex, position, layer)
     local x, z = GetHeatMapGridIndexFromPosition(position)
     return HeatMap[armyIndex][x][z].threatRing[layer] or 0
+end
+
+function GetThreatFromHeatMapGrid(armyIndex, gridPos, layer)
+    if not gridPos[1] then
+        AILog("GetThreatFromHeatMapGrid gridPos[1] = NIL!")
+    end
+    if not gridPos[2] then
+        AILog("GetThreatFromHeatMapGrid gridPos[2] = NIL!")
+    end
+    return HeatMap[armyIndex][gridPos[1]][gridPos[2]].threatRing[layer] or 0
 end
 
 function CalculateThreat(armyIndex)
@@ -145,7 +175,7 @@ function CalculateThreat(armyIndex)
     local EnemyUnits = ArmyBrains[armyIndex]:GetUnitsAroundPoint(categories.ALLUNITS, Vector(PlayableMapSizeX/2,0,PlayableMapSizeZ/2), PlayableMapSizeX+PlayableMapSizeZ , 'Enemy')
     local loopCount = 0
     local unitCat
-    for _, unit in EnemyUnits do
+    for _, unit in pairs(EnemyUnits) do
         if not unit.Dead and IsEnemy( armyIndex, unit.Army ) and unit:GetFractionComplete() >= 1 then
 
             x, z = GetHeatMapGridIndexFromPosition(unit:GetPosition())
@@ -187,17 +217,21 @@ function CalculateThreat(armyIndex)
             if unitCat.ANTINAVY then
                 -- water threat
                 if unitCat.TECH1 then
-                    HMAP[x][z].threat['Water'] = HMAP[x][z].threat['Water'] + 1
+                    HMAP[x][z].threat["Water"] = HMAP[x][z].threat["Water"] + 1
                     HMAP[x][z].threat["Amphibious"] = HMAP[x][z].threat["Amphibious"] + 1
+                    HMAP[x][z].threat["Hover"] = HMAP[x][z].threat["Hover"] + 1
                 elseif unitCat.TECH2 then
-                    HMAP[x][z].threat['Water'] = HMAP[x][z].threat['Water'] + 3
+                    HMAP[x][z].threat["Water"] = HMAP[x][z].threat["Water"] + 3
                     HMAP[x][z].threat["Amphibious"] = HMAP[x][z].threat["Amphibious"] + 3
+                    HMAP[x][z].threat["Hover"] = HMAP[x][z].threat["Hover"] + 3
                 elseif unitCat.TECH3 then
-                    HMAP[x][z].threat['Water'] = HMAP[x][z].threat['Water'] + 13
+                    HMAP[x][z].threat["Water"] = HMAP[x][z].threat["Water"] + 13
                     HMAP[x][z].threat["Amphibious"] = HMAP[x][z].threat["Amphibious"] + 13
+                    HMAP[x][z].threat["Hover"] = HMAP[x][z].threat["Hover"] + 13
                 elseif unitCat.EXPERIMENTAL then
-                    HMAP[x][z].threat['Water'] = HMAP[x][z].threat['Water'] + 80
+                    HMAP[x][z].threat["Water"] = HMAP[x][z].threat["Water"] + 80
                     HMAP[x][z].threat["Amphibious"] = HMAP[x][z].threat["Amphibious"] + 80
+                    HMAP[x][z].threat["Hover"] = HMAP[x][z].threat["Hover"] + 80
                 else
                     AIWarn('* CalculateThreat: cant identify unit TECH for Strength '..repr(unit.UnitId))
                 end
@@ -208,18 +242,23 @@ function CalculateThreat(armyIndex)
                 if unitCat.TECH1 then
                     HMAP[x][z].threat["Land"] = HMAP[x][z].threat["Land"] + 1
                     HMAP[x][z].threat["Amphibious"] = HMAP[x][z].threat["Amphibious"] + 1
+                    HMAP[x][z].threat["Hover"] = HMAP[x][z].threat["Hover"] + 1
                 elseif unitCat.TECH2 then
                     HMAP[x][z].threat["Land"] = HMAP[x][z].threat["Land"] + 3
                     HMAP[x][z].threat["Amphibious"] = HMAP[x][z].threat["Amphibious"] + 3
+                    HMAP[x][z].threat["Hover"] = HMAP[x][z].threat["Hover"] + 3
                 elseif unitCat.TECH3 then
                     HMAP[x][z].threat["Land"] = HMAP[x][z].threat["Land"] + 13
                     HMAP[x][z].threat["Amphibious"] = HMAP[x][z].threat["Amphibious"] + 13
+                    HMAP[x][z].threat["Hover"] = HMAP[x][z].threat["Hover"] + 13
                 elseif unitCat.EXPERIMENTAL then
                     HMAP[x][z].threat["Land"] = HMAP[x][z].threat["Land"] + 80
                     HMAP[x][z].threat["Amphibious"] = HMAP[x][z].threat["Amphibious"] + 80
+                    HMAP[x][z].threat["Hover"] = HMAP[x][z].threat["Hover"] + 80
                 elseif unitCat.COMMAND then
                     HMAP[x][z].threat["Land"] = HMAP[x][z].threat["Land"] + 20
                     HMAP[x][z].threat["Amphibious"] = HMAP[x][z].threat["Amphibious"] + 20
+                    HMAP[x][z].threat["Hover"] = HMAP[x][z].threat["Hover"] + 20
                 else
                     AIWarn('* CalculateThreat: cant identify unit TECH for Strength '..repr(unit.UnitId))
                 end
@@ -259,6 +298,7 @@ function CalculateThreat(armyIndex)
                         HMAP[indexX][indexZ].threatRing["Air"] = HMAP[indexX][indexZ].threatRing["Air"] + ( HMAP[indexX + x][indexZ + z].threat["Air"] )
                         HMAP[indexX][indexZ].threatRing["Water"] = HMAP[indexX][indexZ].threatRing["Water"] + ( HMAP[indexX + x][indexZ + z].threat["Water"] )
                         HMAP[indexX][indexZ].threatRing["Amphibious"] = HMAP[indexX][indexZ].threatRing["Amphibious"] + ( HMAP[indexX + x][indexZ + z].threat["Amphibious"] )
+                        HMAP[indexX][indexZ].threatRing["Hover"] = HMAP[indexX][indexZ].threatRing["Hover"] + ( HMAP[indexX + x][indexZ + z].threat["Hover"] )
                     else
                         -- add half threat for surrounding fields
                         if HMAP[indexX + x] and HMAP[indexX + x][indexZ + z] then
@@ -266,6 +306,7 @@ function CalculateThreat(armyIndex)
                             HMAP[indexX][indexZ].threatRing["Air"] = HMAP[indexX][indexZ].threatRing["Air"] + ( HMAP[indexX + x][indexZ + z].threat["Air"] ) / 2
                             HMAP[indexX][indexZ].threatRing["Water"] = HMAP[indexX][indexZ].threatRing["Water"] + ( HMAP[indexX + x][indexZ + z].threat["Water"] ) / 2
                             HMAP[indexX][indexZ].threatRing["Amphibious"] = HMAP[indexX][indexZ].threatRing["Amphibious"] + ( HMAP[indexX + x][indexZ + z].threat["Amphibious"] ) / 2
+                            HMAP[indexX][indexZ].threatRing["Hover"] = HMAP[indexX][indexZ].threatRing["Hover"] + ( HMAP[indexX + x][indexZ + z].threat["Hover"] ) / 2
                         end
                     end
                 end
@@ -277,18 +318,19 @@ function CalculateThreat(armyIndex)
 
     -- copy the updated table to the main HeatMap
     for indexX, xTables in pairs(HMAP) do
-        for indexZ, yData in pairs(xTables) do
-            HeatMap[armyIndex][indexX][indexZ].numEnemyCommander = yData.numEnemyCommander
-            HeatMap[armyIndex][indexX][indexZ].numEnemyUnits = yData.numEnemyUnits
-            HeatMap[armyIndex][indexX][indexZ].numEnemyEngineers = yData.numEnemyEngineers
-            HeatMap[armyIndex][indexX][indexZ].numEnemyFactories = yData.numEnemyFactories
-            HeatMap[armyIndex][indexX][indexZ].highestEnemyEcoValue["Mass"] = yData.highestEnemyEcoValue["Mass"]
-            HeatMap[armyIndex][indexX][indexZ].highestEnemyEcoValue["Energy"] = yData.highestEnemyEcoValue["Energy"]
-            HeatMap[armyIndex][indexX][indexZ].highestEnemyEcoValue["All"] = yData.highestEnemyEcoValue["All"]
-            HeatMap[armyIndex][indexX][indexZ].threatRing["Land"] = yData.threatRing["Land"]
-            HeatMap[armyIndex][indexX][indexZ].threatRing["Air"] = yData.threatRing["Air"]
-            HeatMap[armyIndex][indexX][indexZ].threatRing['Water'] = yData.threatRing['Water']
-            HeatMap[armyIndex][indexX][indexZ].threatRing["Amphibious"] = yData.threatRing["Amphibious"]
+        for indexZ, zData in pairs(xTables) do
+            HeatMap[armyIndex][indexX][indexZ].numEnemyCommander = zData.numEnemyCommander
+            HeatMap[armyIndex][indexX][indexZ].numEnemyUnits = zData.numEnemyUnits
+            HeatMap[armyIndex][indexX][indexZ].numEnemyEngineers = zData.numEnemyEngineers
+            HeatMap[armyIndex][indexX][indexZ].numEnemyFactories = zData.numEnemyFactories
+            HeatMap[armyIndex][indexX][indexZ].highestEnemyEcoValue["Mass"] = zData.highestEnemyEcoValue["Mass"]
+            HeatMap[armyIndex][indexX][indexZ].highestEnemyEcoValue["Energy"] = zData.highestEnemyEcoValue["Energy"]
+            HeatMap[armyIndex][indexX][indexZ].highestEnemyEcoValue["All"] = zData.highestEnemyEcoValue["All"]
+            HeatMap[armyIndex][indexX][indexZ].threatRing["Land"] = zData.threatRing["Land"]
+            HeatMap[armyIndex][indexX][indexZ].threatRing["Air"] = zData.threatRing["Air"]
+            HeatMap[armyIndex][indexX][indexZ].threatRing["Water"] = zData.threatRing["Water"]
+            HeatMap[armyIndex][indexX][indexZ].threatRing["Amphibious"] = zData.threatRing["Amphibious"]
+            HeatMap[armyIndex][indexX][indexZ].threatRing["Hover"] = zData.threatRing["Hover"]
         end
     end
 end
@@ -308,6 +350,7 @@ function SetTargets(armyIndex, basePosition)
     ArmyBrains[armyIndex].highestEnemyThreat["Air"] = BuildThreatTable(armyIndex, "Air") or {}
     ArmyBrains[armyIndex].highestEnemyThreat["Water"] = BuildThreatTable(armyIndex, "Water") or {}
     ArmyBrains[armyIndex].highestEnemyThreat["Amphibious"] = BuildThreatTable(armyIndex, "Amphibious") or {}
+    ArmyBrains[armyIndex].highestEnemyThreat["Hover"] = BuildThreatTable(armyIndex, "Hover") or {}
 
     coroutine.yield(1)
 
@@ -793,7 +836,270 @@ function GetTargetsFromEcoTable(armyIndex, ecoTable)
     return returnTable
 end
 
--- init HeatMap data
---InitAITargetManagerData()
+function DrawScoutMap()
+    while GetGameTimeSeconds() < 1 do
+        coroutine.yield(10)
+    end
+    local playableArea = GetPlayableArea()
+    local px, py, pz = 0,0,0
+    local ScoutScale = 1
+    local Scouthighest = 1
+    local FocussedArmy
+    local heatMap
+    local enemyMainForce
+    local basePosition
+    local pr = {}
+    while true do
+        coroutine.yield(2)
+        FocussedArmy = GetFocusArmy()
+        if FocussedArmy > 0 then
+            heatMap = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').GetHeatMapForArmy(FocussedArmy)
+            basePosition = ArmyBrains[FocussedArmy].BuilderManagers['MAIN'].Position
+            if not heatMap or not basePosition then 
+                continue 
+            end
+            -- draw debug
+            for x = 0, HeatMapGridCountX - 1 do
+                for z = 0, HeatMapGridCountZ - 1 do
+                    gridCenterPos = GetHeatMapGridPositionFromIndex(x, z)
+                    px = gridCenterPos[1]
+                    pz = gridCenterPos[3]
+--                    if py > GetTerrainHeight( px, pz ) then
+                        py = GetTerrainHeight( px, pz )
+--                    end
+                    -- draw heatmap box
+                    DrawLine({px-HeatMapGridSizeX/2, py, pz-HeatMapGridSizeZ/2}, {px+HeatMapGridSizeX/2, py, pz-HeatMapGridSizeZ/2}, 'ff707070') -- U
+--                    DrawLine({px-HeatMapGridSizeX/2, py, pz+HeatMapGridSizeZ/2}, {px+HeatMapGridSizeX/2, py, pz+HeatMapGridSizeZ/2}, 'ff707070') -- D
+                    DrawLine({px-HeatMapGridSizeX/2, py, pz-HeatMapGridSizeZ/2}, {px-HeatMapGridSizeX/2, py, pz+HeatMapGridSizeZ/2}, 'ff707070') -- L
+--                    DrawLine({px+HeatMapGridSizeX/2, py, pz-HeatMapGridSizeZ/2}, {px+HeatMapGridSizeX/2, py, pz+HeatMapGridSizeZ/2}, 'ff707070') -- R
 
+                    -- draw scouted areas
+                    pr["Land"] = (GetGameTimeSeconds() - heatMap[x][z].lastScouted)  * ScoutScale
+                    DrawCircle( { px, py, pz }, pr["Land"] , '80f4a460' )
+                    -- get the highest value to scale all circles
+                    if (GetGameTimeSeconds() - heatMap[x][z].lastScouted) > Scouthighest then
+                        Scouthighest = (GetGameTimeSeconds() - heatMap[x][z].lastScouted)
+                    end
+                end
+            end
+            ScoutScale = (math.min( HeatMapGridSizeX, HeatMapGridSizeZ ) - 1) / 2 / Scouthighest
+            Scouthighest = 1
+        end -- if FocussedArmy > 0 then
+    end
+end
 
+function GetScoutTable(armyIndex)
+    local AIMarkerGenerator = import('/mods/AI-Uveso/lua/AI/AIMarkerGenerator.lua')
+    local highPrioList = {}
+    local lowPrioList = {}
+    local lastScouted, scoutedBy
+    local ScoutTimeOut = 60
+    -- build highPrioList with start positions and expansions.
+    for i, startPosition in pairs(AIMarkerGenerator.GetStartPositions()) do
+        lastScouted, scoutedBy = GetLastScouted(armyIndex, startPosition)
+        if not scoutedBy and (not lastScouted or GetGameTimeSeconds() - lastScouted > ScoutTimeOut) then
+            table.insert(highPrioList, {x = startPosition.x, z = startPosition.z, id = "Start Position", lastScouted = lastScouted} )
+        end
+    end
+    for i, expansionPosition in pairs(AIMarkerGenerator.GetLandExpansions()) do
+        lastScouted, scoutedBy = GetLastScouted(armyIndex, expansionPosition)
+        if not scoutedBy and (not lastScouted or GetGameTimeSeconds() - lastScouted > ScoutTimeOut) then
+            if expansionPosition.MexInRange > 3 then
+                table.insert(highPrioList, {x = expansionPosition.x, z = expansionPosition.z, id = "Large Expansion Area", lastScouted = lastScouted} )
+            else
+                table.insert(highPrioList, {x = expansionPosition.x, z = expansionPosition.z, id = "Small Expansion Area", lastScouted = lastScouted} )
+            end
+        end
+    end
+    for i, expansionPosition in pairs(AIMarkerGenerator.GetNavalExpansions()) do
+        lastScouted, scoutedBy = GetLastScouted(armyIndex, expansionPosition)
+        if not scoutedBy and (not lastScouted or GetGameTimeSeconds() - lastScouted > ScoutTimeOut) then
+            table.insert(highPrioList, {x = expansionPosition.x, z = expansionPosition.z, id = "Naval Expansion Area", lastScouted = lastScouted} )
+        end
+    end
+    table.sort(highPrioList, function(a, b) return a.lastScouted < b.lastScouted end)
+    -- build lowPrioList with normal grid position
+    for indexX, xTables in pairs(HeatMap[armyIndex]) do
+        for indexZ, zData in pairs(xTables) do
+            blocked = false
+            -- check if we have already a scout target in this area
+            for x = indexX - 5, indexX + 5 do
+                for z = indexZ - 5, indexZ + 5 do
+                    if HeatMap[armyIndex][x] and HeatMap[armyIndex][x][z] then
+                        if HeatMap[armyIndex][x][z].scoutedBy then
+--                            if HeatMap[armyIndex][x][z].lastScouted > 0 and GetGameTimeSeconds() - HeatMap[armyIndex][x][z].lastScouted < 180 then
+                                blocked = true
+--                            end
+                        end
+                    end
+                end
+            end
+            gridCenterPos = GetHeatMapGridPositionFromIndex(indexX, indexZ)
+            lastScouted, scoutedBy = GetLastScouted(armyIndex, {x = gridCenterPos[1], y = gridCenterPos[2], z = gridCenterPos[3]})
+            if not scoutedBy and (not lastScouted or GetGameTimeSeconds() - lastScouted > 30) then
+                -- check if the scout location is close to an already saved position
+                for i, location in pairs(lowPrioList) do
+                    if VDist2( location.x, location.z, gridCenterPos[1], gridCenterPos[3]) < 40 then
+                        blocked = true
+                        break
+                    end
+                end
+                -- check if the scout location is to close to an highPrio location
+                for i, location in pairs(highPrioList) do
+                    if VDist2( location.x, location.z, gridCenterPos[1], gridCenterPos[3]) < 40 then
+                        blocked = true
+                        break
+                    end
+                end
+                if not blocked then
+                    table.insert(lowPrioList, {x = gridCenterPos[1], z = gridCenterPos[3], id = "Normal Area", lastScouted = lastScouted} )
+                end
+            end
+        end
+    end
+    table.sort(lowPrioList, function(a, b) return a.lastScouted < b.lastScouted end)
+
+    return highPrioList, lowPrioList
+end
+
+function GetLastScouted(armyIndex, position)
+    local gridX, gridZ = GetHeatMapGridIndexFromPosition(position)
+    return HeatMap[armyIndex][gridX][gridZ].lastScouted, HeatMap[armyIndex][gridX][gridZ].scoutedBy
+end
+
+function GetLastScoutedDistance(armyIndex, position, scoutRadius)
+    scoutRadius = scoutRadius + 2
+    local closestAreaDistance = scoutRadius
+    local gridX, gridZ = GetHeatMapGridIndexFromPosition(position)
+    local offsetX = math.floor((scoutRadius / HeatMapGridSizeX) + 0.5) - 1
+    local offsetZ = math.floor((scoutRadius / HeatMapGridSizeZ) + 0.5) - 1
+    local scoutingTarget
+    offsetX = math.max(offsetX, 0)
+    offsetZ = math.max(offsetZ, 0)
+    --AILog('* Fn: GetLastScoutedDistance(): HeatMapGridSizeX['..HeatMapGridSizeX..'] scoutRadius['..scoutRadius..']', true)
+    --AILog('* Fn: GetLastScoutedDistance(): offsetX['..offsetX..'] offsetZ['..offsetZ..']', true)
+    for x = gridX - offsetX, gridX + offsetX do
+        for z = gridZ - offsetZ, gridZ + offsetZ do
+            if HeatMap[armyIndex][x] and HeatMap[armyIndex][x][z] then
+                local gridCenterPos = GetHeatMapGridPositionFromIndex(x, z)
+                local dist = VDist2(position.x, position.z, gridCenterPos[1], gridCenterPos[3])
+                if dist < closestAreaDistance and GetGameTimeSeconds() - HeatMap[armyIndex][x][z].lastScouted > 15 then
+                    --AILog('* Fn: GetLastScoutedDistance(): Grid['..x..']['..z..'] closestAreaDistance='..closestAreaDistance..' TRUE', true)
+                    scoutingTarget = {x = gridCenterPos[1], y = 0, z = gridCenterPos[3]}
+                    closestAreaDistance = dist
+                else
+                    --AILog('* Fn: GetLastScoutedDistance(): Grid['..x..']['..z..'] closestAreaDistance='..closestAreaDistance..' FALSE', true)
+                end
+            end
+        end
+    end
+    --AILog('* Fn: GetLastScoutedDistance(): scoutingTarget='..repr(scoutingTarget)..' FALSE', true)
+    return scoutingTarget
+end
+function SetLastScoutedSquared(armyIndex, position, scoutRadius)
+    local gridX, gridZ = GetHeatMapGridIndexFromPosition(position)
+    local offsetX = math.floor((scoutRadius / HeatMapGridSizeX) + 0.5) - 1
+    local offsetZ = math.floor((scoutRadius / HeatMapGridSizeZ) + 0.5) - 1
+    offsetX = math.max(offsetX, 0)
+    offsetZ = math.max(offsetZ, 0)
+    --AIWarn('* AI-Uveso: SetLastScoutedSquared(): HeatMapGridSizeX['..HeatMapGridSizeX..'] scoutRadius['..scoutRadius..']', true)
+    --AIWarn('* AI-Uveso: SetLastScoutedSquared(): offsetX['..offsetX..'] offsetZ['..offsetZ..']', true)
+    for x = gridX - offsetX, gridX + offsetX do
+        for z = gridZ - offsetZ, gridZ + offsetZ do
+            if HeatMap[armyIndex][x][z] then
+                --AIWarn('* AI-Uveso: SetLastScoutedSquared(): Grid['..x..']['..z..']', true)
+                HeatMap[armyIndex][x][z].lastScouted = GetGameTimeSeconds()
+                HeatMap[armyIndex][x][z].scoutedBy = false
+            end
+        end
+    end
+end
+
+function SetLastScoutedDistance(armyIndex, position, scoutRadius)
+    local gridX, gridZ = GetHeatMapGridIndexFromPosition(position)
+    local offsetX = math.floor((scoutRadius / HeatMapGridSizeX) + 0.5) - 1
+    local offsetZ = math.floor((scoutRadius / HeatMapGridSizeZ) + 0.5) - 1
+    offsetX = math.max(offsetX, 0)
+    offsetZ = math.max(offsetZ, 0)
+    --AIWarn('* AI-Uveso: SetLastScoutedDistance(): HeatMapGridSizeX['..HeatMapGridSizeX..'] scoutRadius['..scoutRadius..']', true)
+    --AIWarn('* AI-Uveso: SetLastScoutedDistance(): gridX['..gridX..'] gridZ['..gridZ..']', true)
+    --AIWarn('* AI-Uveso: SetLastScoutedDistance(): offsetX['..offsetX..'] offsetZ['..offsetZ..']', true)
+    for x = gridX - offsetX, gridX + offsetX do
+        for z = gridZ - offsetZ, gridZ + offsetZ do
+            --AIWarn('* AI-Uveso: SetLastScoutedDistance(): checking grid HeatMap['..armyIndex..']['..x..']['..z..']', true)
+            if HeatMap[armyIndex][x][z] then
+                local gridCenterPos = GetHeatMapGridPositionFromIndex(x, z)
+                --AIWarn('* AI-Uveso: SetLastScoutedDistance(): gridCenterPos ('..repr(gridCenterPos)..')', true)
+                local dist = VDist2(position.x, position.z, gridCenterPos[1], gridCenterPos[3])
+                --AIWarn('* AI-Uveso: SetLastScoutedDistance(): dist ('..dist..') - scoutRadius('..scoutRadius..')', true)
+                if dist < scoutRadius then
+                    --AIWarn('* AI-Uveso: SetLastScoutedDistance(): Grid['..x..']['..z..'] scoutRadius='..scoutRadius..' - dist='..dist..' TRUE', true)
+                    HeatMap[armyIndex][x][z].lastScouted = GetGameTimeSeconds()
+                    HeatMap[armyIndex][x][z].scoutedBy = false
+                else
+                    --AIWarn('* AI-Uveso: SetLastScoutedDistance(): Grid['..x..']['..z..'] scoutRadius='..scoutRadius..' - dist='..dist..' FALSE', true)
+                end
+            end
+        end
+    end
+end
+
+function SetWillBeScoutedFrom(armyIndex, position, EntityId)
+    --AIWarn('* AI-Uveso: SetWillBeScoutedFrom(): position '..repr(position), true)
+    local gridX, gridZ = GetHeatMapGridIndexFromPosition(position)
+    --AIWarn('* AI-Uveso: SetWillBeScoutedFrom(): Grid['..gridX..']['..gridZ..'] will be scouted from '..repr(EntityId), true)
+    HeatMap[armyIndex][gridX][gridZ].scoutedBy = EntityId
+    HeatMap[armyIndex][gridX][gridZ].lastScoutOrder = GetGameTimeSeconds()
+end
+
+function GetLastScoutOrder(armyIndex, position)
+    local gridX, gridZ = GetHeatMapGridIndexFromPosition(position)
+    return HeatMap[armyIndex][gridX][gridZ].lastScoutOrder
+end
+
+function GetLastScoutBy(armyIndex, position)
+    local gridX, gridZ = GetHeatMapGridIndexFromPosition(position)
+    return HeatMap[armyIndex][gridX][gridZ].scoutedBy
+end
+
+function ArmyScouting(aiBrain, armyIndex)
+    local armyUnits, position, gridX, gridZ, loopCount, visionRadius, maxVisionRadius, radarRadius, scoutRadius
+    while true do
+        coroutine.yield(10)
+        armyUnits = aiBrain:GetListOfUnits((categories.MOBILE + categories.STRUCTURE) - categories.SCOUT, false, false)
+        loopCount = 0
+        for _, unit in armyUnits do
+            if not unit.Dead then
+                position = unit:GetPosition()
+                gridX, gridZ = GetHeatMapGridIndexFromPosition(position)
+                visionRadius = unit.Blueprint.Intel.VisionRadius or 1
+                radarRadius = unit.Blueprint.Intel.RadarRadius or 1
+                maxVisionRadius = unit.Blueprint.Intel.MaxVisionRadius or 1
+                scoutRadius = math.max(visionRadius, radarRadius, maxVisionRadius)
+                --AILog("Unit["..unit.UnitId.."] ("..unit.Blueprint.Description..") "..repr(unit.Blueprint.CategoriesHash))
+                --AILog("Unit["..unit.UnitId.."] ("..unit.Blueprint.Description..") "..repr(unit.Blueprint.Intel))
+                --does the unit need energy to generate intel?
+                energyOK = false
+                if unit.Blueprint.Economy.MaintenanceConsumptionPerSecondEnergy > 0 then
+                    --do we have energy to work?
+                    if unit:GetResourceConsumed() == 1 then
+                        energyOK = true
+                    end
+                else
+                    energyOK = true
+                end
+                --in case we have energy or the unit does not need energy, update the scout area
+                if energyOK and scoutRadius >= 15 then
+                    --AILog("* AI-Uveso: ArmyScouting(): energyOK:"..repr(energyOK).." scoutRadius:"..scoutRadius.." Position:"..position.x..", "..position.z)
+                    SetLastScoutedDistance(armyIndex, position, scoutRadius)
+                end
+            end
+            loopCount = loopCount + 1
+            if loopCount > 50 then -- 50
+                --AIWarn('* ArmyScouting: loopCount: '..loopCount..'  ')
+                coroutine.yield(1)
+                loopCount = 0
+            end
+        end
+    end
+end

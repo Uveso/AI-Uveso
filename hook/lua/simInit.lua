@@ -87,7 +87,8 @@ function BeginSession()
 
     ValidateModFilesUveso()
     -- init data for target manager
-    import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').InitAITargetManagerData()
+    local WantedGridCellSize = math.floor( math.max( ScenarioInfo.size[1], ScenarioInfo.size[2] ) / 36)
+    import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').InitAITargetManagerData(WantedGridCellSize)
 
     if ScenarioInfo.Options.AIPathingDebug ~= 'off' then
         -- import functions for marker generator
@@ -501,7 +502,7 @@ function CreateAIMarkers()
     -- import functions for marker generator
     local AIMarkerGenerator = import("/mods/AI-Uveso/lua/AI/AIMarkerGenerator.lua")
     -- init Generator variables
-    AIMarkerGenerator.InitMarkerGenerator()
+    AIMarkerGenerator.SetWantedGridCellSize(WantedGridCellSize)
     local markerTable, NavalMarkerPositions, LandMarkerPositions
     -- build a table with dirty / unpathable terrain
     AIMarkerGenerator.BuildTerrainPathMap()
@@ -509,8 +510,6 @@ function CreateAIMarkers()
     --ForkThread(AIMarkerGenerator.PathableTerrainRenderThread)
     AIDebug(string.format("* AI-Uveso: Function CreateAIMarkers(): building TerrainPathMap finished, runtime: %.2f seconds.", GetSystemTimeSecondsOnlyForProfileUse() - START  ), true, UvesoOffsetSimInitLUA)
 
-    -- Set grid cell size for air (half the size than normal layers)
-    AIMarkerGenerator.SetWantedGridCellSize(WantedGridCellSize * 2)
     -- build marker grid for air
     AIMarkerGenerator.CreateMarkerGrid("Air")
     -- build connections for air
@@ -523,8 +522,6 @@ function CreateAIMarkers()
     -- convert markers and copy to MASTERCHAIN
     ConvertMarkerTableToFAF(markerTable, "Air")
 
-    -- Set grid cell size for land
-    AIMarkerGenerator.SetWantedGridCellSize(WantedGridCellSize)
     -- build marker grid for land
     local STARTSUB = GetSystemTimeSecondsOnlyForProfileUse()
     AIMarkerGenerator.CreateMarkerGrid("Land")
@@ -543,8 +540,6 @@ function CreateAIMarkers()
     -- convert markers and copy to MASTERCHAIN
     ConvertMarkerTableToFAF(markerTable, "Land")
 
-    -- Set grid cell size for water
-    AIMarkerGenerator.SetWantedGridCellSize(WantedGridCellSize)
     -- build marker grid for water
     AIMarkerGenerator.CreateMarkerGrid("Water")
     -- build connections for water
@@ -557,8 +552,6 @@ function CreateAIMarkers()
     -- convert markers and copy to MASTERCHAIN
     ConvertMarkerTableToFAF(markerTable, "Water")
 
-    -- Set grid cell size for amphibious
-    AIMarkerGenerator.SetWantedGridCellSize(WantedGridCellSize)
     -- build marker grid for amphibious
     AIMarkerGenerator.CreateMarkerGrid("Amphibious")
     -- build connections for amphibious
@@ -571,8 +564,6 @@ function CreateAIMarkers()
     -- convert markers and copy to MASTERCHAIN
     ConvertMarkerTableToFAF(markerTable, "Amphibious")
 
-    -- Set grid cell size for hover
-    AIMarkerGenerator.SetWantedGridCellSize(WantedGridCellSize)
     -- build marker grid for hover
     AIMarkerGenerator.CreateMarkerGrid("Hover")
     -- build connections for hover
@@ -592,6 +583,9 @@ function CreateAIMarkers()
     --create land expansions
     LandMarkerPositions = AIMarkerGenerator.CreateLandExpansions()
     ConvertLandExpansionsToFAF(LandMarkerPositions)
+
+    -- clear the PathMap[]
+    AIMarkerGenerator.ClearMemoryMarkerGenerator()
 
     AILog(string.format("* AI-Uveso: Function CreateAIMarkers(): Marker generator finished, runtime: %.2f seconds.", GetSystemTimeSecondsOnlyForProfileUse() - START  ), true, UvesoOffsetSimInitLUA)
 
@@ -616,6 +610,7 @@ function ConvertMarkerTableToFAF(markerTable, layer)
                     ['graph'] = 'Default'..layer,
                     ['GraphArea'] = markerTable[x][z].GraphArea,
                     ['impassability'] = markerTable[x][z].impassability,
+                    ['gridPos'] = {x, z}
                 }
                 -- copy adjacent
                 if markerTable[x][z].adjacentTo[1] then
@@ -1173,7 +1168,7 @@ function ValidateModFilesUveso()
     local ModName = 'AI-Uveso'
     local ModDirectory = 'AI-Uveso'
     local Files = 87
-    local Bytes = 2024362
+    local Bytes = 2046474
     local modlocation = ""
     for i, mod in __active_mods do
         if mod.name == ModName then

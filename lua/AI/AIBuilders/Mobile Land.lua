@@ -9,39 +9,6 @@ local MaxAttackForce = 0.45                                                     
 if not categories.STEALTHFIELD then categories.STEALTHFIELD = categories.SHIELD end
 
 -- ===================================================-======================================================== --
---                                           LAND Scouts Builder                                                --
--- ===================================================-======================================================== --
-BuilderGroup {
-    BuilderGroupName = 'U1 Land Scout Builders',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
-    BuildersType = 'FactoryBuilder',
-    Builder {
-        BuilderName = 'U1R Land Scout',
-        PlatoonTemplate = 'T1LandScout',
-        Priority = 1000,
-        DelayEqualBuildPlattons = {'Scouts', 30},
-        PriorityFunction = function(self, aiBrain)
-            if aiBrain.PriorityManager.NoRush1stPhaseActive then
-                return 0
-            else
-                return 1000
-            end
-        end,
-        BuilderConditions = {
-            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
-            { UCBC, 'CheckBuildPlattonDelay', { 'Scouts' }},
-            -- Have we the eco to build it ?
-            -- When do we want to build this ?
-            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD - categories.POD }},
-            -- Do we need additional conditions to build it ?
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 3, categories.LAND * categories.SCOUT }},
-            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.AIR * categories.SCOUT }},
-            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, categories.SCOUT * categories.LAND } },
-            -- Respect UnitCap
-        },
-        BuilderType = 'Land',
-    },
-}
--- ===================================================-======================================================== --
 -- ==                                        Build T1 T2 T3 Land                                             == --
 -- ===================================================-======================================================== --
 -- ============= --
@@ -785,7 +752,7 @@ BuilderGroup {
     Builder {
         BuilderName = 'U1 PanicZone Mobile Arty extreme',
         PlatoonTemplate = 'T1LandArtillery',
-        Priority = 19000,
+        Priority = 21000,
         BuilderConditions = {
             -- Have we the eco to build it ?
             { MIBC, 'HasNotParagon', {} },
@@ -834,7 +801,7 @@ BuilderGroup {
             -- When do we want to build this ?
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 1, categories.MOBILE * categories.AIR - categories.SCOUT - categories.SATELLITE}}, -- radius, LocationType, unitCount, categoryEnemy
             -- Respect UnitCap
-            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 10, categories.ANTIAIR}},
+            { UCBC, 'UnitsLessAtLocation', { 'LocationType', 20, categories.ANTIAIR}},
             { UCBC, 'UnitCapCheckLess', { 0.85 } },
         },
         BuilderType = 'Land',
@@ -848,6 +815,7 @@ BuilderGroup {
         Priority = 19110,
         BuilderConditions = {
             -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
             { MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 1, categories.MOBILE * categories.AIR - categories.SCOUT - categories.SATELLITE}}, -- radius, LocationType, unitCount, categoryEnemy
@@ -862,6 +830,7 @@ BuilderGroup {
         Priority = 19110,
         BuilderConditions = {
             -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
             { MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 1, categories.MOBILE * categories.AIR - categories.SCOUT - categories.SATELLITE}}, -- radius, LocationType, unitCount, categoryEnemy
@@ -880,6 +849,7 @@ BuilderGroup {
         BuilderConditions = {
             { MIBC, 'FactionIndex', { 1, 3, 4, 5 }}, -- 1: UEF, 2: Aeon, 3: Cybran, 4: Seraphim, 5: Nomads 
             -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
             { MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 1, categories.MOBILE * categories.AIR - categories.SCOUT - categories.SATELLITE}}, -- radius, LocationType, unitCount, categoryEnemy
@@ -894,6 +864,7 @@ BuilderGroup {
         Priority = 19220,
         BuilderConditions = {
             -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
             { MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 1, categories.MOBILE * categories.AIR - categories.SCOUT - categories.SATELLITE}}, -- radius, LocationType, unitCount, categoryEnemy
@@ -908,6 +879,7 @@ BuilderGroup {
         Priority = 19220,
         BuilderConditions = {
             -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } },                      -- relative income
             { MIBC, 'HasNotParagon', {} },
             -- When do we want to build this ?
             { UCBC, 'EnemyUnitsGreaterAtLocationRadius', {  BasePanicZone, 'LocationType', 1, categories.MOBILE * categories.AIR - categories.SCOUT - categories.SATELLITE}}, -- radius, LocationType, unitCount, categoryEnemy
@@ -951,6 +923,39 @@ BuilderGroup {
         BuilderType = 'Land',
     },
 }
+-- ===================================================-======================================================== --
+--                                           LAND Scouts Builder                                                --
+-- ===================================================-======================================================== --
+BuilderGroup {
+    BuilderGroupName = 'U1 Land Scout Builders',                               -- BuilderGroupName, initalized from AIBaseTemplates in "\lua\AI\AIBaseTemplates\"
+    BuildersType = 'FactoryBuilder',
+    Builder {
+        BuilderName = 'U1R Land Scout',
+        PlatoonTemplate = 'T1LandScout',
+        Priority = 1000,
+        DelayEqualBuildPlattons = {'Scouts', 30},
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 1000
+            end
+        end,
+        BuilderConditions = {
+            { MIBC, 'CanPathToCurrentEnemy', { true, 'LocationType' } },
+            { UCBC, 'CheckBuildPlattonDelay', { 'Scouts' }},
+            -- Have we the eco to build it ?
+            -- When do we want to build this ?
+            { UCBC, 'HaveGreaterThanUnitsWithCategory', { 5, categories.MOBILE * categories.ENGINEER - categories.STATIONASSISTPOD - categories.POD }},
+            -- Do we need additional conditions to build it ?
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 6, categories.LAND * categories.SCOUT }},
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.AIR * categories.SCOUT }},
+            { UCBC, 'LocationFactoriesBuildingLess', { 'LocationType', 1, categories.SCOUT * categories.LAND } },
+            -- Respect UnitCap
+        },
+        BuilderType = 'Land',
+    },
+}
 
 -- ===================================================-======================================================== --
 --                                         Land Scouts Formbuilder                                              --
@@ -960,9 +965,9 @@ BuilderGroup {
     BuildersType = 'PlatoonFormBuilder',
     Builder {
         BuilderName = 'U1 Land Scout',
-        PlatoonTemplate = 'T1LandScoutForm',
+        PlatoonTemplate = 'U1 Scouting Land',
         Priority = 5000,
-        InstanceCount = 8,
+        InstanceCount = 6,
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush1stPhaseActive then
                 return 0

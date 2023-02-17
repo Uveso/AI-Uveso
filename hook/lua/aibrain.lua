@@ -8,27 +8,23 @@ AIBrain = Class(UvesoAIBrainClass) {
         if not self.Uveso then
             return UvesoAIBrainClass.AddBuilderManagers(self, position, radius, baseName, useCenter)
         end
+
+        local baseLayer = 'Land'
+        position[2] = GetTerrainHeight( position[1], position[3] )
+        if GetSurfaceHeight( position[1], position[3] ) > position[2] then
+            position[2] = GetSurfaceHeight( position[1], position[3] )
+            baseLayer = 'Water'
+        end
         self.BuilderManagers[baseName] = {
             FactoryManager = FactoryManager.CreateFactoryBuilderManager(self, baseName, position, radius, useCenter),
             PlatoonFormManager = PlatoonFormManager.CreatePlatoonFormManager(self, baseName, position, radius, useCenter),
             EngineerManager = EngineerManager.CreateEngineerManager(self, baseName, position, radius),
             -- Only Sorian is using the StrategyManager
             --StrategyManager = StratManager.CreateStrategyManager(self, baseName, position, radius),
-
-            -- Table to track consumption
-            -- can be removed after game patch is released
-            -- https://github.com/FAForever/fa/pull/3281
-            MassConsumption = {
-                Resources = {Units = {}, Drain = 0, },
-                Units = {Units = {}, Drain = 0, },
-                Defenses = {Units = {}, Drain = 0, },
-                Upgrades = {Units = {}, Drain = 0, },
-                Engineers = {Units = {}, Drain = 0, },
-                TotalDrain = 0,
-            },
             BuilderHandles = {},
             Position = position,
             BaseType = Scenario.MasterChain._MASTERCHAIN_.Markers[baseName].type or 'MAIN',
+            Layer = baseLayer,
         }
         self.NumBases = self.NumBases + 1
     end,
@@ -37,8 +33,8 @@ AIBrain = Class(UvesoAIBrainClass) {
     OnDefeat = function(self)
         self.Status = 'Defeat'
 
-        import('/lua/SimUtils.lua').UpdateUnitCap(self:GetArmyIndex())
-        import('/lua/SimPing.lua').OnArmyDefeat(self:GetArmyIndex())
+        import("/lua/simutils.lua").UpdateUnitCap(self:GetArmyIndex())
+        import("/lua/simping.lua").OnArmyDefeat(self:GetArmyIndex())
 
         local function KillArmy()
             local shareOption = ScenarioInfo.Options.Share
@@ -128,19 +124,25 @@ AIBrain = Class(UvesoAIBrainClass) {
             end
 
             -- Transfer our units to other brains. Wait in between stops transfer of the same units to multiple armies.
-            local function TransferUnitsToBrain(brains)
+            -- Optional Categories input (defaults to all units except wall and command)
+            local function TransferUnitsToBrain(brains, categoriesToTransfer)
                 if not table.empty(brains) then
+                    local units
                     if shareOption == 'FullShare' then
                         local indexes = {}
                         for _, brain in brains do
                             table.insert(indexes, brain.index)
                         end
-                        local units = self:GetListOfUnits(categories.ALLUNITS - categories.WALL - categories.COMMAND, false)
+                        units = self:GetListOfUnits(categories.ALLUNITS - categories.WALL - categories.COMMAND, false)
                         TransferUnfinishedUnitsAfterDeath(units, indexes)
                     end
 
                     for k, brain in brains do
-                        local units = self:GetListOfUnits(categories.ALLUNITS - categories.WALL - categories.COMMAND, false)
+                        if categoriesToTransfer then
+                            units = self:GetListOfUnits(categoriesToTransfer, false)
+                        else
+                            units = self:GetListOfUnits(categories.ALLUNITS - categories.WALL - categories.COMMAND, false)
+                        end
                         if units and not table.empty(units) then
                             local givenUnitCount = table.getn(TransferUnitsOwnership(units, brain.index))
 
@@ -156,7 +158,8 @@ AIBrain = Class(UvesoAIBrainClass) {
             end
 
             -- Sort the destiniation brains (armies/players) by rating (and if rating does not exist (such as with regular AI's), by score, after players with positive rating)
-            local function TransferUnitsToHighestBrain(brains)
+            -- optional category input (default of everything but walls and command)
+            local function TransferUnitsToHighestBrain(brains, categoriesToTransfer)
                 if not table.empty(brains) then
                     local ratings = ScenarioInfo.Options.Ratings
                     for i, brain in brains do 
@@ -169,7 +172,7 @@ AIBrain = Class(UvesoAIBrainClass) {
                     end
                     -- sort brains by rating
                     table.sort(brains, function(a, b) return a.rating > b.rating end)
-                    TransferUnitsToBrain(brains)
+                    TransferUnitsToBrain(brains, categoriesToTransfer)
                 end
             end
 
@@ -244,14 +247,19 @@ AIBrain = Class(UvesoAIBrainClass) {
                 end
             end
 
-            local KillSharedUnits = import('/lua/SimUtils.lua').KillSharedUnits
+            local KillSharedUnits = import("/lua/simutils.lua").KillSharedUnits
 
             -- This part determines the share condition
             if shareOption == 'ShareUntilDeath' then
                 KillSharedUnits(self:GetArmyIndex()) -- Kill things I gave away
                 ReturnBorrowedUnits() -- Give back things I was given by others
             elseif shareOption == 'FullShare' then
-                TransferUnitsToHighestBrain(BrainCategories.Allies) -- Transfer things to allies, highest score first
+                TransferUnitsToHighestBrain(BrainCategories.Allies) -- Transfer things to allies, highest rating first
+                TransferOwnershipOfBorrowedUnits(BrainCategories.Allies) -- Give stuff away permanently
+            elseif shareOption == 'PartialShare' then
+                KillSharedUnits(self:GetArmyIndex(), categories.ALLUNITS - categories.STRUCTURE - categories.ENGINEER) -- Kill some things I gave away
+                ReturnBorrowedUnits() -- Give back things I was given by others
+                TransferUnitsToHighestBrain(BrainCategories.Allies, categories.STRUCTURE + categories.ENGINEER) -- Transfer some things to allies, highest rating first
                 TransferOwnershipOfBorrowedUnits(BrainCategories.Allies) -- Give stuff away permanently
             else
                 GetBackUnits(BrainCategories.Allies) -- Get back units I gave away
@@ -337,7 +345,6 @@ AIBrain = Class(UvesoAIBrainClass) {
             end
         end
 
-
         ForkThread(KillArmy)
 
     end,
@@ -356,6 +363,16 @@ AIBrain = Class(UvesoAIBrainClass) {
        -- Only use this with AI-Uveso
         if not self.Uveso then
             return UvesoAIBrainClass.BaseMonitorThread(self)
+        end
+        coroutine.yield(10)
+        -- We are leaving this forked thread here because we don't need it.
+        KillThread(CurrentThread())
+    end,
+
+    CanPathToCurrentEnemy = function(self)
+       -- Only use this with AI-Uveso
+        if not self.Uveso then
+            return UvesoAIBrainClass.CanPathToCurrentEnemy(self)
         end
         coroutine.yield(10)
         -- We are leaving this forked thread here because we don't need it.
@@ -387,13 +404,6 @@ AIBrain = Class(UvesoAIBrainClass) {
         -- Only use this with AI-Uveso
         if not self.Uveso then
             return UvesoAIBrainClass.InitializeEconomyState(self)
-        end
-    end,
-
-    OnIntelChange = function(self, blip, reconType, val)
-        -- Only use this with AI-Uveso
-        if not self.Uveso then
-            return UvesoAIBrainClass.OnIntelChange(self, blip, reconType, val)
         end
     end,
 

@@ -15,8 +15,7 @@ function ExecutePlan(aiBrain)
             aiBrain:ForkThread(AIPLatoonNameDebugThread, aiBrain)
         end
         -- execute the original function
-        OldExecutePlanFunctionUveso(aiBrain)
-        return
+        return OldExecutePlanFunctionUveso(aiBrain)
     end
     aiBrain:SetConstantEvaluate(false)
     coroutine.yield(10)
@@ -129,7 +128,7 @@ function EcoManagerThread(aiBrain)
                 aiBrain.BuildMult = aiBrain.BuildMult + ScenarioInfo.Options.AIOverwhelmIncrease
                 if aiBrain.CheatMult > 8 then aiBrain.CheatMult = 8 end
                 if aiBrain.BuildMult > 8 then aiBrain.BuildMult = 8 end
-                --AIDebug('Setting new values for aiBrain.CheatMult:'..aiBrain.CheatMult..' - aiBrain.BuildMult:'..aiBrain.BuildMult)
+                AIDebug('Setting new values for ['..aiBrain.Nickname..'] aiBrain.CheatMult:'..aiBrain.CheatMult..' - aiBrain.BuildMult:'..aiBrain.BuildMult)
                 SetArmyPoolBuff(aiBrain, aiBrain.CheatMult, aiBrain.BuildMult)
             end
         end
