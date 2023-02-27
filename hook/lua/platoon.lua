@@ -149,7 +149,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
             --LOG('* UnitUpgradeAI: UnitBeingUpgradeFactionIndex '..UnitBeingUpgradeFactionIndex)
             if self.PlatoonData.OverideUpgradeBlueprint then
                 local tempUpgradeID = self.PlatoonData.OverideUpgradeBlueprint[UnitBeingUpgradeFactionIndex]
-                WARN('* UnitUpgradeAI: OverideUpgradeBlueprint '..repr(tempUpgradeID))
+                --LOG('* UnitUpgradeAI: OverideUpgradeBlueprint '..repr(tempUpgradeID))
                 if not tempUpgradeID then
                     WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI WARNING: OverideUpgradeBlueprint ' .. repr(v.UnitId) .. ' failed. (Override unitID is empty' )
                 elseif type(tempUpgradeID) ~= 'string' then
@@ -4370,7 +4370,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
 
             --check for areas that need scouting nearby
             if not path then
-                scoutDestination = AITargetManager.GetLastScoutedDistance(armyIndex, unitPosition, scoutRadius)
+                scoutDestination = AITargetManager.GetUnScoutedNearby(armyIndex, unitPosition, scoutRadius)
                 if scoutDestination then
                     --AILog("* Fn ScoutingUveso():[A:"..armyIndex.."] get unscouted area nearby : ("..scoutDestination.x..","..scoutDestination.z..") sending scout.", true, UvesoOffsetPlatoonLUA)
                     path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, self.MovementLayer, unitPosition, {scoutDestination.x, 0, scoutDestination.z}, 1000, 512)

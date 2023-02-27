@@ -1,10 +1,5 @@
 
--- HeatMap
-
 -- ToDo: Targeting Take the weapon range in to account and remove the spreaded threat
--- Scouting: scout random a low prio target
--- Scouting: copy scouted data to history layer
--- Scouting: changed debug view for players eyes to easy understand the scouting goals (target = square ?)
 
 local TARGETDEBUG = false
 local HEATMAPDEBUG = false
@@ -331,6 +326,11 @@ function CalculateThreat(armyIndex)
             HeatMap[armyIndex][indexX][indexZ].threatRing["Water"] = zData.threatRing["Water"]
             HeatMap[armyIndex][indexX][indexZ].threatRing["Amphibious"] = zData.threatRing["Amphibious"]
             HeatMap[armyIndex][indexX][indexZ].threatRing["Hover"] = zData.threatRing["Hover"]
+            -- copy the mapdata to the ghost map in case the square is scouted lately
+            if HeatMap[armyIndex][indexX][indexZ].scouted then
+                HeatMap[armyIndex][indexX][indexZ].highestEnemyEcoValue["Ghost"] = HMAP[indexX][indexZ].highestEnemyEcoValue["All"]
+                HeatMap[armyIndex][indexX][indexZ].scouted = false
+            end
         end
     end
 end
@@ -360,6 +360,11 @@ function SetTargets(armyIndex, basePosition)
     ArmyBrains[armyIndex].highestEnemyEcoValue["Mass"] = BuildEcoValueTable(armyIndex, "Mass") or {}
     ArmyBrains[armyIndex].highestEnemyEcoValue["Energy"] = BuildEcoValueTable(armyIndex, "Energy") or {}
     ArmyBrains[armyIndex].highestEnemyEcoValue["All"] = BuildEcoValueTable(armyIndex, "All") or {}
+
+    -- ***************************
+    -- Make ghost target tables (targets that might be under fog of war)
+    -- ***************************
+    ArmyBrains[armyIndex].highestEnemyEcoValue["Ghost"] = BuildEcoValueTable(armyIndex, "Ghost") or {}
 
     coroutine.yield(1)
 
@@ -967,33 +972,37 @@ function GetLastScouted(armyIndex, position)
     return HeatMap[armyIndex][gridX][gridZ].lastScouted, HeatMap[armyIndex][gridX][gridZ].scoutedBy
 end
 
-function GetLastScoutedDistance(armyIndex, position, scoutRadius)
+function GetUnScoutedNearby(armyIndex, position, scoutRadius)
     scoutRadius = scoutRadius + 2
     local closestAreaDistance = scoutRadius
     local gridX, gridZ = GetHeatMapGridIndexFromPosition(position)
     local offsetX = math.floor((scoutRadius / HeatMapGridSizeX) + 0.5) - 1
     local offsetZ = math.floor((scoutRadius / HeatMapGridSizeZ) + 0.5) - 1
-    local scoutingTarget
+    local scoutingTarget, scoutDestination, gridCenterPos
     offsetX = math.max(offsetX, 0)
     offsetZ = math.max(offsetZ, 0)
-    --AILog('* Fn: GetLastScoutedDistance(): HeatMapGridSizeX['..HeatMapGridSizeX..'] scoutRadius['..scoutRadius..']', true)
-    --AILog('* Fn: GetLastScoutedDistance(): offsetX['..offsetX..'] offsetZ['..offsetZ..']', true)
+    --AILog('* Fn: GetUnScoutedNearby(): HeatMapGridSizeX['..HeatMapGridSizeX..'] scoutRadius['..scoutRadius..']', true)
+    --AILog('* Fn: GetUnScoutedNearby(): offsetX['..offsetX..'] offsetZ['..offsetZ..']', true)
     for x = gridX - offsetX, gridX + offsetX do
         for z = gridZ - offsetZ, gridZ + offsetZ do
             if HeatMap[armyIndex][x] and HeatMap[armyIndex][x][z] then
-                local gridCenterPos = GetHeatMapGridPositionFromIndex(x, z)
+                gridCenterPos = GetHeatMapGridPositionFromIndex(x, z)
+                scoutDestination = {x = gridCenterPos[1], y = GetTerrainHeight(gridCenterPos[1], gridCenterPos[3]), z = gridCenterPos[3]}
+                if GetLastScoutBy(armyIndex, scoutDestination) then
+                    return false
+                end
                 local dist = VDist2(position.x, position.z, gridCenterPos[1], gridCenterPos[3])
                 if dist < closestAreaDistance and GetGameTimeSeconds() - HeatMap[armyIndex][x][z].lastScouted > 15 then
-                    --AILog('* Fn: GetLastScoutedDistance(): Grid['..x..']['..z..'] closestAreaDistance='..closestAreaDistance..' TRUE', true)
+                    --AILog('* Fn: GetUnScoutedNearby(): Grid['..x..']['..z..'] closestAreaDistance='..closestAreaDistance..' TRUE', true)
                     scoutingTarget = {x = gridCenterPos[1], y = 0, z = gridCenterPos[3]}
                     closestAreaDistance = dist
                 else
-                    --AILog('* Fn: GetLastScoutedDistance(): Grid['..x..']['..z..'] closestAreaDistance='..closestAreaDistance..' FALSE', true)
+                    --AILog('* Fn: GetUnScoutedNearby(): Grid['..x..']['..z..'] closestAreaDistance='..closestAreaDistance..' FALSE', true)
                 end
             end
         end
     end
-    --AILog('* Fn: GetLastScoutedDistance(): scoutingTarget='..repr(scoutingTarget)..' FALSE', true)
+    --AILog('* Fn: GetUnScoutedNearby(): scoutingTarget='..repr(scoutingTarget)..' FALSE', true)
     return scoutingTarget
 end
 function SetLastScoutedSquared(armyIndex, position, scoutRadius)
@@ -1010,6 +1019,7 @@ function SetLastScoutedSquared(armyIndex, position, scoutRadius)
                 --AIWarn('* AI-Uveso: SetLastScoutedSquared(): Grid['..x..']['..z..']', true)
                 HeatMap[armyIndex][x][z].lastScouted = GetGameTimeSeconds()
                 HeatMap[armyIndex][x][z].scoutedBy = false
+                HeatMap[armyIndex][x][z].scouted = true
             end
         end
     end
@@ -1036,6 +1046,7 @@ function SetLastScoutedDistance(armyIndex, position, scoutRadius)
                     --AIWarn('* AI-Uveso: SetLastScoutedDistance(): Grid['..x..']['..z..'] scoutRadius='..scoutRadius..' - dist='..dist..' TRUE', true)
                     HeatMap[armyIndex][x][z].lastScouted = GetGameTimeSeconds()
                     HeatMap[armyIndex][x][z].scoutedBy = false
+                    HeatMap[armyIndex][x][z].scouted = true
                 else
                     --AIWarn('* AI-Uveso: SetLastScoutedDistance(): Grid['..x..']['..z..'] scoutRadius='..scoutRadius..' - dist='..dist..' FALSE', true)
                 end

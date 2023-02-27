@@ -1,3 +1,8 @@
+v110 (27.Feb.2023)
+
+- Opt: added ghost map for units that are under the fog of war
+
+*************************************************************************************************************************************
 v109 (17.Feb.2023)
 
 - Fix: added missing threat values for hover movement layer in target manager
