@@ -1,3 +1,4 @@
+
 -- AI DEBUG Platoon builder names. (prints to the game.log)
 local AntiSpamList = {}
 local AntiSpamCounter = 0
@@ -8,70 +9,69 @@ local DEBUGBUILDER = {}
 TheOldBuilderManager = BuilderManager
 BuilderManager = Class(TheOldBuilderManager) {
 
-    -- Hook for not deleting priority 0 platoons
-    SortBuilderList = function(self, bType)
-       -- Only use this with AI-Uveso
-        if not self.Brain.Uveso then
-            return TheOldBuilderManager.SortBuilderList(self, bType)
+    -- Hook for all AI debug
+    GetHighestBuilder = function(self, bType, params)
+        local builderData = self.BuilderData[bType]
+        local returnBuilder
+        if not builderData then
+            error('*BUILDERMANAGER ERROR: Invalid builder type - ' .. bType)
         end
-        -- Make sure there is a type
-        if not self.BuilderData[bType] then
-            error('*BUILDMANAGER ERROR: Trying to sort platoons of invalid builder type - ' .. bType)
-            return false
-        end
-        -- bubblesort self.BuilderData[bType].Builders
-        local count=table.getn(self.BuilderData[bType].Builders)
-        local Sorting
-        repeat
-            Sorting = false
-            count = count - 1
-            for i = 1, count do
-                if self.BuilderData[bType].Builders[i].Priority < self.BuilderData[bType].Builders[i + 1].Priority then
-                    self.BuilderData[bType].Builders[i], self.BuilderData[bType].Builders[i + 1] = self.BuilderData[bType].Builders[i + 1], self.BuilderData[bType].Builders[i]
-                    Sorting = true
-                end
-            end
-        until Sorting == false
-        -- mark the table as sorted
-        self.BuilderData[bType].NeedSort = false
-    end,
-
-    -- Hook for Uveso AI debug
-    GetHighestBuilder = function(self,bType,factory)
-        if not self.BuilderData[bType] then
-            error('*BUILDERMANAGER ERROR: Invalid builder type - ' .. repr(bType))
-        end
-        if not self.Brain.BuilderManagers[self.LocationType] then
-            return false
-        end
-        self.NumGet = self.NumGet + 1
-        local found = false
-        local possibleBuilders = {}
         -- Print the whole builder table into the game.log. 
         if self.Brain[ScenarioInfo.Options.AIBuilderNameDebug] then
             if not DEBUGBUILDER[ScenarioInfo.Options.AIBuilderNameDebug] then
                 DEBUGBUILDER[ScenarioInfo.Options.AIBuilderNameDebug] = true
-                for k,v in self.BuilderData[bType].Builders do
+                for k,v in builderData.Builders do
                     AILog('* '..ScenarioInfo.Options.AIBuilderNameDebug..'-AI: Builder ['..bType..']: Priority = '..v.Priority..' - possibleBuilders = '..repr(v.BuilderName))
                 end
             end
         end
-        for k,v in self.BuilderData[bType].Builders do
-            if v.Priority >= 1 and (not found or v.Priority == found) and v:GetBuilderStatus() and self:BuilderParamCheck(v,factory) then
-                if not self:IsPlattonBuildDelayed(v.DelayEqualBuildPlattons) then
-                    found = v.Priority
-                    table.insert(possibleBuilders, k)
-                    --AILog('* AI DEBUG: GetHighestBuilder(): Priority = '..found..' - possibleBuilders = '..repr(v.BuilderName))
+        -- Print end
+        local candidates = BuilderCache
+        local candidateNext = 1
+        local candidatePriority = -1
+
+        -- list of builders that is sorted on priority
+        local builders = builderData.Builders
+        for k in builders do
+            local builder = builders[k] --[ [@as Builder] ]
+
+            -- builders with no priority are ignored
+            local priority = builder.Priority
+            if priority >= 1 then
+                -- break when we have found a builder and the next builder has a lower priority
+                if priority < candidatePriority then
+                    break
                 end
-            elseif found and v.Priority < found then
-                break
+
+                -- check if we're intentionally delaying this builder
+                if not self:IsPlattonBuildDelayed(builder.DelayEqualBuildPlattons) then
+                    -- check builder conditions
+                    if self:BuilderParamCheck(builder, params) then
+                        -- check task conditions
+                        if builder:GetBuilderStatus() then
+                            candidates[candidateNext] = builder
+                            candidateNext = candidateNext + 1
+                            candidatePriority = priority
+                        end
+                    end
+                end
             end
         end
-        if found and found > 0 then
-            local whichBuilder = Random(1,table.getn(possibleBuilders))
+
+        -- only one candidate
+        if candidateNext == 2 then
+            returnBuilder = candidates[1]
+
+        -- multiple candidates, choose one at random
+        elseif candidateNext > 2 then
+            returnBuilder = candidates[Random(1, candidateNext - 1)]
+        end
+        
+        if returnBuilder then
+            -- Print actual builder
             -- DEBUG SPAM - Start
             -- If we have a builder that is repeating (Happens when buildconditions are true, but the builder can't find anything to build/assist or a build location)
-            local BuilderName = self.BuilderData[bType].Builders[ possibleBuilders[whichBuilder] ].BuilderName
+            local BuilderName = returnBuilder.BuilderName
             if BuilderName ~= LastBuilder then
                 LastBuilder = BuilderName
                 AntiSpamCounter = 0
@@ -79,7 +79,7 @@ BuilderManager = Class(TheOldBuilderManager) {
                 AntiSpamCounter = AntiSpamCounter + 1
                 if AntiSpamCounter > 20 then
                     -- Warn the programmer that something is going wrong.
-                    AIWarn('* AI DEBUG: GetHighestBuilder(): PlatoonBuilder is spaming. Maybe wrong Buildconditions for Builder = '..self.BuilderData[bType].Builders[ possibleBuilders[whichBuilder] ].BuilderName..' ?!?')
+                    AIWarn('* AI DEBUG: GetHighestBuilder(): PlatoonBuilder is spaming. Maybe wrong Buildconditions for Builder = '..returnBuilder.BuilderName..' ?!?')
                     AntiSpamCounter = 0
                     AntiSpamList[BuilderName] = true
                 end                
@@ -110,16 +110,15 @@ BuilderManager = Class(TheOldBuilderManager) {
                 end
                 -- format priority numbers
                 local PrioText = ''
-                local Priolen = string.len(found)
+                local Priolen = string.len(candidatePriority)
                 if 6 > Priolen then
-                    PrioText = string.rep('  ', 6 - Priolen) .. found
+                    PrioText = string.rep('  ', 6 - Priolen) .. candidatePriority
                 end
-                AILog(' M: ['..massBar..']  E: ['..energyBar..']  -  BuilderPriority = '..PrioText..' - SelectedBuilder = '..self.BuilderData[bType].Builders[ possibleBuilders[whichBuilder] ].BuilderName)
+                AILog(' M: ['..massBar..']  E: ['..energyBar..']  -  BuilderPriority = '..PrioText..' - SelectedBuilder = '..returnBuilder.BuilderName)
             end
-            return self.BuilderData[bType].Builders[ possibleBuilders[whichBuilder] ]
+            -- Print end
+            return returnBuilder
         end
-        return false
     end,
 
 }
-

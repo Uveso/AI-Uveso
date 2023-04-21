@@ -1,0 +1,9 @@
+keyToBrain['uvesoeasy'] = import("/mods/AI-Uveso/lua/ai/uveso-ai.lua").AIBrain
+keyToBrain['uvesorush'] = import("/mods/AI-Uveso/lua/ai/uveso-ai.lua").AIBrain
+keyToBrain['uvesoadaptive'] = import("/mods/AI-Uveso/lua/ai/uveso-ai.lua").AIBrain
+keyToBrain['uvesoexp'] = import("/mods/AI-Uveso/lua/ai/uveso-ai.lua").AIBrain
+keyToBrain['uvesoeasycheat'] = import("/mods/AI-Uveso/lua/ai/uveso-ai.lua").AIBrain
+keyToBrain['uvesorushcheat'] = import("/mods/AI-Uveso/lua/ai/uveso-ai.lua").AIBrain
+keyToBrain['uvesoadaptivecheat'] = import("/mods/AI-Uveso/lua/ai/uveso-ai.lua").AIBrain
+keyToBrain['uvesoexpcheat'] = import("/mods/AI-Uveso/lua/ai/uveso-ai.lua").AIBrain
+keyToBrain['uvesooverwhelmcheat'] = import("/mods/AI-Uveso/lua/ai/uveso-ai.lua").AIBrain
