@@ -1,3 +1,4 @@
+
 -- AI DEBUG Platoon builder names. (prints to the game.log)
 local AntiSpamList = {}
 local AntiSpamCounter = 0
@@ -8,13 +9,23 @@ local DEBUGBUILDER = {}
 TheOldBuilderManager = BuilderManager
 BuilderManager = Class(TheOldBuilderManager) {
 
-    -- Hook for Uveso AI debug
+    -- Hook for all AI debug
     GetHighestBuilder = function(self, bType, params)
         local builderData = self.BuilderData[bType]
+        local returnBuilder
         if not builderData then
             error('*BUILDERMANAGER ERROR: Invalid builder type - ' .. bType)
         end
-
+        -- Print the whole builder table into the game.log. 
+        if self.Brain[ScenarioInfo.Options.AIBuilderNameDebug] then
+            if not DEBUGBUILDER[ScenarioInfo.Options.AIBuilderNameDebug] then
+                DEBUGBUILDER[ScenarioInfo.Options.AIBuilderNameDebug] = true
+                for k,v in builderData.Builders do
+                    AILog('* '..ScenarioInfo.Options.AIBuilderNameDebug..'-AI: Builder ['..bType..']: Priority = '..v.Priority..' - possibleBuilders = '..repr(v.BuilderName))
+                end
+            end
+        end
+        -- Print end
         local candidates = BuilderCache
         local candidateNext = 1
         local candidatePriority = -1
@@ -22,7 +33,7 @@ BuilderManager = Class(TheOldBuilderManager) {
         -- list of builders that is sorted on priority
         local builders = builderData.Builders
         for k in builders do
-            local builder = builders[k] --[[@as Builder]]
+            local builder = builders[k] --[ [@as Builder] ]
 
             -- builders with no priority are ignored
             local priority = builder.Priority
@@ -49,49 +60,65 @@ BuilderManager = Class(TheOldBuilderManager) {
 
         -- only one candidate
         if candidateNext == 2 then
-            PrintHighestBuilder(candidates[1])
-            return candidates[1]
+            returnBuilder = candidates[1]
+
         -- multiple candidates, choose one at random
         elseif candidateNext > 2 then
-            local candidate = candidates[Random(1, candidateNext - 1)]
-            PrintHighestBuilder(candidate)
-            return candidate
+            returnBuilder = candidates[Random(1, candidateNext - 1)]
         end
-    end,
-
-    PrintHighestBuilder = function(candidate)
-        if self.Brain[ScenarioInfo.Options.AIBuilderNameDebug] or ScenarioInfo.Options.AIBuilderNameDebug == 'all' then
-            -- building Mass percent bar
-            local percent = self.Brain:GetEconomyStoredRatio('MASS')
-            local massBar = ''
-            local count = 1
-            for i = count, percent*20 do
-                massBar = massBar..'#'
-                count = count + 1
+        
+        if returnBuilder then
+            -- Print actual builder
+            -- DEBUG SPAM - Start
+            -- If we have a builder that is repeating (Happens when buildconditions are true, but the builder can't find anything to build/assist or a build location)
+            local BuilderName = returnBuilder.BuilderName
+            if BuilderName ~= LastBuilder then
+                LastBuilder = BuilderName
+                AntiSpamCounter = 0
+            elseif not AntiSpamList[BuilderName] then
+                AntiSpamCounter = AntiSpamCounter + 1
+                if AntiSpamCounter > 20 then
+                    -- Warn the programmer that something is going wrong.
+                    AIWarn('* AI DEBUG: GetHighestBuilder(): PlatoonBuilder is spaming. Maybe wrong Buildconditions for Builder = '..returnBuilder.BuilderName..' ?!?')
+                    AntiSpamCounter = 0
+                    AntiSpamList[BuilderName] = true
+                end                
             end
-            for i = count, 20 do
-                massBar = massBar..'~'
+            -- DEBUG SPAM - End
+            if self.Brain[ScenarioInfo.Options.AIBuilderNameDebug] or ScenarioInfo.Options.AIBuilderNameDebug == 'all' then
+                -- building Mass percent bar
+                local percent = self.Brain:GetEconomyStoredRatio('MASS')
+                local massBar = ''
+                local count = 1
+                for i = count, percent*20 do
+                    massBar = massBar..'#'
+                    count = count + 1
+                end
+                for i = count, 20 do
+                    massBar = massBar..'~'
+                end
+                -- building Mass percent bar
+                local percent = self.Brain:GetEconomyStoredRatio('ENERGY')
+                local energyBar = ''
+                local count = 1
+                for i = count, percent*20 do
+                    energyBar = energyBar..'#'
+                    count = count + 1
+                end
+                for i = count, 20 do
+                    energyBar = energyBar..'~'
+                end
+                -- format priority numbers
+                local PrioText = ''
+                local Priolen = string.len(candidatePriority)
+                if 6 > Priolen then
+                    PrioText = string.rep('  ', 6 - Priolen) .. candidatePriority
+                end
+                AILog(' M: ['..massBar..']  E: ['..energyBar..']  -  BuilderPriority = '..PrioText..' - SelectedBuilder = '..returnBuilder.BuilderName)
             end
-            -- building Mass percent bar
-            local percent = self.Brain:GetEconomyStoredRatio('ENERGY')
-            local energyBar = ''
-            local count = 1
-            for i = count, percent*20 do
-                energyBar = energyBar..'#'
-                count = count + 1
-            end
-            for i = count, 20 do
-                energyBar = energyBar..'~'
-            end
-            -- format priority numbers
-            local PrioText = ''
-            local Priolen = string.len(found)
-            if 6 > Priolen then
-                PrioText = string.rep('  ', 6 - Priolen) .. found
-            end
-            AILog(' M: ['..massBar..']  E: ['..energyBar..']  -  BuilderPriority = '..PrioText..' - SelectedBuilder = '..candidate.BuilderName)
+            -- Print end
+            return returnBuilder
         end
     end,
 
 }
-
