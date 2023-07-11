@@ -1,3 +1,9 @@
+v111 (11.July.2023)
+
+- Fix: fixed some issues with the new FAF game version
+(Thanks to Relentor for providing this fix)
+
+*************************************************************************************************************************************
 v110 (27.Feb.2023)
 
 - Opt: added ghost map for units that are under the fog of war
