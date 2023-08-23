@@ -375,7 +375,7 @@ BuilderGroup {
     },
     Builder {
         BuilderName = 'U2p L UP HQ 2->3',
-        PlatoonTemplate = 'T2LandFactoryUpgrade',
+        PlatoonTemplate = 'T2LandHQFactoryUpgrade',
         Priority = 15400,
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.HasParagon then

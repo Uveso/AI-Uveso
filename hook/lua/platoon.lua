@@ -131,7 +131,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         if eng then eng.ProcessBuild = nil end
     end,    
 
-    -- fix for *UnitUpgradeAI ERROR: Can't find StructureUpgradeTemplate for structure: zeb9501  faction: UEF
+    -- fixed *UnitUpgradeAI ERROR: Can't find StructureUpgradeTemplate for structure: zeb9501  faction: UEF
     UnitUpgradeAI = function(self)
         local aiBrain = self:GetBrain()
         local platoonUnits = self:GetPlatoonUnits()
@@ -140,62 +140,85 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         local UnitBeingUpgradeFactionIndex = nil
         local upgradeIssued = false
         self:Stop()
-        --LOG('* UnitUpgradeAI: PlatoonName:'..repr(self.BuilderName))
+        --AIDebug('* UnitUpgradeAI: PlatoonName:'..repr(self.BuilderName), true, UvesoOffsetPlatoonLUA)
         for k, v in platoonUnits do
-            --LOG('* UnitUpgradeAI: Upgrading unit '..v.UnitId..' ('..v.Blueprint.FactionCategory..')')
+            --AIDebug('* UnitUpgradeAI: Upgrading unit '..v.UnitId..' ('..v.Blueprint.FactionCategory..')', true, UvesoOffsetPlatoonLUA)
             local upgradeID
-            -- Get the factionindex from the unit to get the right update (in case we have captured this unit from another faction)
+            -- get the factionindex from the unit to get the right update (in case we have captured this unit from another faction)
             UnitBeingUpgradeFactionIndex = FactionToIndex[v.Blueprint.FactionCategory] or factionIndex
-            --LOG('* UnitUpgradeAI: UnitBeingUpgradeFactionIndex '..UnitBeingUpgradeFactionIndex)
+            --AIDebug('* UnitUpgradeAI: UnitBeingUpgradeFactionIndex '..UnitBeingUpgradeFactionIndex, true, UvesoOffsetPlatoonLUA)
+            -- check for support factory upgrade
             if self.PlatoonData.OverideUpgradeBlueprint then
                 local tempUpgradeID = self.PlatoonData.OverideUpgradeBlueprint[UnitBeingUpgradeFactionIndex]
-                --LOG('* UnitUpgradeAI: OverideUpgradeBlueprint '..repr(tempUpgradeID))
+                --AIDebug('* UnitUpgradeAI: OverideUpgradeBlueprint '..repr(tempUpgradeID), true, UvesoOffsetPlatoonLUA)
+                -- check if we don't have a tempUpgradeID
                 if not tempUpgradeID then
-                    WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI WARNING: OverideUpgradeBlueprint ' .. repr(v.UnitId) .. ' failed. (Override unitID is empty' )
+                    AIWarn('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI WARNING: OverideUpgradeBlueprint ' .. repr(v.UnitId) .. ' failed. (Override unitID is empty', true, UvesoOffsetPlatoonLUA)
+                -- check if the tempUpgradeID is not a string
                 elseif type(tempUpgradeID) ~= 'string' then
-                    WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI WARNING: OverideUpgradeBlueprint ' .. repr(v.UnitId) .. ' failed. (Override unit not present.)' )
+                    AIWarn('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI WARNING: OverideUpgradeBlueprint ' .. repr(v.UnitId) .. ' failed. (Override unit not present.)', true, UvesoOffsetPlatoonLUA)
+                -- check if we are able to upgrade to tempUpgradeID
                 elseif v:CanBuild(tempUpgradeID) then
                     upgradeID = tempUpgradeID
+                    --AIDebug('* UnitUpgradeAI: ' .. repr(v.UnitId) .. ':CanBuild( '..upgradeID..' )', true, UvesoOffsetPlatoonLUA)
                 else
                     -- in case the unit can't upgrade with OverideUpgradeBlueprint, warn the programmer
                     -- this can happen if the AI relcaimed a factory and tries to upgrade to a support factory without having a HQ factory from the reclaimed factory faction.
                     -- in this case we fall back to HQ upgrade template and upgrade to a HQ factory instead of support.
                     -- Output: WARNING: [platoon.lua, line:xxx] *UnitUpgradeAI WARNING: OverideUpgradeBlueprint UnitId:CanBuild(tempUpgradeID) failed. (Override tree not available, upgrading to default instead.)
-                    WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI WARNING: OverideUpgradeBlueprint ' .. repr(v.UnitId) .. ':CanBuild( '..tempUpgradeID..' ) failed. (Override tree not available, upgrading to default instead.)' )
+                    AIWarn('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI WARNING: OverideUpgradeBlueprint ' .. repr(v.UnitId) .. ':CanBuild( '..tempUpgradeID..' ) failed. (Override tree not available, upgrading to default instead.)', true, UvesoOffsetPlatoonLUA)
                 end
             end
+            -- in case we don't upgrade a support factories, check if we have a mobile unit to upgrade
             if not upgradeID and EntityCategoryContains(categories.MOBILE, v) then
                 upgradeID = aiBrain:FindUpgradeBP(v.UnitId, UpgradeTemplates.UnitUpgradeTemplates[UnitBeingUpgradeFactionIndex])
                 -- if we can't find a UnitUpgradeTemplate for this unit, warn the programmer
                 if not upgradeID then
                     -- Output: WARNING: [platoon.lua, line:xxx] *UnitUpgradeAI ERROR: Can\'t find UnitUpgradeTemplate for mobile unit: ABC1234
-                    WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI ERROR: Can\'t find UnitUpgradeTemplate for mobile unit: ' .. repr(v.UnitId) )
+                    AIWarn('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI ERROR: Can\'t find UnitUpgradeTemplate for mobile unit: ' .. repr(v.UnitId), true, UvesoOffsetPlatoonLUA)
                 end
+            -- in case we don't upgrade a support factories and no mobile unit, check for structure upgrade
             elseif not upgradeID then
                 upgradeID = aiBrain:FindUpgradeBP(v.UnitId, UpgradeTemplates.StructureUpgradeTemplates[UnitBeingUpgradeFactionIndex])
                 -- if we can't find a StructureUpgradeTemplate for this unit, warn the programmer
                 if not upgradeID then
                     -- Output: WARNING: [platoon.lua, line:xxx] *UnitUpgradeAI ERROR: Can\'t find StructureUpgradeTemplate for structure: ABC1234
-                    WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI ERROR: Can\'t find StructureUpgradeTemplate for structure: ' .. repr(v.UnitId) .. '  faction: ' .. repr(v.Blueprint.FactionCategory) )
+                    AIWarn('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI ERROR: Can\'t find StructureUpgradeTemplate for structure: ' .. repr(v.UnitId) .. '  faction: ' .. repr(v.Blueprint.FactionCategory), true, UvesoOffsetPlatoonLUA)
                 end
             end
-            -- get the data from the blueprint instead of Templates
+            -- get the data from the blueprint if we don't found one inside the UpgradeTemplates
             if not upgradeID then
                 if v.Blueprint.General.UpgradesTo then
                     upgradeID = v.Blueprint.General.UpgradesTo
-                    WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI ERROR: Can\'t find Template for upgrade, using Blueprint.General.UpgradesTo: ' .. repr(upgradeID) .. '  faction: ' .. repr(v.Blueprint.FactionCategory) )
+                    AIWarn('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI ERROR: Can\'t find Template for upgrade, using Blueprint.General.UpgradesTo: ' .. repr(upgradeID) .. '  faction: ' .. repr(v.Blueprint.FactionCategory), true, UvesoOffsetPlatoonLUA)
                 end
             end
-            if upgradeID and EntityCategoryContains(categories.STRUCTURE, v) and not v:CanBuild(upgradeID) then
-                -- in case the unit can't upgrade with upgradeID, warn the programmer
+            -- in case the unit can't upgrade with upgradeID, warn the programmer
+            if upgradeID and not v:CanBuild(upgradeID) then
                 -- Output: WARNING: [platoon.lua, line:xxx] *UnitUpgradeAI ERROR: ABC1234:CanBuild(upgradeID) failed!
-                WARN('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI ERROR: ' .. repr(v.UnitId) .. ':CanBuild( '..upgradeID..' ) failed!' )
+                AIWarn('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI ERROR: ' .. repr(v.UnitId) .. ':CanBuild( '..upgradeID..' ) failed!', true, UvesoOffsetPlatoonLUA)
+                -- check restrictions
+                local IsRestricted = import('/lua/game.lua').IsRestricted
+                if IsRestricted(upgradeID, aiBrain:GetArmyIndex()) then
+                    AIWarn('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI ERROR: Unit '..upgradeID..' is restricted!', true, UvesoOffsetPlatoonLUA)
+                end
+                -- check HQ
+                if v.Blueprint.CategoriesHash["RESEARCH"] then
+                    AIWarn('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI ERROR: Unit '..v.UnitId..' ('..v.Blueprint.FactionCategory..') is a HQ Factory', true, UvesoOffsetPlatoonLUA)
+                end
+                -- check army HQ
+                if aiBrain:CountHQs(v.Blueprint.FactionCategory, v.Blueprint.LayerCategory, 'TECH3') <= 0 then
+                    AIWarn('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI ERROR: Army HQ Factory count:'..aiBrain:CountHQs(v.Blueprint.FactionCategory, v.Blueprint.LayerCategory, 'TECH3'), true, UvesoOffsetPlatoonLUA)
+                end
                 continue
-            end
-            if upgradeID then
+            -- if we reached this we are sure the unit can upgrade to upgradeID, so do it
+            elseif upgradeID then
                 upgradeIssued = true
                 IssueUpgrade({v}, upgradeID)
-                --LOG('-- Upgrading unit '..v.UnitId..' ('..v.Blueprint.FactionCategory..') with '..upgradeID)
+                --AIDebug('* UnitUpgradeAI: Upgrading unit '..v.UnitId..' ('..v.Blueprint.FactionCategory..') to '..upgradeID, true, UvesoOffsetPlatoonLUA)
+            else
+            -- we failed tp upgrade the unit
+                AIWarn('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..debug.getinfo(1).currentline..'] *UnitUpgradeAI ERROR: Can\'t find Template for upgrade...', true, UvesoOffsetPlatoonLUA)
             end
         end
         if not upgradeIssued then
@@ -4310,7 +4333,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
         AIAttackUtils.GetMostRestrictiveLayer(self)
         -- enable cloak and stealth
         if scoutUnit.Dead then
-            AILog("* AI-Uveso: ScoutingUveso(): scoutUnit.Dead 0")
+            AILog("* AI-Uveso: ScoutingUveso(): scoutUnit.Dead 0", true, UvesoOffsetPlatoonLUA)
             self:PlatoonDisband()
             return
         end
@@ -4322,7 +4345,7 @@ Platoon = Class(CopyOfOldPlatoonClass) {
                 scoutUnit:SetScriptBit('RULEUTC_CloakToggle', false)
             end
         else
-            AIWarn("missing unit function TestToggleCaps()")
+            AIWarn("* AI-Uveso: Scout unit is missing function TestToggleCaps()", true, UvesoOffsetPlatoonLUA)
         end
         -- main loop
         while aiBrain:PlatoonExists(self) do

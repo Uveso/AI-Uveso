@@ -1324,7 +1324,7 @@ BuilderGroup {
 
     Builder {
         BuilderName = 'U2 L UP HQ 2->3 1st Emergency',
-        PlatoonTemplate = 'T2LandFactoryUpgrade',
+        PlatoonTemplate = 'T2LandHQFactoryUpgrade',
         Priority = 15400,
         DelayEqualBuildPlattons = {'FactoryUpgrade', 3},
         BuilderConditions = {
@@ -1340,7 +1340,7 @@ BuilderGroup {
 
     Builder {
         BuilderName = 'U2 L UP HQ 2->3 1st Enemy',
-        PlatoonTemplate = 'T2LandFactoryUpgrade',
+        PlatoonTemplate = 'T2LandHQFactoryUpgrade',
         Priority = 15400,
         DelayEqualBuildPlattons = {'FactoryUpgrade', 3},
         BuilderConditions = {
@@ -1355,7 +1355,7 @@ BuilderGroup {
     },
     Builder {
         BuilderName = 'U2 L UP HQ 2->3 1st Force',
-        PlatoonTemplate = 'T2LandFactoryUpgrade',
+        PlatoonTemplate = 'T2LandHQFactoryUpgrade',
         Priority = 15400,
         DelayEqualBuildPlattons = {'FactoryUpgrade', 3},
         BuilderConditions = {
@@ -1373,7 +1373,7 @@ BuilderGroup {
     },
     Builder {
         BuilderName = 'U2 L UP HQ 2->3 Late',
-        PlatoonTemplate = 'T2LandFactoryUpgrade',
+        PlatoonTemplate = 'T2LandHQFactoryUpgrade',
         Priority = 15000,
         DelayEqualBuildPlattons = {'FactoryUpgrade', 3},
         BuilderConditions = {

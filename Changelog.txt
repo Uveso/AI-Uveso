@@ -1,3 +1,9 @@
+v112 (22.Aug.2023)
+
+- Fix: fixed an error in unit upgrade function
+- Fix: added unit templates to upgrade support factories
+
+*************************************************************************************************************************************
 v111 (11.July.2023)
 
 - Fix: fixed some issues with the new FAF game version

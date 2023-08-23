@@ -2,7 +2,7 @@
 
 -- Support factory upgrade
 PlatoonTemplate {
-    Name = 'T2LandFactoryUpgrade',
+    Name = 'T2LandHQFactoryUpgrade',
     Plan = 'UnitUpgradeAI',
     GlobalSquads = {
         { categories.TECH2 * categories.FACTORY * categories.LAND - categories.SUPPORTFACTORY, 1, 1, 'support', 'none' }
