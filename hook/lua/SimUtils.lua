@@ -32,7 +32,7 @@ function TransferUnfinishedUnitsAfterDeath(units, armies)
             local builders = {}
 
             for ID, unit in unfinishedUnits do
-                local bp = unit:GetBlueprint()
+                local bp = unit.Blueprint
                 local bplueprintID = bp.BlueprintId
                 local buildTime = bp.Economy.BuildTime
                 local health = unit:GetHealth()

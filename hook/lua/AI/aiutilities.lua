@@ -447,7 +447,7 @@ function AIFindNearestCategoryTeleportLocation(aiBrain, position, maxRange, Move
                         for i, unit in AntiteleportUnits do
                             -- If it's an ally, then we skip.
                             if not IsEnemy( MyArmyIndex, unit.Army ) then continue end
-                            NoTeleDistance = unit:GetBlueprint().Defense.NoTeleDistance
+                            NoTeleDistance = unit.Blueprint.Defense.NoTeleDistance
                             if NoTeleDistance then
                                 AntiTeleportTowerPosition = unit:GetPosition()
                                 dist = VDist2(TargetPosition[1], TargetPosition[3], AntiTeleportTowerPosition[1], AntiTeleportTowerPosition[3])

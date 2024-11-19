@@ -182,7 +182,7 @@ function ExtractorUpgrade(self, aiBrain, MassExtractorUnitList, ratio, techLevel
     return false
 end
 
--- Helperfunction fro ExtractorUpgradeAI. 
+-- Helperfunction for ExtractorUpgradeAI. 
 function GlobalMassUpgradeCostVsGlobalMassIncomeRatio(self, aiBrain, ratio, techLevel, compareType)
     local GlobalUpgradeCost = 0
     -- get all units matching 'category'
@@ -433,7 +433,7 @@ end
 ---------------------------------------------
 local MissileTimer = 0
 function TMLAIThread(platoon,self,aiBrain)
-    local bp = self:GetBlueprint()
+    local bp = self.Blueprint
     local weapon = bp.Weapon[1]
     local maxRadius = weapon.MaxRadius or 256
     local minRadius = weapon.MinRadius or 15
@@ -500,7 +500,7 @@ function FindTargetUnit(self, minRadius, maxRadius, MaxLoad)
                 continue
             end
             -- Get Target Data
-            uBP = v:GetBlueprint()
+            uBP = v.Blueprint
             UnitHealth = uBP.Defense.Health or 1
             -- Check Targets
             if not v:BeenDestroyed() and EntityCategoryContains(categories.COMMAND, v) and (not IsProtected(self,TargetPosition)) then
@@ -630,7 +630,7 @@ function LeadTarget(launcher, target)
     -- Adjust for targets CollisionOffsetY. If the hitbox of the unit is above the ground
     -- we nedd to fire "behind" the target, so we hit the unit in midair.
     local TargetCollisionBoxAdjust = 0
-    local TargetBluePrint = target:GetBlueprint()
+    local TargetBluePrint = target.Blueprint
     if TargetBluePrint.CollisionOffsetY and TargetBluePrint.CollisionOffsetY > 0 then
         -- if the unit is far away we need to target farther behind the target because of the projectile flight angel
         local DistanceOffset = (100 / 256 * dist2) * 0.06
@@ -650,7 +650,7 @@ function LeadTarget(launcher, target)
         return false
     end
     -- Also cancel if target would be out of weaponrange or inside minimum range.
-    local LauncherBluePrint = launcher:GetBlueprint()
+    local LauncherBluePrint = launcher.Blueprint
     local maxRadius = LauncherBluePrint.Weapon[1].MaxRadius or 256
     local minRadius = LauncherBluePrint.Weapon[1].MinRadius or 15
     local dist3 = VDist2(LauncherPos[1], LauncherPos[3], MissileImpactX, MissileImpactY)
@@ -736,10 +736,14 @@ function IsProtected(self,position)
 end
 
 function ComHealth(cdr)
-    local armorPercent = 100 / cdr:GetMaxHealth() * cdr:GetHealth()
-    local shieldPercent = armorPercent
-    if cdr.MyShield then
-        shieldPercent = 100 / cdr.MyShield:GetMaxHealth() * cdr.MyShield:GetHealth()
+    local armorPercent = 0
+    local shieldPercent = 0
+    if cdr and not cdr.Dead then
+        armorPercent = 100 / cdr:GetMaxHealth() * cdr:GetHealth()
+        shieldPercent = armorPercent
+        if cdr.MyShield then
+            shieldPercent = 100 / cdr.MyShield:GetMaxHealth() * cdr.MyShield:GetHealth()
+        end
     end
     return math.floor(( armorPercent + shieldPercent ) / 2)
 end

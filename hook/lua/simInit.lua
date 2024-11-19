@@ -977,7 +977,16 @@ function PrintMASTERCHAIN()
                 LOG('          [\'scale\'] = FLOAT( '..v.scale..' ),')
                 count = count + 1
             end
-
+            -- values that are not used by SupCom
+            if v.GraphArea then
+                count = count + 1
+            end
+            if v.impassability then
+                count = count + 1
+            end
+            if v.gridPos then
+                count = count + 1
+            end
             LOG('        },')
             -- Validate
             local ArrayCount = 0
@@ -985,7 +994,7 @@ function PrintMASTERCHAIN()
                 ArrayCount = ArrayCount + 1
             end
             if count ~= ArrayCount then
-                AIWarn('Missing value in marker '..k..' -> '..repr(v), true, UvesoOffsetSimInitLUA)
+                AIWarn("Missing value ("..ArrayCount.."/"..count..") in marker "..k.." -> "..repr(v), true, UvesoOffsetSimInitLUA)
             end
         end
     LOG('      },')
@@ -1026,7 +1035,7 @@ function DrawHeatMap()
             -- draw debug
             for x = 0, mapXGridCount - 1 do
                 for z = 0, mapZGridCount - 1 do
-                    GridCenterPos = GetHeatMapGridPositionFromIndex(x, z)
+                    GridCenterPos = GetHeatMapGridPositionFromIndex(FocussedArmy, x, z)
                     px = GridCenterPos[1]
                     pz = GridCenterPos[3]
 --                    if py > GetTerrainHeight( px, pz ) then
@@ -1194,7 +1203,7 @@ function ValidateModFilesUveso()
     local ModName = 'AI-Uveso'
     local ModDirectory = 'AI-Uveso'
     local Files = 87
-    local Bytes = 2049076
+    local Bytes = 2051051
     local modlocation = ""
     for i, mod in __active_mods do
         if mod.name == ModName then

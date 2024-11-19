@@ -375,7 +375,7 @@ BuilderGroup {
     },
     Builder {
         BuilderName = 'U2p L UP HQ 2->3',
-        PlatoonTemplate = 'T2LandHQFactoryUpgrade',
+        PlatoonTemplate = 'U2LandHQFactoryUpgrade',
         Priority = 15400,
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.HasParagon then
@@ -414,7 +414,7 @@ BuilderGroup {
     },
     Builder {
         BuilderName = 'U2p A UP HQ 2->3',
-        PlatoonTemplate = 'T2AirFactoryUpgrade',
+        PlatoonTemplate = 'U2AirHQFactoryUpgrade',
         Priority = 15400,
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.HasParagon then
@@ -453,7 +453,7 @@ BuilderGroup {
     },
     Builder {
         BuilderName = 'U2p N UP HQ 2->3',
-        PlatoonTemplate = 'T2SeaFactoryUpgrade',
+        PlatoonTemplate = 'U2SeaHQFactoryUpgrade',
         Priority = 15400,
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.HasParagon then

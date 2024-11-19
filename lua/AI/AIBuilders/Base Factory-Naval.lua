@@ -197,7 +197,7 @@ BuilderGroup {
     },
     Builder {
         BuilderName = 'U2 N UP HQ 2->3 1st Force',
-        PlatoonTemplate = 'T2SeaFactoryUpgrade',
+        PlatoonTemplate = 'U2SeaHQFactoryUpgrade',
         Priority = 15400,
         DelayEqualBuildPlattons = {'FactoryUpgrade', 3},
         BuilderConditions = {
@@ -213,7 +213,7 @@ BuilderGroup {
     },
     Builder {
         BuilderName = 'U2 N UP HQ 2->3 Late',
-        PlatoonTemplate = 'T2SeaFactoryUpgrade',
+        PlatoonTemplate = 'U2SeaHQFactoryUpgrade',
         Priority = 15000,
         DelayEqualBuildPlattons = {'FactoryUpgrade', 3},
         BuilderConditions = {
@@ -250,7 +250,7 @@ BuilderGroup {
 -- Builder for 5 factions
     Builder {
         BuilderName = 'U2 N UP SUPORT 2->3 Always 1',
-        PlatoonTemplate = 'T2SeaSupFactoryUpgrade1',
+        PlatoonTemplate = 'U2SeaSupFactoryUpgrade1',
         Priority = 15400,
         DelayEqualBuildPlattons = {'FactoryUpgrade', 3},
         BuilderData = {
@@ -270,7 +270,7 @@ BuilderGroup {
     },
     Builder {
         BuilderName = 'U2 N UP SUPORT 2->3 Always 2',
-        PlatoonTemplate = 'T2SeaSupFactoryUpgrade2',
+        PlatoonTemplate = 'U2SeaSupFactoryUpgrade2',
         Priority = 15400,
         DelayEqualBuildPlattons = {'FactoryUpgrade', 3},
         BuilderData = {
@@ -290,7 +290,7 @@ BuilderGroup {
     },
     Builder {
         BuilderName = 'U2 N UP SUPORT 2->3 Always 3',
-        PlatoonTemplate = 'T2SeaSupFactoryUpgrade3',
+        PlatoonTemplate = 'U2SeaSupFactoryUpgrade3',
         Priority = 15400,
         DelayEqualBuildPlattons = {'FactoryUpgrade', 3},
         BuilderData = {
@@ -310,7 +310,7 @@ BuilderGroup {
     },
     Builder {
         BuilderName = 'U2 N UP SUPORT 2->3 Always 4',
-        PlatoonTemplate = 'T2SeaSupFactoryUpgrade4',
+        PlatoonTemplate = 'U2SeaSupFactoryUpgrade4',
         Priority = 15400,
         DelayEqualBuildPlattons = {'FactoryUpgrade', 3},
         BuilderData = {
@@ -330,7 +330,7 @@ BuilderGroup {
     },
     Builder {
         BuilderName = 'U2 N UP SUPORT 2->3 Always 5',
-        PlatoonTemplate = 'T2SeaSupFactoryUpgrade5',
+        PlatoonTemplate = 'U2SeaSupFactoryUpgrade5',
         Priority = 15400,
         DelayEqualBuildPlattons = {'FactoryUpgrade', 3},
         BuilderData = {

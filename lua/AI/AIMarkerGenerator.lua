@@ -68,15 +68,6 @@ function GetMarkerGridIndexFromPosition(position)
     return x, z
 end
 
-function GetMarkerGridPositionFromIndex(x, z)
-    --AILog("GetHeatMapGridPositionFromIndex index x "..x.." - z "..z.."")
-    local posX = x * MarkerGridSizeX + MarkerGridSizeX / 2 + PlayableArea[1]
-    local posZ = z * MarkerGridSizeZ + MarkerGridSizeZ / 2 + PlayableArea[2]
-    local posY = 0
-    --AILog("GetHeatMapGridPositionFromIndex MapPos"..posX.." "..posZ.."")
-    return {posX, posY, posZ}
-end
-
 function BuildTerrainPathMap()
     AIDebug("* AI-Uveso: Function BuildTerrainPathMap() started.", true)
     local PathMap = PathMap

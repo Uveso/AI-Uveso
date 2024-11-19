@@ -1,6 +1,6 @@
 local UvesoOffsetaiarchetypeLUA = debug.getinfo(1).currentline - 1
 SPEW('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..UvesoOffsetaiarchetypeLUA..'] * AI-Uveso: offset aiarchetype-managerloader.lua')
---199
+--149
 
 local Buff = import('/lua/sim/Buff.lua')
 local HighestThreat = {}
@@ -806,7 +806,7 @@ function LocationRangeManagerThread(aiBrain)
                 AILog('* AI-Uveso: 100.0 | '..math.floor(100 / MaxCap * table.getn(aiBrain:GetListOfUnits(categories.STRUCTURE + categories.MOBILE, false, false) ) )..' -  Structure + Mobile   - ' )
 --                UNITS = aiBrain:GetListOfUnits(categories.STRUCTURE - categories.MASSEXTRACTION - categories.DEFENSE - (categories.STRUCTURE * categories.FACTORY), false, false)
 --                for k,unit in UNITS do
---                    local description = unit:GetBlueprint().Description
+--                    local description = unit.Blueprint.Description
 --                    local location = unit:GetPosition()
 --                    AILog('* AI-Uveso: K='..k..' - Unit= '..description..' - '..repr(location))
 --                end
@@ -1204,6 +1204,36 @@ function PriorityManagerThread(aiBrain)
     end
 end
 
+---Finds the closest marker location from a specified starting point based on given marker types.
+---Iterates through all markers in `Scenario.MasterChain._MASTERCHAIN_.Markers` and calculates
+---the distance from the starting point to each marker, returning the closest matching marker.
+---@param markerTypes table A list of marker types to search for (e.g., expansion or resource types).
+---@param startX number The x-coordinate of the starting location.
+---@param startZ number The z-coordinate of the starting location.
+---@return table|nil pos The position of the closest marker as {x, y, z} if found, otherwise nil.
+---@return string|nil name The name of the closest marker, or its index if no name is provided, or nil if not found.
+function GetClosestMarkerLocation(markerTypes, startX, startZ)
+    local name, pos, lowest, distance
+    -- Loop through each marker in the master chain
+    for k, marker in Scenario.MasterChain._MASTERCHAIN_.Markers do
+        -- Check each specified marker type to match with the marker
+        for num, expansionType in ipairs(markerTypes) do
+            if marker.type == expansionType then
+                -- Calculate the distance between the starting point and the marker
+                distance = VDist2(startX, startZ, marker.position[1], marker.position[3])
+                -- Update the closest marker if none exists or the current one is closer
+                if not lowest or distance < lowest then
+                    pos = marker.position
+                    name = marker.Name or k  -- Use marker name if available, otherwise use the index
+                    lowest = distance
+                end
+            end
+        end
+    end
+    return pos, name  -- Return position and name (or index) of the closest marker
+end
+
+local ExpansionId = 0
 function AddFactoryToClosestManager(aiBrain, factory)
     AIDebug('* AI-Uveso: AddFactoryToClosestManager: Factory '..factory.UnitId..' is not assigned to a factory manager!', true, UvesoOffsetaiarchetypeLUA)
     local FactoryPos = factory:GetPosition()
@@ -1211,14 +1241,14 @@ function AddFactoryToClosestManager(aiBrain, factory)
     local ClosestMarkerBasePos, MarkerBaseName, layer, dist, areatype, BaseRadius
     -- searching for the closest location near the factory (MAIN, Expansion Area)
     if NavalFactory then
-        ClosestMarkerBasePos, MarkerBaseName = AIUtils.AIGetClosestMarkerLocation(aiBrain, 'Naval Area', FactoryPos[1], FactoryPos[3])
+        ClosestMarkerBasePos, MarkerBaseName = GetClosestMarkerLocation({'Naval Area'} , FactoryPos[1], FactoryPos[3])
         layer = 'Water'
     else
-        ClosestMarkerBasePos, MarkerBaseName = AIUtils.AIGetClosestMarkerLocation(aiBrain, 'Blank Marker', FactoryPos[1], FactoryPos[3], {'Expansion Area', 'Large Expansion Area'})
+        ClosestMarkerBasePos, MarkerBaseName = GetClosestMarkerLocation( {'Blank Marker', 'Expansion Area', 'Large Expansion Area'} , FactoryPos[1], FactoryPos[3] )
         layer = 'Land'
     end
     if not ClosestMarkerBasePos then
-        AIWarn('* AI-Uveso: AddFactoryToClosestManager: ClosestMarkerBasePos is NIL for layer '..layer, true, UvesoOffsetaiarchetypeLUA)
+        AIDebug('* AI-Uveso: AddFactoryToClosestManager: ClosestMarkerBasePos is NIL for layer '..layer, true, UvesoOffsetaiarchetypeLUA)
     end
     --  if exist, get the distance to the closest Marker Location
     if ClosestMarkerBasePos then
@@ -1241,14 +1271,16 @@ function AddFactoryToClosestManager(aiBrain, factory)
     end
     
     if dist > BaseRadius or (not ClosestMarkerBasePos) or (not CanGraphAreaTo(FactoryPos, ClosestMarkerBasePos, layer)) then -- needs graph check for land and naval locations
+        AIDebug('* AI-Uveso: AddFactoryToClosestManager: Found ['..MarkerBaseName..'] Baseradius('..math.floor(BaseRadius)..') but it\'s to not reachable: Distance to base: '..math.floor(dist), true, UvesoOffsetaiarchetypeLUA)
+        ExpansionId = ExpansionId + 1
         if NavalFactory then
-            MarkerBaseName = 'Naval Area '..Random(1000,5000)
+            MarkerBaseName = 'Naval Area U'..ExpansionId
             areatype = 'Naval Area'
         else
-            MarkerBaseName = 'Expansion Area '..Random(1000,5000)
+            MarkerBaseName = 'Expansion Area U'..ExpansionId
             areatype = 'Expansion Area'
         end
-        AIWarn('* AI-Uveso: AddFactoryToClosestManager: Found ['..MarkerBaseName..'] Baseradius('..math.floor(BaseRadius)..') but it\'s to not reachable: Distance to base: '..math.floor(dist)..' - Creating new location: '..MarkerBaseName, true, UvesoOffsetaiarchetypeLUA)
+        AIDebug('* AI-Uveso: AddFactoryToClosestManager: Creating new location: '..MarkerBaseName, true, UvesoOffsetaiarchetypeLUA)
         -- creating a marker for the expansion or AIUtils.AIGetClosestMarkerLocation() will not find it.
         Scenario.MasterChain._MASTERCHAIN_.Markers[MarkerBaseName] = {}
         Scenario.MasterChain._MASTERCHAIN_.Markers[MarkerBaseName].color = 'fff4a460'
@@ -1275,9 +1307,10 @@ function AddFactoryToClosestManager(aiBrain, factory)
         end
     -- This is only for debug in case map markers have wrong .type
     elseif LocationType ~= 'Naval Area' and LocationType ~= 'Expansion Area' and LocationType ~= 'Large Expansion Area' then
-        AIWarn('* AI-Uveso: AddFactoryToClosestManager: unknown LocationType '..LocationType..' !', true, UvesoOffsetaiarchetypeLUA)
+        AIWarn('* AI-Uveso: AddFactoryToClosestManager: unknown LocationType '..repr(LocationType)..' !', true, UvesoOffsetaiarchetypeLUA)
     end
-    AIDebug('* AI-Uveso: AddFactoryToClosestManager: Factory '..factory.UnitId..' is close ('..math.floor(dist)..') to MarkerBaseName '..MarkerBaseName..' ('..LocationType..')', true, UvesoOffsetaiarchetypeLUA)
+    dist = VDist2(FactoryPos[1], FactoryPos[3], ClosestMarkerBasePos[1], ClosestMarkerBasePos[3])
+    AIDebug('* AI-Uveso: AddFactoryToClosestManager: Factory '..factory.UnitId..' is close ('..math.floor(dist)..') to MarkerBaseName '..repr(MarkerBaseName)..' ('..repr(LocationType)..')', true, UvesoOffsetaiarchetypeLUA)
     -- search for an manager on this location
     if aiBrain.BuilderManagers[MarkerBaseName] then
         AIDebug('* AI-Uveso: AddFactoryToClosestManager: BuilderManagers for MarkerBaseName '..MarkerBaseName..' exist!', true, UvesoOffsetaiarchetypeLUA)
@@ -1289,7 +1322,7 @@ function AddFactoryToClosestManager(aiBrain, factory)
             -- Factory is no longer without an manager
             factory.lost = nil
         end
-    else
+    elseif MarkerBaseName then
         -- no basemanager found, create a new one.
         AIDebug('* AI-Uveso: AddFactoryToClosestManager: BuilderManagers for MarkerBaseName '..MarkerBaseName..' does not exist! Creating Manager', true, UvesoOffsetaiarchetypeLUA)
         -- Create the new expansion on the expansion marker position with a radius of 100. 100 is only an default value, it will be changed from BaseRanger() thread
@@ -1319,9 +1352,11 @@ function AddFactoryToClosestManager(aiBrain, factory)
         end
         -- get a random name if we have more than one possible base template
         local pick = validNames[ Random(1, table.getn(validNames)) ]
-        AIWarn('* AI-Uveso: AddFactoryToClosestManager: picked basetemplate '..pick..' for location '..MarkerBaseName..' ('..LocationType..')', true, UvesoOffsetaiarchetypeLUA)
+        AIDebug('* AI-Uveso: AddFactoryToClosestManager: picked basetemplate '..pick..' for location '..MarkerBaseName..' ('..LocationType..')', true, UvesoOffsetaiarchetypeLUA)
         -- finaly loading the templates for the new base location. From now on the new factory can work for us :D
         import('/lua/ai/AIAddBuilderTable.lua').AddGlobalBaseTemplate(aiBrain, MarkerBaseName, pick)
+    else
+        AIWarn('* AI-Uveso: AddFactoryToClosestManager: no LocationType '..repr(LocationType)..' !', true, UvesoOffsetaiarchetypeLUA)
     end
 end
 

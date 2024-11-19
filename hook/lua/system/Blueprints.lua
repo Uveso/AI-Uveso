@@ -13,7 +13,7 @@ function ModBlueprints(all_blueprints)
                 end
                 -- Also add the category to the CategoriesHash table
                 if bp.CategoriesHash then
-                    bp.CategoriesHash['AMPHIBIOUS'] = true
+                    bp.CategoriesHash.AMPHIBIOUS = true
                 end
             end
             -- Adding category 'FLOATING' for AI platoon builder
@@ -24,7 +24,7 @@ function ModBlueprints(all_blueprints)
                 end
                 -- Also add the category to the CategoriesHash table
                 if bp.CategoriesHash then
-                    bp.CategoriesHash['FLOATING'] = true
+                    bp.CategoriesHash.FLOATING = true
                 end
             end
         end

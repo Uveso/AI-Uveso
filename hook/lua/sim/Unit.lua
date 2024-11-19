@@ -16,6 +16,7 @@ Unit = Class(Unit_FunctionBackupUveso) {
         if target.Brain.Uveso then
             if self.Army and target.Army and self.Army ~= target.Army and IsAlly(self.Army, target.Army) then
                 local AIMSG = 'Player "'..self.Brain.Nickname..'", please stop reclaiming my buildings.'
+                Sync.AIChat = Sync.AIChat or {}
                 table.insert(Sync.AIChat, {group='all', text=AIMSG, sender=target.Brain.Nickname})
                 AILog('* AI-Uveso: OnStartReclaim(): '..AIMSG)
             end
@@ -28,6 +29,7 @@ Unit = Class(Unit_FunctionBackupUveso) {
         if self.Brain.Uveso then
             if self.Army and captor.Army and self.Army ~= captor.Army and IsAlly(self.Army, captor.Army) then
                 local AIMSG = 'Player "'..captor.Brain.Nickname..'" has reclaimed a allied building. Abuse report sent to server.'
+                Sync.AIChat = Sync.AIChat or {}
                 table.insert(Sync.AIChat, {group='all', text=AIMSG, sender=self.Brain.Nickname})
                 --GpgNetSend('TeamReclaimReport', GetGameTimeSeconds(), self, captor)
                 AIWarn('* AI-Uveso: OnReclaimed(): '..AIMSG)

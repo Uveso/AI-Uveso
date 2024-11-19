@@ -65,7 +65,8 @@ function AIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder,
             AIDebug('* AI-Uveso: AIExecuteBuildStructure: Need engineer with Techlevel ('..NeedTech..') for BuildUnitWithID: '..repr(BuildUnitWithID), true, UvesoOffsetaibuildstructuresLUA)
         end
         -- get the actual tech level from the builder
-        local BC = builder:GetBlueprint().CategoriesHash
+        local BC = builder.Blueprint.CategoriesHash
+        local HasTech
         if BC.TECH1 or BC.COMMAND then
             HasTech = 1
         elseif BC.TECH2 then
@@ -75,10 +76,10 @@ function AIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder,
         end
         -- If we can't find a techlevel for the building we  want to build, return
         if not HasTech then
-            AIWarn('* AI-Uveso: AIExecuteBuildStructure: Can\'t find techlevel for engineer: '..repr(builder:GetBlueprint().BlueprintId), true, UvesoOffsetaibuildstructuresLUA)
+            AIWarn('* AI-Uveso: AIExecuteBuildStructure: Can\'t find techlevel for engineer: '..repr(builder.Blueprint.BlueprintId), true, UvesoOffsetaibuildstructuresLUA)
             return false
         else
-            AIDebug('* AI-Uveso: AIExecuteBuildStructure: Engineer ('..repr(builder:GetBlueprint().BlueprintId)..') has Techlevel ('..HasTech..')', true, UvesoOffsetaibuildstructuresLUA)
+            AIDebug('* AI-Uveso: AIExecuteBuildStructure: Engineer ('..repr(builder.Blueprint.BlueprintId)..') has Techlevel ('..HasTech..')', true, UvesoOffsetaibuildstructuresLUA)
         end
 
         if HasTech < NeedTech then
@@ -106,7 +107,7 @@ function AIExecuteBuildStructure(aiBrain, builder, buildingType, closeToBuilder,
             AIDebug('* AI-Uveso: AIExecuteBuildStructure: Unit is not restricted. Building Type: '..repr(buildingType)..', faction: '..repr(string.upper(builder.Blueprint.General.FactionName))..' - Unit:'..BuildUnitWithID, true, UvesoOffsetaibuildstructuresLUA)
         end
 
-        AIWarn('* AI-Uveso: AIExecuteBuildStructure: All checks passed, forcing enginner TECH'..HasTech..' '..HasFaction..' '..builder:GetBlueprint().BlueprintId..' to build TECH'..NeedTech..' '..buildingType..' '..BuildUnitWithID..'', true, UvesoOffsetaibuildstructuresLUA)
+        AIWarn('* AI-Uveso: AIExecuteBuildStructure: All checks passed, forcing enginner TECH'..HasTech..' '..HasFaction..' '..builder.Blueprint.BlueprintId..' to build TECH'..NeedTech..' '..buildingType..' '..BuildUnitWithID..'', true, UvesoOffsetaibuildstructuresLUA)
         whatToBuild = BuildUnitWithID
         --return false
     else

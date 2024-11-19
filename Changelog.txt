@@ -1,3 +1,19 @@
+v113 (19.Nov.2024)
+
+- Fix: Fixed some typos in upgrade templates
+- Fix: Marker print to log
+- Fix: Naval factory template names
+- Fix: Land factory template names
+- Fix: Add safeguard for function ComHealth(cdr)
+- Fix: CategoriesHash indexing
+- Fix: Resolved bug in AddFactoryToClosestManager function due to missing LocationType.
+- Fix: Removed unused funktion GetMarkerGridPositionFromIndex
+- Fix: Added helper function for missing named indexes in _MASTERCHAIN_.
+- Opt: Scouts no longer create a path; they now fly straight to the destination.
+- Opt: Replaced self:GetBlueprint() with self.Blueprint for improved performance.
+- Opt: Cached position for GetHeatMapGridPositionFromIndex
+
+*************************************************************************************************************************************
 v112 (22.Aug.2023)
 
 - Fix: fixed an error in unit upgrade function

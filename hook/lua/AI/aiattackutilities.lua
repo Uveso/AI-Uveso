@@ -22,15 +22,15 @@ function GetThreatOfUnits(platoon)
     for _,u in units do
         if not u.Dead then
             if platoon.MovementLayer == 'Land' then
-                bpThreat = u:GetBlueprint().Defense.SurfaceThreatLevel
+                bpThreat = u.Blueprint.Defense.SurfaceThreatLevel
             elseif platoon.MovementLayer == 'Water' then
-                bpThreat = u:GetBlueprint().Defense.SurfaceThreatLevel
+                bpThreat = u.Blueprint.Defense.SurfaceThreatLevel
             elseif platoon.MovementLayer == 'Amphibious' or platoon.MovementLayer == 'Hover' then
-                bpThreat = u:GetBlueprint().Defense.SurfaceThreatLevel
+                bpThreat = u.Blueprint.Defense.SurfaceThreatLevel
             elseif platoon.MovementLayer == 'Air' then
-                bpThreat = u:GetBlueprint().Defense.SurfaceThreatLevel
-                if u:GetBlueprint().Defense.AirThreatLevel then
-                    bpThreat = bpThreat + u:GetBlueprint().Defense.AirThreatLevel
+                bpThreat = u.Blueprint.Defense.SurfaceThreatLevel
+                if u.Blueprint.Defense.AirThreatLevel then
+                    bpThreat = bpThreat + u.Blueprint.Defense.AirThreatLevel
                 end
             end
         end
@@ -54,7 +54,7 @@ function GetMostRestrictiveLayer(platoon)
     local layer = false
     for k,v in platoon:GetPlatoonUnits() do
         if not v.Dead then
-            local mType = v:GetBlueprint().Physics.MotionType
+            local mType = v.Blueprint.Physics.MotionType
             -- only set air if no other layer is set
             if mType == 'RULEUMT_Air' and not layer then
                 layer = 'Air' -- air can move on all layers
