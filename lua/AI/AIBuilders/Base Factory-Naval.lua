@@ -34,7 +34,7 @@ BuilderGroup {
             Construction = {
                 Location = 'LocationType',
                 BuildStructures = {
-                    'T1NavalDefense',
+                    'T1SeaFactory',
                     'T1SeaFactory',
                 },
             }
@@ -60,7 +60,6 @@ BuilderGroup {
             Construction = {
                 Location = 'LocationType',
                 BuildStructures = {
-                    'T1NavalDefense',
                     'T1SeaFactory',
                 },
             }
@@ -95,7 +94,6 @@ BuilderGroup {
                 LocationRadius = 90,
                 Location = 'LocationType',
                 BuildStructures = {
-                    'T1NavalDefense',
                     'T1SeaFactory',
                 },
             }
@@ -128,7 +126,6 @@ BuilderGroup {
                 LocationRadius = 90,
                 Location = 'LocationType',
                 BuildStructures = {
-                    'T1NavalDefense',
                     'T1SeaFactory',
                 },
             }
@@ -162,7 +159,6 @@ BuilderGroup {
                 LocationRadius = 90,
                 Location = 'LocationType',
                 BuildStructures = {
-                    'T1NavalDefense',
                     'T1SeaFactory',
                 },
             }

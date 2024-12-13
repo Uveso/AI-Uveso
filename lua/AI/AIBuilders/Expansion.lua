@@ -52,8 +52,6 @@ BuilderGroup {
                 BuildStructures = {
                     'T1LandFactory',
                     'T1Radar',
---                    'T1AADefense',
---                    'T1GroundDefense',
                 }
             },
         },
@@ -101,8 +99,6 @@ BuilderGroup {
                 BuildStructures = {
                     'T1LandFactory',
                     'T1Radar',
-                    'T1AADefense',
-                    'T1GroundDefense',
                 }
             },
         }
@@ -111,7 +107,7 @@ BuilderGroup {
         BuilderName = 'U1 Vacant Expansion Area',                               -- Random Builder Name.
         PlatoonTemplate = 'EngineerBuilder',                                    -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
         Priority = 15300,                                                        -- Priority. Higher priotity will be build more often then lower priotity.
-        InstanceCount = 4,                                                      -- Number of plattons that will be formed with this template.
+        InstanceCount = 1,                                                      -- Number of plattons that will be formed with this template.
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush1stPhaseActive then
                 return 0
@@ -149,8 +145,6 @@ BuilderGroup {
                 BuildStructures = {
                     'T1LandFactory',
                     'T1Radar',
---                    'T1AADefense',
---                    'T1GroundDefense',
                 }
             },
         }
@@ -197,17 +191,15 @@ BuilderGroup {
                 BuildStructures = {
                     'T1LandFactory',
                     'T1Radar',
-                    'T1AADefense',
-                    'T1GroundDefense',
                 }
             },
         }
     },
     Builder {
-        BuilderName = 'U1 Naval Builder 150',                                       -- Random Builder Name.
+        BuilderName = 'U1 Vacant NavalArea 150',                                       -- Random Builder Name.
         PlatoonTemplate = 'EngineerBuilder',                                    -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
         Priority = 17880,                                                        -- Priority. Higher priotity will be build more often then lower priotity.
-        InstanceCount = 2,                                                      -- Number of plattons that will be formed with this template.
+        InstanceCount = 1,                                                      -- Number of plattons that will be formed with this template.
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush1stPhaseActive then
                 return 0
@@ -231,7 +223,7 @@ BuilderGroup {
                 BaseTemplate = 'ExpansionBaseTemplates',
                 ExpansionBase = true,
                 NearMarkerType = 'Naval Area',
-                LocationRadius = 250,
+                LocationRadius = 150,
                 LocationType = 'LocationType',
                 ThreatMin = -1000,
                 ThreatMax = 100,
@@ -239,18 +231,17 @@ BuilderGroup {
                 ThreatType = 'AntiSurface',
                 ExpansionRadius = 120,
                 BuildStructures = {
-                    'T1NavalDefense',
                     'T1SeaFactory',
-                    'T1AADefense',
+                    'T1SeaFactory',
                 }
             }
         }
     },
     Builder {
-        BuilderName = 'U1 Naval Builder 250',                                       -- Random Builder Name.
+        BuilderName = 'U1 Vacant NavalArea 250',                                       -- Random Builder Name.
         PlatoonTemplate = 'EngineerBuilder',                                    -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
         Priority = 17880,                                                        -- Priority. Higher priotity will be build more often then lower priotity.
-        InstanceCount = 2,                                                      -- Number of plattons that will be formed with this template.
+        InstanceCount = 1,                                                      -- Number of plattons that will be formed with this template.
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush1stPhaseActive then
                 return 0
@@ -282,18 +273,17 @@ BuilderGroup {
                 ThreatType = 'AntiSurface',
                 ExpansionRadius = 120,
                 BuildStructures = {
-                    'T1NavalDefense',
                     'T1SeaFactory',
-                    'T1AADefense',
+                    'T1SeaFactory',
                 }
             }
         }
     },
     Builder {
-        BuilderName = 'U1 Naval Builder far',                                       -- Random Builder Name.
+        BuilderName = 'U1 Vacant NavalArea 1000',                                       -- Random Builder Name.
         PlatoonTemplate = 'EngineerBuilder',                                    -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
         Priority = 17860,                                                        -- Priority. Higher priotity will be build more often then lower priotity.
-        InstanceCount = 2,                                                      -- Number of plattons that will be formed with this template.
+        InstanceCount = 1,                                                      -- Number of plattons that will be formed with this template.
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush1stPhaseActive then
                 return 0
@@ -325,9 +315,8 @@ BuilderGroup {
                 ThreatType = 'AntiSurface',
                 ExpansionRadius = 120,
                 BuildStructures = {
-                    'T1NavalDefense',
                     'T1SeaFactory',
-                    'T1AADefense',
+                    'T1SeaFactory',
                 }
             }
         }
@@ -336,7 +325,7 @@ BuilderGroup {
         BuilderName = 'U1 Naval Builder trans',                                       -- Random Builder Name.
         PlatoonTemplate = 'EngineerBuilder',                                    -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
         Priority = 17840,                                                        -- Priority. Higher priotity will be build more often then lower priotity.
-        InstanceCount = 3,                                                      -- Number of plattons that will be formed with this template.
+        InstanceCount = 1,                                                      -- Number of plattons that will be formed with this template.
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush1stPhaseActive then
                 return 0
@@ -370,18 +359,17 @@ BuilderGroup {
                 ThreatType = 'AntiSurface',
                 ExpansionRadius = 120,
                 BuildStructures = {
-                    'T1NavalDefense',
                     'T1SeaFactory',
-                    'T1AADefense',
+                    'T1SeaFactory',
                 }
             }
         }
     },
     Builder {
-        BuilderName = 'U1 Naval Builder Watermap',                                       -- Random Builder Name.
+        BuilderName = 'U1 Vacant NavalArea Watermap',                                       -- Random Builder Name.
         PlatoonTemplate = 'EngineerBuilder',                                    -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
         Priority = 17880,                                                        -- Priority. Higher priotity will be build more often then lower priotity.
-        InstanceCount = 6,                                                      -- Number of plattons that will be formed with this template.
+        InstanceCount = 1,                                                      -- Number of plattons that will be formed with this template.
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush1stPhaseActive then
                 return 0
@@ -414,18 +402,17 @@ BuilderGroup {
                 ThreatType = 'AntiSurface',
                 ExpansionRadius = 120,
                 BuildStructures = {
-                    'T1NavalDefense',
                     'T1SeaFactory',
-                    'T1AADefense',
+                    'T1SeaFactory',
                 }
             }
         }
     },
     Builder {
-        BuilderName = 'U1 Naval Builder noRush',                                       -- Random Builder Name.
+        BuilderName = 'U1 Vacant NavalArea noRush',                                       -- Random Builder Name.
         PlatoonTemplate = 'EngineerBuilder',                                    -- Template Name. These units will be formed. See: "\lua\AI\PlatoonTemplates\"
         Priority = 17880,                                                        -- Priority. Higher priotity will be build more often then lower priotity.
-        InstanceCount = 6,                                                      -- Number of plattons that will be formed with this template.
+        InstanceCount = 1,                                                      -- Number of plattons that will be formed with this template.
         PriorityFunction = function(self, aiBrain)
             if aiBrain.PriorityManager.NoRush1stPhaseActive then
                 return 17880
@@ -458,9 +445,8 @@ BuilderGroup {
                 ThreatType = 'AntiSurface',
                 ExpansionRadius = 120,
                 BuildStructures = {
-                    'T1NavalDefense',
                     'T1SeaFactory',
-                    'T1AADefense',
+                    'T1SeaFactory',
                 }
             }
         }

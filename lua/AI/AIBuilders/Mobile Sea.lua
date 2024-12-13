@@ -720,6 +720,7 @@ BuilderGroup {
         BuilderName = 'U1 Sonar',
         PlatoonTemplate = 'EngineerBuilder',
         Priority = 17500,
+        InstanceCount = 1,
         BuilderConditions = {
             -- Have we the eco to build it ?
             -- When do we want to build this ?

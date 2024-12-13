@@ -5,74 +5,76 @@ SPEW('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'.
 -- Uveso AI. Function to see if we are on a water map and/or can't send Land units to the enemy
 local CanPathToEnemy = {}
 local debugoutput = false
+--- Determines whether there is a valid path to the current enemy based on the type of path required (land or water).
+-- @param aiBrain The brain of the AI army.
+-- @param bool Boolean value indicating desired outcome:
+--             true if we expect a land path to be available, false if we want a return indicating lack of path.
+-- @param LocationType A string indicating the location type being checked.
+-- @return Boolean value based on whether a path exists as desired.
 function CanPathToCurrentEnemy(aiBrain, bool, LocationType)
-    -- Get the armyindex from the enemy
+    -- Get the current enemy of the AI brain
     local CurrentEnemy = aiBrain:GetCurrentEnemy()
-    -- in case we started to erly and we have no enemy yet, or we started a game with only Allies
+    -- If there is no current enemy (too early in the game or only allies), return based on input `bool`
     if not CurrentEnemy then
-        return true == bool
+        return bool
     end
-    local EnemyIndex = ArmyBrains[aiBrain:GetCurrentEnemy():GetArmyIndex()].Nickname
+    -- Get the nickname of the enemy and the AI brain
+    local EnemyIndex = ArmyBrains[CurrentEnemy:GetArmyIndex()].Nickname
     local Nickname = ArmyBrains[aiBrain:GetArmyIndex()].Nickname
-
-    -- create a table for the enemy index in case it's nil
-    CanPathToEnemy[Nickname] = CanPathToEnemy[Nickname] or {} 
-    CanPathToEnemy[Nickname][LocationType] = CanPathToEnemy[Nickname][LocationType] or {} 
-    -- Check if we have already done a path search to the current enemy
+    -- Initialize path cache table for the current AI if it does not exist
+    CanPathToEnemy[Nickname] = CanPathToEnemy[Nickname] or {}
+    CanPathToEnemy[Nickname][LocationType] = CanPathToEnemy[Nickname][LocationType] or {}
+    -- Check if there is already a cached path result for this enemy and location type
     if CanPathToEnemy[Nickname][LocationType][EnemyIndex] == 'LAND' then
-        return true == bool
+        return bool
     elseif CanPathToEnemy[Nickname][LocationType][EnemyIndex] == 'WATER' then
-        return false == bool
+        return not bool
     end
-
-    -- We have no cached path. Searching now for a path.
+    -- Import AI attack utilities for pathfinding
     local AIAttackUtils = import('/lua/AI/aiattackutilities.lua')
+    -- Get the starting position of the AI army
     local startX, startZ = aiBrain:GetArmyStartPos()
-    local enemyX, enemyZ
-    if aiBrain:GetCurrentEnemy() then
-        enemyX, enemyZ = aiBrain:GetCurrentEnemy():GetArmyStartPos()
-        -- if we don't have an enemy position then we can't search for a path. Return until we have an enemy position
-        if not enemyX then
-            return false
-        end
-    else
-        -- if we don't have a current enemy then return false
-        return false
+    -- Get the starting position of the enemy
+    local enemyX, enemyZ = CurrentEnemy:GetArmyStartPos()
+    -- If the enemy position is not available, return as no path found
+    if not enemyX then
+        return not bool
     end
-
-    -- path wit AI markers from our base to the enemy base
-    local path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, 'Land', {startX,0,startZ}, {enemyX,0,enemyZ}, 1000)
-    -- if we have a path generated with AI path markers then....
+    -- Attempt to generate a safe path from the AI base to the enemy base using AI path markers
+    local path, reason = AIAttackUtils.PlatoonGenerateSafePathTo(aiBrain, 'Land', {startX, 0, startZ}, {enemyX, 0, enemyZ}, 1000)
+    -- If a path was found, cache the result and return true if a path was desired (`bool` is true)
     if path then
-        AILog('* AI-Uveso: CanPathToCurrentEnemy: Land path from '..LocationType..' to the enemy found! LAND map! - '..Nickname..' vs '..EnemyIndex..'', true, UvesoOffsetMiscBuildConditionsLUA)
+        AILog('* AI-Uveso: CanPathToCurrentEnemy: Land path from '..LocationType..' to the enemy found! LAND map! - '..Nickname..' vs '..EnemyIndex, true, UvesoOffsetMiscBuildConditionsLUA)
         CanPathToEnemy[Nickname][LocationType][EnemyIndex] = 'LAND'
-        return true == bool
-    -- if we not have a path
+        return bool
     else
-        -- "NoPath" means we have AI markers but can't find a path to the enemy - There is no path!
+        -- If no path was found, handle based on the reason
         if reason == 'NoPath' then
-            AILog('* AI-Uveso: CanPathToCurrentEnemy: No land path from '..LocationType..' to the enemy found! WATER map! - '..Nickname..' vs '..EnemyIndex..'', true, UvesoOffsetMiscBuildConditionsLUA)
+            -- No path available even though markers exist - cache and return based on input `bool`
+            AILog('* AI-Uveso: CanPathToCurrentEnemy: No land path from '..LocationType..' to the enemy found! WATER map! - '..Nickname..' vs '..EnemyIndex, true, UvesoOffsetMiscBuildConditionsLUA)
             CanPathToEnemy[Nickname][LocationType][EnemyIndex] = 'WATER'
-            return false == bool
-        -- "NoGraph" means we have no AI markers and cant graph to the enemy. We can't search for a path - No markers
+            return not bool
         elseif reason == 'NoGraph' then
+            -- No graph/markers available - use map water ratio as a heuristic
             AILog('* AI-Uveso: CanPathToCurrentEnemy: No AI markers found! Using land/water ratio instead', true, UvesoOffsetMiscBuildConditionsLUA)
-            -- Check if we have less then 50% water on the map
+            -- Check if the map is predominantly land or water
             if aiBrain:GetMapWaterRatio() < 0.50 then
-                --lets asume we can move on land to the enemy
-                AILog(string.format('* AI-Uveso: CanPathToCurrentEnemy: Water on map: %0.2f%%. Assuming LAND map! - '..Nickname..' vs '..EnemyIndex..'',aiBrain:GetMapWaterRatio()*100 ), true, UvesoOffsetMiscBuildConditionsLUA)
+                -- Assume a land map if less than 50% water
+                AILog(string.format('* AI-Uveso: CanPathToCurrentEnemy: Water on map: %0.2f%%. Assuming LAND map! - '..Nickname..' vs '..EnemyIndex, aiBrain:GetMapWaterRatio()*100), true, UvesoOffsetMiscBuildConditionsLUA)
                 CanPathToEnemy[Nickname][LocationType][EnemyIndex] = 'LAND'
-                return true == bool
+                return bool
             else
-                -- we have more then 50% water on this map. Ity maybe a water map..
-                AILog(string.format('* AI-Uveso: CanPathToCurrentEnemy: Water on map: %0.2f%%. Assuming WATER map! - '..Nickname..' vs '..EnemyIndex..'',aiBrain:GetMapWaterRatio()*100 ), true, UvesoOffsetMiscBuildConditionsLUA)
+                -- Assume a water map if more than 50% water
+                AILog(string.format('* AI-Uveso: CanPathToCurrentEnemy: Water on map: %0.2f%%. Assuming WATER map! - '..Nickname..' vs '..EnemyIndex, aiBrain:GetMapWaterRatio()*100), true, UvesoOffsetMiscBuildConditionsLUA)
                 CanPathToEnemy[Nickname][LocationType][EnemyIndex] = 'WATER'
-                return false == bool
+                return not bool
             end
         end
     end
-    return false
+    -- Default return if none of the above conditions are met
+    return not bool
 end
+
 
 function IsBrainPersonality(aiBrain, neededPersonality, bool)
     local personality = ScenarioInfo.ArmySetup[aiBrain.Name].AIPersonality

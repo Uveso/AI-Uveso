@@ -1505,7 +1505,7 @@ BuilderGroup {
         BuilderType = 'Air',
     },
     Builder {
-        BuilderName = 'U1 Air Transport requested',
+        BuilderName = 'U1 Air Transport wanted',
         PlatoonTemplate = 'T1AirTransport',
         Priority = 400, 
         PriorityFunction = function(self, aiBrain)
@@ -1518,7 +1518,26 @@ BuilderGroup {
         BuilderConditions = {
             -- Have we the eco to build it ?
             { EBC, 'GreaterThanEconTrend', { 0.0, 0.0 } }, -- relative income
-            { EBC, 'GreaterThanEconStorageRatio', { 0.05, 0.95}}, -- Ratio from 0 to 1. (1=100%)
+            -- When do we want to build this ?
+            { MIBC, 'ArmyWantsTransports', {} },
+            { UCBC, 'HaveLessThanUnitsWithCategory', { 10, categories.MOBILE * categories.AIR * categories.TRANSPORTFOCUS - (categories.uea0203 + categories.EXPERIMENTAL)  }},
+            -- Respect UnitCap
+        },
+        BuilderType = 'Air',
+    },
+    Builder {
+        BuilderName = 'U1 Air Transport needed',
+        PlatoonTemplate = 'T1AirTransport',
+        Priority = 400, 
+        PriorityFunction = function(self, aiBrain)
+            if aiBrain.PriorityManager.NoRush1stPhaseActive then
+                return 0
+            else
+                return 400
+            end
+        end,
+        BuilderConditions = {
+            -- Have we the eco to build it ?
             -- When do we want to build this ?
             { MIBC, 'ArmyNeedsTransports', {} },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 10, categories.MOBILE * categories.AIR * categories.TRANSPORTFOCUS - (categories.uea0203 + categories.EXPERIMENTAL)  }},

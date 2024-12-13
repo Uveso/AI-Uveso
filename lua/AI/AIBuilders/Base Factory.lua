@@ -1387,6 +1387,20 @@ BuilderGroup {
         },
         BuilderType = 'Any',
     },
+    Builder {
+        BuilderName = 'U2 L UP HQ 2->3 Full ECO',
+        PlatoonTemplate = 'U2LandHQFactoryUpgrade',
+        Priority = 15000,
+        DelayEqualBuildPlattons = {'FactoryUpgrade', 3},
+        BuilderConditions = {
+            { UCBC, 'CheckBuildPlattonDelay', { 'FactoryUpgrade' }},
+            -- Have we the eco to build it ?
+            { EBC, 'GreaterThanEconStorageRatio', { 0.90, 0.99 } },
+            -- When do we want to build this ?
+            { UCBC, 'HaveLessThanUnitsInCategoryBeingUpgrade', { 1, categories.STRUCTURE * categories.FACTORY * categories.TECH3 }},
+        },
+        BuilderType = 'Any',
+    },
 -- LAND Support Factories
     Builder {
         BuilderName = 'U1 L UP SUPORT/HQ 1->2 Always',

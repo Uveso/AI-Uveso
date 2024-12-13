@@ -1,8 +1,79 @@
 local UvesoOffsetAiutilitiesLUA = debug.getinfo(1).currentline - 1
 SPEW('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'..UvesoOffsetAiutilitiesLUA..'] * AI-Uveso: offset aiutilities.lua')
---2964
+--3682
 
 local CanGraphAreaTo = import("/mods/AI-Uveso/lua/AI/AIMarkerGenerator.lua").CanGraphAreaTo
+
+-- gamepatch changed PlatoonName to BuilderName
+MergeWithNearbyStatePlatoons = function(platoon, stateMachine, radius, maxMergeNumber, ignoreBase)
+    -- Exit if the platoon is invalid or destroyed
+    if IsDestroyed(platoon) then return end
+    local aiBrain = platoon:GetBrain()
+    if not aiBrain then return end
+    -- Skip merging if the platoon is using transport
+    if platoon.UsingTransport then return end
+    -- Count the number of valid units in the platoon
+    local platUnits = platoon:GetPlatoonUnits()
+    local platCount = 0
+    for _, unit in pairs(platUnits) do
+        if not unit.Dead then 
+            platCount = platCount + 1 
+        end
+    end
+    -- Abort if platoon size exceeds maxMergeNumber or is empty
+    if (maxMergeNumber and platCount > maxMergeNumber) or platCount == 0 then 
+        return 
+    end
+    -- Get the platoon's position
+    local platPos = platoon:GetPlatoonPosition()
+    if not platPos then return end
+    -- Calculate squared merge radius for optimization
+    local radiusSq = radius * radius
+    -- Prevent merging near allied bases if ignoreBase is false
+    if not ignoreBase and aiBrain.BuilderManagers then
+        for _, base in pairs(aiBrain.BuilderManagers) do
+            if VDist2Sq(platPos[1], platPos[3], base.Position[1], base.Position[3]) <= (2 * radiusSq) then
+                return
+            end
+        end
+    end
+    -- Iterate through allied platoons to find eligible ones for merging
+    local AlliedPlatoons = aiBrain:GetPlatoonsList()
+    local bMergedPlatoons = false
+    for _, aPlat in pairs(AlliedPlatoons) do
+        -- Skip invalid, non-existent, or incompatible platoons
+        if not aiBrain:PlatoonExists(aPlat) or aPlat == platoon or aPlat.BuilderName ~= stateMachine or aPlat.UsingTransport or aPlat.PlatoonFull then
+            continue
+        end
+        -- Ensure the allied platoon has a valid position and is on the same movement layer
+        local allyPlatPos = aPlat:GetPlatoonPosition()
+        if not allyPlatPos or platoon.MovementLayer ~= aPlat.MovementLayer then
+            continue
+        end
+        -- Check distance to the allied platoon
+        if VDist2Sq(platPos[1], platPos[3], allyPlatPos[1], allyPlatPos[3]) <= radiusSq then
+            -- Collect valid units from the allied platoon for merging
+            local units = aPlat:GetPlatoonUnits()
+            local validUnits = {}
+            for _, unit in pairs(units) do
+                if not unit.Dead and not unit:IsUnitState('Attached') then
+                    table.insert(validUnits, unit)
+                end
+            end
+            -- Merge units into the current platoon
+            if table.getn(validUnits) > 0 then
+                aiBrain:AssignUnitsToPlatoon(platoon, validUnits, 'Attack', 'GrowthFormation')
+                bMergedPlatoons = true
+            end
+        end
+    end
+    -- Clear commands for the merged platoon if merging occurred
+    if bMergedPlatoons then
+        local platUnits = platoon:GetPlatoonUnits()
+        IssueClearCommands(platUnits)
+    end
+    return bMergedPlatoons
+end
 
 -- Hook For AI-Uveso.
 UvesoEngineerMoveWithSafePath = EngineerMoveWithSafePath

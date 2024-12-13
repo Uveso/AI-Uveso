@@ -702,12 +702,12 @@ BuilderGroup {
     Builder {
         BuilderName = 'U3 SMD 1st Main Enemy',
         PlatoonTemplate = 'T3EngineerBuilderNoSUB',
-        Priority = 18000,
+        Priority = 13000,
         BuilderConditions = {
             { UCBC, 'BuildOnlyOnLocation', { 'LocationType', 'MAIN' } },
             -- Have we the eco to build it ?
             -- When do we want to build this ?
-            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.STRUCTURE * categories.NUKE * categories.SILO } },
+            { UCBC, 'UnitsGreaterAtEnemy', { 0 , categories.NUKE } },
             { UCBC, 'HaveLessThanUnitsWithCategory', { 1, categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * (categories.TECH3 + categories.EXPERIMENTAL) } },
             { UCBC, 'HaveLessThanUnitsInCategoryBeingBuilt', { 1, categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * (categories.TECH3 + categories.EXPERIMENTAL) } },
         },

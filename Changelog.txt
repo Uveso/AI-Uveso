@@ -1,3 +1,25 @@
+v114 (14.Dec.2024)
+
+- New: Platoons will now merge if engaged in combat and nearby.
+- Fix: Resolved an issue where RepeatBuild could potentially cause a stack overflow.
+- Fix: Fixed a bug where the BuilderName was deleted after using the AirUnitRefit functionality.
+- Fix: Added an upgrade mechanism for Tech3 factories when the economy is fully saturated.
+- Fix: The hover platoon former will now only be created if there is no land path available to the enemy.
+- Fix: Fixed tactical missile not targeting Heavy Assault units from the Total Mayhem mod.
+- Fix: Fixed a bug in attack function when a platoon unit is dead.
+- Opt: Increased the priority of panic builders.
+- Opt: Units constructed by panic builders will now push aggressively into enemy lines.
+- Opt: Introduced a new former for managing Total Mayhem spam and panic situations.
+- Opt: Units fighting near corners will now maneuver around corners if their line of sight is obstructed.
+- Opt: The Ecomanager will no longer pause the construction of strategic missile defense systems.
+- Opt: Strategic missile defense systems will now automatically begin construction if a nuclear submarine is detected.
+- Opt: Updated formers specifically for the `Total Mayhem` mod.
+- Opt: Added builder for transport needed and transport wanted.
+- Opt: Engineers will now assist only if mass storage is over 50% to prevent eco stall.
+- Opt: Naval expansions will now build a factory first instead of defense.
+- Opt: Reduced the number of naval base builders to prevent double builds on the same spot.
+
+*************************************************************************************************************************************
 v113 (19.Nov.2024)
 
 - Fix: Fixed some typos in upgrade templates

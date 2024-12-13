@@ -508,7 +508,7 @@ function FindTargetUnit(self, minRadius, maxRadius, MaxLoad)
             elseif not v:BeenDestroyed() and (UnitHealth > MaxHealthpoints or (UnitHealth == MaxHealthpoints and v.distance < AllTargets[2].distance)) and EntityCategoryContains(categories.EXPERIMENTAL * categories.MOBILE, v) and (not IsProtected(self,v:GetPosition())) then
                 AllTargets[2] = v
                 MaxHealthpoints = UnitHealth
-            elseif not v:BeenDestroyed() and UnitHealth > MaxHealthpoints and EntityCategoryContains(categories.MOBILE, v) and uBP.StrategicIconName == 'icon_experimental_generic' and (not IsProtected(self,TargetPosition)) then
+            elseif not v:BeenDestroyed() and UnitHealth > MaxHealthpoints and EntityCategoryContains(categories.MOBILE, v) and string.find(uBP.StrategicIconName, "icon_experimental_generic") and (not IsProtected(self,TargetPosition)) then
                 AllTargets[3] = v
                 MaxHealthpoints = UnitHealth
             elseif not v:BeenDestroyed() and (not AllTargets[5] or v.distance < AllTargets[5].distance) and EntityCategoryContains(categories.STRUCTURE - categories.WALL, v) and (not IsProtected(self,TargetPosition)) then

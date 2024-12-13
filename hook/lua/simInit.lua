@@ -106,7 +106,7 @@ function BeginSession()
     -- Debug ACUChampion platoon function
 --    ForkThread(DrawACUChampion)
     -- Debug HeatMap
---    ForkThread(DrawHeatMap)
+    --ForkThread(DrawHeatMap)
     -- Debug Units
 --    ForkThread(UnitDebugThread)
 end
@@ -1203,7 +1203,7 @@ function ValidateModFilesUveso()
     local ModName = 'AI-Uveso'
     local ModDirectory = 'AI-Uveso'
     local Files = 87
-    local Bytes = 2051051
+    local Bytes = 2044640
     local modlocation = ""
     for i, mod in __active_mods do
         if mod.name == ModName then

@@ -1,8 +1,6 @@
 
 -- ToDo: Targeting Take the weapon range in to account and remove the spreaded threat
 
-local TARGETDEBUG = false
-local HEATMAPDEBUG = false
 local SCOUTDEBUG = false
 local WantedGridCellSize = 14
 local HeatMap = {}
@@ -27,7 +25,6 @@ function InitAITargetManagerData(GridCellSize)
 end
 
 function AITargetManagerThread(aiBrain, armyIndex)
-    AILog("* AI-Uveso: AITargetManagerThread(): [A:"..armyIndex.."]", TARGETDEBUG)
     -- setup the HeatMap table, every AI has it's own table
     HeatMap[armyIndex] = CreateHeatMap(GetOwnBasePosition(aiBrain))
     ArmyBrains[armyIndex].targets = {}
@@ -44,9 +41,10 @@ function AITargetManagerThread(aiBrain, armyIndex)
             coroutine.yield(10)
         end
         CalculateThreat(armyIndex)
+        coroutine.yield(1)
         SetTargets(armyIndex, GetOwnBasePosition(aiBrain))
         -- wait for the next loop
-        coroutine.yield(20)
+        coroutine.yield(30)
     end
 
 end
@@ -1017,7 +1015,7 @@ function ArmyScouting(aiBrain, armyIndex)
     local armyUnits, position, gridX, gridZ, visionRadius, maxVisionRadius, radarRadius, scoutRadius
     while true do
         coroutine.yield(10)
-        armyUnits = aiBrain:GetListOfUnits((categories.MOBILE + categories.STRUCTURE) - categories.SCOUT, false, false)
+        armyUnits = aiBrain:GetListOfUnits((categories.MOBILE + categories.STRUCTURE) - categories.SCOUT - categories.RADAR - categories.SONAR, false, false)
         for unitIndex, unit in armyUnits do
             if not unit.Dead then
                 position = unit:GetPosition()

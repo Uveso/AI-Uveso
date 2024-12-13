@@ -170,6 +170,10 @@ function EcoManagerThread(aiBrain)
                     if unit.UnitBeingAssist and EntityCategoryContains( categories.COMMAND, unit.UnitBeingAssist) then
                         continue
                     end
+                    -- don't pause strategic missile defense
+                    if unit.UnitBeingAssist and EntityCategoryContains( categories.STRUCTURE * categories.DEFENSE * categories.ANTIMISSILE * (categories.TECH3 + categories.EXPERIMENTAL), unit.UnitBeingAssist) then
+                        continue
+                    end
                     if personality == 'uvesorush' then
                         -- If we are rushing, never pause any factory building units
                         if unit.UnitBeingBuilt and EntityCategoryContains( categories.MOBILE, unit.UnitBeingBuilt ) then

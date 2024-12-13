@@ -221,9 +221,9 @@ BaseBuilderTemplate {
         -----------------------------------------------------------------------------
         -- ==== MOD BUILDER ==== --
         -----------------------------------------------------------------------------
-        'Total Mayhem EngineerBuilder',
+        'Total Mayhem HEAVYASSAULT Builder',
         'Total Mayhem FactoryBuilder',
-        'Total Mayhem PlatoonFormBuilder',
+        'Total Mayhem Former',
 
     },
     -- Not used by Uveso's AI. We always need intel in case the commander is dead.
