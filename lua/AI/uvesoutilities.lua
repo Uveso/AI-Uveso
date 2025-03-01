@@ -185,7 +185,7 @@ end
 -- Helperfunction for ExtractorUpgradeAI. 
 function GlobalMassUpgradeCostVsGlobalMassIncomeRatio(self, aiBrain, ratio, techLevel, compareType)
     local GlobalUpgradeCost = 0
-    local MassIncomeLost
+    local MassIncomeLost = 2
     -- get all units matching 'category'
     local unitsBuilding = aiBrain:GetListOfUnits(categories.MASSEXTRACTION * (categories.TECH1 + categories.TECH2), true)
     local numBuilding = 0

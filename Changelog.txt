@@ -1,4 +1,4 @@
-v115 (01.Mar.2025)
+v116 (01.Mar.2025)
 
 - Fix: Resolved an issue where a variable was not defined locally.
 - Fix: Removed a setting that displayed debug texts over units.
