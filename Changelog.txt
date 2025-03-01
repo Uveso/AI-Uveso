@@ -1,3 +1,9 @@
+v115 (01.Mar.2025)
+
+- Fix: Resolved an issue where a variable was not defined locally.
+- Fix: Removed a setting that displayed debug texts over units.
+
+*************************************************************************************************************************************
 v114 (14.Dec.2024)
 
 - New: Platoons will now merge if engaged in combat and nearby.

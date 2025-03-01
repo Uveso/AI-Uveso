@@ -185,6 +185,7 @@ end
 -- Helperfunction for ExtractorUpgradeAI. 
 function GlobalMassUpgradeCostVsGlobalMassIncomeRatio(self, aiBrain, ratio, techLevel, compareType)
     local GlobalUpgradeCost = 0
+    local MassIncomeLost
     -- get all units matching 'category'
     local unitsBuilding = aiBrain:GetListOfUnits(categories.MASSEXTRACTION * (categories.TECH1 + categories.TECH2), true)
     local numBuilding = 0
@@ -259,7 +260,7 @@ function CompareBody(numOne, numTwo, compareType)
 end
 
 local PropBlacklist = {}
-function ReclaimAIThread(platoon,self,aiBrain)
+function ReclaimAIThread(platoon, self, aiBrain)
     local scanrange = 25
     local scanKM = 0
     local playableArea = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua').GetPlayableArea()
@@ -468,7 +469,7 @@ function TMLAIThread(platoon,self,aiBrain)
                     IssueTactical({self}, target)
                 end
             else
-                targPos = LeadTarget(self, target)
+                local targPos = LeadTarget(self, target)
                 if targPos and targPos[1] > 0 and targPos[3] > 0 then
                     if EntityCategoryContains(categories.EXPERIMENTAL - categories.AIR, target) or (self and not self.Dead and self:GetTacticalSiloAmmoCount() >= MaxLoad) then
                         IssueTactical({self}, targPos)

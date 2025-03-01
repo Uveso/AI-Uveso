@@ -5,7 +5,7 @@ SPEW('['..string.gsub(debug.getinfo(1).source, ".*\\(.*.lua)", "%1")..', line:'.
 local UUtils = import('/mods/AI-Uveso/lua/AI/uvesoutilities.lua')
 local AITargetManager = import('/mods/AI-Uveso/lua/AI/AITargetManager.lua')
 local AIMarkerGenerator = import('/mods/AI-Uveso/lua/AI/AIMarkerGenerator.lua')
-local HERODEBUG = true
+local HERODEBUG = false
 local CHAMPIONDEBUG = false -- you need to fucus the AI army to see the debug drawing
 local NUKEDEBUG = false
 local MarkerSwitchDist = 20
